@@ -1,0 +1,19 @@
+.sidenav-header{
+    height: auto !important;
+}
+.navbar-vertical .navbar-brand > img, .navbar-vertical .navbar-brand-img{
+    max-width: 100% !important;
+    max-height: unset !important;
+}
+.bg-gradient-dark {
+    background-image: linear-gradient(195deg, #000000 0%, #000000 100%) !important;
+}
+.bg-gradient-primary {
+    background-image: linear-gradient(135deg, #2C3E50, #2980B9) !important;
+}
+.shadow-primary {
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgb(8 18 74 / 40%) !important;
+}
+.btn-primary, .btn.bg-gradient-primary {
+    box-shadow: 0 3px 3px 0 rgba(18, 23, 96, 0.15), 0 3px 1px -2px rgb(6 4 24 / 20%), 0 1px 5px 0 rgba(30, 26, 91, 0.15) !important;
+}
