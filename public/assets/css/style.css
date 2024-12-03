@@ -17,3 +17,28 @@
 .btn-primary, .btn.bg-gradient-primary {
     box-shadow: 0 3px 3px 0 rgba(18, 23, 96, 0.15), 0 3px 1px -2px rgb(6 4 24 / 20%), 0 1px 5px 0 rgba(30, 26, 91, 0.15) !important;
 }
+button[disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+.custom-btn-sm{
+    padding: 0.10rem 0.8rem !important;
+}
+.custom-input-sm{
+    padding: 0.30rem 1.15rem !important;
+}
+.alert-success {
+    color: #155724 !important;
+    background-color: #d4edda !important;
+    border-color: #c3e6cb !important;
+    background-image: none !important;
+}
+.form-switch .form-check-input {
+    background-color: #F44335 !important;
+}
+.form-switch .form-check-input:checked {
+    border-color: #188f0b !important;
+    background-color: #235d00 !important; 
+}
+
+
