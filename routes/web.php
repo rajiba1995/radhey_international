@@ -17,7 +17,7 @@ use App\Http\Livewire\RTL;
 use App\Http\Livewire\StaticSignIn;
 use App\Http\Livewire\StaticSignUp;
 use App\Http\Livewire\Tables;
-use App\Http\Livewire\VirtualReality;
+use App\Http\Livewire\{VirtualReality,CustomerIndex};
 use GuzzleHttp\Middleware;
 
 /*
@@ -73,4 +73,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('static-sign-in', StaticSignIn::class)->name('static-sign-in');
     Route::get('static-sign-up', StaticSignUp::class)->name('static-sign-up');
     Route::get('rtl', RTL::class)->name('rtl');
+
+    Route::get('/customers', CustomerIndex::class)->name('customers.index');
+    
 });
