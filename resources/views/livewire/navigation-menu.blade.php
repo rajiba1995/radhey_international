@@ -115,7 +115,7 @@
                 </li> --}}
                 <li class="nav-item">
                     <a class="nav-link text-white {{ Route::currentRouteName() == 'viewProducts' ? 'active bg-gradient-primary' : '' }}"
-                        href="#">
+                        href="{{route('viewProducts')}}">
                          Products
                     </a>
                 </li>
