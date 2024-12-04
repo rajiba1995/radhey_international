@@ -20,6 +20,7 @@ use App\Http\Livewire\Tables;
 use App\Http\Livewire\{VirtualReality,CustomerIndex};
 use GuzzleHttp\Middleware;
 use App\Http\Livewire\MasterCategory;
+use App\Http\Livewire\MasterSubCategory;
 
 /*
 |--------------------------------------------------------------------------
@@ -78,4 +79,5 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('/customers', CustomerIndex::class)->name('customers.index');
 
     Route::get('/categories', MasterCategory::class)->name('admin.categories');
+    Route::get('/subcategories', MasterSubCategory::class)->name('admin.subcategories');
 });

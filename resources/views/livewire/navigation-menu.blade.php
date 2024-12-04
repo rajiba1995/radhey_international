@@ -139,9 +139,15 @@
             <!-- Submenu -->
             <ul id="MasterManagementSubmenu" class="collapse list-unstyled ms-4">
                 <li class="nav-item">
-                    <a class="nav-link text-white {{ Route::currentRouteName() == 'viewProducts' ? 'active bg-gradient-primary' : '' }}"
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'admin.categories' ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('admin.categories')}}">
                         Categories
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'admin.subcategories' ? 'active bg-gradient-primary' : '' }}"
+                        href="{{route('admin.subcategories')}}">
+                        Sub Categories
                     </a>
                 </li>
             </ul>
