@@ -130,15 +130,17 @@ class UserAddressForm extends Component
         $this->validate();
         // Store user data
 
-        if ($this->gst_certificate_image) {
-            // Generate a unique filename using the current timestamp
-            $timestamp = now()->timestamp;
-            $imageName = $timestamp . '-' . $this->gst_certificate_image->getClientOriginalName();
-
-            // Store the image in the public folder
-            $imagePath =  $image->storeAs('hotel_images', $uniqueFilename, 'public');
-            $data['gst_certificate_image'] = $imagePath;
-        }
+            if ($this->gst_certificate_image) {
+                // Generate a unique filename using the current timestamp
+                $timestamp = now()->timestamp;
+                $imageName = $timestamp . '-' . $this->gst_certificate_image->getClientOriginalName();
+            
+                // Store the image in the 'gst_certificate_image' directory inside the 'public' disk
+                $imagePath = $this->gst_certificate_image->storeAs('gst_certificate_image', $imageName, 'public');
+            
+                $data['gst_certificate_image'] = $imagePath;
+            }
+            
         $user = User::create([
             'name' => $this->name,
             'company_name' => $this->company_name,
