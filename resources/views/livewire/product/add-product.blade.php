@@ -40,9 +40,11 @@
                             <label class="form-label">Category <span class="text-danger">*</span></label>
                             <select wire:model="category_id" wire:change="GetSubcat($event.target.value)" class="form-control border border-2 p-2">
                                 <option value="" selected hidden>Select Category</option>
-                                @foreach($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->title }}</option>
-                                @endforeach
+                                @if($categories && count($categories))
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->title }}</option>
+                                    @endforeach
+                                @endif
                             </select>
                             @error('category_id')
                                  <p class='text-danger inputerror'>{{ $message }} </p>
@@ -54,9 +56,11 @@
                             <label class="form-label">Sub Category <span class="text-danger">*</span></label>
                             <select wire:model="sub_category_id" class="form-control border border-2 p-2">
                                 <option value="" selected hidden>Select Sub Category</option>
-                                @foreach($subCategories as $subCategory)
-                                    <option value="{{ $subCategory->id }}">{{ $subCategory->title }}</option>
-                                @endforeach
+                                @if($subCategories && count($subCategories))
+                                    @foreach($subCategories as $subCategory)
+                                        <option value="{{ $subCategory->id }}">{{ $subCategory->title }}</option>
+                                    @endforeach
+                                @endif
                             </select>
                             @error('sub_category_id')
                                 <p class='text-danger inputerror'>{{ $message }} </p>

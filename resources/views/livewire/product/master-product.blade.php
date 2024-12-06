@@ -80,7 +80,10 @@
                                             </td>
                                             <td>
                                                 <div class="form-check form-switch">
-                                                    <input class="form-check-input ms-auto" type="checkbox">
+                                                    <input class="form-check-input ms-auto" type="checkbox" wire:click="toggleStatus({{ $product->id }})" 
+                                                    @if ($product->status)
+                                                        checked
+                                                    @endif>
                                                 </div>
                                             </td>
                                             <td class="align-middle">

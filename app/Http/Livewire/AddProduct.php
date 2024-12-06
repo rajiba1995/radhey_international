@@ -19,6 +19,7 @@ class AddProduct extends Component
     {
         // Load categories when the component is mounted
         $this->categories = Category::where('status', 1)->get() ?? collect();
+        $this->subCategories = []; 
     }
 
 
@@ -53,7 +54,7 @@ class AddProduct extends Component
         ]);
 
         session()->flash('message', 'Product created successfully!');
-        $this->reset(); // Optionally reset all fields after submission
+        return redirect()->route('viewProducts');
     }
 
     public function GetSubcat($category_id){

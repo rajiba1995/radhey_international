@@ -18,6 +18,13 @@ class MasterProduct extends Component
         return redirect()->route('viewProducts');
     }
 
+    public function toggleStatus($product_id){
+        $product = Product::findOrFail($product_id);
+        $product->status = !$product->status;
+        $product->save();
+        session()->flash('message', 'Product status updated successfully.');
+    }
+
     public function render()
     {
         $products = Product::with('category','sub_category')->latest()->get();
