@@ -15,7 +15,6 @@ class MasterProduct extends Component
         }
         $product->delete();
         session()->flash('message','Product deleted successfully');
-        return redirect()->route('viewProducts');
     }
 
     public function toggleStatus($product_id){
