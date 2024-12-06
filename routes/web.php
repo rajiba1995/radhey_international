@@ -23,6 +23,7 @@ use App\Http\Livewire\MasterCategory;
 use App\Http\Livewire\MasterSubCategory;
 use App\Http\Livewire\UserAddressForm; 
 use App\Http\Livewire\CustomerEdit; 
+use App\Http\Livewire\CustomerDetails; 
 
 /*
 |--------------------------------------------------------------------------
@@ -86,7 +87,6 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 
     Route::get('/user-address-form', UserAddressForm::class)->name('admin.user-address-form');
     Route::get('/customers/{id}/edit', CustomerEdit::class)->name('admin.customers.edit');
-    Route::get('/customers/delete', [CustomerController::class, 'index'])->name('admin.customers.delete');
-
+    Route::get('/customers/{id}', CustomerDetails::class)->name('admin.customers.details');
 
 });

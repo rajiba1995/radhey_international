@@ -112,29 +112,7 @@ class CustomerEdit extends Component
         return redirect()->route('admin.customers.edit', ['id' => $this->customerId]);
     }
 
-    public function deleteCustomer($customerId)
-    {
-        $customer = User::findOrFail($customerId);
-    
-        // Delete associated address if exists
-        if ($customer->address) {
-            $customer->address()->delete();
-        }
-    
-        // Delete GST certificate image if exists
-        if ($customer->gst_certificate_image && \Storage::exists('public/' . $customer->gst_certificate_image)) {
-            \Storage::delete('public/' . $customer->gst_certificate_image);
-        }
-    
-        // Delete the customer
-        $customer->delete();
-    
-        // Flash success message
-        session()->flash('success', 'Customer deleted successfully.');
-    
-        // Optionally redirect to the customers list page
-        return redirect()->route('admin.customers');
-    }
+   
     
 
 

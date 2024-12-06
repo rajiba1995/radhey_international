@@ -9,6 +9,10 @@ use Livewire\WithPagination;
 class CustomerIndex extends Component
 {
     use WithPagination;
+    
+  
+
+    
 
     public function deleteCustomer($id)
     {

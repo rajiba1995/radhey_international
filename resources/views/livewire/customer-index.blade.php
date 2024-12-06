@@ -108,12 +108,12 @@
                                                     <p class="text-xs font-weight-bold mb-0">{{ $user->gst_number }}</p>
                                                 </td>
                                                 <td class="align-middle">
+                                                    <a href="{{ route('admin.customers.details', ['id' => $user->id]) }}" class="btn btn-info btn-sm">View Details</a>
                                                     <a href="{{ route('admin.customers.edit', ['id' => $user->id]) }}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Edit user">
                                                         Edit
                                                     </a>
                                                 
                                                     <button wire:click="deleteCustomer({{ $user->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm">Delete</button>
-
                                                 </td>
 
 
