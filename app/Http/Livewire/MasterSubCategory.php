@@ -5,6 +5,7 @@ use Livewire\WithPagination;
 use Livewire\Component;
 use App\Models\SubCategory;
 use App\Models\Category;
+use Illuminate\Validation\Rule;
 
 class MasterSubCategory extends Component
 {
@@ -13,11 +14,6 @@ class MasterSubCategory extends Component
     public $categories; // Holds categories for dropdown
     public $category_id, $title, $status = 1, $subCategoryId;
     public $search = '';
-
-    protected $rules = [
-        'category_id' => 'required|exists:categories,id',
-        'title' => 'required|string|max:255',
-    ];
 
     public function mount()
     {
@@ -33,7 +29,17 @@ class MasterSubCategory extends Component
     }
 
     public function store(){
-        $this->validate();
+        $this->validate([
+            'category_id' => 'required|exists:categories,id',
+                'title' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    Rule::unique('sub_categories')->where(function ($query) {
+                        return $query->where('category_id', $this->category_id);
+                    }),
+                ],
+        ]);
         SubCategory::create([
             'category_id' => $this->category_id,
             'title' => $this->title,

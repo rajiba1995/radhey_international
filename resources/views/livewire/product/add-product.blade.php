@@ -38,8 +38,7 @@
                         <!-- Category Dropdown -->
                         <div class="mb-3 col-md-6">
                             <label class="form-label">Category <span class="text-danger">*</span></label>
-                            <select wire:change="GetSubcat($event.target.value)"
-                            class="form-control border border-2 p-2">
+                            <select wire:model="category_id" wire:change="GetSubcat($event.target.value)" class="form-control border border-2 p-2">
                                 <option value="" selected hidden>Select Category</option>
                                 @foreach($categories as $category)
                                     <option value="{{ $category->id }}">{{ $category->title }}</option>
@@ -130,17 +129,19 @@
     </div>
 
 </div>
-<script src="https://cdn.ckeditor.com/ckeditor5/38.1.0/classic/ckeditor.js"></script>
+{{-- <script src="https://cdn.ckeditor.com/ckeditor5/38.1.0/classic/ckeditor.js"></script>
 <script>
-ClassicEditor
-    .create(document.querySelector('#short_description'))
-    .catch(error => {
-        console.error(error);
-    });
-ClassicEditor
-    .create(document.querySelector('#description'))
-    .catch(error => {
-        console.error(error);
-    });
+document.addEventListener('DOMContentLoaded', function () {
+    ClassicEditor
+        .create(document.querySelector('#short_description'))
+        .catch(error => {
+            console.error(error);
+        });
+    ClassicEditor
+        .create(document.querySelector('#description'))
+        .catch(error => {
+            console.error(error);
+        });
+});
 
-</script>
+</script> --}}

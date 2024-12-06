@@ -21,7 +21,7 @@ use App\Http\Livewire\{VirtualReality,CustomerIndex};
 use GuzzleHttp\Middleware;
 use App\Http\Livewire\MasterCategory;
 use App\Http\Livewire\MasterSubCategory;
-use App\Http\Livewire\{MasterProduct,AddProduct};
+use App\Http\Livewire\{MasterProduct,AddProduct,UpdateProduct};
 
 /*
 |--------------------------------------------------------------------------
@@ -81,6 +81,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     
     Route::get('/viewProducts', MasterProduct::class)->name('viewProducts');
     Route::get('/addProducts', AddProduct::class)->name('addProducts');
+    Route::get('/updateProducts/{product_id}', UpdateProduct::class)->name('product.update');
     Route::get('/categories', MasterCategory::class)->name('admin.categories');
     Route::get('/subcategories', MasterSubCategory::class)->name('admin.subcategories');
 });

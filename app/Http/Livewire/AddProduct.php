@@ -18,16 +18,9 @@ class AddProduct extends Component
     public function mount()
     {
         // Load categories when the component is mounted
-        $this->categories = Category::where('status', 1)->get();
+        $this->categories = Category::where('status', 1)->get() ?? collect();
     }
 
-    public function updatedCategoryId($categoryId)
-    {
-        // Load sub-categories based on the selected category
-        $this->subCategories = SubCategory::where('category_id', $categoryId)->where('status', 1)  // Ensure only active sub-categories
-        ->get();
-        $this->sub_category_id = null; // Reset sub-category when category changes
-    }
 
     public function create()
     {
@@ -65,13 +58,13 @@ class AddProduct extends Component
 
     public function GetSubcat($category_id){
         $this->subCategories = SubCategory::where('category_id', $category_id)->where('status', 1)  // Ensure only active sub-categories
-        ->get();
+        ->get() ?? collect();
         $this->sub_category_id = null; // Reset sub-category when category changes
     }
 
     public function render()
     {
-        return view('livewire.add-product');
+        return view('livewire.product.add-product');
     }
 
     
