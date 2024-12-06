@@ -1,6 +1,3 @@
-
-    <!-- Navbar -->
-    <!-- End Navbar -->
     <div class="container-fluid py-4">
         <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
             <div class="nav-wrapper position-relative end-0">
@@ -30,7 +27,8 @@
             </div>
         </div>
         <div class="d-flex justify-content-end mb-3">
-            <a href="{{ route('admin.user-address-form') }}" class="btn btn-primary">Add Customer</a>
+                <a href="{{ route('suppliers.add') }}" class="btn btn-primary mb-3">Add Supplier</a>
+
         </div>
         <div class="row">
             <div class="col-12">
@@ -56,9 +54,7 @@
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             Name
                                         </th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Company Name
-                                        </th>
+                                       
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Email
                                         </th>
@@ -78,8 +74,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($users as $user)
-                                        @if($user->email != 'admin@gmail.com') 
+                                    @foreach($suppliers as $supplier)
                                             <tr>
                                                 <td>
                                                     <div class="d-flex px-2 py-1">
@@ -87,38 +82,32 @@
                                                             <img src="{{ asset('assets/img/team-2.jpg') }}" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
                                                         </div> -->
                                                         <div class="d-flex flex-column justify-content-center">
-                                                            <h6 class="mb-0 text-sm">{{ $user->name }}</h6>
-                                                            <p class="text-xs text-secondary mb-0">{{ $user->email }}</p>
+                                                            <h6 class="mb-0 text-sm">{{ $supplier->name }}</h6>
+                                                            <p class="text-xs text-secondary mb-0">{{ $supplier->email }}</p>
                                                         </div>
                                                     </div>
                                                 </td>
+                                                
                                                 <td>
-                                                    <p class="text-xs font-weight-bold mb-0">{{ $user->company_name }}</p>
+                                                    <p class="text-xs font-weight-bold mb-0">{{ $supplier->email }}</p>
                                                 </td>
                                                 <td>
-                                                    <p class="text-xs font-weight-bold mb-0">{{ $user->email }}</p>
+                                                    <p class="text-xs font-weight-bold mb-0">{{ $supplier->mobile }}</p>
                                                 </td>
                                                 <td>
-                                                    <p class="text-xs font-weight-bold mb-0">{{ $user->phone }}</p>
+                                                    <p class="text-xs font-weight-bold mb-0">{{ $supplier->whatsapp_no }}</p>
                                                 </td>
                                                 <td>
-                                                    <p class="text-xs font-weight-bold mb-0">{{ $user->whatsapp_no }}</p>
-                                                </td>
-                                                <td>
-                                                    <p class="text-xs font-weight-bold mb-0">{{ $user->gst_number }}</p>
+                                                    <p class="text-xs font-weight-bold mb-0">{{ $supplier->gst_number }}</p>
                                                 </td>
                                                 <td class="align-middle">
-                                                    <a href="{{ route('admin.customers.details', ['id' => $user->id]) }}" class="btn btn-info btn-sm">View Details</a>
-                                                    <a href="{{ route('admin.customers.edit', ['id' => $user->id]) }}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Edit user">
-                                                        Edit
-                                                    </a>
-                                                
-                                                    <button wire:click="deleteCustomer({{ $user->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm">Delete</button>
+                                                <a href="{{ route('suppliers.edit', $supplier->id) }}" class="btn btn-warning">Edit</a>
+                                                <a href="{{ route('suppliers.details', $supplier->id) }}" class="btn btn-info">Details</a>
+                                                <button wire:click="deleteSupplier({{ $supplier->id }})" class="btn btn-danger">Delete</button>
                                                 </td>
 
 
                                             </tr>
-                                        @endif
                                     @endforeach
                                 </tbody>
 
@@ -126,7 +115,6 @@
                         </div>
                         <div class="mt-3">
                             <nav aria-label="Page navigation">
-                                {{ $users->links('pagination::bootstrap-5') }}
                             </nav>
                         </div>
                     </div>
@@ -134,3 +122,4 @@
             </div>
         </div>
     </div>
+

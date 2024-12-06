@@ -4,15 +4,31 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\User;
+use Livewire\WithPagination;
 
 class CustomerIndex extends Component
 {
-    public $users;
-    public function mount(){
-        $this->users = User::all();
+    use WithPagination;
+    
+  
+
+    
+
+    public function deleteCustomer($id)
+    {
+        $user = User::find($id);
+
+        if ($user) {
+            $user->delete();
+            session()->flash('success', 'Customer deleted successfully.');
+        } else {
+            session()->flash('error', 'Customer not found.');
+        }
     }
+
     public function render()
     {
-        return view('livewire.customer-index');
+        $users = User::paginate(5);
+        return view('livewire.customer-index', compact('users'));
     }
 }

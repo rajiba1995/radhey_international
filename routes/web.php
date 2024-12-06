@@ -23,6 +23,13 @@ use App\Http\Livewire\MasterCategory;
 use App\Http\Livewire\MasterSubCategory;
 use App\Http\Livewire\{MasterProduct,AddProduct,UpdateProduct};
 
+use App\Http\Livewire\UserAddressForm; 
+use App\Http\Livewire\CustomerEdit; 
+use App\Http\Livewire\CustomerDetails; 
+use App\Http\Livewire\Supplier\SupplierIndex;
+use App\Http\Livewire\Supplier\SupplierAdd;
+use App\Http\Livewire\Supplier\SupplierEdit;
+use App\Http\Livewire\Supplier\SupplierDetails;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -84,4 +91,15 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('/updateProducts/{product_id}', UpdateProduct::class)->name('product.update');
     Route::get('/categories', MasterCategory::class)->name('admin.categories');
     Route::get('/subcategories', MasterSubCategory::class)->name('admin.subcategories');
+
+
+    Route::get('/user-address-form', UserAddressForm::class)->name('admin.user-address-form');
+    Route::get('/customers/{id}/edit', CustomerEdit::class)->name('admin.customers.edit');
+    Route::get('/customers/{id}', CustomerDetails::class)->name('admin.customers.details');
+
+    Route::get('/suppliers', SupplierIndex::class)->name('suppliers.index');
+    Route::get('/suppliers/add', SupplierAdd::class)->name('suppliers.add');
+    Route::get('/suppliers/edit/{id}', SupplierEdit::class)->name('suppliers.edit');
+    Route::get('/suppliers/details/{id}', SupplierDetails::class)->name('suppliers.details');
+
 });
