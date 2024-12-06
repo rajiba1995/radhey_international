@@ -19,6 +19,11 @@ class NavigationMenu extends Component
                 'name'=>'Customer Management',
                 'route'=>'customers.index',
                 'icon'=>'dashboard'
+            ],
+            [
+                'name'=>'Supplier Management',
+                'route'=>'suppliers.index',
+                'icon'=>'dashboard'
             ]
          ];
     }
