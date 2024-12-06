@@ -31,7 +31,6 @@
                 {{-- <x-navbars.sidebar></x-navbars.sidebar> --}}
                 <main class="main-content border-radius-lg h-100">
                     {{  $slot }}
-
             </div>
             <x-footers.auth></x-footers.auth>
             </main>

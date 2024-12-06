@@ -96,8 +96,8 @@
                 <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Master Modules</h6>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white {{ Route::currentRouteName() == 'profile' ? 'active bg-gradient-primary' : '' }}"
-                    href="#productManagementSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['admin.categories', 'admin.subcategories', 'viewProducts']) ? 'active bg-gradient-primary' : '' }}"
+                    href="#productManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['admin.categories', 'admin.subcategories', 'viewProducts']) ? 'true' : 'false' }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">store</i>
                     </div>
@@ -106,23 +106,35 @@
             </li>
         
             <!-- Submenu -->
-            <ul id="productManagementSubmenu" class="collapse list-unstyled ms-4">
-                <li class="nav-item">
+            <ul id="productManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['admin.categories', 'admin.subcategories', 'viewProducts']) ? 'show' : '' }}">
+                {{-- <li class="nav-item">
                     <a class="nav-link text-white {{ Route::currentRouteName() == 'addProduct' ? 'active bg-gradient-primary' : '' }}"
                         href="#">
                         Add Product
                     </a>
-                </li>
+                </li> --}}
                 <li class="nav-item">
                     <a class="nav-link text-white {{ Route::currentRouteName() == 'viewProducts' ? 'active bg-gradient-primary' : '' }}"
-                        href="#">
-                        View Products
+                        href="{{route('viewProducts')}}">
+                         Products
                     </a>
                 </li>
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a class="nav-link text-white {{ Route::currentRouteName() == 'categories' ? 'active bg-gradient-primary' : '' }}"
                         href="#">
                         Categories
+                    </a>
+                </li> --}}
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'admin.categories' ? 'active bg-gradient-primary' : '' }}"
+                        href="{{route('admin.categories')}}">
+                        Categories
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'admin.subcategories' ? 'active bg-gradient-primary' : '' }}"
+                        href="{{route('admin.subcategories')}}">
+                        Sub Categories
                     </a>
                 </li>
             </ul>
@@ -137,14 +149,20 @@
             </li>
         
             <!-- Submenu -->
-            <ul id="MasterManagementSubmenu" class="collapse list-unstyled ms-4">
+            {{-- <ul id="MasterManagementSubmenu" class="collapse list-unstyled ms-4">
                 <li class="nav-item">
-                    <a class="nav-link text-white {{ Route::currentRouteName() == 'viewProducts' ? 'active bg-gradient-primary' : '' }}"
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'admin.categories' ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('admin.categories')}}">
                         Categories
                     </a>
                 </li>
-            </ul>
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'admin.subcategories' ? 'active bg-gradient-primary' : '' }}"
+                        href="{{route('admin.subcategories')}}">
+                        Sub Categories
+                    </a>
+                </li>
+            </ul> --}}
         </ul>
     </div>
     <div class="sidenav-footer position-absolute w-100 bottom-0 ">
