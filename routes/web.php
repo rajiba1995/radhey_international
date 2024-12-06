@@ -20,6 +20,9 @@ use App\Http\Livewire\Tables;
 use App\Http\Livewire\{VirtualReality,CustomerIndex};
 use GuzzleHttp\Middleware;
 use App\Http\Livewire\MasterCategory;
+use App\Http\Livewire\MasterSubCategory;
+use App\Http\Livewire\UserAddressForm; 
+use App\Http\Livewire\CustomerEdit; 
 
 /*
 |--------------------------------------------------------------------------
@@ -78,4 +81,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('/customers', CustomerIndex::class)->name('customers.index');
 
     Route::get('/categories', MasterCategory::class)->name('admin.categories');
+    Route::get('/subcategories', MasterSubCategory::class)->name('admin.subcategories');
+
+
+    Route::get('/user-address-form', UserAddressForm::class)->name('admin.user-address-form');
+    Route::get('/customers/{id}/edit', CustomerEdit::class)->name('admin.customers.edit');
+    Route::get('/customers/delete', [CustomerController::class, 'index'])->name('admin.customers.delete');
+
+
 });
