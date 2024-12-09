@@ -115,7 +115,7 @@
                                     <button type="submit" class="btn btn-primary btn-sm" 
                                             wire:loading.attr="disabled">
                                         <span> 
-                                            {{ $designationId ? 'Update Category' : 'Create Category' }}
+                                            {{ $designationId ? 'Update Designation' : 'Create Designation' }}
                                         </span>
                                     </button>
                                 </div>
