@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->tinyInteger('status')->default(1)->comment('1: Active, 0: Inactive')->after('product_image');
-            $table->softDeletes();
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('designation')->nullable()->after('id'); 
         });
     }
 
@@ -22,9 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('status');
-            $table->dropSoftDeletes();
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('designation');
         });
     }
 };

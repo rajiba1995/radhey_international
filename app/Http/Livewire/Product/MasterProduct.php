@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Http\Livewire\Product;
 
 use Livewire\Component;
 use App\Models\Product;
@@ -13,7 +13,8 @@ class MasterProduct extends Component
         if($product->product_image && \Storage::disk('public')->exists($product->product_image)){
             \Storage::disk('public')->delete($product->product_image);
         }
-        $product->delete();
+        $product->deleted_at = ($product->deleted_at == 1)? 0 : 1;
+        $product->save();
         session()->flash('message','Product deleted successfully');
     }
 
@@ -26,7 +27,7 @@ class MasterProduct extends Component
 
     public function render()
     {
-        $products = Product::with('category','sub_category')->latest()->get();
+        $products = Product::with('category','sub_category')->where('deleted_at',1)->latest()->get();
         return view('livewire.product.master-product',['products'=>$products]);
     }
 }

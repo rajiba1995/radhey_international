@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Http\Livewire\Product;
 
 use Livewire\WithPagination;
 use App\Models\Category;

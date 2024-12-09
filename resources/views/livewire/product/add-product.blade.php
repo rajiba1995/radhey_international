@@ -70,7 +70,7 @@
                         <!-- Product Name -->
                         <div class="mb-3 col-md-6">
                             <label class="form-label">Product Name <span class="text-danger">*</span></label>
-                            <input wire:model="name" type="text" class="form-control border border-2 p-2" placeholder="Product Name">
+                            <input wire:model="name" type="text" class="form-control border border-2 p-2" placeholder="Product Name" value="{{ old('name', $name) }}">
                             @error('name')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                             @enderror
@@ -79,7 +79,7 @@
                         <!-- HSN Code -->
                         <div class="mb-3 col-md-6">
                             <label class="form-label">HSN Code</label>
-                            <input wire:model="hsn_code" type="text" class="form-control border border-2 p-2" placeholder="HSN Code">
+                            <input wire:model="hsn_code" type="text" class="form-control border border-2 p-2" placeholder="HSN Code" value="{{ old('hsn_code', $hsn_code) }}">
                             @error('hsn_code')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                             @enderror
@@ -88,7 +88,7 @@
                         <!-- Short Description -->
                         <div class="mb-3 col-md-12">
                             <label class="form-label">Short Description</label>
-                            <input wire:model="short_description" id="short_description" type="text" class="form-control border border-2 p-2">
+                            <textarea wire:model="short_description" id="short_description" class="form-control border border-2 p-2">{{ old('short_description', $short_description) }}</textarea>
                             @error('short_description')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                             @enderror
@@ -97,7 +97,7 @@
                         <!-- Description -->
                         <div class="mb-3 col-md-12">
                             <label class="form-label">Description</label>
-                            <input wire:model="description" id="description" type="text" class="form-control border border-2 p-2">
+                            <textarea wire:model="description" id="description" class="form-control border border-2 p-2">{{ old('description', $description) }}</textarea>
                             @error('description')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                             @enderror
@@ -106,7 +106,7 @@
                         <!-- GST Details -->
                         <div class="mb-3 col-md-6">
                             <label class="form-label">GST Details (%)</label>
-                            <input wire:model="gst_details" type="text" class="form-control border border-2 p-2" placeholder="GST Percentage">
+                            <input wire:model="gst_details" type="text" class="form-control border border-2 p-2" placeholder="GST Percentage" value="{{ old('gst_details', $gst_details) }}">
                             @error('gst_details')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                             @enderror
@@ -133,7 +133,7 @@
     </div>
 
 </div>
-{{-- <script src="https://cdn.ckeditor.com/ckeditor5/38.1.0/classic/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/38.1.0/classic/ckeditor.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     ClassicEditor
@@ -148,4 +148,4 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 });
 
-</script> --}}
+</script>

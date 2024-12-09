@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Http\Livewire\Product;
 
 use Livewire\Component;
 use App\Models\Category;
@@ -54,7 +54,7 @@ class AddProduct extends Component
         ]);
 
         session()->flash('message', 'Product created successfully!');
-        return redirect()->route('viewProducts');
+        return redirect()->route('product.view');
     }
 
     public function GetSubcat($category_id){

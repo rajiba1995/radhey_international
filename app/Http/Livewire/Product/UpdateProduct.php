@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Http\Livewire\Product;
 
 use Livewire\Component;
 use App\Models\Category;
@@ -90,7 +90,7 @@ class UpdateProduct extends Component
         ]);
 
         session()->flash('message', 'Product updated successfully!');
-        return redirect()->route('viewProducts');
+        return redirect()->route('product.view');
     }
 
 

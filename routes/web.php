@@ -19,10 +19,8 @@ use App\Http\Livewire\StaticSignUp;
 use App\Http\Livewire\Tables;
 use App\Http\Livewire\{VirtualReality,CustomerIndex};
 use GuzzleHttp\Middleware;
-use App\Http\Livewire\MasterCategory;
-use App\Http\Livewire\MasterSubCategory;
-use App\Http\Livewire\{MasterProduct,AddProduct,UpdateProduct};
-
+use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory};
+use App\Http\Livewire\Staff\DesignationIndex;
 use App\Http\Livewire\UserAddressForm; 
 use App\Http\Livewire\CustomerEdit; 
 use App\Http\Livewire\CustomerDetails; 
@@ -86,12 +84,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 
     Route::get('/customers', CustomerIndex::class)->name('customers.index');
     
-    Route::get('/viewProducts', MasterProduct::class)->name('viewProducts');
-    Route::get('/addProducts', AddProduct::class)->name('addProducts');
-    Route::get('/updateProducts/{product_id}', UpdateProduct::class)->name('product.update');
+    Route::get('/products', MasterProduct::class)->name('product.view');
+    Route::get('/add/products', AddProduct::class)->name('product.add');
+    Route::get('/update/products/{product_id}', UpdateProduct::class)->name('product.update');
     Route::get('/categories', MasterCategory::class)->name('admin.categories');
     Route::get('/subcategories', MasterSubCategory::class)->name('admin.subcategories');
 
+    Route::get('/designation',DesignationIndex::class)->name('staff.designation');
 
     Route::get('/user-address-form', UserAddressForm::class)->name('admin.user-address-form');
     Route::get('/customers/{id}/edit', CustomerEdit::class)->name('admin.customers.edit');
