@@ -35,16 +35,23 @@
                             @error('email') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
 
-                        <div class="mb-3 col-md-6">
-                            <label for="mobile" class="form-label">Mobile</label>
-                            <input type="text" wire:model.defer="mobile" id="mobile" class="form-control border border-2 p-2">
-                            @error('mobile') <span class="text-danger">{{ $message }}</span> @enderror
-                        </div>
+                        <div class="row">
+                            <!-- Mobile and WhatsApp -->
+                            <div class="mb-3 col-md-6">
+                                <label for="mobile" class="form-label">Mobile</label>
+                                <input type="text" wire:model.defer="mobile" id="mobile" class="form-control border border-2 p-2" placeholder="Enter mobile number">
+                                @error('mobile') <span class="text-danger">{{ $message }}</span> @enderror
+                            </div>
 
-                        <div class="mb-3 col-md-6">
-                            <label for="whatsapp_no" class="form-label">WhatsApp Number</label>
-                            <input type="text" wire:model.defer="whatsapp_no" id="whatsapp_no" class="form-control border border-2 p-2">
-                            @error('whatsapp_no') <span class="text-danger">{{ $message }}</span> @enderror
+                            <div class="mb-3 col-md-6">
+                                <label for="whatsapp_no" class="form-label">WhatsApp Number</label>
+                                <div class="d-flex align-items-center">
+                                    <input type="text" wire:model.defer="whatsapp_no" id="whatsapp_no" class="form-control border border-2 p-2 me-2" placeholder="Enter WhatsApp number">
+                                    <input type="checkbox" id="is_wa_same" wire:model="is_wa_same">
+                                    <label for="is_wa_same" class="form-check-label ms-2">Same as Mobile</label>
+                                </div>
+                                @error('whatsapp_no') <span class="text-danger">{{ $message }}</span> @enderror
+                            </div>
                         </div>
 
                         <div class="mb-3 col-md-6">
@@ -113,7 +120,11 @@
                             @error('billing_country') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                     </div>
-
+                    <div class="form-check my-3">
+                        <input type="checkbox" class="form-check-input" id="sameAsBilling" wire:model="is_same_as_billing">
+                        
+                        <label class="form-check-label" for="sameAsBilling">Same as Billing Address</label>
+                    </div>
                     <h5 class="mt-4">Shipping Address</h5>
                     <div class="row">
                         <div class="mb-3 col-md-6">
@@ -155,3 +166,65 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const mobileInput = document.getElementById('mobile');
+        const whatsappInput = document.getElementById('whatsapp_no');
+        const checkbox = document.getElementById('is_wa_same');
+
+        // Event listener for checkbox toggle
+        checkbox.addEventListener('change', () => {
+            if (checkbox.checked) {
+                whatsappInput.value = mobileInput.value; // Set WhatsApp number to mobile number
+                whatsappInput.disabled = true; // Disable the WhatsApp input field
+            } else {
+                whatsappInput.disabled = false; // Enable the WhatsApp input field
+                whatsappInput.value = ''; // Clear WhatsApp number
+            }
+        });
+
+        // Event listener for mobile input changes
+        mobileInput.addEventListener('input', () => {
+            if (checkbox.checked) {
+                whatsappInput.value = mobileInput.value; // Sync WhatsApp number with mobile number
+            }
+        });
+    });
+</script>
+
+<script>
+   document.addEventListener('DOMContentLoaded', () => {
+    const billingFields = {
+        address: document.getElementById('billing_address'),
+        city: document.getElementById('billing_city'),
+        landmark: document.getElementById('billing_landmark'),
+        state: document.getElementById('billing_state'),
+        pin: document.getElementById('billing_pin'),
+        country: document.getElementById('billing_country')
+    };
+    const shippingFields = {
+        address: document.getElementById('shipping_address'),
+        city: document.getElementById('shipping_city'),
+        landmark: document.getElementById('shipping_landmark'),
+        state: document.getElementById('shipping_state'),
+        pin: document.getElementById('shipping_pin'),
+        country: document.getElementById('shipping_country')
+    };
+    const sameAsBillingCheckbox = document.getElementById('sameAsBilling');
+
+    sameAsBillingCheckbox.addEventListener('change', () => {
+        if (sameAsBillingCheckbox.checked) {
+            Object.keys(billingFields).forEach(field => {
+                shippingFields[field].value = billingFields[field].value;
+                shippingFields[field].setAttribute('readonly', 'true');
+            });
+        } else {
+            Object.keys(shippingFields).forEach(field => {
+                shippingFields[field].removeAttribute('readonly');
+                shippingFields[field].value = ''; // Clear shipping fields when unchecked
+            });
+        }
+    });
+});
+
+</script>
