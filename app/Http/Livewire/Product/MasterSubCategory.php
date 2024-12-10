@@ -25,7 +25,7 @@ class MasterSubCategory extends Component
         $subcategories = SubCategory::with('category')
             ->where('title', 'like', '%' . $this->search . '%')
             ->paginate(10);
-        return view('livewire.master-sub-category',compact('subcategories'));
+        return view('livewire.product.master-sub-category',compact('subcategories'));
     }
 
     public function store(){
