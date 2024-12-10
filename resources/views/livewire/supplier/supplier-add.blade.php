@@ -39,18 +39,18 @@
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="mb-3 col-md-6">
+                            <div class="mb-3 col-md-1">
+                                    <input type="checkbox" id="is_wa_same" wire:change="SameAsMobile" value="0">
+                                    <label for="is_wa_same" class="form-check-label ms-2">Same as Mobile</label>
+                            </div>
+                            <div class="mb-3 col-md-5">
                                 
+                                    <div id="whatsappField">
                                 <label for="is_wa_same" class="form-label">WhatsApp number </label>
                                
                                     <div class="d-flex align-items-center">
-                                    <input type="text" wire:model.defer="whatsapp_no" id="whatsapp_no" class="form-control border border-2 p-2 me-2" placeholder="Enter WhatsApp number">
-
-                                    <input type="checkbox" id="is_wa_same" wire:model="is_wa_same">
-                                    <label for="is_wa_same" class="form-check-label ms-2">Same as Mobile</label>
-
-                                    <!-- <input type="checkbox" wire:model="is_wa_same" id="isWaSame" class="form-check-input">
-                                    <label for="isWaSame" class="form-check-label">WhatsApp number same as mobile</label> -->
+                                    <input type="text" wire:model="whatsapp_no" id="whatsapp_no" class="form-control border border-2 p-2 me-2" placeholder="Enter WhatsApp number" value="{{$whatsapp_no}}">
+                                </div>
                                 </div>
                                 @error('whatsapp_no')
                                     <div class="text-danger">{{ $message }}</div>
@@ -152,12 +152,13 @@
                         </div>
                     </div>
                     <div class="form-check">
-                        <input type="checkbox" wire:model="is_billing_shipping_same" id="isBillingShippingSame" class="form-check-input">
+                        <input type="checkbox" id="is_billing_shipping_same" class="form-check-input" wire:change="SameAsBillingAddress" value="0">
                         <label for="isBillingShippingSame" class="form-check-label">Shipping address same as billing</label>
                     </div>
-                    <!-- Shipping Address -->
+
+<!-- Shipping Address -->
                     <h5 class="mt-4">Shipping Address Information</h5>
-                    <div class="row">
+                    <div class="row" id="ShippingAddressField">
                         <div class="mb-3 col-md-6">
                             <label for="shipping_address" class="form-label">Shipping Address</label>
                             <input type="text" wire:model="shipping_address" id="shipping_address" class="form-control border border-2 p-2" placeholder="Enter shipping address">
@@ -202,9 +203,36 @@
                         </div>
                     </div>
 
+
                     <button type="submit" class="btn btn-success mt-4">Save</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+<script>
+    function toggleWhatsAppField() {
+    const isWaSameCheckbox = document.getElementById('is_wa_same');
+    const whatsappField = document.getElementById('whatsappField');
+
+    // Show or hide the WhatsApp number input field based on checkbox state
+    if (isWaSameCheckbox.checked) {
+        whatsappField.style.display = 'none'; // Hide the field
+    } else {
+        whatsappField.style.display = 'block'; // Show the field
+    }
+}
+
+
+function ShippinAddressField() {
+    const isBillingShippingSameCheckbox = document.getElementById('isBillingShippingSame');
+    const ShippinAddressField = document.getElementById('ShippinAddressField');
+
+    // Show or hide the WhatsApp number input field based on checkbox state
+    if (isBillingShippingSameCheckbox.checked) {
+        ShippinAddressField.style.display = 'none'; // Hide the field
+    } else {
+        ShippinAddressField.style.display = 'block'; // Show the field
+    }
+}
+</script>

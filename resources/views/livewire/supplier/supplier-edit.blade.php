@@ -47,25 +47,35 @@
                                 <label for="whatsapp_no" class="form-label">WhatsApp Number</label>
                                 <div class="d-flex align-items-center">
                                     <input type="text" wire:model.defer="whatsapp_no" id="whatsapp_no" class="form-control border border-2 p-2 me-2" placeholder="Enter WhatsApp number">
-                                    <input type="checkbox" id="is_wa_same" wire:model="is_wa_same">
+                                    <input type="checkbox" id="is_wa_same" wire:change="SameAsMobile">
                                     <label for="is_wa_same" class="form-check-label ms-2">Same as Mobile</label>
                                 </div>
                                 @error('whatsapp_no') <span class="text-danger">{{ $message }}</span> @enderror
                             </div>
                         </div>
 
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-12">
                             <label for="gst_number" class="form-label">GST Number</label>
                             <input type="text" wire:model.defer="gst_number" id="gst_number" class="form-control border border-2 p-2">
                             @error('gst_number') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
 
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-12">
+                        
                             <label for="gst_file" class="form-label">GST File</label>
-                            <input type="file" id="gst_file" wire:model.defer="gst_file" class="form-control border border-2 p-2">
+                            
                             @if ($existingGstFile)
-                                <p>Current File: <a href="{{ asset('storage/' . $existingGstFile) }}" target="_blank">View</a></p>
+                                <div>
+                                    <!-- Display the existing image -->
+                                    <img src="{{ asset('storage/' . str_replace('public/', '', $existingGstFile)) }}" 
+                                        alt="GST File Image" 
+                                        class="img-thumbnail" 
+                                        width="100">
+                                    <p>Current Image</p>
+                                </div>
                             @endif
+                            <input type="file" id="gst_file" wire:model.defer="gst_file" class="form-control border border-2 p-2">
+                           
                             @error('gst_file') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
 
@@ -121,7 +131,7 @@
                         </div>
                     </div>
                     <div class="form-check my-3">
-                        <input type="checkbox" class="form-check-input" id="sameAsBilling" wire:model="is_same_as_billing">
+                        <input type="checkbox" class="form-check-input" id="is_same_as_billing" wire:change="SameAsBilling">
                         
                         <label class="form-check-label" for="sameAsBilling">Same as Billing Address</label>
                     </div>
@@ -166,65 +176,3 @@
         </div>
     </div>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const mobileInput = document.getElementById('mobile');
-        const whatsappInput = document.getElementById('whatsapp_no');
-        const checkbox = document.getElementById('is_wa_same');
-
-        // Event listener for checkbox toggle
-        checkbox.addEventListener('change', () => {
-            if (checkbox.checked) {
-                whatsappInput.value = mobileInput.value; // Set WhatsApp number to mobile number
-                whatsappInput.disabled = true; // Disable the WhatsApp input field
-            } else {
-                whatsappInput.disabled = false; // Enable the WhatsApp input field
-                whatsappInput.value = ''; // Clear WhatsApp number
-            }
-        });
-
-        // Event listener for mobile input changes
-        mobileInput.addEventListener('input', () => {
-            if (checkbox.checked) {
-                whatsappInput.value = mobileInput.value; // Sync WhatsApp number with mobile number
-            }
-        });
-    });
-</script>
-
-<script>
-   document.addEventListener('DOMContentLoaded', () => {
-    const billingFields = {
-        address: document.getElementById('billing_address'),
-        city: document.getElementById('billing_city'),
-        landmark: document.getElementById('billing_landmark'),
-        state: document.getElementById('billing_state'),
-        pin: document.getElementById('billing_pin'),
-        country: document.getElementById('billing_country')
-    };
-    const shippingFields = {
-        address: document.getElementById('shipping_address'),
-        city: document.getElementById('shipping_city'),
-        landmark: document.getElementById('shipping_landmark'),
-        state: document.getElementById('shipping_state'),
-        pin: document.getElementById('shipping_pin'),
-        country: document.getElementById('shipping_country')
-    };
-    const sameAsBillingCheckbox = document.getElementById('sameAsBilling');
-
-    sameAsBillingCheckbox.addEventListener('change', () => {
-        if (sameAsBillingCheckbox.checked) {
-            Object.keys(billingFields).forEach(field => {
-                shippingFields[field].value = billingFields[field].value;
-                shippingFields[field].setAttribute('readonly', 'true');
-            });
-        } else {
-            Object.keys(shippingFields).forEach(field => {
-                shippingFields[field].removeAttribute('readonly');
-                shippingFields[field].value = ''; // Clear shipping fields when unchecked
-            });
-        }
-    });
-});
-
-</script>

@@ -10,10 +10,30 @@ class SupplierAdd extends Component
 {
     use WithFileUploads;
 
-    public $name, $email, $mobile, $is_wa_same, $whatsapp_no;
-    public $billing_address, $billing_landmark, $billing_state, $billing_city, $billing_pin, $billing_country;
-    public $shipping_address, $shipping_landmark, $shipping_state, $shipping_city, $shipping_pin, $shipping_country;
-    public $is_billing_shipping_same, $gst_number, $gst_file, $credit_limit, $credit_days, $status;
+    public $name;
+    public $email;
+    public $mobile;
+    public $whatsapp_no;
+    public $is_wa_same = 0;
+    public $billing_address;
+    public $billing_landmark;
+    public $billing_state;
+    public $billing_city;
+    public $billing_pin;
+    public $billing_country;
+    public $shipping_address;
+    public $shipping_landmark;
+    public $shipping_state;
+    public $shipping_city;
+    public $shipping_pin;
+    public $shipping_country;
+    public $is_billing_shipping_same = false; // Checkbox for Shipping same as Billing
+    public $gst_number;
+    public $gst_file;
+    public $credit_limit;
+    public $credit_days;
+    public $status;
+
 
     protected $rules = [
         'name' => 'required|string|max:255',
@@ -40,14 +60,62 @@ class SupplierAdd extends Component
         'credit_days' => 'nullable|numeric',
         // 'status' => 'required|boolean',
     ];
-
+    public function updated($propertyName)
+    {
+        
+        // logger('Updated property: ' . $propertyName);
+        // logger('Current State:', $this->toArray());
+        // dd($this->$propertyName, $this->is_wa_same, $this->is_billing_shipping_same);
+        if ($propertyName === 'is_wa_same') {
+            if ($this->is_wa_same) {
+                $this->whatsapp_no = $this->mobile; // Copy mobile to WhatsApp number
+            } else {
+                $this->whatsapp_no = null; // Clear WhatsApp number if unchecked
+            }
+        }
+    
+        if ($propertyName === 'is_billing_shipping_same') {
+            if ($this->is_billing_shipping_same) {
+                $this->syncBillingToShipping(); // Copy billing to shipping
+            } else {
+                $this->clearShipping(); // Clear shipping if unchecked
+            }
+        }
+    }
+    
+    private function syncBillingToShipping()
+    {
+        $this->shipping_address = $this->billing_address;
+        $this->shipping_landmark = $this->billing_landmark;
+        $this->shipping_state = $this->billing_state;
+        $this->shipping_city = $this->billing_city;
+        $this->shipping_pin = $this->billing_pin;
+        $this->shipping_country = $this->billing_country;
+    }
+    
+    private function clearShipping()
+    {
+        $this->shipping_address = null;
+        $this->shipping_landmark = null;
+        $this->shipping_state = null;
+        $this->shipping_city = null;
+        $this->shipping_pin = null;
+        $this->shipping_country = null;
+    }
+    
     public function save()
     {
         $this->validate();
 
-        $gstFilePath = null;
+       
+
         if ($this->gst_file) {
-            $gstFilePath = $this->gst_file->store('gst_files');
+            $timestamp = now()->timestamp;
+            $imageName = $timestamp . '-' . $this->gst_file->getClientOriginalName();
+        
+            $imagePath = $this->gst_file->storeAs('gst_file', $imageName, 'public');
+        
+            $data['gst_file'] = $imagePath;
         }
 
         Supplier::create([
@@ -70,7 +138,7 @@ class SupplierAdd extends Component
             'shipping_country' => $this->is_billing_shipping_same ? $this->billing_country : $this->shipping_country,
             // 'is_billing_shipping_same' => $this->is_billing_shipping_same,
             'gst_number' => $this->gst_number,
-            'gst_file' => $gstFilePath,
+            'gst_file' => $data['gst_file'],
             'credit_limit' => $this->credit_limit,
             'credit_days' => $this->credit_days,
             // 'status' => $this->status,
@@ -78,6 +146,30 @@ class SupplierAdd extends Component
 
         session()->flash('message', 'Supplier added successfully!');
         return redirect()->route('suppliers.index');
+    }
+
+    public function SameAsMobile()
+    {   
+        if ($this->is_wa_same == 0) {
+            $this->whatsapp_no = $this->mobile;
+            $this->is_wa_same = 1;
+        } else {
+            // When the checkbox is unchecked, clear WhatsApp number
+            $this->whatsapp_no = '';
+            $this->is_wa_same = 0;
+        }
+    }
+
+    public function SameAsBillingAddress()
+    {   
+        if ($this->is_billing_shipping_same == 0) {
+            $this->syncBillingToShipping();
+            $this->is_billing_shipping_same = 1;
+        } else {
+            // When the checkbox is unchecked, clear shipping address
+            $this->clearShipping();
+            $this->is_billing_shipping_same = 0;
+        }
     }
 
     public function render()

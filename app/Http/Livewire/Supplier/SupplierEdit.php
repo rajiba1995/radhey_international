@@ -76,9 +76,13 @@ class SupplierEdit extends Component
         'status' => 'required|boolean',
         ]);
 
-        $gstFilePath = $this->supplier->gst_file;
         if ($this->gst_file) {
-            $gstFilePath = $this->gst_file->store('gst_files');
+            $timestamp = now()->timestamp;
+            $imageName = $timestamp . '-' . $this->gst_file->getClientOriginalName();
+        
+            $imagePath = $this->gst_file->storeAs('gst_file', $imageName, 'public');
+        
+            $data['gst_file'] = $imagePath;
         }
 
         $this->supplier->update([
@@ -101,7 +105,7 @@ class SupplierEdit extends Component
             'shipping_country' => $this->is_billing_shipping_same ? $this->billing_country : $this->shipping_country,
             'is_billing_shipping_same' => $this->is_billing_shipping_same,
             'gst_number' => $this->gst_number,
-            'gst_file' => $gstFilePath,
+            'gst_file' => $data['gst_file'],
             'credit_limit' => $this->credit_limit,
             'credit_days' => $this->credit_days,
             'status' => $this->status,
@@ -111,6 +115,48 @@ class SupplierEdit extends Component
         return redirect()->route('suppliers.index');
     }
 
+    private function syncBillingToShipping()
+    {
+        $this->shipping_address = $this->billing_address;
+        $this->shipping_landmark = $this->billing_landmark;
+        $this->shipping_state = $this->billing_state;
+        $this->shipping_city = $this->billing_city;
+        $this->shipping_pin = $this->billing_pin;
+        $this->shipping_country = $this->billing_country;
+    }
+    
+    private function clearShipping()
+    {
+        $this->shipping_address = null;
+        $this->shipping_landmark = null;
+        $this->shipping_state = null;
+        $this->shipping_city = null;
+        $this->shipping_pin = null;
+        $this->shipping_country = null;
+    }
+    public function SameAsMobile()
+    {   
+        if ($this->is_wa_same == 0) {
+            $this->whatsapp_no = $this->mobile;
+            $this->is_wa_same = 1;
+        } else {
+            // When the checkbox is unchecked, clear WhatsApp number
+            $this->whatsapp_no = '';
+            $this->is_wa_same = 0;
+        }
+    }
+
+    public function SameAsBilling()
+    {   
+        if ($this->is_billing_shipping_same == 0) {
+            $this->syncBillingToShipping();
+            $this->is_billing_shipping_same = 1;
+        } else {
+            // When the checkbox is unchecked, clear shipping address
+            $this->clearShipping();
+            $this->is_billing_shipping_same = 0;
+        }
+    }
     public function render()
     {
         return view('livewire.supplier.supplier-edit');
