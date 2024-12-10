@@ -23,7 +23,7 @@ class MasterCategory extends Component
             ->where('title', 'like', '%' . $this->search . '%')
             ->paginate(10);
 
-        return view('livewire.master-category', compact('categories'));
+        return view('livewire.product.master-category', compact('categories'));
     }
 
     public function store()
