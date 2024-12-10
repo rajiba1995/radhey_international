@@ -105,6 +105,12 @@ class DesignationIndex extends Component
         });
     }
 
+    public function toggleStatus($id){
+        $designation  = Designation::findOrFail($id);
+        $designation->update(['status' => !$designation->status]);
+        session()->flash('message','Product Status Updated Successfully');
+    }
+
     public function resetForm()
     {
         $this->reset(['designationId', 'name', 'roles']);
