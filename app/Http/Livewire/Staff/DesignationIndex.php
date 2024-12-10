@@ -24,7 +24,7 @@ class DesignationIndex extends Component
         ->with(['roles' => function ($query) {
             $query->select('roles.id', 'roles.name'); // Load roles for each designation
         }])
-        ->orderBy('id')
+        ->latest()
         ->paginate(10); 
 
     // Check the designations data with the roles
@@ -85,7 +85,7 @@ class DesignationIndex extends Component
         
         // Set the component's properties for editing
         $this->designationId = $designation->id;
-        $this->name = $designation->name;
+        $this->name = ucwords($designation->name);
         
         // Fetch the roles assigned to the designation
         $this->roles = $designation->roles->pluck('id')->toArray();
@@ -95,7 +95,7 @@ class DesignationIndex extends Component
         ->with(['roles' => function ($query) {
             $query->select('roles.id', 'roles.name');
         }])
-        ->orderBy('id')
+        ->latest()
         ->paginate(10);
 
         // Manually add a comma-separated list of role names
@@ -107,7 +107,8 @@ class DesignationIndex extends Component
 
     public function toggleStatus($id){
         $designation  = Designation::findOrFail($id);
-        $designation->update(['status' => !$designation->status]);
+        $designation->status = !$designation->status;
+        $designation->save();
         session()->flash('message','Designation Status Updated Successfully');
     }
 

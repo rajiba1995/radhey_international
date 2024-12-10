@@ -50,7 +50,7 @@
                                     @foreach($designations as $k => $designation)
                                     {{-- @dd($designation) --}}
                                         <tr>
-                                            <td class="align-middle text-center">{{$designation->name}}</td>
+                                            <td class="align-middle text-center">{{ucwords($designation->name)}}</td>
                                             <td class="align-middle text-center">{{ $designation->role_names }}</td>
                                             <td class="align-middle text-center">{{ $designation->count_users ?? 'No Roles Assigned' }}</td>
                                             <td class="align-middle text-sm" style="text-align: center;">
@@ -90,7 +90,7 @@
                                 <h4 class="page__subtitle">{{ $designationId ? 'Update Designation' : 'Add New Designation' }}</h4>
                                 <label class="form-label">Name<span class="text-danger">*</span></label>
                                 <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
-                                    <input type="text" wire:model="name" class="form-control border border-2 p-2" placeholder="Enter Name">
+                                    <input type="text" wire:model="name" class="form-control border border-2 p-2" placeholder="Enter Name" value="{{ucwords($name)}}">
                                 </div>
                                 @error('name')
                                     <p class='text-danger inputerror'>{{ $message }} </p>
