@@ -7,9 +7,12 @@ use App\Models\Designation;
 use App\Models\Role;
 use App\Models\User_Role;
 use Illuminate\Support\Facades\Session;
+use Livewire\WithPagination;
 
 class DesignationIndex extends Component
 {   
+    use WithPagination;
+    
     public $designations = [];
     public $designationId;
     public $name;
@@ -109,6 +112,19 @@ class DesignationIndex extends Component
         $designation  = Designation::findOrFail($id);
         $designation->status = !$designation->status;
         $designation->save();
+         // Reload designations after editing
+        $this->designations = Designation::withCount('users')
+        ->with(['roles' => function ($query) {
+            $query->select('roles.id', 'roles.name');
+        }])
+        ->latest()
+        ->paginate(10);
+
+        // Manually add a comma-separated list of role names
+        $this->designations = $this->designations->map(function ($designation) {
+            $designation->role_names = $designation->roles->pluck('name')->implode(', ');
+            return $designation;
+        });
         session()->flash('message','Designation Status Updated Successfully');
     }
 

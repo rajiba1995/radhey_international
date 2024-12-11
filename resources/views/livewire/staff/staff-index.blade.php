@@ -1,7 +1,7 @@
 <div class="">
     <!-- Navbar -->
     <!-- End Navbar -->
-    <div class="container-fluid py-4">
+    <div class="container-fluid py-2">
       <div class="row align-items-center my-sm-3">
         <div class="col-lg-6 col-md-6 text-start">
             <h4 class="text-uppercase font-weight-bold mb-0">Staff</h4>
@@ -61,18 +61,18 @@
                                         @forelse ($staff as $key=> $member)
                                         <tr>
                                             <td>
-                                                <span class="text-secondary text-xs font-weight-bold">
-                                                   {{$member->name}}
-                                                </span>
+                                              
+                                                   {{ucwords($member->name)}}
+                                                
                                             </td>
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">
-                                                    {{ $member->designationDetails->name ?? 'N/A'  }}
-                                                </p>
+                                               
+                                                    {{ ucwords($member->designationDetails->name ?? 'N/A')  }}
+                                                
                                             </td>
                                             <td>
-                                                <strong>Mobile:</strong> {{ $member->phone ?? 'N/A' }}<br>
-                                                <strong>WhatsApp:</strong> {{ $member->whatsapp_no ?? 'N/A' }}
+                                                <span>Mobile:</span><strong>{{ $member->phone ?? 'N/A' }}</strong> <br>
+                                                <span>WhatsApp:</span><strong>{{ $member->whatsapp_no ?? 'N/A' }}</strong> 
                                             </td>
                                             <td>
                                                 <div class="form-check form-switch">
@@ -83,8 +83,14 @@
                                                 </div>
                                             </td>
                                             <td class="align-middle">
-                                                 <a href="{{route('staff.update',$member->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Edit product">
+                                                 <a href="{{route('staff.update',$member->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Edit Staff">
                                                     Edit
+                                                </a>
+                                                 <a href="{{route('staff.view',$member->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="View Staff">
+                                                    View
+                                                </a>
+                                                 <a href="{{route('staff.task',$member->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Staff Task">
+                                                    Task
                                                 </a>
                                                {{-- <button wire:click="deleteProduct({{ $member->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm">Delete</button> --}}
                                             </td>
@@ -92,13 +98,18 @@
                                         @empty
                                         <tr>
                                             <td colspan="6" class="text-center">
-                                                <p class="text-xs text-secondary mb-0">No products found.</p>
+                                                <p class="text-xs text-secondary mb-0">No Staff found.</p>
                                             </td>
                                         </tr>
                                         @endforelse
                                     </tbody>
                                 </table>
                             </div>
+                            {{-- <div class="mt-3">
+                                <nav aria-label="Page navigation">
+                                    {{ $staff->links('pagination::bootstrap-5') }}
+                                </nav>
+                            </div> --}}
                         </div>
                     </div>
             </div>

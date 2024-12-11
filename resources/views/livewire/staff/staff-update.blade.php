@@ -40,7 +40,7 @@
                     </div>
                 
                     <div class="mb-3 col-md-4">
-                        <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                        <label for="email" class="form-label">Email</label>
                         <input type="email" wire:model="email" id="email" class="form-control border border-2 p-2" placeholder="Enter Email">
                         @error('email')
                             <div class="text-danger">{{ $message }}</div>
@@ -69,8 +69,8 @@
                     <div class="mb-3 col-md-4">
                         <label for="whatsapp_no" class="form-label">WhatsApp <span class="text-danger">*</span></label>
                         <div class="d-flex align-items-center">
-                            <input type="text" wire:model="whatsapp_no" id="whatsapp_no" class="form-control border border-2 p-2 me-2" placeholder="Staff WhatsApp No">
-                            <input type="checkbox" id="is_wa_same" wire:change="SameAsMobile" value="0">
+                            <input type="text" wire:model="whatsapp_no" id="whatsapp_no" class="form-control border border-2 p-2 me-2" placeholder="Staff WhatsApp No" @if($is_wa_same) disabled @endif>
+                            <input type="checkbox" id="is_wa_same" wire:change="SameAsMobile" value="0" @if($is_wa_same) checked @endif>
                             <label for="is_wa_same" class="form-check-label ms-2">Same as Phone Number</label>
                         </div>
                         @error('whatsapp_no')
@@ -97,6 +97,7 @@
                         @if($staff && $staff->user_id_front)
                             <img src="{{ asset('storage/' . $staff->user_id_front) }}" alt="Stored User ID Front" class="mt-2" width="100">
                         @endif
+
                         @error('user_id_front')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
@@ -107,6 +108,7 @@
                         @if($staff && $staff->user_id_back)
                             <img src="{{ asset('storage/' . $staff->user_id_back) }}" alt="Stored User ID Back" class="mt-2" width="100">
                         @endif
+
                         @error('user_id_back')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror

@@ -20,7 +20,7 @@ use App\Http\Livewire\Tables;
 use App\Http\Livewire\{VirtualReality,CustomerIndex};
 use GuzzleHttp\Middleware;
 use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory};
-use App\Http\Livewire\Staff\{DesignationIndex,StaffIndex,StaffAdd,StaffUpdate};
+use App\Http\Livewire\Staff\{DesignationIndex,StaffIndex,StaffAdd,StaffUpdate,StaffView,StaffTask,StaffTaskAdd};
 use App\Http\Livewire\UserAddressForm; 
 use App\Http\Livewire\CustomerEdit; 
 use App\Http\Livewire\CustomerDetails; 
@@ -91,9 +91,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('/subcategories', MasterSubCategory::class)->name('admin.subcategories');
 
     Route::get('/designation',DesignationIndex::class)->name('staff.designation');
+    // Staff
     Route::get('/staff',StaffIndex::class)->name('staff.index');
     Route::get('/staff/add',StaffAdd::class)->name('staff.add');
     Route::get('/staff/update/{staff_id}',StaffUpdate::class)->name('staff.update');
+    Route::get('/staff/view/{staff_id}',StaffView::class)->name('staff.view');
+    Route::get('/staff/task/{staff_id}',StaffTask::class)->name('staff.task');
+    Route::get('/staff/task/add/{staff_id}',StaffTaskAdd::class)->name('staff.task.add');
 
     Route::get('/user-address-form', UserAddressForm::class)->name('admin.user-address-form');
     Route::get('/customers/{id}/edit', CustomerEdit::class)->name('admin.customers.edit');

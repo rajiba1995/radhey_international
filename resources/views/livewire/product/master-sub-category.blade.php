@@ -86,15 +86,17 @@
                     <div class="card-body px-0 pb-2 mx-4">
                         @if ($categories->isEmpty())
                             <div class="d-flex justify-content-between mb-3">
-                                <h5>Subcategory Management</h5>
-                                <a href="{{ route('admin.categories') }}" class="btn btn-sm btn-secondary">
-                                    Categories
-                                </a>
+                                <h5>Create Subcategory</h5>  
                             </div>
                         @endif   
                          <form wire:submit.prevent="{{ $subCategoryId ? 'update' : 'store' }}">
                             <div class="form-group">
-                                <label>Category</label>
+                                <label>
+                                    Category
+                                    <a href="{{ route('admin.categories') }}" class="badge bg-secondary text-decoration-none">
+                                        Categories
+                                    </a>
+                                </label>
                                 <select wire:model="category_id" class="form-control border border-2 p-2">
                                     <option value="" selected hidden>Select Category</option>
                                     @foreach($categories as $category)

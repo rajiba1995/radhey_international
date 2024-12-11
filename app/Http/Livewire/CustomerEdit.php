@@ -63,7 +63,7 @@ class CustomerEdit extends Component
         ]);
 
         $customer = User::findOrFail($this->customerId);
-
+        
         $data = [
             'name' => $this->name,
             'company_name' => $this->company_name,

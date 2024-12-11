@@ -57,7 +57,7 @@ class StaffUpdate extends Component
         $this->validate([
             'designation' => 'required',
             'person_name' => 'required|string|max:255',
-            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($this->staff->id)],
+            'email' => 'nullable|email',
             'mobile' => 'required|string|max:10',
             'aadhaar_number' => 'required|numeric',
             'whatsapp_no' => 'required|string|max:10',
@@ -79,19 +79,11 @@ class StaffUpdate extends Component
             'pincode' => 'nullable|string|max:10',
             'country' => 'nullable|string|max:255',
        ]);
-       $imagePath = $this->image instanceof \Illuminate\Http\UploadedFile
-                    ? $this->image->store('images', 'public')
-                    : $this->staff->image;
-
-        // Check and store the user_id_front file
-        $userIdFrontPath = $this->user_id_front instanceof \Illuminate\Http\UploadedFile
-                            ? $this->user_id_front->store('user_ids', 'public')
-                            : $this->staff->user_id_front;
-
-        // Check and store the user_id_back file
-        $userIdBackPath = $this->user_id_back instanceof \Illuminate\Http\UploadedFile
-                            ? $this->user_id_back->store('user_ids', 'public')
-                            : $this->staff->user_id_back;
+       // Store the files
+       $imagePath = $this->image && $this->image instanceof \Illuminate\Http\UploadedFile ? $this->image->store('images', 'public') : $this->staff->image;
+       $userIdFrontPath = $this->user_id_front && $this->user_id_front instanceof \Illuminate\Http\UploadedFile ? $this->user_id_front->store('user_ids', 'public') : $this->staff->user_id_front;
+       $userIdBackPath = $this->user_id_back && $this->user_id_back instanceof \Illuminate\Http\UploadedFile ? $this->user_id_back->store('user_ids', 'public') : $this->staff->user_id_back;
+       
          // Update the staff record
          $this->staff->update([
             'name' => $this->person_name,

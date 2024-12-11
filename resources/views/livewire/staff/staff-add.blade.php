@@ -40,7 +40,7 @@
                     </div>
                 
                     <div class="mb-3 col-md-4">
-                        <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                        <label for="email" class="form-label">Email</label>
                         <input type="email" wire:model="email" id="email" class="form-control border border-2 p-2" placeholder="Enter Email">
                         @error('email')
                             <div class="text-danger">{{ $message }}</div>
@@ -52,7 +52,7 @@
                 <div class="row">
                     <div class="mb-3 col-md-4">
                         <label for="mobile" class="form-label">Mobile <span class="text-danger">*</span></label>
-                        <input type="text" wire:model="mobile" id="mobile" class="form-control border border-2 p-2" placeholder="Staff mobile">
+                        <input type="number" wire:model="mobile" id="mobile" class="form-control border border-2 p-2" placeholder="Staff mobile">
                         @error('mobile')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
@@ -60,7 +60,7 @@
 
                     <div class="mb-3 col-md-4">
                         <label for="aadhaar_number" class="form-label">Aadhaar Number <span class="text-danger">*</span></label>
-                        <input type="text" wire:model="aadhaar_number" id="aadhaar_number" class="form-control border border-2 p-2" placeholder="Staff Aadhaar Number">
+                        <input type="number" wire:model="aadhaar_number" id="aadhaar_number" class="form-control border border-2 p-2" placeholder="Staff Aadhaar Number">
                         @error('aadhaar_number')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
@@ -69,8 +69,9 @@
                     <div class="mb-3 col-md-4">
                         <label for="whatsapp_no" class="form-label">WhatsApp <span class="text-danger">*</span></label>
                         <div class="d-flex align-items-center">
-                            <input type="text" wire:model="whatsapp_no" id="whatsapp_no" class="form-control border border-2 p-2 me-2" placeholder="Staff WhatsApp No">
-                            <input type="checkbox" id="is_wa_same" wire:change="SameAsMobile" value="0">
+                            <input type="number" wire:model="whatsapp_no" id="whatsapp_no" class="form-control border border-2 p-2 me-2" placeholder="Staff WhatsApp No"  @if($is_wa_same) disabled @endif>
+                           
+                            <input type="checkbox" id="is_wa_same" wire:change="SameAsMobile" value="0" @if($is_wa_same) checked @endif>
                             <label for="is_wa_same" class="form-check-label ms-2">Same as Phone Number</label>
                         </div>
                         @error('whatsapp_no')
@@ -87,6 +88,11 @@
                         @error('image')
                            <div class="text-danger">{{ $message }}</div>
                         @enderror
+                        @if ($image)
+                            <div class="mt-2">
+                                <img src="{{ $image->temporaryUrl() }}" class="img-thumbnail" style="max-width: 100px; display: block;" />
+                            </div>
+                        @endif
                     </div>
                     <div class="col-md-4">
                         <label for="user_id_front" class="form-label">User ID Front</label>
@@ -94,6 +100,11 @@
                         @error('user_id_front')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
+                        @if ($user_id_front)
+                            <div class="mt-2">
+                                <img src="{{ $user_id_front->temporaryUrl() }}" class="img-thumbnail" style="max-width: 100px; display: block;" />
+                            </div>
+                        @endif
                     </div>
                     <div class="col-md-4">
                         <label for="user_id_back" class="form-label">User ID Back</label>
@@ -101,6 +112,11 @@
                         @error('user_id_back')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
+                        @if ($user_id_back)
+                            <div class="mt-2">
+                                <img src="{{ $user_id_back->temporaryUrl() }}" class="img-thumbnail" style="max-width: 100px; display: block;" />
+                            </div>
+                        @endif
                     </div>
                 </div>
 
@@ -133,14 +149,14 @@
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 mt-3">
                                 <label class="form-label">Account No</label>
-                                <input type="text" wire:model="account_no" class="form-control border border-2 p-2" placeholder="Account No">
+                                <input type="number" wire:model="account_no" class="form-control border border-2 p-2" placeholder="Account No">
                                 @error('account_no')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 mt-3">
                                 <label class="form-label">IFSC</label>
                                 <input type="text" wire:model="ifsc" class="form-control border border-2 p-2" placeholder="IFSC">
                                 @error('ifsc')
@@ -153,21 +169,21 @@
                         <div class="row mt-4">
                             <div class="col-md-4">
                                 <label class="form-label">Salary (In 30 days) <span class="text-danger">*</span></label>
-                                <input type="text" wire:model="monthly_salary" class="form-control border border-2 p-2" placeholder="Salary (30 Days)">
+                                <input type="number" wire:model="monthly_salary" class="form-control border border-2 p-2" placeholder="Salary (30 Days)">
                                 @error('monthly_salary')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Salary (Per Day)</label>
-                                <input type="text" wire:model="daily_salary" class="form-control border border-2 p-2" placeholder="Salary (Per Day)">
+                                <input type="number" wire:model="daily_salary" class="form-control border border-2 p-2" placeholder="Salary (Per Day)">
                                 @error('daily_salary')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Travelling Allowance (Per KM)</label>
-                                <input type="text" wire:model="travel_allowance" class="form-control border border-2 p-2" placeholder="Travel Allowance">
+                                <input type="number" wire:model="travel_allowance" class="form-control border border-2 p-2" placeholder="Travel Allowance">
                                 @error('travel_allowance')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -178,7 +194,7 @@
                         <div class="row mt-4">
                             <div class="col-md-4">
                                 <label class="form-label">Address</label>
-                                <input type="text" wire:model="address" class="form-control border border-2 p-2" placeholder="Address">
+                                <textarea  wire:model="address" class="form-control border border-2 p-2" placeholder="Address"></textarea>
                                 @error('address')
                                     <div class="text-danger">{{$message}}</div>
                                 @enderror
@@ -206,7 +222,7 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Pincode</label>
-                                <input type="text" wire:model="pincode" class="form-control border border-2 p-2" placeholder="Pincode">
+                                <input type="number" wire:model="pincode" class="form-control border border-2 p-2" placeholder="Pincode">
                                 @error('pincode')
                                     <div class="text-danger">{{$message}}</div>
                                 @enderror

@@ -28,8 +28,8 @@ class StaffAdd extends Component
        $this->validate([
             'designation' => 'required',
             'person_name' => 'required|string|max:255',
-           'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($this->user_id)],
-            'mobile' => 'required|string|max:10',
+            'email' => 'nullable|email',
+            'mobile' => 'required|max:10',
             'aadhaar_number' => 'required|numeric',
             'whatsapp_no' => 'required|string|max:10',
             'image' => 'nullable|image|max:2048',
@@ -51,6 +51,11 @@ class StaffAdd extends Component
             'country' => 'nullable|string|max:255',
        ]);
 
+        // Store the files
+        $imagePath = $this->image ? $this->image->store('images', 'public') : null;
+        $userIdFrontPath = $this->user_id_front ? $this->user_id_front->store('user_ids', 'public') : null;
+        $userIdBackPath = $this->user_id_back ? $this->user_id_back->store('user_ids', 'public') : null;
+
        // 1. Save the data into the users table
        $user = User::create([
         'designation' => $this->designation,
@@ -59,10 +64,12 @@ class StaffAdd extends Component
         'phone' => $this->mobile,
         'aadhar_name' => $this->aadhaar_number,
         'whatsapp_no' => $this->whatsapp_no,
-        'image' => $this->image ? $this->image->store('images', 'public') : null,
-        'user_id_front' => $this->user_id_front ? $this->user_id_front->store('user_ids', 'public') : null,
-        'user_id_back' => $this->user_id_back ? $this->user_id_back->store('user_ids', 'public') : null,
+        'image' =>  $imagePath,
+        'user_id_front' =>  $userIdFrontPath,
+        'user_id_back' => $userIdBackPath
     ]);
+
+   
 
     // 2. Save the data into the user_banks table
     UserBank::create([

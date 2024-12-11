@@ -52,7 +52,7 @@
                                         <tr>
                                             <td class="align-middle text-center">{{ucwords($designation->name)}}</td>
                                             <td class="align-middle text-center">{{ $designation->role_names }}</td>
-                                            <td class="align-middle text-center">{{ $designation->count_users ?? 'No Roles Assigned' }}</td>
+                                            <td class="align-middle text-center"> {{ $designation->users_count > 0 ? $designation->users_count : 'No Roles Assigned' }}</td>
                                             <td class="align-middle text-sm" style="text-align: center;">
                                                 <div class="form-check form-switch">
                                                     <input 

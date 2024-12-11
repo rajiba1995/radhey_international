@@ -127,8 +127,8 @@
                 </li>
             </ul>
             <li class="nav-item">
-                <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['staff.designation','staff.index']) ? 'active bg-gradient-primary' : '' }}"
-                    href="#StaffManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['staff.designation','staff.index']) ? 'true' : 'false' }}">
+                <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add']) ? 'active bg-gradient-primary' : '' }}"
+                    href="#StaffManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add']) ? 'true' : 'false' }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">dashboard</i>
                     </div>
@@ -137,7 +137,7 @@
             </li>
         
             <!-- Submenu -->
-            <ul id="StaffManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['staff.designation','staff.index']) ? 'show' : '' }}">
+            <ul id="StaffManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add','staff.update','staff.view','staff.task','staff.task.add']) ? 'show' : '' }}">
                 <li class="nav-item">
                     <a class="nav-link text-white {{ Route::currentRouteName() == 'staff.designation' ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('staff.designation')}}">
@@ -145,7 +145,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white {{ Route::currentRouteName() == 'staff.index' ? 'active bg-gradient-primary' : '' }}"
+                    <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['staff.index','staff.add','staff.update','staff.view','staff.task','staff.task.add']) ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('staff.index')}}">
                         Staff
                     </a>
