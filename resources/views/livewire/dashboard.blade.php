@@ -11,7 +11,7 @@
                               <i class="material-icons opacity-10">weekend</i>
                           </div>
                           <div class="text-end pt-1">
-                              <p class="text-sm mb-0 text-capitalize">Today's Money</p>
+                              <p class="text-sm mb-0 text-capitalize">Today's Sales</p>
                               <h4 class="mb-0">$53k</h4>
                           </div>
                       </div>
@@ -30,7 +30,7 @@
                               <i class="material-icons opacity-10">person</i>
                           </div>
                           <div class="text-end pt-1">
-                              <p class="text-sm mb-0 text-capitalize">Today's Users</p>
+                              <p class="text-sm mb-0 text-capitalize">Total Client</p>
                               <h4 class="mb-0">2,300</h4>
                           </div>
                       </div>
@@ -49,15 +49,16 @@
                               <i class="material-icons opacity-10">person</i>
                           </div>
                           <div class="text-end pt-1">
-                              <p class="text-sm mb-0 text-capitalize">New Clients</p>
+                              <p class="text-sm mb-0 text-capitalize">Today's New Users</p>
                               <h4 class="mb-0">3,462</h4>
                           </div>
                       </div>
                       <hr class="dark horizontal my-0">
-                      <div class="card-footer p-3">
+                        <div class="card-footer p-3 d-flex justify-content-between align-items-center">
                           <p class="mb-0"><span class="text-danger text-sm font-weight-bolder">-2%</span> than
                               yesterday</p>
-                      </div>
+                              <button class="btn btn-primary mt-2">Add Customer</button>
+                        </div>
                   </div>
               </div>
               <div class="col-xl-3 col-sm-6">
@@ -68,7 +69,7 @@
                               <i class="material-icons opacity-10">weekend</i>
                           </div>
                           <div class="text-end pt-1">
-                              <p class="text-sm mb-0 text-capitalize">Sales</p>
+                              <p class="text-sm mb-0 text-capitalize">Monthly Sales</p>
                               <h4 class="mb-0">$103,430</h4>
                           </div>
                       </div>

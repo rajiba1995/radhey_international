@@ -11,138 +11,158 @@ class UserAddressForm extends Component
 {
     use WithFileUploads;
 
-    public $name, $company_name, $email, $phone, $whatsapp_no, $gst_number, $credit_limit, $credit_days,$gst_certificate_image;
+    public $id,$name, $company_name, $email, $phone, $whatsapp_no,$is_wa_same, $gst_number, $credit_limit, $credit_days,$gst_certificate_image,$image,$verified_video;
     public $address_type, $address, $landmark, $city, $state, $country, $zip_code;
+    public $billing_address;
+    public $billing_landmark;
+    public $billing_city;
+    public $billing_state;
+    public $billing_country;
+    public $billing_pin;
+
+    public $is_billing_shipping_same;
+
+    public $shipping_address;
+    public $shipping_landmark;
+    public $shipping_city;
+    public $shipping_state;
+    public $shipping_country;
+    public $shipping_pin;
+
+    public $tempImageUrl;
+
+    // Function to watch for changes in is_billing_shipping_same
+    public function toggleShippingAddress()
+    {
+        // When the checkbox is checked
+        if ($this->is_billing_shipping_same) {
+            // Copy billing address to shipping address
+            $this->shipping_address = $this->billing_address;
+            $this->shipping_landmark = $this->billing_landmark;
+            $this->shipping_city = $this->billing_city;
+            $this->shipping_state = $this->billing_state;
+            $this->shipping_country = $this->billing_country;
+            $this->shipping_pin = $this->billing_pin;
+        } else {
+            // Reset shipping address fields
+            $this->shipping_address = '';
+            $this->shipping_landmark = '';
+            $this->shipping_city = '';
+            $this->shipping_state = '';
+            $this->shipping_country = '';
+            $this->shipping_pin = '';
+        }
+    }
     // public $address_id;
-    protected $rules = [
+    public function rules()
+    {
+        // Base rules
+        $rules = [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'image' => 'required|mimes:jpeg,png,jpg,gif',
+            'verified_video' => 'nullable|mimes:mp4,mov,avi,wmv',
+            'company_name'=>'nullable|string|max:255',
+            'email' => 'nullable|email|unique:users,email',
             'phone' => 'required|string|max:10',
             'whatsapp_no' => 'required|string|max:10',
-            'gst_number' => 'required|string|max:15',
-            'credit_limit' => 'required|numeric',
-            'credit_days' => 'required|integer',
-            'address_type' => 'required|string|max:50',
-            'address' => 'required|string',
-            'city' => 'required|string|max:100',
-            'state' => 'required|string|max:100',
-            'country' => 'required|string|max:100',
-            'zip_code' => 'required|string|max:15',
-            'gst_certificate_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
-            'company_name' => 'required|string|max:255',
-            'landmark' => 'required|string|max:255',
-    ];
+            'gst_number' => 'nullable|string|max:15',
+            'credit_limit' => 'nullable|numeric',
+            'credit_days' => 'nullable|integer',
+            // Billing address validation
+            'billing_address' => 'required|string',
+            'billing_landmark' => 'nullable|string',
+            'billing_city' => 'required|string',
+            'billing_state' => 'required|string',
+            'billing_country' => 'required|string',
+            'billing_pin' => 'nullable|string',
+        ];
+    
+        // Conditional shipping address rules based on the checkbox
+        if (!$this->is_billing_shipping_same) {
+            $rules['shipping_address'] = 'required|string';
+            $rules['shipping_landmark'] = 'nullable|string';
+            $rules['shipping_city'] = 'required|string';
+            $rules['shipping_state'] = 'required|string';
+            $rules['shipping_country'] = 'required|string';
+            $rules['shipping_pin'] = 'nullable|string';
+        } else {
+            // If the shipping address is the same as the billing address, make the fields optional
+            $rules['shipping_address'] = 'nullable|string';
+            $rules['shipping_landmark'] = 'nullable|string';
+            $rules['shipping_city'] = 'nullable|string';
+            $rules['shipping_state'] = 'nullable|string';
+            $rules['shipping_country'] = 'nullable|string';
+            $rules['shipping_pin'] = 'nullable|string';
+        }
+    
+        return $rules;
+    }
+    
 
-    public function mount($userId = null)
+    // public function mount($userId = null)
+    // {
+    //     if ($userId) {
+    //         $this->userId = $userId;
+    //         $this->loadUserData();
+    //     }
+    // }
+    private function uploadImage()
     {
-        if ($userId) {
-            $this->userId = $userId;
-            $this->loadUserData();
+        if ($this->image) {
+            $timestamp = now()->timestamp;
+            $extension = $this->image->getClientOriginalExtension();
+            $imageName = $timestamp . '.' . $extension;
+            return $this->image->storeAs('profile_image', $imageName, 'public');
+        }
+        return null;
+    }
+    
+
+    private function uploadVideo(){
+        if($this->verified_video){
+            $timestamp = now()->timestamp;
+            $videoName = $timestamp . '-' . $this->verified_video->getClientOriginalExtension();
+            return $this->image->storeAs('profile_image', $videoName , 'public');
+        }
+        return null;
+    }
+
+    public function updatedImage(){
+        if($this->image){
+            $this->tempImageUrl = $this->image->temporaryUrl();
         }
     }
 
-    // public function loadUserData()
-    // {
-    //     $user = User::find($this->userId);
-    //     $this->name = $user->name;
-    //     $this->company_name = $user->company_name;
-    //     $this->email = $user->email;
-    //     $this->location = $user->location;
-    //     $this->phone = $user->phone;
-    //     $this->about = $user->about;
 
-    //     // Load the user's address if it exists
-    //     $address = UserAddress::where('user_id', $this->userId)->first();
-    //     if ($address) {
-    //         $this->address_id = $address->id;
-    //         $this->address_type = $address->address_type;
-    //         $this->address = $address->address;
-    //         $this->landmark = $address->landmark;
-    //         $this->city = $address->city;
-    //         $this->state = $address->state;
-    //         $this->country = $address->country;
-    //         $this->zip_code = $address->zip_code;
-    //     }
-    // }
-
-    // public function save1()
-    // {
-    //     // Validate the user data
-    //     $this->validate([
-    //         'name' => 'required|string|max:255',
-    //         'company_name' => 'nullable|string|max:255',
-    //         'email' => 'required|email|unique:users,email,' . ($this->userId ?? 'NULL'),
-    //         'phone' => 'nullable|string|max:255',
-    //         'location' => 'nullable|string|max:255',
-    //         'about' => 'nullable|string',
-    //     ]);
-
-    //     $user = User::updateOrCreate(
-    //         ['id' => $this->userId],
-    //         [
-    //             'name' => $this->name,
-    //             'company_name' => $this->company_name,
-    //             'email' => $this->email,
-    //             'location' => $this->location,
-    //             'phone' => $this->phone,
-    //             'about' => $this->about
-    //         ]
-    //     );
-
-    //     // Validate the address data
-    //     $this->validate([
-    //         'address_type' => 'required|string|max:255',
-    //         'address' => 'required|string|max:255',
-    //         'landmark' => 'nullable|string|max:255',
-    //         'city' => 'required|string|max:255',
-    //         'state' => 'required|string|max:255',
-    //         'country' => 'required|string|max:255',
-    //         'zip_code' => 'required|string|max:10',
-    //     ]);
-
-    //     // Save or update the address
-    //     UserAddress::updateOrCreate(
-    //         ['user_id' => $user->id],
-    //         [
-    //             'address_type' => $this->address_type,
-    //             'address' => $this->address,
-    //             'landmark' => $this->landmark,
-    //             'city' => $this->city,
-    //             'state' => $this->state,
-    //             'country' => $this->country,
-    //             'zip_code' => $this->zip_code
-    //         ]
-    //     );
-
-    //     session()->flash('message', 'User and Address saved successfully.');
-
-    //     // Reset form fields after saving
-    //     $this->resetFields();
-    // }
-
+    private function uploadGSTCertificate()
+{
+    // Handle file upload
+    if ($this->gst_certificate_image) {
+        $timestamp = now()->timestamp;
+        $imageName = $timestamp . '-' . $this->gst_certificate_image->getClientOriginalExtension();
+        return $this->gst_certificate_image->storeAs('gst_certificate_image', $imageName, 'public');
+    }
+    return null;
+}
    
     public function save()
     {
-        // Validate data
-        // $validatedData = $this->validate([
-            
-        // ]);
         $this->validate();
-        // Store user data
-
-            if ($this->gst_certificate_image) {
-                // Generate a unique filename using the current timestamp
-                $timestamp = now()->timestamp;
-                $imageName = $timestamp . '-' . $this->gst_certificate_image->getClientOriginalName();
-            
-                // Store the image in the 'gst_certificate_image' directory inside the 'public' disk
-                $imagePath = $this->gst_certificate_image->storeAs('gst_certificate_image', $imageName, 'public');
-            
-                $data['gst_certificate_image'] = $imagePath;
+        // Check if a user already exists and delete the old image if necessary
+        if ($this->id) { 
+            $existingUser = User::find($this->id);
+            if ($existingUser && $existingUser->profile_image) {
+                // Delete the old image from storage
+                \Storage::disk('public')->delete($existingUser->profile_image);
             }
-            
-        $user = User::create([
+        }
+        // Store user data
+        $imagePath = $this->uploadImage(); 
+       
+        $userData = [
             'name' => $this->name,
+            'profile_image' => $imagePath,
+            'verified_video' => $this->verified_video ? $this->uploadVideo() : '',
             'company_name' => $this->company_name,
             'email' => $this->email,
             'phone' => $this->phone,
@@ -150,54 +170,52 @@ class UserAddressForm extends Component
             'gst_number' => $this->gst_number,
             'credit_limit' => $this->credit_limit,
             'credit_days' => $this->credit_days,
-            'gst_certificate_image' =>$data['gst_certificate_image'] 
-            // 'password' => bcrypt('password123'), // Default password
-        ]);
+            'gst_certificate_image' => $this->gst_certificate_image ? $this->uploadGSTCertificate() : null, // Handle file upload
+        ];
+       
+            
+        $user = User::create($userData);
+         // Store billing address
+         $this->storeAddress($user->id, 1, $this->billing_address, $this->billing_landmark, $this->billing_city, $this->billing_state, $this->billing_country, $this->billing_pin);
 
-        // Store user address
-        UserAddress::create([
-            'user_id' => $user->id,
-            'address_type' => $this->address_type,
-            'address' => $this->address,
-            'landmark' => $this->landmark,
-            'city' => $this->city,
-            'state' => $this->state,
-            'country' => $this->country,
-            'zip_code' => $this->zip_code,
-        ]);
+         // Check if shipping address is the same as billing address
+        if(!$this->is_billing_shipping_same){
+             // Store shipping address separately
+            $this->storeAddress($user->id, 2, $this->shipping_address, $this->shipping_landmark, $this->shipping_city, $this->shipping_state, $this->shipping_country, $this->shipping_pin);
+        }else{
+            // Store shipping address as the same as billing
+            $this->storeAddress($user->id, 2, $this->billing_address, $this->billing_landmark, $this->billing_city, $this->billing_state, $this->billing_country, $this->billing_pin);
+        }
 
-        // Reset form and display success message
-        $this->reset();
         session()->flash('success', 'Customer information saved successfully!');
         return redirect()->route('customers.index');
-        // $this->resetFields();
-    }
-    // public function deleteAddress()
-    // {
-    //     if ($this->address_id) {
-    //         $address = UserAddress::find($this->address_id);
-    //         $address->delete();
-    //         session()->flash('message', 'Address deleted successfully.');
-    //         $this->resetFields();
-    //     }
-    // }
 
-    // public function resetFields()
-    // {
-    //     $this->name = '';
-    //     $this->company_name = '';
-    //     $this->email = '';
-    //     $this->location = '';
-    //     $this->phone = '';
-    //     $this->about = '';
-    //     $this->address_type = '';
-    //     $this->address = '';
-    //     $this->landmark = '';
-    //     $this->city = '';
-    //     $this->state = '';
-    //     $this->country = '';
-    //     $this->zip_code = '';
-    // }
+    }
+
+    public function SameAsMobile(){
+        if($this->is_wa_same == 0){
+            $this->whatsapp_no = $this->phone;
+            $this->is_wa_same =1;
+        }else{
+            $this->whatsapp_no = '';
+            $this->is_wa_same = 0;
+        }
+    }
+
+    private function storeAddress($userId,$addressType,$address,$landmark,$city,$state,$country,$zipCode){
+        // Store address in the user_address table
+        Useraddress::create([
+            'user_id'=>$userId,
+            'address_type'=>$addressType,
+            'address'=>$address,
+            'landmark'=>$landmark,
+            'city'=>$city,
+            'state'=>$state,
+            'country'=>$country,
+            'zip_code'=>$zipCode
+        ]);
+    }   
+    
 
     public function render()
     {

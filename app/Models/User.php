@@ -34,6 +34,7 @@ class User extends Authenticatable
         'image',
         'user_id_front',
         'user_id_back',
+        'profile_image'
     ];
     
     /**

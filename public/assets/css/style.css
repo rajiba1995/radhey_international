@@ -45,6 +45,8 @@ button[disabled] {
     line-height: 33px;
     margin-bottom: 10px;
 }
-
+.sidenav .navbar-brand{
+    padding: 0.5rem 2rem!important;
+}
 
 
