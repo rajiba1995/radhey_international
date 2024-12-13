@@ -13,7 +13,6 @@
             </div>
             
             <div class="card-body p-3">
-                
                 <form wire:submit.prevent="save">
                     <div class="row">
                         <!-- Customer Details -->

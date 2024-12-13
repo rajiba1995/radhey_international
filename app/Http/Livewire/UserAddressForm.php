@@ -63,8 +63,8 @@ class UserAddressForm extends Component
             'verified_video' => 'nullable|mimes:mp4,mov,avi,wmv',
             'company_name'=>'nullable|string|max:255',
             'email' => 'nullable|email|unique:users,email',
-            'phone' => 'required|string|max:10',
-            'whatsapp_no' => 'required|string|max:10',
+            'phone' => 'required|max:'.env('VALIDATE_MOBILE'),
+            'whatsapp_no' => 'required|max:'.env('VALIDATE_WHATSAPP'),
             'gst_number' => 'nullable|string|max:15',
             'credit_limit' => 'nullable|numeric',
             'credit_days' => 'nullable|integer',
@@ -118,14 +118,18 @@ class UserAddressForm extends Component
     }
     
 
-    private function uploadVideo(){
-        if($this->verified_video){
-            $timestamp = now()->timestamp;
-            $videoName = $timestamp . '-' . $this->verified_video->getClientOriginalExtension();
-            return $this->image->storeAs('profile_image', $videoName , 'public');
-        }
-        return null;
+    private function uploadVideo()
+{
+    if ($this->verified_video) {
+        $timestamp = now()->timestamp;
+        $extension = $this->verified_video->getClientOriginalExtension();
+        $videoName = $timestamp . '.' . $extension;
+
+        // Store the video and return the path
+        return $this->verified_video->storeAs('verified_video', $videoName, 'public');
     }
+    return null;
+}
 
     public function updatedImage(){
         if($this->image){
@@ -156,13 +160,15 @@ class UserAddressForm extends Component
                 \Storage::disk('public')->delete($existingUser->profile_image);
             }
         }
+
         // Store user data
         $imagePath = $this->uploadImage(); 
+        $videoPath = $this->verified_video ? $this->uploadVideo() : null;
        
         $userData = [
             'name' => $this->name,
             'profile_image' => $imagePath,
-            'verified_video' => $this->verified_video ? $this->uploadVideo() : '',
+            'verified_video' =>  $videoPath,
             'company_name' => $this->company_name,
             'email' => $this->email,
             'phone' => $this->phone,

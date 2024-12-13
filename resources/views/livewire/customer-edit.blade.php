@@ -7,7 +7,10 @@
                         <h5 class="mb-3">Customer Information</h5>
                     </div>
                     <div class="col-md-4 text-end">
-                        <a href="{{ route('customers.index') }}" class="btn btn-primary">Back</a>
+                        <a href="{{ route('customers.index') }}" class="btn btn-primary">
+                            <i class="material-icons text-white">chevron_left</i> 
+                            Back
+                        </a>
                     </div>
                 </div>
             </div>
@@ -33,7 +36,7 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3 col-md-4">
+                        <div class="mb-3 col-md-6">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" wire:model="email" id="email" class="form-control border border-2 p-2" placeholder="Enter Email">
                             @error('email')
@@ -41,7 +44,7 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3 col-md-4">
+                        <div class="mb-3 col-md-3">
                             <label for="phone" class="form-label">Phone <span class="text-danger">*</span></label>
                             <input type="text" wire:model="phone" id="phone" class="form-control border border-2 p-2" placeholder="Enter Phone Number">
                             
@@ -50,7 +53,7 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3 col-md-4">
+                        <div class="mb-3 col-md-3">
                             <label for="whatsapp_no" class="form-label">WhatsApp Number <span class="text-danger">*</span></label>
                             <input type="text" wire:model="whatsapp_no" id="whatsapp_no" class="form-control border border-2 p-2" @if($is_wa_same) disabled @endif placeholder="Enter Whatsapp Number">
 

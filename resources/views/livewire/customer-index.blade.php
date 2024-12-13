@@ -2,8 +2,12 @@
     <!-- Navbar -->
     <!-- End Navbar -->
     <div class="container-fluid py-4">
-        <div class="d-flex justify-content-end mb-3">
-            <a href="{{ route('admin.user-address-form') }}" class="btn btn-primary">Add Customer</a>
+        <div class="d-flex justify-content-between mb-3">
+            <h4 class="m-0">Customer List</h4> 
+            <a href="{{ route('admin.user-address-form') }}" class="btn btn-primary">
+                <i class="material-icons text-white">add</i>
+                Add Customer
+            </a>
         </div>
         <div class="row">
             <div class="col-12">
@@ -42,6 +46,9 @@
                                            Company Name
                                         </th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                          Status
+                                        </th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                            Action
                                         </th>
                                         <th class="text-secondary opacity-7"></th>
@@ -68,14 +75,36 @@
                                                     <p class="text-xs font-weight-bold mb-0">{{ $user->phone }}</p>
                                                 </td>
                                                 <td>
-                                                    <p class="text-xs font-weight-bold mb-0">{{ $user->company_name }}</p>
+                                                    <p class="text-xs font-weight-bold mb-0">{{ $user->company_name ?? 'N/A'}}</p>
+                                                </td>
+                                                <td>
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input ms-auto" type="checkbox" wire:click="toggleStatus({{ $user->id }})" 
+                                                        @if ($user->status)
+                                                            checked
+                                                        @endif>
+                                                    </div>
                                                 </td>
                                                 <td class="align-middle">
-                                                    <a href="{{ route('admin.customers.details', ['id' => $user->id]) }}" class="btn btn-info btn-sm">View Details</a>
-                                                    <a href="{{ route('admin.customers.edit', ['id' => $user->id]) }}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Edit user">
-                                                        Edit
+                                                    <a href="{{ route('admin.customers.details', ['id' => $user->id]) }}" class="btn btn-outline-dark custom-btn-sm" data-toggle="tooltip" data-original-title="View Details" title="View Details">
+                                                        <i class="fas fa-eye"></i>
                                                     </a>
-                                                    <button wire:click="deleteCustomer({{ $user->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm">Delete</button>
+                                                    <a href="{{ route('admin.customers.edit', ['id' => $user->id]) }}" class="btn btn-outline-info custom-btn-sm" data-toggle="tooltip" data-original-title="Edit user" title="Edit Customer">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <button wire:click="deleteCustomer({{ $user->id }})" class="btn btn-outline-danger custom-btn-sm" title="Delete Customer"><i class="fas fa-trash"></i></button>
+                                                    <a href="" class="btn btn-outline-primary custom-btn-sm" data-toggle="tooltip" data-original-title="Place Order" title="Place Order">
+                                                        <i class="fas fa-shopping-cart"></i>
+                                                    </a>
+                                                      <!-- Purchase History (Ledger) Button -->
+                                                    <a href="" class="btn btn-outline-secondary custom-btn-sm" data-toggle="tooltip" data-original-title="Purchase History" title="Purchase History">
+                                                        <i class="fas fa-file-invoice"></i>
+                                                    </a>
+
+                                                    <!-- Add Payment Button -->
+                                                    <a href="" class="btn btn-outline-success custom-btn-sm" data-toggle="tooltip" data-original-title="Add Payment" title="Add Payment">
+                                                        <i class="fas fa-credit-card"></i>
+                                                    </a>
                                                 </td>
                                             </tr>
                                         @endif

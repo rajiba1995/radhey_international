@@ -12,18 +12,23 @@ class NavigationMenu extends Component
          $this->modules = [
             [
                 'name'=>'Dashboard',
-                'route'=>'dashboard',
+                'route'=>['dashboard'],
                 'icon'=>'dashboard'
             ],
             [
                 'name'=>'Customer Management',
-                'route'=>'customers.index',
-                'icon'=>'dashboard'
+                'route'=>['customers.index','admin.user-address-form','admin.customers.edit','admin.customers.details'],
+                'icon'=>'group'
             ],
             [
                 'name'=>'Supplier Management',
-                'route'=>'suppliers.index',
-                'icon'=>'dashboard'
+                'route'=>[
+                           'suppliers.index',
+                           'suppliers.add',
+                           'suppliers.edit',
+                           'suppliers.details'
+                        ],
+                'icon'=>'store'
             ]
          ];
     }

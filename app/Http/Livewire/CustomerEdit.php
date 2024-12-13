@@ -17,62 +17,96 @@ class CustomerEdit extends Component
     public $is_billing_shipping_same;
     public $tempImageUrl;
 
+    public function toggleShippingAddress()
+    {
+        if (!$this->is_billing_shipping_same) {
+             // Reset shipping fields if the checkbox is unchecked
+             $this->resetShippingFields();
+        } else {
+             // Populate shipping fields with billing address data when checked
+            $this->shipping_address = $this->billing_address;
+            $this->shipping_landmark = $this->billing_landmark;
+            $this->shipping_city = $this->billing_city;
+            $this->shipping_state = $this->billing_state;
+            $this->shipping_country = $this->billing_country;
+            $this->shipping_pin = $this->billing_pin;
+        }
+    }
+
+    private function resetShippingFields()
+    {
+         // Reset shipping address fields to make them empty and editable when checkbox is unchecked
+        $this->shipping_address = '';
+        $this->shipping_landmark = '';
+        $this->shipping_city = '';
+        $this->shipping_state = '';
+        $this->shipping_country = '';
+        $this->shipping_pin = '';
+    }
+
+
     public function mount($id)
     {
         if ($id) {
             $user = User::find($id);
-            // Load user data into the form fields
-            $this->name = $user->name;
-            $this->company_name = $user->company_name;
-            $this->email = $user->email;
-            $this->phone = $user->phone;
-            $this->whatsapp_no = $user->whatsapp_no;
-            $this->gst_number = $user->gst_number;
-            $this->credit_limit = $user->credit_limit;
-            $this->credit_days = $user->credit_days;
 
-            // Load user media (images, videos, etc.)
-            $this->image = $user->profile_image ? asset('storage/' . $user->profile_image) : null;
-            $this->verified_video = $this->verified_video ? asset('storage/' . $this->verified_video) : null;
-            $this->gst_certificate_image = $user->gst_certificate_image ? asset('storage/' . $user->gst_certificate_image) : null;
+            $this->fillUserData($user);
 
-            // Load address data
             $billingAddress = $user->address()->where('address_type', 1)->first();
-            if ($billingAddress) {
-                $this->billing_address = $billingAddress->address;
-                $this->billing_landmark = $billingAddress->landmark;
-                $this->billing_city = $billingAddress->city;
-                $this->billing_state = $billingAddress->state;
-                $this->billing_country = $billingAddress->country;
-                $this->billing_pin = $billingAddress->zip_code;
-            }
-
             $shippingAddress = $user->address()->where('address_type', 2)->first();
-            if ($shippingAddress) {
-                $this->shipping_address = $shippingAddress->address;
-                $this->shipping_landmark = $shippingAddress->landmark;
-                $this->shipping_city = $shippingAddress->city;
-                $this->shipping_state = $shippingAddress->state;
-                $this->shipping_country = $shippingAddress->country;
-                $this->shipping_pin = $shippingAddress->zip_code;
-            }
 
-            // Check if billing and shipping address are the same
-            $this->is_billing_shipping_same = $billingAddress && $shippingAddress && $billingAddress->address == $shippingAddress->address;
+            $this->fillAddressData($billingAddress, $shippingAddress);
         }
+    }
+
+    private function fillUserData($user)
+    {
+        $this->name = $user->name;
+        $this->company_name = $user->company_name;
+        $this->email = $user->email;
+        $this->phone = $user->phone;
+        $this->whatsapp_no = $user->whatsapp_no;
+        $this->gst_number = $user->gst_number;
+        $this->credit_limit = $user->credit_limit;
+        $this->credit_days = $user->credit_days;
+        $this->image = $user->profile_image ? asset('storage/' . $user->profile_image) : null;
+        $this->verified_video = $user->verified_video ? asset('storage/' . $user->verified_video) : null;
+        $this->gst_certificate_image = $user->gst_certificate_image ? asset('storage/' . $user->gst_certificate_image) : null;
+    }
+
+    private function fillAddressData($billingAddress, $shippingAddress)
+    {
+        if ($billingAddress) {
+            $this->billing_address = $billingAddress->address;
+            $this->billing_landmark = $billingAddress->landmark;
+            $this->billing_city = $billingAddress->city;
+            $this->billing_state = $billingAddress->state;
+            $this->billing_country = $billingAddress->country;
+            $this->billing_pin = $billingAddress->zip_code;
+        }
+
+        if ($shippingAddress) {
+            $this->shipping_address = $shippingAddress->address;
+            $this->shipping_landmark = $shippingAddress->landmark;
+            $this->shipping_city = $shippingAddress->city;
+            $this->shipping_state = $shippingAddress->state;
+            $this->shipping_country = $shippingAddress->country;
+            $this->shipping_pin = $shippingAddress->zip_code;
+        }
+
+        $this->is_billing_shipping_same = $billingAddress && $shippingAddress && ($billingAddress->address == $shippingAddress->address);
     }
 
     public function rules()
     {
-        // Base rules
         $rules = [
             'name' => 'required|string|max:255',
-            'image' => 'nullable',
+            'image' => 'nullable|mimes:jpg,jpeg,png,gif',
             'verified_video' => 'nullable|mimes:mp4,mov,avi,wmv',
             'company_name' => 'nullable|string|max:255',
-            'email' => 'nullable|email' . ($this->id ? '|unique:users,email,' . $this->id : ''),
-            'phone' => 'required|string|max:10',
-            'whatsapp_no' => 'required|string|max:10',
+            'email' => 'nullable|email|unique:users,email,' . $this->id,
+            'phone' => 'required|max:'.env('VALIDATE_MOBILE'),
+            'whatsapp_no' => 'required|max:'.env('VALIDATE_WHATSAPP'),
             'gst_number' => 'nullable|string|max:15',
             'credit_limit' => 'nullable|numeric',
             'credit_days' => 'nullable|integer',
@@ -84,112 +118,91 @@ class CustomerEdit extends Component
             'billing_pin' => 'nullable|string',
         ];
 
-        // Conditional shipping address rules based on the checkbox
         if (!$this->is_billing_shipping_same) {
-            $rules['shipping_address'] = 'required|string';
-            $rules['shipping_landmark'] = 'nullable|string';
-            $rules['shipping_city'] = 'required|string';
-            $rules['shipping_state'] = 'required|string';
-            $rules['shipping_country'] = 'required|string';
-            $rules['shipping_pin'] = 'nullable|string';
-        } else {
-            $rules['shipping_address'] = 'nullable|string';
-            $rules['shipping_landmark'] = 'nullable|string';
-            $rules['shipping_city'] = 'nullable|string';
-            $rules['shipping_state'] = 'nullable|string';
-            $rules['shipping_country'] = 'nullable|string';
-            $rules['shipping_pin'] = 'nullable|string';
+            $rules = array_merge($rules, [
+                'shipping_address' => 'required|string',
+                'shipping_landmark' => 'nullable|string',
+                'shipping_city' => 'required|string',
+                'shipping_state' => 'required|string',
+                'shipping_country' => 'required|string',
+                'shipping_pin' => 'nullable|string',
+            ]);
         }
 
         return $rules;
     }
 
-    private function uploadImage()
-    {
-        if ($this->image) {
-            $timestamp = now()->timestamp;
-            $extension = $this->image->getClientOriginalExtension();
-            $imageName = $timestamp . '.' . $extension;
-            return $this->image->storeAs('profile_image', $imageName, 'public');
-        }
-        return null;
-    }
-
-    private function uploadVideo()
-    {
-        if ($this->verified_video) {
-            // Ensure that the file is actually an instance of UploadedFile
-            if ($this->verified_video instanceof \Illuminate\Http\UploadedFile) {
-                $timestamp = now()->timestamp;
-                $videoName = $timestamp . '.' . $this->verified_video->getClientOriginalExtension();
-                // Store the video file in the 'public' disk and return the file path
-                $path = $this->verified_video->storeAs('profile_video', $videoName, 'public');
-                return $path;
-            }
-        }
-        return null;
-    }
-    
-
-    private function uploadGSTCertificate()
-    {
-        if ($this->gst_certificate_image) {
-            $timestamp = now()->timestamp;
-            $imageName = $timestamp . '-' . $this->gst_certificate_image->getClientOriginalExtension();
-            return $this->gst_certificate_image->storeAs('gst_certificate_image', $imageName, 'public');
-        }
-        return null;
-    }
-
-    public function updatedImage()
-    {
-        if ($this->image) {
-            $this->tempImageUrl = $this->image->temporaryUrl();
-        }
-    }
-
     public function update()
     {
-        $this->validate();
+        // dd($this->all());
+         // Prepare data for dd and avoid showing existing image/verified_video
+        $dataToLog = $this->all();
 
-        // If updating, find the existing user
-        if ($this->id) {
-            $user = User::find($this->id);
-        } else {
-            $user = new User();
+        // Check if 'image' exists already and unset it from the log data
+        if (isset($this->image) && !empty($this->image)) {
+            // Don't log image data if it already exists
+            unset($dataToLog['image']);
         }
 
-        // Handle file uploads
-        $imagePath = $this->uploadImage();
-        $verifiedVideoPath = $this->uploadVideo();
-        $gstCertificatePath = $this->uploadGSTCertificate();
+        // Check if 'verified_video' exists already and unset it from the log data
+        if (isset($this->verified_video) && !empty($this->verified_video)) {
+            // Don't log verified_video data if it already exists
+            unset($dataToLog['verified_video']);
+        }
 
-        // Update or create user data
-        $user->name = $this->name;
-        $user->profile_image = $imagePath ? $imagePath : $user->profile_image;
-        $user->verified_video = $verifiedVideoPath ? $verifiedVideoPath : $user->verified_video;
-        $user->company_name = $this->company_name;
-        $user->email = $this->email;
-        $user->phone = $this->phone;
-        $user->whatsapp_no = $this->whatsapp_no;
-        $user->gst_number = $this->gst_number;
-        $user->credit_limit = $this->credit_limit;
-        $user->credit_days = $this->credit_days;
-        $user->gst_certificate_image = $gstCertificatePath ? $gstCertificatePath : $user->gst_certificate_image;
+        // Log data without the image and verified_video if they exist
+        // dd($dataToLog);
+        $this->validate();
+      
+        $user = User::find($this->id);
+        $user->fill($this->prepareUserData());
+        
+        // Handle image upload only if a new image is provided
+        if ($this->image && $this->image instanceof \Illuminate\Http\UploadedFile) {
+            $user->profile_image = $this->uploadImage();
+        }
+
+        // Handle video upload only if a new video is provided
+        if ($this->verified_video && $this->verified_video instanceof \Illuminate\Http\UploadedFile) {
+            $user->verified_video = $this->uploadVideo();
+        }
+
+        // Handle GST certificate upload only if a new certificate is provided
+        if ($this->gst_certificate_image && $this->gst_certificate_image instanceof \Illuminate\Http\UploadedFile) {
+            $user->gst_certificate_image = $this->uploadGSTCertificate();
+        }
+
         $user->save();
 
-        // Store addresses
         $this->storeAddress($user->id, 1, $this->billing_address, $this->billing_landmark, $this->billing_city, $this->billing_state, $this->billing_country, $this->billing_pin);
 
-        // Handle shipping address
-        if (!$this->is_billing_shipping_same) {
-            $this->storeAddress($user->id, 2, $this->shipping_address, $this->shipping_landmark, $this->shipping_city, $this->shipping_state, $this->shipping_country, $this->shipping_pin);
-        } else {
-            $this->storeAddress($user->id, 2, $this->billing_address, $this->billing_landmark, $this->billing_city, $this->billing_state, $this->billing_country, $this->billing_pin);
-        }
+        $this->storeAddress(
+            $user->id,
+            2,
+            $this->is_billing_shipping_same ? $this->billing_address : $this->shipping_address,
+            $this->is_billing_shipping_same ? $this->billing_landmark : $this->shipping_landmark,
+            $this->is_billing_shipping_same ? $this->billing_city : $this->shipping_city,
+            $this->is_billing_shipping_same ? $this->billing_state : $this->shipping_state,
+            $this->is_billing_shipping_same ? $this->billing_country : $this->shipping_country,
+            $this->is_billing_shipping_same ? $this->billing_pin : $this->shipping_pin
+        );
 
-        session()->flash('success', 'Customer information saved successfully!');
+        session()->flash('success', 'Customer information updated successfully!');
         return redirect()->route('customers.index');
+    }
+
+    private function prepareUserData()
+    {
+        return [
+            'name' => $this->name,
+            'company_name' => $this->company_name,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'whatsapp_no' => $this->whatsapp_no,
+            'gst_number' => $this->gst_number,
+            'credit_limit' => $this->credit_limit,
+            'credit_days' => $this->credit_days,
+        ];
     }
 
     private function storeAddress($userId, $addressType, $address, $landmark, $city, $state, $country, $zipCode)
@@ -198,6 +211,42 @@ class CustomerEdit extends Component
             ['user_id' => $userId, 'address_type' => $addressType],
             ['address' => $address, 'landmark' => $landmark, 'city' => $city, 'state' => $state, 'country' => $country, 'zip_code' => $zipCode]
         );
+    }
+
+    private function uploadImage()
+    {
+        return $this->handleFileUpload($this->image, 'profile_image');
+    }
+
+    private function uploadVideo()
+    {
+        return $this->handleFileUpload($this->verified_video, 'verified_video');
+    }
+
+    private function uploadGSTCertificate()
+    {
+        return $this->handleFileUpload($this->gst_certificate_image, 'gst_certificate_image');
+    }
+
+    private function handleFileUpload($file, $folder)
+    {
+        if ($file && $file instanceof \Illuminate\Http\UploadedFile) {
+            $timestamp = now()->timestamp;
+            $fileName = $timestamp . '.' . $file->getClientOriginalExtension();
+            return $file->storeAs($folder, $fileName, 'public');
+        }
+        return null;
+    }
+
+    public function SameAsMobile()
+    {
+        if ($this->is_wa_same == 0) {
+            $this->whatsapp_no = $this->phone;
+            $this->is_wa_same = 1;
+        } else {
+            $this->whatsapp_no = '';
+            $this->is_wa_same = 0;
+        }
     }
 
     public function render()

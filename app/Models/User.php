@@ -34,7 +34,8 @@ class User extends Authenticatable
         'image',
         'user_id_front',
         'user_id_back',
-        'profile_image'
+        'profile_image',
+        'verified_video'
     ];
     
     /**

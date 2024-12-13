@@ -98,7 +98,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('/staff/view/{staff_id}',StaffView::class)->name('staff.view');
     Route::get('/staff/task/{staff_id}',StaffTask::class)->name('staff.task');
     Route::get('/staff/task/add/{staff_id}',StaffTaskAdd::class)->name('staff.task.add');
-
+    
     Route::get('/user-address-form', UserAddressForm::class)->name('admin.user-address-form');
     Route::get('/customers/{id}/edit', CustomerEdit::class)->name('admin.customers.edit');
     Route::get('/customers/{id}', CustomerDetails::class)->name('admin.customers.details');
