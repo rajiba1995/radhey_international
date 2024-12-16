@@ -44,8 +44,8 @@ class SupplierEdit extends Component
         $this->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:suppliers,email,' . $this->supplier->id,
-            'mobile' => 'required|max:'.env('VALIDATE_MOBILE'),
-            'whatsapp_no' => 'required|max:'.env('VALIDATE_WHATSAPP'),
+            'mobile' => 'required|digits:'.env('VALIDATE_MOBILE'),
+            'whatsapp_no' => 'required|digits:'.env('VALIDATE_WHATSAPP'),
             'billing_address' => 'required|string|max:255',
             'billing_landmark' => 'nullable|string|max:255',
             'billing_state' => 'nullable|string|max:255',

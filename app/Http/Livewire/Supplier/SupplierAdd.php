@@ -19,8 +19,8 @@ class SupplierAdd extends Component
      return [
             'name' => 'required|string|max:255',
             'email' => 'nullable|email|unique:suppliers,email',
-            'mobile' => 'required|max:'.env('VALIDATE_MOBILE'),
-            'whatsapp_no' => 'required|max:'.env('VALIDATE_WHATSAPP'),
+            'mobile' => 'required|digits:'.env('VALIDATE_MOBILE'),
+            'whatsapp_no' => 'required|digits:'.env('VALIDATE_WHATSAPP'),
             'billing_address' => 'required|string|max:255',
             'billing_landmark' => 'nullable|string|max:255',
             'billing_state' => 'required|string|max:255',

@@ -121,12 +121,8 @@
                 </div>
 
                 <!-- Other Details -->
-                <div class="card mt-4">
-                    <div class="card-header">
-                        <h6>Other Details</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
+                <h5 class="mt-5">Account Information</h5>
+                        <div class="row mt-4">
                             <!-- Banking Information -->
                             <div class="col-md-4">
                                 <label class="form-label">A/C Holder Name</label>
@@ -191,6 +187,7 @@
                         </div>
 
                         <!-- Address -->
+                        <h5 class="mt-5">Address Information</h5>
                         <div class="row mt-4">
                             <div class="col-md-4">
                                 <label class="form-label">Address</label>
@@ -230,15 +227,14 @@
                             <div class="col-md-4">
                                 <label class="form-label">Country</label>
                                 <input type="text" wire:model="country" class="form-control border border-2 p-2" placeholder="Country">
+                                <input type="hidden" wire:model="password" value="yourPasswordHere">
                                 @error('country')
                                     <div class="text-danger">{{$message}}</div>
                                 @enderror
                             </div>
                         </div>
+                        <button type="submit" class="btn btn-success mt-4">Save</button>
                     </div>
-                </div>
-
-                <button type="submit" class="btn bg-gradient-dark mt-4">Save</button>
             </form>
         </div>
     </div>

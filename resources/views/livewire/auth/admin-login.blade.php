@@ -9,7 +9,7 @@
                             <!-- Logo Section -->
                             <img src="{{ asset('assets') }}/img/logo.png" alt="Logo" style="width: 80px; height: auto; max-height:60px;" class="me-2">
                 
-                            <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">Admin Panel</h4>
+                            <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">Admin Login</h4>
                         </div>
                         <div class="row">
                             <h6 class='text-white text-center'>
