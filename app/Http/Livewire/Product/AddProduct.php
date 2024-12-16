@@ -13,7 +13,7 @@ class AddProduct extends Component
     use WithFileUploads;
     public $categories;
     public $subCategories = [];
-    public $category_id,$sub_category_id,$name,$hsn_code,$short_description,$description,$gst_details,$product_image;
+    public $category_id,$sub_category_id,$name,$product_code,$short_description,$description,$gst_details,$product_image;
    
     public function mount()
     {
@@ -29,7 +29,7 @@ class AddProduct extends Component
             'category_id' => 'required',
             'sub_category_id' => 'required',
             'name' => 'required|string|max:255',
-            'hsn_code' => 'nullable|string|max:10',
+            'product_code' => 'nullable|string|max:10',
             'short_description' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'gst_details' => 'nullable|numeric',
@@ -46,7 +46,7 @@ class AddProduct extends Component
             'category_id' => $this->category_id,
             'sub_category_id' => $this->sub_category_id,
             'name' => $this->name,
-            'hsn_code' => $this->hsn_code,
+            'product_code' => $this->product_code,
             'short_description' => $this->short_description,
             'description' => $this->description,
             'gst_details' => $this->gst_details,

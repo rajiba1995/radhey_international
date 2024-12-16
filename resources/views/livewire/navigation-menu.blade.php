@@ -38,15 +38,15 @@
             </li> --}}
             @foreach($modules as $module)
             <li class="nav-item">
-                <a class="nav-link text-white {{ Route::currentRouteName() == $module['route'] ? ' active bg-gradient-primary' : '' }}"
-                    href="{{ route($module['route']) }}">
+                <a class="nav-link text-white {{ in_array(Route::currentRouteName(), $module['route']) ? 'active bg-gradient-primary' : '' }}"
+                href="{{ isset($module['route'][0]) ? route($module['route'][0]) : '#' }}"> <!-- Default to the first route -->
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">{{ $module['icon'] }}</i>
                     </div>
                     <span class="nav-link-text ms-1">{{ $module['name'] }}</span>
                 </a>
             </li>
-          @endforeach
+        @endforeach
             {{-- <li class="nav-item">
                 <a class="nav-link text-white {{ Route::currentRouteName() == 'tables' ? ' active bg-gradient-secondary' : '' }} "
                     href="{{ route('tables') }}">
@@ -99,7 +99,7 @@
                 <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['admin.categories', 'admin.subcategories', 'product.view','product.add','product.update']) ? 'active bg-gradient-primary' : '' }}"
                     href="#productManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['admin.categories', 'admin.subcategories', 'product.view','product.add','product.update']) ? 'true' : 'false' }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">store</i>
+                        <i class="material-icons opacity-10">category</i>
                     </div>
                     <span class="nav-link-text ms-1">Product Management</span>
                 </a>
@@ -127,29 +127,29 @@
                 </li>
             </ul>
             <li class="nav-item">
-                <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['staff.designation']) ? 'active bg-gradient-primary' : '' }}"
-                    href="#StaffManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['staff.designation']) ? 'true' : 'false' }}">
+                <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add']) ? 'active bg-gradient-primary' : '' }}"
+                    href="#StaffManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add']) ? 'true' : 'false' }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">dashboard</i>
+                        <i class="material-icons opacity-10">assignment_ind</i>
                     </div>
                     <span class="nav-link-text ms-1">Staff Management</span>
                 </a>
             </li>
         
             <!-- Submenu -->
-            <ul id="StaffManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['staff.designation']) ? 'show' : '' }}">
+            <ul id="StaffManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add','staff.update','staff.view','staff.task','staff.task.add']) ? 'show' : '' }}">
                 <li class="nav-item">
                     <a class="nav-link text-white {{ Route::currentRouteName() == 'staff.designation' ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('staff.designation')}}">
                         Designation
                     </a>
                 </li>
-                {{-- <li class="nav-item">
-                    <a class="nav-link text-white {{ Route::currentRouteName() == 'admin.subcategories' ? 'active bg-gradient-primary' : '' }}"
-                        href="{{route('admin.subcategories')}}">
-                        Sub Categories
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['staff.index','staff.add','staff.update','staff.view','staff.task','staff.task.add']) ? 'active bg-gradient-primary' : '' }}"
+                        href="{{route('staff.index')}}">
+                        Staff
                     </a>
-                </li> --}}
+                </li>
             </ul>
         </ul>
     </div>

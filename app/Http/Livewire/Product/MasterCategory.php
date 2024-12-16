@@ -38,7 +38,8 @@ class MasterCategory extends Component
         ]);
 
         session()->flash('message', 'Category created successfully!');
-        $this->resetFields();
+        // $this->resetFields();
+        return redirect()->route('admin.subcategories');
     }
 
     public function edit($id)

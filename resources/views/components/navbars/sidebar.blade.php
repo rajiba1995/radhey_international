@@ -38,8 +38,8 @@
             </li> --}}
             @foreach($modules as $module)
             <li class="nav-item">
-                <a class="nav-link text-white {{ Route::currentRouteName() == $module['route'] ? ' active bg-gradient-primary' : '' }}"
-                    href="{{ route($module['route']) }}">
+                <a class="nav-link text-white {{ in_array(Route::currentRouteName(), $module['route']) ? 'active bg-gradient-primary' : '' }}"
+                    href="{{ route($module['route'][0]) }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">{{ $module['icon'] }}</i>
                     </div>
