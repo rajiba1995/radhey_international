@@ -5,16 +5,16 @@
         <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
             <div class="nav-wrapper position-relative end text-end">
                 <!-- Single Button -->
-                <a class="btn btn-primary btn-lg" href="{{route('addProducts')}}" role="button" >
+                <a class="btn btn-primary btn-lg" href="{{route('product.add')}}" role="button" >
                     <i class="material-icons text-white">add</i>
-                    <span class="ms-1">App</span>
+                    <span class="ms-1">Create Product</span>
                 </a>
             </div>
         </div>
         <div class="row">
             <div class="col-12">
                     <div class="card my-4">
-                        <div class="card-body px-0 pb-2">
+                        <div class="card-body pb-0">
                             <!-- Display Success Message -->
                             @if (session('message'))
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -90,9 +90,7 @@
                                                 <a href="{{route('product.update',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Edit product">
                                                     Edit
                                                 </a>
-                                            
-                                                <button wire:click="deleteProduct({{$product->id}})" class="btn btn-outline-danger btn-sm custom-btn-sm">Delete</button>
-
+                                                <button wire:click="deleteProduct({{ $product->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm">Delete</button>
                                             </td>
                                         </tr>
                                         @empty
@@ -112,3 +110,5 @@
         </div>
     </div>
 </div>
+
+

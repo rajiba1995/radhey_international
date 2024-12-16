@@ -11,7 +11,7 @@ class NavigationMenu extends Component
          // Define the modules dynamically
          $this->modules = [
             [
-                'name'=>'dashboard',
+                'name'=>'Dashboard',
                 'route'=>'dashboard',
                 'icon'=>'dashboard'
             ],
