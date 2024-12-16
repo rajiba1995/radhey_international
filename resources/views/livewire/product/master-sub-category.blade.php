@@ -81,12 +81,22 @@
     
     <div class="col-lg-4 col-md-6 mb-md-0 mb-4">
         <div class="row">
-            <div class="col-12">
-                <div class="card my-4">
+            <div class="col-12">             
+                <div class="card my-4">       
                     <div class="card-body px-0 pb-2 mx-4">
+                        @if ($categories->isEmpty())
+                            <div class="d-flex justify-content-between mb-3">
+                                <h5>Create Subcategory</h5>  
+                            </div>
+                        @endif   
                          <form wire:submit.prevent="{{ $subCategoryId ? 'update' : 'store' }}">
                             <div class="form-group">
-                                <label>Category</label>
+                                <label>
+                                    Category
+                                    <a href="{{ route('admin.categories') }}" class="badge bg-secondary text-decoration-none">
+                                        Categories
+                                    </a>
+                                </label>
                                 <select wire:model="category_id" class="form-control border border-2 p-2">
                                     <option value="" selected hidden>Select Category</option>
                                     @foreach($categories as $category)
@@ -100,7 +110,7 @@
                                 <input type="text" wire:model="title" class="form-control border border-2 p-2" placeholder="Enter Sub-Category">
                                 @error('title') <span class="text-danger">{{ $message }}</span> @enderror
                             </div>
-                            <button type="submit" class="btn btn-primary mt-3">
+                            <button type="submit" class="btn btn-sm btn-primary mt-3">
                                 {{ $subCategoryId ? 'Update Subcategory' : 'Create Subcategory' }}
                             </button>
                          </form>

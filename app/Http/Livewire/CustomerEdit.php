@@ -4,67 +4,196 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\User;
+use App\Models\UserAddress;
 use Livewire\WithFileUploads;
-
 
 class CustomerEdit extends Component
 {
     use WithFileUploads;
 
-    public $customerId;
-    public $name, $company_name, $email, $phone, $whatsapp_no, $gst_number;
-    public $credit_limit, $credit_days, $address_type, $address, $landmark, $city, $state, $country, $zip_code;
-    public $gst_certificate_image; // For storing the uploaded image
-    public $existingGstCertificateImage; 
-    // Load customer data
-    public function mount($id)
+    public $id, $name, $company_name, $email, $phone, $whatsapp_no, $is_wa_same, $gst_number, $credit_limit, $credit_days, $gst_certificate_image, $image, $verified_video;
+    public $billing_address, $billing_landmark, $billing_city, $billing_state, $billing_country, $billing_pin;
+    public $shipping_address, $shipping_landmark, $shipping_city, $shipping_state, $shipping_country, $shipping_pin;
+    public $is_billing_shipping_same;
+    public $tempImageUrl;
+
+    public function toggleShippingAddress()
     {
-        $customer = User::findOrFail($id);
-        $customer = User::with('address')->findOrFail($id);
-
-        $this->customerId = $customer->id;
-        $this->name = $customer->name;
-        $this->company_name = $customer->company_name;
-        $this->email = $customer->email;
-        $this->phone = $customer->phone;
-        $this->whatsapp_no = $customer->whatsapp_no;
-        $this->gst_number = $customer->gst_number;
-        $this->credit_limit = $customer->credit_limit;
-        $this->credit_days = $customer->credit_days;
-
-        // Check if the user has an associated address
-        if ($customer->address) {
-            $this->address_type = $customer->address->address_type;
-            $this->address = $customer->address->address;
-            $this->landmark = $customer->address->landmark;
-            $this->city = $customer->address->city;
-            $this->state = $customer->address->state;
-            $this->country = $customer->address->country;
-            $this->zip_code = $customer->address->zip_code;
+        if (!$this->is_billing_shipping_same) {
+             // Reset shipping fields if the checkbox is unchecked
+             $this->resetShippingFields();
+        } else {
+             // Populate shipping fields with billing address data when checked
+            $this->shipping_address = $this->billing_address;
+            $this->shipping_landmark = $this->billing_landmark;
+            $this->shipping_city = $this->billing_city;
+            $this->shipping_state = $this->billing_state;
+            $this->shipping_country = $this->billing_country;
+            $this->shipping_pin = $this->billing_pin;
         }
-
-        $this->existingGstCertificateImage = $customer->gst_certificate_image;
-        // dd($this->existingGstCertificateImage);
     }
 
-    // Update customer data
-    public function updateCustomer()
+    private function resetShippingFields()
     {
-        $this->validate([
+         // Reset shipping address fields to make them empty and editable when checkbox is unchecked
+        $this->shipping_address = '';
+        $this->shipping_landmark = '';
+        $this->shipping_city = '';
+        $this->shipping_state = '';
+        $this->shipping_country = '';
+        $this->shipping_pin = '';
+    }
+
+
+    public function mount($id)
+    {
+        if ($id) {
+            $user = User::find($id);
+
+            $this->fillUserData($user);
+
+            $billingAddress = $user->address()->where('address_type', 1)->first();
+            $shippingAddress = $user->address()->where('address_type', 2)->first();
+
+            $this->fillAddressData($billingAddress, $shippingAddress);
+        }
+    }
+
+    private function fillUserData($user)
+    {
+        $this->name = $user->name;
+        $this->company_name = $user->company_name;
+        $this->email = $user->email;
+        $this->phone = $user->phone;
+        $this->whatsapp_no = $user->whatsapp_no;
+        $this->gst_number = $user->gst_number;
+        $this->credit_limit = $user->credit_limit;
+        $this->credit_days = $user->credit_days;
+        $this->image = $user->profile_image ? asset('storage/' . $user->profile_image) : null;
+        $this->verified_video = $user->verified_video ? asset('storage/' . $user->verified_video) : null;
+        $this->gst_certificate_image = $user->gst_certificate_image ? asset('storage/' . $user->gst_certificate_image) : null;
+    }
+
+    private function fillAddressData($billingAddress, $shippingAddress)
+    {
+        if ($billingAddress) {
+            $this->billing_address = $billingAddress->address;
+            $this->billing_landmark = $billingAddress->landmark;
+            $this->billing_city = $billingAddress->city;
+            $this->billing_state = $billingAddress->state;
+            $this->billing_country = $billingAddress->country;
+            $this->billing_pin = $billingAddress->zip_code;
+        }
+
+        if ($shippingAddress) {
+            $this->shipping_address = $shippingAddress->address;
+            $this->shipping_landmark = $shippingAddress->landmark;
+            $this->shipping_city = $shippingAddress->city;
+            $this->shipping_state = $shippingAddress->state;
+            $this->shipping_country = $shippingAddress->country;
+            $this->shipping_pin = $shippingAddress->zip_code;
+        }
+
+        $this->is_billing_shipping_same = $billingAddress && $shippingAddress && ($billingAddress->address == $shippingAddress->address);
+    }
+
+    public function rules()
+    {
+        $rules = [
             'name' => 'required|string|max:255',
+            'image' => 'nullable|mimes:jpg,jpeg,png,gif',
+            'verified_video' => 'nullable|mimes:mp4,mov,avi,wmv',
             'company_name' => 'nullable|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:15',
-            'whatsapp_no' => 'nullable|string|max:15',
-            'gst_number' => 'nullable|string|max:20',
+            'email' => 'nullable|email|unique:users,email,' . $this->id,
+            'phone' => 'required|max:'.env('VALIDATE_MOBILE'),
+            'whatsapp_no' => 'required|max:'.env('VALIDATE_WHATSAPP'),
+            'gst_number' => 'nullable|string|max:15',
             'credit_limit' => 'nullable|numeric',
-            'credit_days' => 'nullable|numeric',
-            'gst_certificate_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024',
-        ]);
+            'credit_days' => 'nullable|integer',
+            'billing_address' => 'required|string',
+            'billing_landmark' => 'nullable|string',
+            'billing_city' => 'required|string',
+            'billing_state' => 'required|string',
+            'billing_country' => 'required|string',
+            'billing_pin' => 'nullable|string',
+        ];
 
-        $customer = User::findOrFail($this->customerId);
+        if (!$this->is_billing_shipping_same) {
+            $rules = array_merge($rules, [
+                'shipping_address' => 'required|string',
+                'shipping_landmark' => 'nullable|string',
+                'shipping_city' => 'required|string',
+                'shipping_state' => 'required|string',
+                'shipping_country' => 'required|string',
+                'shipping_pin' => 'nullable|string',
+            ]);
+        }
 
-        $data = [
+        return $rules;
+    }
+
+    public function update()
+    {
+        // dd($this->all());
+         // Prepare data for dd and avoid showing existing image/verified_video
+        $dataToLog = $this->all();
+
+        // Check if 'image' exists already and unset it from the log data
+        if (isset($this->image) && !empty($this->image)) {
+            // Don't log image data if it already exists
+            unset($dataToLog['image']);
+        }
+
+        // Check if 'verified_video' exists already and unset it from the log data
+        if (isset($this->verified_video) && !empty($this->verified_video)) {
+            // Don't log verified_video data if it already exists
+            unset($dataToLog['verified_video']);
+        }
+
+        // Log data without the image and verified_video if they exist
+        // dd($dataToLog);
+        $this->validate();
+      
+        $user = User::find($this->id);
+        $user->fill($this->prepareUserData());
+        
+        // Handle image upload only if a new image is provided
+        if ($this->image && $this->image instanceof \Illuminate\Http\UploadedFile) {
+            $user->profile_image = $this->uploadImage();
+        }
+
+        // Handle video upload only if a new video is provided
+        if ($this->verified_video && $this->verified_video instanceof \Illuminate\Http\UploadedFile) {
+            $user->verified_video = $this->uploadVideo();
+        }
+
+        // Handle GST certificate upload only if a new certificate is provided
+        if ($this->gst_certificate_image && $this->gst_certificate_image instanceof \Illuminate\Http\UploadedFile) {
+            $user->gst_certificate_image = $this->uploadGSTCertificate();
+        }
+
+        $user->save();
+
+        $this->storeAddress($user->id, 1, $this->billing_address, $this->billing_landmark, $this->billing_city, $this->billing_state, $this->billing_country, $this->billing_pin);
+
+        $this->storeAddress(
+            $user->id,
+            2,
+            $this->is_billing_shipping_same ? $this->billing_address : $this->shipping_address,
+            $this->is_billing_shipping_same ? $this->billing_landmark : $this->shipping_landmark,
+            $this->is_billing_shipping_same ? $this->billing_city : $this->shipping_city,
+            $this->is_billing_shipping_same ? $this->billing_state : $this->shipping_state,
+            $this->is_billing_shipping_same ? $this->billing_country : $this->shipping_country,
+            $this->is_billing_shipping_same ? $this->billing_pin : $this->shipping_pin
+        );
+
+        session()->flash('success', 'Customer information updated successfully!');
+        return redirect()->route('customers.index');
+    }
+
+    private function prepareUserData()
+    {
+        return [
             'name' => $this->name,
             'company_name' => $this->company_name,
             'email' => $this->email,
@@ -74,48 +203,51 @@ class CustomerEdit extends Component
             'credit_limit' => $this->credit_limit,
             'credit_days' => $this->credit_days,
         ];
-
-        if ($this->gst_certificate_image) {
-            $timestamp = now()->timestamp;
-            $imageName = $timestamp . '-' . $this->gst_certificate_image->getClientOriginalName();
-            $imagePath = $this->gst_certificate_image->storeAs('public/gst_certificates', $imageName);
-            $data['gst_certificate_image'] = str_replace('public/', '', $imagePath);
-        }
-
-        $customer->update($data);
-
-        if ($customer->address) {
-            $customer->address->update([
-                'address_type' => $this->address_type,
-                'address' => $this->address,
-                'landmark' => $this->landmark,
-                'city' => $this->city,
-                'state' => $this->state,
-                'country' => $this->country,
-                'zip_code' => $this->zip_code,
-            ]);
-        } else {
-            $customer->address()->create([
-                'address_type' => $this->address_type,
-                'address' => $this->address,
-                'landmark' => $this->landmark,
-                'city' => $this->city,
-                'state' => $this->state,
-                'country' => $this->country,
-                'zip_code' => $this->zip_code,
-            ]);
-        }
-
-        session()->flash('success', 'Customer and address updated successfully.');
-
-        // Redirect back to the same page
-        return redirect()->route('admin.customers.edit', ['id' => $this->customerId]);
     }
 
-   
-    
+    private function storeAddress($userId, $addressType, $address, $landmark, $city, $state, $country, $zipCode)
+    {
+        UserAddress::updateOrCreate(
+            ['user_id' => $userId, 'address_type' => $addressType],
+            ['address' => $address, 'landmark' => $landmark, 'city' => $city, 'state' => $state, 'country' => $country, 'zip_code' => $zipCode]
+        );
+    }
 
+    private function uploadImage()
+    {
+        return $this->handleFileUpload($this->image, 'profile_image');
+    }
 
+    private function uploadVideo()
+    {
+        return $this->handleFileUpload($this->verified_video, 'verified_video');
+    }
+
+    private function uploadGSTCertificate()
+    {
+        return $this->handleFileUpload($this->gst_certificate_image, 'gst_certificate_image');
+    }
+
+    private function handleFileUpload($file, $folder)
+    {
+        if ($file && $file instanceof \Illuminate\Http\UploadedFile) {
+            $timestamp = now()->timestamp;
+            $fileName = $timestamp . '.' . $file->getClientOriginalExtension();
+            return $file->storeAs($folder, $fileName, 'public');
+        }
+        return null;
+    }
+
+    public function SameAsMobile()
+    {
+        if ($this->is_wa_same == 0) {
+            $this->whatsapp_no = $this->phone;
+            $this->is_wa_same = 1;
+        } else {
+            $this->whatsapp_no = '';
+            $this->is_wa_same = 0;
+        }
+    }
 
     public function render()
     {

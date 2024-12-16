@@ -26,20 +26,7 @@
                         <p><strong>State:</strong> {{ $supplier->billing_state }}</p>
                         <p><strong>Country:</strong> {{ $supplier->billing_country }}</p>
                         <p><strong>Pin Code:</strong> {{ $supplier->billing_pin }}</p>
-
-                        <!-- Shipping Address Details -->
-                        <h6>Shipping Address:</h6>
-                        @if ($supplier->is_billing_shipping_same)
-                            <p>Same as Billing Address</p>
-                        @else
-                            <p><strong>Address:</strong> {{ $supplier->shipping_address }}</p>
-                            <p><strong>Landmark:</strong> {{ $supplier->shipping_landmark }}</p>
-                            <p><strong>City:</strong> {{ $supplier->shipping_city }}</p>
-                            <p><strong>State:</strong> {{ $supplier->shipping_state }}</p>
-                            <p><strong>Country:</strong> {{ $supplier->shipping_country }}</p>
-                            <p><strong>Pin Code:</strong> {{ $supplier->shipping_pin }}</p>
-                        @endif
-
+                        
                         <!-- GST Certificate -->
                         @if ($supplier->gst_file)
                             <h6>GST Certificate:</h6>

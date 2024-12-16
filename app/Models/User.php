@@ -20,16 +20,22 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'designation',
         'company_name',
         'email',
         'password',
         'phone',
         'whatsapp_no',
+        'aadhar_name',
         'gst_number',
         'gst_certificate_image',
         'credit_limit',
         'credit_days',
-
+        'image',
+        'user_id_front',
+        'user_id_back',
+        'profile_image',
+        'verified_video'
     ];
     
     /**
@@ -60,6 +66,14 @@ class User extends Authenticatable
     // {
     //     return $this->hasMany(UserAddress::class);
     // }
+    public function designationDetails()
+    {
+        return $this->belongsTo(Designation::class, 'designation', 'id');
+    }
+    public function bank()
+    {
+        return $this->hasOne(UserBank::class);
+    }
     public function address()
     {
         return $this->hasOne(UserAddress::class);

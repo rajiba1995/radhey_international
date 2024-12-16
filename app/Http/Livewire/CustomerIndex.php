@@ -10,20 +10,23 @@ class CustomerIndex extends Component
 {
     use WithPagination;
     
-  
-
-    
-
     public function deleteCustomer($id)
     {
         $user = User::find($id);
 
         if ($user) {
             $user->delete();
-            session()->flash('success', 'Customer deleted successfully.');
+            session()->flash('success', 'Customer deleted successfully');
         } else {
-            session()->flash('error', 'Customer not found.');
+            session()->flash('error', 'Customer not found');
         }
+    }
+
+    public function toggleStatus($id){
+        $user = User::find($id);
+        $user->status = !$user->status;
+        $user->save();
+        session()->flash('success','Customer status updated successfully');
     }
 
     public function render()

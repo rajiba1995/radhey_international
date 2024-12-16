@@ -19,7 +19,6 @@
                             <!-- Address Details -->
                             @if ($customer->address)
                             <h6>Address Details:</h6>
-                            <p><strong>Type:</strong> {{ $customer->address->address_type }}</p>
                             <p><strong>Address:</strong> {{ $customer->address->address }}</p>
                             <p><strong>City:</strong> {{ $customer->address->city }}</p>
                             <p><strong>State:</strong> {{ $customer->address->state }}</p>

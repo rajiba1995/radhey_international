@@ -14,6 +14,14 @@ class SupplierIndex extends Component
         $this->suppliers = Supplier::all();
     }
 
+    public function toggleStatus($id){
+        $supplier = Supplier::find($id);
+        $supplier->status = !$supplier->status;
+        $supplier->save();
+        $this->suppliers = Supplier::all();
+        session()->flash('success','Supplier status updated successfully');
+    }
+
     public function render()
     {
         return view('livewire.supplier.supplier-index');

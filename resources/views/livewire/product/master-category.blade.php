@@ -81,6 +81,9 @@
             <div class="col-12">
                 <div class="card my-4">
                     <div class="card-body px-0 pb-2 mx-4">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5>Create Category</h5>  
+                        </div>
                         <form wire:submit.prevent="{{ $categoryId ? 'update' : 'store' }}">
                             <div class="row">
                                 <label class="form-label">Category Title</label>
@@ -91,7 +94,7 @@
                                     <p class='text-danger inputerror'>{{ $message }} </p>
                                 @enderror
                                 <div class="mb-2 text-end">
-                                    <button type="submit" class="btn btn-primary btn-sm" 
+                                    <button type="submit" class="btn btn-primary btn-sm mt-1" 
                                             wire:loading.attr="disabled">
                                         <span> 
                                             {{ $categoryId ? 'Update Category' : 'Create Category' }}
