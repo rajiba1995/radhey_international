@@ -28,6 +28,8 @@ use App\Http\Livewire\Supplier\SupplierIndex;
 use App\Http\Livewire\Supplier\SupplierAdd;
 use App\Http\Livewire\Supplier\SupplierEdit;
 use App\Http\Livewire\Supplier\SupplierDetails;
+use App\Http\Livewire\Measurement\MeasurementIndex;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -108,4 +110,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('/suppliers/edit/{id}', SupplierEdit::class)->name('suppliers.edit');
     Route::get('/suppliers/details/{id}', SupplierDetails::class)->name('suppliers.details');
 
+    Route::get('/measurements/{subcategory}', MeasurementIndex::class)->name('measurements.index');
+    Route::post('/measurements/updatePosition', MeasurementIndex::class)->name('measurements.updatePosition');
+
+    // Route::get('/measurements/add', MeasurementAdd::class)->name('measurements.add');
+    // Route::get('/measurements/edit/{id}', MeasurementEdit::class)->name('measurements.edit');
+    // Route::get('/measurements/details/{id}', MeasurementDetails::class)->name('measurements.details');
 });

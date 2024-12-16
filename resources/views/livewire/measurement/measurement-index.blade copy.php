@@ -13,7 +13,7 @@
                         </div>
                         <div class="row">
                             <div class="col-lg-6 col-7">
-                                <h6>Sub Categories</h6>
+                                <h6>Measurement</h6>
                             </div>
                             <div class="col-lg-6 col-5 my-auto text-end">
                                 <div class="ms-md-auto pe-md-3 d-flex align-items-center">
@@ -37,9 +37,11 @@
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
                                             SL</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
-                                            SubCategory</th>
+                                            Title</th>
+                                        <!-- <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle"> -->
+                                            <!-- measurement</th> -->
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
-                                            category</th>
+                                            Short Code</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
                                             Status</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle px-4">
@@ -47,33 +49,33 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($subcategories as $k => $subcategory)
+                                    @foreach($measurements as $k => $measurement)
                                         <tr>
                                             <td class="align-middle text-center">{{ $k + 1 }}</td>
-                                            <td class="align-middle text-center">{{ $subcategory->title }}</td>
-                                            <td class="align-middle text-center">{{ $subcategory->category?$subcategory->category->title : "" }}</td>
+                                            <td class="align-middle text-center">{{ $measurement->title }}</td>
+                                            <td class="align-middle text-center">{{ $measurement->shortcode }}</td>
+                                            
                                            
                                             <td class="align-middle text-sm" style="text-align: center;">
                                                 <div class="form-check form-switch">
                                                     <input 
                                                         class="form-check-input ms-auto" 
                                                         type="checkbox" 
-                                                        id="flexSwitchCheckDefault{{ $subcategory->id }}" 
-                                                        wire:click="toggleStatus({{ $subcategory->id }})"
-                                                        @if($subcategory->status) checked @endif
+                                                        id="flexSwitchCheckDefault{{ $measurement->id }}" 
+                                                        wire:click="toggleStatus({{ $measurement->id }})"
+                                                        @if($measurement->status) checked @endif
                                                     >
                                                 </div>
                                             </td>
                                             <td class="align-middle text-end px-4">
-                                                <a href="{{ route('measurements.index',$subcategory->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm">Measurements</a>
-                                                <button wire:click="edit({{ $subcategory->id }})" class="btn btn-outline-info btn-sm custom-btn-sm">Edit</button>
-                                                <button wire:click="destroy({{ $subcategory->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm">Delete</button>
+                                                <a class="button" href="{{ route('measurements.index',$measurement->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm">Measurment</a>
+                                                <button wire:click="edit({{ $measurement->id }})" class="btn btn-outline-info btn-sm custom-btn-sm">Edit</button>
+                                                <button wire:click="destroy({{ $measurement->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm">Delete</button>
                                             </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
-                            {{ $subcategories->links() }}
                         </div>
                     </div>
                 </div>
@@ -86,34 +88,33 @@
             <div class="col-12">             
                 <div class="card my-4">       
                     <div class="card-body px-0 pb-2 mx-4">
-                        @if ($categories->isEmpty())
+                        @if ($measurements->isEmpty())
                             <div class="d-flex justify-content-between mb-3">
-                                <h5>Create Subcategory</h5>  
+                                <h5>Create measurement</h5>  
                             </div>
                         @endif   
-                         <form wire:submit.prevent="{{ $subCategoryId ? 'update' : 'store' }}">
+                         <form wire:submit.prevent="{{ $measurementId ? 'update' : 'store' }}">
                             <div class="form-group">
                                 <label>
                                     Category
-                                    <a href="{{ route('admin.categories') }}" class="badge bg-secondary text-decoration-none">
-                                        Categories
+                                    <a href="{{ route('admin.measurements') }}" class="badge bg-secondary text-decoration-none">
+                                        measurements
                                     </a>
                                 </label>
-                                <select wire:model="category_id" class="form-control border border-2 p-2">
-                                    <option value="" selected hidden>Select Category</option>
-                                    @foreach($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->title }}</option>
-                                    @endforeach
-                                </select>
-                                @error('category_id') <span class="text-danger">{{ $message }}</span> @enderror
+                               
                             </div>
                             <div class="form-group">
-                                <label>Subcategory Title</label>
-                                <input type="text" wire:model="title" class="form-control border border-2 p-2" placeholder="Enter Sub-Category">
+                                <label>Measurement Title</label>
+                                <input type="text" wire:model="title" class="form-control border border-2 p-2" placeholder="Enter Title">
+                                @error('title') <span class="text-danger">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="form-group">
+                                <label>Short Code</label>
+                                <input type="text" wire:model="short_code" class="form-control border border-2 p-2" placeholder="Enter Title">
                                 @error('title') <span class="text-danger">{{ $message }}</span> @enderror
                             </div>
                             <button type="submit" class="btn btn-sm btn-primary mt-3">
-                                {{ $subCategoryId ? 'Update Subcategory' : 'Create Subcategory' }}
+                                {{ $measurementId ? 'Update measurement' : 'Create measurement' }}
                             </button>
                          </form>
                     </div>
@@ -122,3 +123,20 @@
         </div>
     </div>
 </div>
+@push('script')
+<script>
+    document.addEventListener('livewire:update', function () {
+    let el = document.getElementById('sortable');
+    new Sortable(el, {
+        handle: '.handle',
+        onEnd: function (evt) {
+            let positions = [];
+            document.querySelectorAll('#sortable tr').forEach((row) => {
+                positions.push(row.getAttribute('data-id'));
+            });
+            @this.updatePosition(positions);
+        },
+    });
+});
+</script>
+@endpush
