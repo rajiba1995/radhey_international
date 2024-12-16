@@ -27,30 +27,30 @@ class StaffUpdate extends Component
          // If staff exists, assign the data to the public variables
          if ($this->staff) {
             $this->designation = $this->staff->designationDetails->id ?? '';
-            $this->person_name = $this->staff->name;
-            $this->email = $this->staff->email;
-            $this->mobile = $this->staff->phone;
-            $this->aadhaar_number = $this->staff->aadhar_name;
-            $this->whatsapp_no = $this->staff->whatsapp_no;
-            $this->image = $this->staff->image;
-            $this->user_id_front = $this->staff->user_id_front;
-            $this->user_id_back = $this->staff->user_id_back;
+            $this->person_name = $this->staff->name ?? '';
+            $this->email = $this->staff->email ?? '';
+            $this->mobile = $this->staff->phone ?? '';
+            $this->aadhaar_number = $this->staff->aadhar_name ?? '';
+            $this->whatsapp_no = $this->staff->whatsapp_no ?? '';
+            $this->image = $this->staff->image ?? '';
+            $this->user_id_front = $this->staff->user_id_front ?? '';
+            $this->user_id_back = $this->staff->user_id_back ?? '';
             // Bank Information
-            $this->account_holder_name = $this->staff->bank->account_holder_name;
-            $this->bank_name = $this->staff->bank->bank_name;
-            $this->branch_name = $this->staff->bank->branch_name;
-            $this->account_no = $this->staff->bank->bank_account_no;
-            $this->ifsc = $this->staff->bank->ifsc;
-            $this->monthly_salary = $this->staff->bank->monthly_salary;
-            $this->daily_salary = $this->staff->bank->daily_salary;
-            $this->travel_allowance = $this->staff->bank->travelling_allowance;
+            $this->account_holder_name = $this->staff->bank->account_holder_name ?? '';
+            $this->bank_name = $this->staff->bank->bank_name ?? '';
+            $this->branch_name = $this->staff->bank->branch_name ?? '';
+            $this->account_no = $this->staff->bank->bank_account_no ?? '';
+            $this->ifsc = $this->staff->bank->ifsc ?? '';
+            $this->monthly_salary = $this->staff->bank->monthly_salary ?? '';
+            $this->daily_salary = $this->staff->bank->daily_salary ?? '';
+            $this->travel_allowance = $this->staff->bank->travelling_allowance ?? '';
               // Address Information
-            $this->address = $this->staff->address->address;
-            $this->landmark = $this->staff->address->landmark;
-            $this->state = $this->staff->address->state;
-            $this->city = $this->staff->address->city;
-            $this->pincode = $this->staff->address->zip_code;
-            $this->country = $this->staff->address->country;
+            $this->address = $this->staff->address->address ?? '';
+            $this->landmark = $this->staff->address->landmark ?? '';
+            $this->state = $this->staff->address->state ?? '';
+            $this->city = $this->staff->address->city ?? '';
+            $this->pincode = $this->staff->address->zip_code ?? '';
+            $this->country = $this->staff->address->country ?? '';
         }
     }
     public function update(){
