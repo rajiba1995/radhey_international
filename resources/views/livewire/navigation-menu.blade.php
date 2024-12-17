@@ -151,6 +151,24 @@
                     </a>
                 </li>
             </ul>
+            {{-- Expense management --}}
+            <li class="nav-item">
+                <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['expense.index']) ? 'active bg-gradient-primary' : '' }}"
+                    href="#ExpenseManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['expense.index']) ? 'true' : 'false' }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">assignment_ind</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Expense Management</span>
+                </a>
+            </li>
+            <ul id="ExpenseManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['expense.index']) ? 'show' : '' }}">
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'expense.index' ? 'active bg-gradient-primary' : '' }}"
+                    href="{{ route('expense.index', ['parent_id' => 1]) }}">
+                        Recurring 
+                    </a>
+                </li>
+            </ul>
         </ul>
     </div>
     <div class="sidenav-footer position-absolute w-100 bottom-0 ">

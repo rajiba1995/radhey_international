@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\UserAddress;
 use Livewire\WithFileUploads;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
 
 
 class StaffAdd extends Component
@@ -29,8 +30,8 @@ class StaffAdd extends Component
             'designation' => 'required',
             'person_name' => 'required|string|max:255',
             'email' => 'nullable|email',
-            'mobile' => 'required|max:'.env('VALIDATE_MOBILE'),
-            'whatsapp_no' => 'required|max:'.env('VALIDATE_WHATSAPP'),
+            'mobile' => 'required|digits:'.env('VALIDATE_MOBILE'),
+            'whatsapp_no' => 'required|digits:'.env('VALIDATE_WHATSAPP'),
             'aadhaar_number' => 'required|numeric',
             'image' => 'nullable|image|max:2048',
             'user_id_front' => 'nullable|image|max:2048',
@@ -66,7 +67,8 @@ class StaffAdd extends Component
         'whatsapp_no' => $this->whatsapp_no,
         'image' =>  $imagePath,
         'user_id_front' =>  $userIdFrontPath,
-        'user_id_back' => $userIdBackPath
+        'user_id_back' => $userIdBackPath,
+        'password'=>Hash::make('1234')
     ]);
 
     // 2. Save the data into the user_banks table

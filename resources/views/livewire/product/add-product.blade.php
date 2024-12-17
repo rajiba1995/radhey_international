@@ -78,7 +78,7 @@
                 
                         <!-- HSN Code -->
                         <div class="mb-3 col-md-6">
-                            <label class="form-label">Product Code</label>
+                            <label class="form-label">Product Code <span class="text-danger">*</span></label>
                             <input wire:model="product_code" type="text" class="form-control border border-2 p-2" placeholder="Product Code" value="{{ old('product_code', $product_code) }}">
                             @error('product_code')
                                 <p class='text-danger inputerror'>{{ $message }} </p>

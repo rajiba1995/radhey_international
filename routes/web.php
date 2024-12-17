@@ -21,6 +21,7 @@ use App\Http\Livewire\{VirtualReality,CustomerIndex};
 use GuzzleHttp\Middleware;
 use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory};
 use App\Http\Livewire\Staff\{DesignationIndex,StaffIndex,StaffAdd,StaffUpdate,StaffView,StaffTask,StaffTaskAdd};
+use App\Http\Livewire\Expense\{ExpenseIndex};
 use App\Http\Livewire\UserAddressForm; 
 use App\Http\Livewire\CustomerEdit; 
 use App\Http\Livewire\CustomerDetails; 
@@ -42,6 +43,7 @@ use App\Http\Livewire\Supplier\SupplierDetails;
 Route::get('/', function(){
     return redirect('admin/login');
 });
+
 Route::get('/sign-in', function(){
     return redirect('admin/login');
 });
@@ -85,6 +87,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('/customers', CustomerIndex::class)->name('customers.index');
     
     Route::get('/products', MasterProduct::class)->name('product.view');
+    Route::get('/products/import', MasterProduct::class)->name('product.import');
     Route::get('/add/products', AddProduct::class)->name('product.add');
     Route::get('/update/products/{product_id}', UpdateProduct::class)->name('product.update');
     Route::get('/categories', MasterCategory::class)->name('admin.categories');
@@ -109,4 +112,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('/suppliers/edit/{id}', SupplierEdit::class)->name('suppliers.edit');
     Route::get('/suppliers/details/{id}', SupplierDetails::class)->name('suppliers.details');
 
+    // Expense
+    Route::get('/expense/{parent_id}', ExpenseIndex::class)->name('expense.index');
+    
 });
