@@ -11,10 +11,10 @@
         </nav> --}}
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
             <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-                <div class="input-group input-group-outline">
+                {{-- <div class="input-group input-group-outline">
                     <label class="form-label">Type here...</label>
                     <input type="text" class="form-control">
-                </div>
+                </div> --}}
             </div>
             <form method="POST" action="" class="d-none" id="logout-form">
                 @csrf
@@ -22,8 +22,10 @@
             <ul class="navbar-nav  justify-content-end">
                 <li class="nav-item d-flex align-items-center">
                     <a href="javascript:;" class="nav-link text-body font-weight-bold px-0">
-                        <i class="fa fa-user me-sm-1"></i>
-                        <livewire:auth.logout/>
+                        <p class="d-sm-inline d-none"> <i class="fa fa-user me-sm-1"></i>{{Auth::user()->name}} </p>
+                        @if(Auth::user()->designationDetails)
+                            <p>{{ Auth::user()->designationDetails['name'] }}</p> 
+                        @endif
                     </a>
                 </li>
                 <li class="nav-item d-xl-none ps-3 d-flex align-items-center">

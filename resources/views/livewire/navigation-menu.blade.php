@@ -97,7 +97,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link text-white {{ Request::is('admin/products*') ? 'active bg-gradient-primary' : '' }}"
-                    href="#productManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['admin.categories', 'admin.subcategories', 'product.view','product.add','product.update']) ? 'true' : 'false' }}">
+                    href="#productManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ Request::is('admin/products*') ? 'true' : 'false' }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">category</i>
                     </div>
@@ -170,6 +170,27 @@
                     </a>
                 </li>
             </ul>
+            {{-- Order Management --}}
+            <li class="nav-item">
+                <a class="nav-link text-white {{ Request::is('admin/orders*') ? 'active bg-gradient-primary' : '' }}"
+                    href="#OrderManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ Request::is('admin/orders*') ? 'true' : 'false' }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">shopping_cart</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Order Management</span>
+                </a>
+            </li>
+        
+            <!-- Submenu -->
+            <ul id="OrderManagementSubmenu" class="collapse list-unstyled ms-4 {{ Request::is('admin/orders*') ? 'show' : '' }}">  
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ Request::is('admin/orders') ? 'active bg-gradient-primary' : '' }}"
+                        href="{{route('admin.order.index')}}">
+                         All Orders
+                    </a>
+                </li>
+            </ul>
+           
         </ul>
     </div>
     <div class="sidenav-footer position-absolute w-100 bottom-0 ">

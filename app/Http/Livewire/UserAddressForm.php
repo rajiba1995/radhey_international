@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\User;
 use App\Models\UserAddress;
 use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\DB;
 
 class UserAddressForm extends Component
 {
@@ -144,6 +145,10 @@ class UserAddressForm extends Component
     public function save()
     {
         $this->validate();
+    // Start the transaction
+    DB::beginTransaction();
+
+    try {
         // Check if a user already exists and delete the old image if necessary
         if ($this->id) { 
             $existingUser = User::find($this->id);
@@ -185,8 +190,23 @@ class UserAddressForm extends Component
             $this->storeAddress($user->id, 2, $this->billing_address, $this->billing_landmark, $this->billing_city, $this->billing_state, $this->billing_country, $this->billing_pin);
         }
 
+        // Commit the transaction
+        DB::commit();
         session()->flash('success', 'Customer information saved successfully!');
         return redirect()->route('customers.index');
+    } catch (\Exception $e) {
+        // In case of an error, rollback the transaction
+        DB::rollBack();
+
+        // Log the exception
+        \Log::error('Error saving customer information: ' . $e->getMessage());
+
+        // Flash error message
+        session()->flash('error', 'An error occurred while saving the customer information. Please try again.');
+
+        // Return to the previous page with error message
+        return back();
+    }
 
     }
 
