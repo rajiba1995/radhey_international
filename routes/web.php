@@ -91,6 +91,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('/subcategories', MasterSubCategory::class)->name('admin.subcategories');
 
     Route::get('/designation',DesignationIndex::class)->name('staff.designation');
+    
     // Staff
     Route::get('/staff',StaffIndex::class)->name('staff.index');
     Route::get('/staff/add',StaffAdd::class)->name('staff.add');

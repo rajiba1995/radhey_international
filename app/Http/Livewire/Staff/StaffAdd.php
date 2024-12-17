@@ -69,8 +69,6 @@ class StaffAdd extends Component
         'user_id_back' => $userIdBackPath
     ]);
 
-   
-
     // 2. Save the data into the user_banks table
     UserBank::create([
         'user_id' => $user->id,
