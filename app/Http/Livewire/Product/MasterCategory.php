@@ -39,8 +39,12 @@ class MasterCategory extends Component
         ]);
 
         session()->flash('message', 'Category created successfully!');
-        // $this->resetFields();
-        return redirect()->route('admin.subcategories');
+        // Get the last URL from session (if it exists)
+        $redirectUrl = session('redirect_url', route('admin.categories')); // Default redirect if not set
+
+        // Redirect to the last URL or fallback to subcategories route
+        session()->forget('redirect_url');
+        return redirect($redirectUrl);
     }
 
     public function edit($id)
