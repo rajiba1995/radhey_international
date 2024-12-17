@@ -90,9 +90,9 @@
                                 @enderror
                             </div>
                             
-                            <!-- Short Code -->
+                            <!--  Code -->
                             <div class="form-group mb-3">
-                                <label for="code">Short Code</label>
+                                <label for="code">Code</label>
                                 <input 
                                     type="text" 
                                     id="code" 
