@@ -93,7 +93,7 @@
                                                 </div>
                                             </td>
                                             <td class="align-middle text-end px-4">
-                                                <button wire:click="edit({{$expense->id}})" class="btn btn-outline-info btn-sm custom-btn-sm">Edit</button>
+                                                <button wire:click="edit({{$expense->id}})" class="btn btn-outline-info btn-sm custom-btn-sm" title="Edit"><span class="material-icons">edit</span></button>
                                             </td>
                                         </tr>
                                     @endforeach

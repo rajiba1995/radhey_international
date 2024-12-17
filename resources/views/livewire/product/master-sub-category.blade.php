@@ -50,8 +50,8 @@
                                     @foreach($subcategories as $k => $subcategory)
                                         <tr>
                                             <td class="align-middle text-center">{{ $k + 1 }}</td>
-                                            <td class="align-middle text-center">{{ $subcategory->title }}</td>
-                                            <td class="align-middle text-center">{{ $subcategory->category?$subcategory->category->title : "" }}</td>
+                                            <td class="align-middle text-center">{{ ucwords($subcategory->title) }}</td>
+                                            <td class="align-middle text-center">{{ ucwords($subcategory->category?$subcategory->category->title : "") }}</td>
                                            
                                             <td class="align-middle text-sm" style="text-align: center;">
                                                 <div class="form-check form-switch">
@@ -65,15 +65,18 @@
                                                 </div>
                                             </td>
                                             <td class="align-middle text-end px-4">
-                                                <a href="{{ route('measurements.index',$subcategory->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm">Measurements</a>
-                                                <button wire:click="edit({{ $subcategory->id }})" class="btn btn-outline-info btn-sm custom-btn-sm">Edit</button>
-                                                <button wire:click="destroy({{ $subcategory->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm">Delete</button>
+                                                <a href="{{ route('measurements.index',$subcategory->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm" title="Measurement">        <span class="material-icons">straighten</span> 
+                                                </a>
+                                                <button wire:click="edit({{ $subcategory->id }})" class="btn btn-outline-info btn-sm custom-btn-sm" title="Edit"> <span class="material-icons">edit</span></button>
+                                                <button wire:click="destroy({{ $subcategory->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm" title="Delete"><span class="material-icons">delete</span> </button>
                                             </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
-                            {{ $subcategories->links() }}
+                            <div class="d-flex justify-content-end mt-2">
+                                {{$subcategories->links('pagination::bootstrap-4')}}
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -66,7 +66,7 @@
                                             </td>
                                             <td class="align-middle text-end px-4">
                                                 @if($designation->id>1)
-                                                <button wire:click="edit({{$designation->id}})" class="btn btn-outline-info btn-sm custom-btn-sm">Edit</button>
+                                                <button wire:click="edit({{$designation->id}})" class="btn btn-outline-info btn-sm custom-btn-sm" title="Edit"><span class="material-icons">edit</span></button>
                                                 @endif
                                                 {{-- <button wire:click="destroy({{ $category->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm">Delete</button> --}}
                                             </td>
@@ -74,7 +74,7 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                            {{-- {{ $designations->links() }} --}}
+                            {{-- {{ $designations->links('pagination::bootstrap-4') }} --}}
                         </div>
                     </div>
                 </div>

@@ -31,7 +31,7 @@ class CustomerIndex extends Component
 
     public function render()
     {
-        $users = User::paginate(5);
+        $users = User::where('user_type',1)->paginate(5);
         return view('livewire.customer-index', compact('users'));
     }
 }

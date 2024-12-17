@@ -17,14 +17,14 @@ class MasterSubCategory extends Component
 
     public function mount()
     {
-        $this->categories = Category::all(); // Load categories for dropdown
+        $this->categories = Category::where('status',1)->orderBy('title','ASC')->get(); // Load categories for dropdown
     }
 
     public function render()
     {
         $subcategories = SubCategory::with('category')
             ->where('title', 'like', '%' . $this->search . '%')
-            ->paginate(10);
+            ->paginate(5);
         return view('livewire.product.master-sub-category',compact('subcategories'));
     }
 
@@ -62,7 +62,17 @@ class MasterSubCategory extends Component
 
     public function update()
     {
-        $this->validate();
+        $this->validate([
+            'category_id' => 'required|exists:categories,id',
+                'title' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    Rule::unique('sub_categories')->where(function ($query) {
+                        return $query->where('category_id', $this->category_id);
+                    }),
+                ],
+        ]);
 
         $subcategory = SubCategory::findOrFail($this->subCategoryId);
         $subcategory->update([

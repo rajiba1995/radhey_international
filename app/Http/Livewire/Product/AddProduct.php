@@ -18,7 +18,7 @@ class AddProduct extends Component
     public function mount()
     {
         // Load categories when the component is mounted
-        $this->categories = Category::where('status', 1)->get() ?? collect();
+        $this->categories = Category::where('status', 1)->orderBy('title','ASC')->get() ?? collect();
         $this->subCategories = []; 
     }
 

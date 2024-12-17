@@ -58,7 +58,6 @@ class StaffAdd extends Component
     //    try {
         // Check and upload the images only if they are provided
             $imagePath = $this->image ? Helper::uploadImage($this->image, 'staff2') : null;
-            dd($imagePath);
             $userIdFrontPath = $this->user_id_front ? Helper::uploadImage($this->user_id_front, 'staff') : null;
             $userIdBackPath = $this->user_id_back ? Helper::uploadImage($this->user_id_back, 'staff') : null;
 

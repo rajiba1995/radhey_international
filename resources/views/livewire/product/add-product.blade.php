@@ -42,7 +42,7 @@
                                 <option value="" selected hidden>Select Category</option>
                                 @if($categories && count($categories))
                                     @foreach($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->title }}</option>
+                                        <option value="{{ $category->id }}">{{ ucwords($category->title) }}</option>
                                     @endforeach
                                 @endif
                             </select>

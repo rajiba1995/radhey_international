@@ -43,17 +43,12 @@
                                 @enderror
                             </div>
                             <div class="mb-3 col-md-6">
-                                
                                 <label for="is_wa_same" class="form-label">WhatsApp number </label>
-                               
                                     <div class="d-flex align-items-center">
                                     <input type="number" wire:model="whatsapp_no" id="whatsapp_no" class="form-control border border-2 p-2 me-2" placeholder="Enter WhatsApp number" @if ($is_wa_same) disabled @endif>
 
                                     <input type="checkbox" id="is_wa_same" wire:change="SameAsMobile" value="0" @if ($is_wa_same) checked @endif>
                                     <label for="is_wa_same" class="form-check-label ms-2" >Same as Mobile</label>
-
-                                    <!-- <input type="checkbox" wire:model="is_wa_same" id="isWaSame" class="form-check-input">
-                                    <label for="isWaSame" class="form-check-label">WhatsApp number same as mobile</label> -->
                                 </div>
                                 @error('whatsapp_no')
                                     <div class="text-danger">{{ $message }}</div>
@@ -119,13 +114,12 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3 col-md-12">
-                        
+                        <div class="mb-3 col-md-6">
                             <label for="gst_file" class="form-label">GST File</label>
                             <input type="file" wire:model="gst_file" id="gst_file" class="form-control border border-2 p-2">
                             @if ($this->existingGstFile)
                             <div class="mt-2">
-                                <img src="{{ asset('storage/'. $this->existingGstFile) }}" alt="Profile Image" class="img-thumbnail" style="max-width: 100px;">
+                                <img src="{{ asset($this->existingGstFile) }}" alt="gst Image" class="img-thumbnail" style="max-width: 100px;">
                             </div>
                             @endif
                             @error('gst_file')

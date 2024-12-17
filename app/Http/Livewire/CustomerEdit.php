@@ -101,8 +101,8 @@ class CustomerEdit extends Component
     {
         $rules = [
             'name' => 'required|string|max:255',
-            'image' => 'nullable|mimes:jpg,jpeg,png,gif',
-            'verified_video' => 'nullable|mimes:mp4,mov,avi,wmv',
+            'image' => $this->image instanceof \Illuminate\Http\UploadedFile ? 'nullable|mimes:jpg,jpeg,png,gif' : 'nullable',
+            'verified_video' => $this->verified_video instanceof \Illuminate\Http\UploadedFile ? 'nullable|mimes:mp4,mov,avi,wmv' : 'nullable',
             'company_name' => 'nullable|string|max:255',
             'email' => 'nullable|email|unique:users,email,' . $this->id,
             'phone' => 'required|digits:'.env('VALIDATE_MOBILE'),

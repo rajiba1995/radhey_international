@@ -33,6 +33,7 @@ class SupplierIndex extends Component
         if ($supplier) {
             $supplier->delete();
             $this->suppliers = Supplier::all();  // Re-fetch suppliers after deletion
+            session()->flash('success','Supplier deleted successfully');
         }
     }
 }

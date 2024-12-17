@@ -20,7 +20,7 @@
                     <div class="row">
                         <!-- Supplier Details -->
                         <div class="mb-3 col-md-6">
-                            <label for="name" class="form-label">Supplier Name</label>
+                            <label for="name" class="form-label">Supplier Name <span class="text-danger">*</span></label>
                             <input type="text" wire:model="name" id="name" class="form-control border border-2 p-2" placeholder="Enter supplier name">
                             @error('name')
                                 <div class="text-danger">{{ $message }}</div>
@@ -36,35 +36,27 @@
                         </div>
                         <div class="row">
                             <div class="mb-3 col-md-6">
-                                <label for="mobile" class="form-label">Mobile</label>
+                                <label for="mobile" class="form-label">Mobile <span class="text-danger">*</span></label>
                                 <input type="text" id="mobile" wire:model="mobile" class="form-control border border-2 p-2" placeholder="Enter mobile number">
                                 @error('mobile')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="mb-3 col-md-1">
-                                    <input type="checkbox" id="is_wa_same" wire:change="SameAsMobile" value="0">
-                                    <label for="is_wa_same" class="form-check-label ms-2">Same as Mobile</label>
-                            </div>
-                            <div class="mb-3 col-md-5">
+                            
+                            <div class="mb-3 col-md-6"> 
+                                <div id="whatsappField">
+                                    <label for="is_wa_same" class="form-label">WhatsApp number <span class="text-danger">*</span></label>
                                 
-                                    <div id="whatsappField">
-                                <label for="is_wa_same" class="form-label">WhatsApp number </label>
-                               
-                                    <div class="d-flex align-items-center">
-                                    <input type="text" wire:model="whatsapp_no" id="whatsapp_no" class="form-control border border-2 p-2 me-2" placeholder="Enter WhatsApp number" @if ($is_wa_same) disabled @endif>
+                                        <div class="d-flex align-items-center">
+                                        <input type="text" wire:model="whatsapp_no" id="whatsapp_no" class="form-control border border-2 p-2 me-2" placeholder="Enter WhatsApp number" @if ($is_wa_same) disabled @endif>
 
-                                    <input type="checkbox" id="is_wa_same" wire:change="SameAsMobile" value="0" @if ($is_wa_same) checked @endif>
-                                    <label for="is_wa_same" class="form-check-label ms-2" >Same as Mobile</label>
-
-                                    <!-- <input type="checkbox" wire:model="is_wa_same" id="isWaSame" class="form-check-input">
-                                    <label for="isWaSame" class="form-check-label">WhatsApp number same as mobile</label> -->
+                                        <input type="checkbox" id="is_wa_same" wire:change="SameAsMobile" value="0" @if ($is_wa_same) checked @endif>
+                                        <label for="is_wa_same" class="form-check-label ms-2" >Same as Mobile</label>
+                                    </div>
+                                    @error('whatsapp_no')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                @error('whatsapp_no')
-                                    <div class="text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
-                      
                         </div>
                     </div>
 
@@ -72,7 +64,7 @@
                     <h5 class="mt-4"> Address Information</h5>
                     <div class="row">
                         <div class="mb-3 col-md-6">
-                            <label for="billing_address" class="form-label">Address</label>
+                            <label for="billing_address" class="form-label">Address <span class="text-danger">*</span></label>
                             <input type="text" wire:model="billing_address" id="billing_address" class="form-control border border-2 p-2" placeholder="Enter billing address">
                             @error('billing_address')
                                 <div class="text-danger">{{ $message }}</div>
@@ -86,21 +78,21 @@
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="billing_city" class="form-label">City</label>
+                            <label for="billing_city" class="form-label">City <span class="text-danger">*</span></label>
                             <input type="text" wire:model="billing_city" id="billing_city" class="form-control border border-2 p-2" placeholder="Enter city">
                             @error('billing_city')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="billing_state" class="form-label">State</label>
+                            <label for="billing_state" class="form-label">State <span class="text-danger">*</span></label>
                             <input type="text" wire:model="billing_state" id="billing_state" class="form-control border border-2 p-2" placeholder="Enter state">
                             @error('billing_state')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="billing_country" class="form-label">Country</label>
+                            <label for="billing_country" class="form-label">Country <span class="text-danger">*</span>  </label>
                             <input type="text" wire:model="billing_country" id="billing_country" class="form-control border border-2 p-2" placeholder="Enter country">
                             @error('billing_country')
                                 <div class="text-danger">{{ $message }}</div>
@@ -155,29 +147,4 @@
         </div>
     </div>
 </div>
-<script>
-    function toggleWhatsAppField() {
-    const isWaSameCheckbox = document.getElementById('is_wa_same');
-    const whatsappField = document.getElementById('whatsappField');
 
-    // Show or hide the WhatsApp number input field based on checkbox state
-    if (isWaSameCheckbox.checked) {
-        whatsappField.style.display = 'none'; // Hide the field
-    } else {
-        whatsappField.style.display = 'block'; // Show the field
-    }
-}
-
-
-function ShippinAddressField() {
-    const isBillingShippingSameCheckbox = document.getElementById('isBillingShippingSame');
-    const ShippinAddressField = document.getElementById('ShippinAddressField');
-
-    // Show or hide the WhatsApp number input field based on checkbox state
-    if (isBillingShippingSameCheckbox.checked) {
-        ShippinAddressField.style.display = 'none'; // Hide the field
-    } else {
-        ShippinAddressField.style.display = 'block'; // Show the field
-    }
-}
-</script>

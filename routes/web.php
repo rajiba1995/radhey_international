@@ -87,7 +87,6 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
     Route::get('static-sign-up', StaticSignUp::class)->name('static-sign-up');
     Route::get('rtl', RTL::class)->name('rtl');
 
-    Route::get('/customers', CustomerIndex::class)->name('customers.index');
     
     Route::group(['prefix' => 'products'], function () {
         Route::get('/', MasterProduct::class)->name('product.view');
@@ -105,22 +104,28 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
     Route::get('/designation',DesignationIndex::class)->name('staff.designation');
     
     // Staff
-    Route::get('/staff',StaffIndex::class)->name('staff.index');
-    Route::get('/staff/add',StaffAdd::class)->name('staff.add');
-    Route::get('/staff/update/{staff_id}',StaffUpdate::class)->name('staff.update');
-    Route::get('/staff/view/{staff_id}',StaffView::class)->name('staff.view');
-    Route::get('/staff/task/{staff_id}',StaffTask::class)->name('staff.task');
-    Route::get('/staff/task/add/{staff_id}',StaffTaskAdd::class)->name('staff.task.add');
+    Route::prefix('staff')->name('staff.')->group(function() {
+        Route::get('/',StaffIndex::class)->name('index');
+        Route::get('/add',StaffAdd::class)->name('add');
+        Route::get('/update/{staff_id}',StaffUpdate::class)->name('update');
+        Route::get('/view/{staff_id}',StaffView::class)->name('view');
+        Route::get('/task/{staff_id}',StaffTask::class)->name('task');
+        Route::get('/task/add/{staff_id}',StaffTaskAdd::class)->name('task.add');
+    });
     
-    Route::get('/user-address-form', UserAddressForm::class)->name('admin.user-address-form');
-    Route::get('/customers/{id}/edit', CustomerEdit::class)->name('admin.customers.edit');
-    Route::get('/customers/{id}', CustomerDetails::class)->name('admin.customers.details');
+    Route::group(['prefix' => 'customers'], function () {
+        Route::get('/', CustomerIndex::class)->name('customers.index');
+        Route::get('/add', UserAddressForm::class)->name('admin.user-address-form');
+        Route::get('/{id}/edit', CustomerEdit::class)->name('admin.customers.edit');
+        Route::get('/{id}', CustomerDetails::class)->name('admin.customers.details');
+    });
 
-    Route::get('/suppliers', SupplierIndex::class)->name('suppliers.index');
-    Route::get('/suppliers/add', SupplierAdd::class)->name('suppliers.add');
-    Route::get('/suppliers/edit/{id}', SupplierEdit::class)->name('suppliers.edit');
-    Route::get('/suppliers/details/{id}', SupplierDetails::class)->name('suppliers.details');
-
+    Route::prefix('suppliers')->name('suppliers.')->group(function() {
+        Route::get('/', SupplierIndex::class)->name('index');
+        Route::get('/add', SupplierAdd::class)->name('add');
+        Route::get('/edit/{id}', SupplierEdit::class)->name('edit');
+        Route::get('/details/{id}', SupplierDetails::class)->name('details');
+    });
     // Expense
     Route::get('/expense/{parent_id}', ExpenseIndex::class)->name('expense.index');
     

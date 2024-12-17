@@ -21,7 +21,8 @@ class MasterCategory extends Component
     {
         $categories = Category::query()
             ->where('title', 'like', '%' . $this->search . '%')
-            ->paginate(10);
+            ->orderBy('title','ASC')
+            ->paginate(5);
 
         return view('livewire.product.master-category', compact('categories'));
     }
