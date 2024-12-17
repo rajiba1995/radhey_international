@@ -73,7 +73,9 @@ Route::get('reset-password/{id}', ResetPassword::class)->middleware('signed')->n
 
 Route::get('admin/login', AdminLogin::class)->middleware('guest')->name('admin.login');
 
+
 Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
+    Route::get('/', function(){return redirect('admin/dashboard');});
     Route::get('dashboard', Dashboard::class)->name('dashboard');
     Route::get('billing', Billing::class)->name('billing');
     Route::get('profile', Profile::class)->name('profile');
@@ -86,12 +88,18 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
 
     Route::get('/customers', CustomerIndex::class)->name('customers.index');
     
-    Route::get('/products', MasterProduct::class)->name('product.view');
-    Route::get('/products/import', MasterProduct::class)->name('product.import');
-    Route::get('/add/products', AddProduct::class)->name('product.add');
-    Route::get('/update/products/{product_id}', UpdateProduct::class)->name('product.update');
-    Route::get('/categories', MasterCategory::class)->name('admin.categories');
-    Route::get('/subcategories', MasterSubCategory::class)->name('admin.subcategories');
+    Route::group(['prefix' => 'products'], function () {
+        Route::get('/', MasterProduct::class)->name('product.view');
+        Route::get('/products/import', MasterProduct::class)->name('product.import');
+        Route::get('/add/products', AddProduct::class)->name('product.add');
+        Route::get('/update/products/{product_id}', UpdateProduct::class)->name('product.update');
+        Route::get('/categories', MasterCategory::class)->name('admin.categories');
+        Route::get('/subcategories', MasterSubCategory::class)->name('admin.subcategories');
+        Route::get('/measurements/{subcategory}', MeasurementIndex::class)->name('measurements.index');
+        Route::post('/measurements/update-positions', [MeasurementIndex::class, 'updatePositions'])->name('measurements.updatePositions');
+        Route::get('/fabrics', FabricIndex::class)->name('admin.fabrics.index');
+    
+    });
 
     Route::get('/designation',DesignationIndex::class)->name('staff.designation');
     
@@ -115,9 +123,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
     // Expense
     Route::get('/expense/{parent_id}', ExpenseIndex::class)->name('expense.index');
     
-    Route::get('/measurements/{subcategory}', MeasurementIndex::class)->name('measurements.index');
-    // Route::post('/measurements/updatePosition', MeasurementIndex::class)->name('measurements.updatePosition');
-    Route::post('/measurements/update-positions', [MeasurementIndex::class, 'updatePositions'])->name('measurements.updatePositions');
+    
 
     // Route::get('/measurements/add', MeasurementAdd::class)->name('measurements.add');
     // Route::get('/measurements/edit/{id}', MeasurementEdit::class)->name('measurements.edit');

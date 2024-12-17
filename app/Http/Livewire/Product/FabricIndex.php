@@ -28,13 +28,16 @@ class FabricIndex extends Component
                 'required',
                 'string',
                 'max:255',
+                'unique:fabrics,title', // Ensure title is unique in fabrics table
             ],
             'code' => [
                 'required',
                 'string',
                 'max:255',
+                'unique:fabrics,code', // Ensure code is unique in fabrics table
             ],
         ]);
+        
 
         Fabric::create([
             'title' => $this->title,
@@ -43,10 +46,10 @@ class FabricIndex extends Component
         ]);
 
         session()->flash('message', 'Fabric created successfully!');
-        return redirect()->route('fabrics.index');
+        return redirect()->route('admin.fabrics.index');
     }
 
-    // Edit Measurement
+    // Edit Fabric
     public function edit($id)
     {
         $fabric = Fabric::findOrFail($id);
@@ -55,7 +58,7 @@ class FabricIndex extends Component
         $this->code = $fabric->code;
         $this->status = $fabric->status;
     }
-    // Update Measurement
+    // Update Fabric
     public function update()
     {
         $this->validate([
@@ -63,13 +66,16 @@ class FabricIndex extends Component
                 'required',
                 'string',
                 'max:255',
+                Rule::unique('fabrics', 'title')->ignore($this->fabricId), 
             ],
-            'short_code' => [
+            'code' => [
                 'required',
                 'string',
                 'max:255',
+                Rule::unique('fabrics', 'code')->ignore($this->fabricId),
             ],
         ]);
+        
         $fabric = Fabric::findOrFail($this->fabricId);
         $fabric->update([
             'title' => $this->title,
@@ -78,15 +84,15 @@ class FabricIndex extends Component
         ]);
 
         session()->flash('message', 'Fabric updated successfully!');
-        return redirect()->route('fabrics.index', ['subcategory' => $this->subcategory_id]);
+        return redirect()->route('admin.fabrics.index');
     }
 
-    // Delete Measurement
+    // Delete Fabric
     public function destroy($id)
     {
         Fabric::findOrFail($id)->delete();
-        session()->flash('message', 'Measurement deleted successfully!');
-        return redirect()->route('fabrics.index', ['subcategory' => $this->subcategory_id]);
+        session()->flash('message', 'Fabric deleted successfully!');
+        return redirect()->route('admin.fabrics.index');
     }
 
     // Toggle Status
@@ -94,18 +100,11 @@ class FabricIndex extends Component
     {
         $fabric = Fabric::findOrFail($id);
         $fabric->update(['status' => !$fabric->status]);
-        session()->flash('message', 'SubCategory status updated successfully!');
+        session()->flash('message', 'Fabric status updated successfully!');
     }
 
     // Reset Form Fields
-    public function resetFields()
-    {
-        $this->measurementId = null;
-        $this->subcategory_id = null;
-        $this->title = '';
-        $this->short_code = '';
-        $this->status = 1;
-    }
+   
   
     public function updatePositions(Request $request)
     {
@@ -129,7 +128,7 @@ class FabricIndex extends Component
             session()->flash('message', 'Positions updated successfully!');
     
             // Redirect to the index route with the subcategory_id
-            return redirect()->route('fabrics.index', ['subcategory' => $this->subcategory_id]);
+            return redirect()->route('admin.fabrics.index');
         } catch (\Exception $e) {
             Log::error('Error updating positions: ' . $e->getMessage());
             return response()->json(['error' => 'Something went wrong.'], 500);
@@ -148,7 +147,7 @@ class FabricIndex extends Component
             ->orderBy('id', 'desc')
             ->paginate(10);
 
-        return view('livewire.fabric-index', [
+        return view('livewire.product.fabric-index', [
             'fabrics' => $fabrics,
         ]);
     }
