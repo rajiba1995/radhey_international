@@ -41,10 +41,9 @@ class SupplierAdd extends Component
         // dd($this->all());
         $this->validate();
 
-       
-
         if ($this->gst_file) {
             $gstFilePath = $this->gst_file->store('gst_files','public');
+             $absoluteAssetPath = 'storage/' . $gstFilePath;
         }
 
         Supplier::create([
@@ -59,12 +58,12 @@ class SupplierAdd extends Component
             'billing_pin' => $this->billing_pin,
             'billing_country' => $this->billing_country,
             'gst_number' => $this->gst_number,
-            'gst_file' => $data['gst_file'],
+           'gst_file' => isset($absoluteAssetPath) ? $absoluteAssetPath : null, 
             'credit_limit' => $this->credit_limit,
             'credit_days' => $this->credit_days,
         ]);
 
-        session()->flash('message', 'Supplier added successfully!');
+        session()->flash('success', 'Supplier added successfully!');
         return redirect()->route('suppliers.index');
     }
 

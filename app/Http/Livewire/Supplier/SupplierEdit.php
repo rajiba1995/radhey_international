@@ -60,6 +60,7 @@ class SupplierEdit extends Component
 
         if ($this->gst_file) {
             $gstFilePath = $this->gst_file->store('gst_files','public');
+            $absolutePath = 'storage/' . $gstFilePath;
         }
 
         $this->supplier->update([
@@ -74,7 +75,7 @@ class SupplierEdit extends Component
             'billing_pin' => $this->billing_pin,
             'billing_country' => $this->billing_country,
             'gst_number' => $this->gst_number,
-            'gst_file' => $data['gst_file'],
+            'gst_file' => isset($absolutePath) ? $absolutePath :  $this->supplier->gst_file, // Use the new file path or the existing one
             'credit_limit' => $this->credit_limit,
             'credit_days' => $this->credit_days,
         ]);
