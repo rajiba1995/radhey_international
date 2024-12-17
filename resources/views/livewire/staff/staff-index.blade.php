@@ -83,14 +83,14 @@
                                                 </div>
                                             </td>
                                             <td class="align-middle">
-                                                 <a href="{{route('staff.update',$member->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Edit Staff">
-                                                    Edit
+                                                 <a href="{{route('staff.update',$member->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Edit Staff" title="Edit">
+                                                    <span class="material-icons">edit</span>
                                                 </a>
-                                                 <a href="{{route('staff.view',$member->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="View Staff">
-                                                    View
+                                                 <a href="{{route('staff.view',$member->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="View Staff" title="View">
+                                                    <span class="material-icons">visibility</span>
                                                 </a>
-                                                 <a href="{{route('staff.task',$member->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Staff Task">
-                                                    Task
+                                                 <a href="{{route('staff.task',$member->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Staff Task" title="Task">
+                                                    <span class="material-icons">assignment</span>
                                                 </a>
                                                {{-- <button wire:click="deleteProduct({{ $member->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm">Delete</button> --}}
                                             </td>

@@ -92,9 +92,9 @@
                                             </td>
                                             <td class="align-middle">
                                                 <a href="{{route('product.update',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Edit product">
-                                                    Edit
+                                                    <span class="material-icons">edit</span>
                                                 </a>
-                                                <button wire:click="deleteProduct({{ $product->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm">Delete</button>
+                                                <button wire:click="deleteProduct({{ $product->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm"><span class="material-icons">delete</span></button>
                                             </td>
                                         </tr>
                                         @empty

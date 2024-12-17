@@ -27,8 +27,8 @@ class DesignationIndex extends Component
         ->with(['roles' => function ($query) {
             $query->select('roles.id', 'roles.name'); // Load roles for each designation
         }])
-        ->latest()
-        ->paginate(10); 
+        ->orderBy('name','ASC')
+        ->paginate(5); 
 
     // Check the designations data with the roles
     // dd($this->designations);

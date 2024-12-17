@@ -48,7 +48,7 @@
                                     @foreach($categories as $k => $category)
                                         <tr>
                                             <td class="align-middle text-center">{{ $k + 1 }}</td>
-                                            <td class="align-middle text-center">{{ $category->title }}</td>
+                                            <td class="align-middle text-center">{{ ucwords($category->title) }}</td>
                                             <td class="align-middle text-sm" style="text-align: center;">
                                                 <div class="form-check form-switch">
                                                     <input 
@@ -61,14 +61,16 @@
                                                 </div>
                                             </td>
                                             <td class="align-middle text-end px-4">
-                                                <button wire:click="edit({{ $category->id }})" class="btn btn-outline-info btn-sm custom-btn-sm">Edit</button>
-                                                <button wire:click="destroy({{ $category->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm">Delete</button>
+                                                <button wire:click="edit({{ $category->id }})" class="btn btn-outline-info btn-sm custom-btn-sm" title="Edit"><span class="material-icons">edit</span></button>
+                                                <button wire:click="destroy({{ $category->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm" title="Delete"><span class="material-icons">delete</span></button>
                                             </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
-                            {{ $categories->links() }}
+                            <div class="d-flex justify-content-end mt-2">
+                                {{ $categories->links('pagination::bootstrap-4') }}
+                            </div>
                         </div>
                     </div>
                 </div>
