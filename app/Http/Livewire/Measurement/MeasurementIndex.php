@@ -7,6 +7,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Validation\Rule;
 use App\Models\Measurement;
+use Illuminate\Http\Request;
 
 
 class MeasurementIndex extends Component
@@ -18,7 +19,7 @@ class MeasurementIndex extends Component
     public function mount($subcategory)
     {
         $this->subcategory_id = $subcategory; // Initialize with the passed subcategory
-        $this->measurements = Measurement::where('subcategory_id', $subcategory)->latest()->get();
+        $this->measurements = Measurement::where('subcategory_id', $subcategory) ->orderBy('position', 'asc')->get();
     }
     public function rules()
     {
@@ -80,7 +81,7 @@ class MeasurementIndex extends Component
                 'max:255',
                 Rule::unique('measurements')->where(function ($query) {
                     return $query->where('subcategory_id', $this->subcategory_id);
-                }),
+                })->ignore($this->measurementId),
             ],
             'short_code' => [
                 'required',
@@ -88,7 +89,7 @@ class MeasurementIndex extends Component
                 'max:255',
                 Rule::unique('measurements')->where(function ($query) {
                     return $query->where('subcategory_id', $this->subcategory_id);
-                }),
+                })->ignore($this->measurementId),
             ],
         ]);
         $measurement = Measurement::findOrFail($this->measurementId);
@@ -128,16 +129,38 @@ class MeasurementIndex extends Component
         $this->short_code = '';
         $this->status = 1;
     }
-    public function updatePosition(Request $request)
+  
+    public function updatePositions(Request $request)
     {
-        $sortOrder = json_decode($request->sortOrder, true); // Decode JSON
-
-        foreach ($sortOrder as $item) {
-            Measurement::where('id', $item['id'])->update(['position' => $item['position']]);
+        try {
+            $sortOrder = $request->sortOrder;
+    
+            // Check if sortOrder is a string, then decode it; otherwise, use it directly
+            if (is_string($sortOrder)) {
+                $sortOrder = json_decode($sortOrder, true);
+            }
+    
+            if (!is_array($sortOrder)) {
+                return response()->json(['error' => 'Invalid data format'], 400);
+            }
+    
+            foreach ($sortOrder as $item) {
+                Measurement::where('id', $item['id'])->update(['position' => $item['position']]);
+            }
+    
+            // Flash message after successful update
+            session()->flash('message', 'Positions updated successfully!');
+    
+            // Redirect to the index route with the subcategory_id
+            return redirect()->route('measurements.index', ['subcategory' => $this->subcategory_id]);
+        } catch (\Exception $e) {
+            Log::error('Error updating positions: ' . $e->getMessage());
+            return response()->json(['error' => 'Something went wrong.'], 500);
         }
-
-        return response()->json(['message' => 'Positions updated successfully!']);
     }
+    
+
+
 
     
     // Render Method with Search and Pagination

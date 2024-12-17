@@ -111,7 +111,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('/suppliers/details/{id}', SupplierDetails::class)->name('suppliers.details');
 
     Route::get('/measurements/{subcategory}', MeasurementIndex::class)->name('measurements.index');
-    Route::post('/measurements/updatePosition', MeasurementIndex::class)->name('measurements.updatePosition');
+    // Route::post('/measurements/updatePosition', MeasurementIndex::class)->name('measurements.updatePosition');
+    Route::post('/measurements/update-positions', [MeasurementIndex::class, 'updatePositions'])->name('measurements.updatePositions');
 
     // Route::get('/measurements/add', MeasurementAdd::class)->name('measurements.add');
     // Route::get('/measurements/edit/{id}', MeasurementEdit::class)->name('measurements.edit');

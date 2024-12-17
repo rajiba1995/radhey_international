@@ -29,18 +29,11 @@
                             <table class="table align-items-center mb-0" id="sortableTable">
                                 <thead>
                                     <tr>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
-                                            SL</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
-                                            Title</th>
-                                        <!-- <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle"> -->
-                                            <!-- measurement</th> -->
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
-                                            Short Code</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
-                                            Status</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle px-4">
-                                            Actions</th>
+                                        <th class="text-center">SL</th>
+                                        <th class="text-center">Title</th>
+                                        <th class="text-center">Short Code</th>
+                                        <th class="text-center">Status</th>
+                                        <th class="text-center">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="sortable">
@@ -58,15 +51,14 @@
                                                 </div>
                                             </td>
                                             <td class="align-middle text-center">
-                                                <button wire:click="edit({{ $measurement->id }})" class="btn btn-outline-info custom-btn-sm"> <i class="fas fa-edit"></i></button>
-                                                <button wire:click="destroy({{ $measurement->id }})" class="btn btn-danger btn-sm">Delete</button>
+                                                <button wire:click="edit({{ $measurement->id }})" class="btn btn-outline-info custom-btn-sm">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button wire:click="destroy({{ $measurement->id }})"  class="btn btn-outline-danger custom-btn-sm"><i class="fas fa-trash"></i></button>
                                             </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
-
-
-
                             </table>
                         </div>
                     </div>
@@ -126,8 +118,44 @@
 
    
 </div>
-<!-- push('js') -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const tableBody = document.getElementById('sortable');
 
+    Sortable.create(tableBody, {
+        animation: 150,
+        handle: '.handle',
+        onEnd: function (evt) {
+            let sortOrder = [];
+            document.querySelectorAll('#sortable tr').forEach((row, index) => {
+                sortOrder.push({
+                    id: row.getAttribute('data-id'),
+                    position: index + 1 // New position based on order
+                });
+            });
 
+            // Send updated positions to backend
+            fetch('{{ route("measurements.updatePositions") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ sortOrder: sortOrder })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Server Response:', data);
+                // Refresh the page after successful update
+                if (data.message) {
+                    location.reload();  // Refresh the page
+                }
+            })
+            .catch(error => console.error('Error:', error));
+            }
+        });
+    });
 
 </script>
+
