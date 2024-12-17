@@ -35,18 +35,17 @@ class AdminLogin extends Component
         // Validate input data
         $attributes = $this->validate();
 
-        // Attempt to authenticate the admin user
-        if (! Auth::guard('admin')->attempt($attributes)) {
+        // Attempt to authenticate the user from the default users table
+        if (! Auth::attempt($attributes)) {
             // If authentication fails, throw a validation exception
             throw ValidationException::withMessages([
                 'email' => 'Your provided credentials could not be verified.',
             ]);
         }
-
         // Regenerate the session to prevent session fixation attacks
         session()->regenerate();
 
-        // Redirect to the admin dashboard after successful login
-        return redirect()->route('dashboard'); // Adjust the route name
+        // Redirect to the intended page or dashboard after successful login
+        return redirect()->route('dashboard'); // Adjust the route or path as needed
     }
 }

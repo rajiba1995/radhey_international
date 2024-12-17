@@ -65,7 +65,9 @@
                                                 </div>
                                             </td>
                                             <td class="align-middle text-end px-4">
+                                                @if($designation->id>1)
                                                 <button wire:click="edit({{$designation->id}})" class="btn btn-outline-info btn-sm custom-btn-sm">Edit</button>
+                                                @endif
                                                 {{-- <button wire:click="destroy({{ $category->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm">Delete</button> --}}
                                             </td>
                                         </tr>

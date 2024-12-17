@@ -41,7 +41,8 @@ class SupplierAdd extends Component
         // dd($this->all());
         $this->validate();
 
-        $gstFilePath = null;
+       
+
         if ($this->gst_file) {
             $gstFilePath = $this->gst_file->store('gst_files','public');
         }
@@ -58,7 +59,7 @@ class SupplierAdd extends Component
             'billing_pin' => $this->billing_pin,
             'billing_country' => $this->billing_country,
             'gst_number' => $this->gst_number,
-            'gst_file' => $gstFilePath,
+            'gst_file' => $data['gst_file'],
             'credit_limit' => $this->credit_limit,
             'credit_days' => $this->credit_days,
         ]);

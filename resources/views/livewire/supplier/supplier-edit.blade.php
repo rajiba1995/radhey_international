@@ -119,7 +119,8 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-12">
+                        
                             <label for="gst_file" class="form-label">GST File</label>
                             <input type="file" wire:model="gst_file" id="gst_file" class="form-control border border-2 p-2">
                             @if ($this->existingGstFile)

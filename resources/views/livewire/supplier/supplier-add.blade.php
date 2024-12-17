@@ -42,8 +42,13 @@
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="mb-3 col-md-6">
+                            <div class="mb-3 col-md-1">
+                                    <input type="checkbox" id="is_wa_same" wire:change="SameAsMobile" value="0">
+                                    <label for="is_wa_same" class="form-check-label ms-2">Same as Mobile</label>
+                            </div>
+                            <div class="mb-3 col-md-5">
                                 
+                                    <div id="whatsappField">
                                 <label for="is_wa_same" class="form-label">WhatsApp number </label>
                                
                                     <div class="d-flex align-items-center">
@@ -150,3 +155,29 @@
         </div>
     </div>
 </div>
+<script>
+    function toggleWhatsAppField() {
+    const isWaSameCheckbox = document.getElementById('is_wa_same');
+    const whatsappField = document.getElementById('whatsappField');
+
+    // Show or hide the WhatsApp number input field based on checkbox state
+    if (isWaSameCheckbox.checked) {
+        whatsappField.style.display = 'none'; // Hide the field
+    } else {
+        whatsappField.style.display = 'block'; // Show the field
+    }
+}
+
+
+function ShippinAddressField() {
+    const isBillingShippingSameCheckbox = document.getElementById('isBillingShippingSame');
+    const ShippinAddressField = document.getElementById('ShippinAddressField');
+
+    // Show or hide the WhatsApp number input field based on checkbox state
+    if (isBillingShippingSameCheckbox.checked) {
+        ShippinAddressField.style.display = 'none'; // Hide the field
+    } else {
+        ShippinAddressField.style.display = 'block'; // Show the field
+    }
+}
+</script>

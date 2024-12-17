@@ -29,6 +29,8 @@ use App\Http\Livewire\Supplier\SupplierIndex;
 use App\Http\Livewire\Supplier\SupplierAdd;
 use App\Http\Livewire\Supplier\SupplierEdit;
 use App\Http\Livewire\Supplier\SupplierDetails;
+use App\Http\Livewire\Measurement\MeasurementIndex;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -51,8 +53,6 @@ Route::get('/sign-in', function(){
 Route::get('forgot-password', ForgotPassword::class)->middleware('guest')->name('password.forgot');
 Route::get('reset-password/{id}', ResetPassword::class)->middleware('signed')->name('reset-password');
 
-
-
 // Route::get('sign-up', Register::class)->middleware('guest')->name('register');
 // Route::get('sign-in', Login::class)->middleware('guest')->name('login');
 
@@ -73,7 +73,7 @@ Route::get('reset-password/{id}', ResetPassword::class)->middleware('signed')->n
 
 Route::get('admin/login', AdminLogin::class)->middleware('guest')->name('admin.login');
 
-Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
+Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
     Route::get('dashboard', Dashboard::class)->name('dashboard');
     Route::get('billing', Billing::class)->name('billing');
     Route::get('profile', Profile::class)->name('profile');
@@ -115,4 +115,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     // Expense
     Route::get('/expense/{parent_id}', ExpenseIndex::class)->name('expense.index');
     
+    Route::get('/measurements/{subcategory}', MeasurementIndex::class)->name('measurements.index');
+    Route::post('/measurements/updatePosition', MeasurementIndex::class)->name('measurements.updatePosition');
+
+    // Route::get('/measurements/add', MeasurementAdd::class)->name('measurements.add');
+    // Route::get('/measurements/edit/{id}', MeasurementEdit::class)->name('measurements.edit');
+    // Route::get('/measurements/details/{id}', MeasurementDetails::class)->name('measurements.details');
 });

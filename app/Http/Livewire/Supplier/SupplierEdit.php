@@ -58,7 +58,6 @@ class SupplierEdit extends Component
             'credit_days' => 'nullable|numeric',
         ]);
 
-        $gstFilePath = $this->supplier->gst_file;
         if ($this->gst_file) {
             $gstFilePath = $this->gst_file->store('gst_files','public');
         }
@@ -75,7 +74,7 @@ class SupplierEdit extends Component
             'billing_pin' => $this->billing_pin,
             'billing_country' => $this->billing_country,
             'gst_number' => $this->gst_number,
-            'gst_file' => $gstFilePath,
+            'gst_file' => $data['gst_file'],
             'credit_limit' => $this->credit_limit,
             'credit_days' => $this->credit_days,
         ]);
