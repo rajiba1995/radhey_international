@@ -20,7 +20,7 @@ use App\Http\Livewire\Tables;
 use App\Http\Livewire\{VirtualReality,CustomerIndex};
 use GuzzleHttp\Middleware;
 use App\Http\Livewire\Order\{OrderIndex, OrderNew};
-use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory};
+use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory,FabricIndex};
 use App\Http\Livewire\Staff\{DesignationIndex,StaffIndex,StaffAdd,StaffUpdate,StaffView,StaffTask,StaffTaskAdd};
 use App\Http\Livewire\Expense\{ExpenseIndex};
 use App\Http\Livewire\UserAddressForm; 
@@ -98,6 +98,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
         Route::get('/subcategories', MasterSubCategory::class)->name('admin.subcategories');
         Route::get('/measurements/{subcategory}', MeasurementIndex::class)->name('measurements.index');
         Route::post('/measurements/update-positions', [MeasurementIndex::class, 'updatePositions'])->name('measurements.updatePositions');
+        Route::get('/fabrics', FabricIndex::class)->name('admin.fabrics.index');
+    
     });
 
     Route::get('/designation',DesignationIndex::class)->name('staff.designation');
@@ -122,8 +124,6 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
     // Expense
     Route::get('/expense/{parent_id}', ExpenseIndex::class)->name('expense.index');
     
-    
-
     // Route::get('/measurements/add', MeasurementAdd::class)->name('measurements.add');
     // Route::get('/measurements/edit/{id}', MeasurementEdit::class)->name('measurements.edit');
     // Route::get('/measurements/details/{id}', MeasurementDetails::class)->name('measurements.details');

@@ -117,7 +117,7 @@ class MeasurementIndex extends Component
     {
         $measurement = Measurement::findOrFail($id);
         $measurement->update(['status' => !$measurement->status]);
-        session()->flash('message', 'SubCategory status updated successfully!');
+        session()->flash('message', 'Measurement status updated successfully!');
     }
 
     // Reset Form Fields
