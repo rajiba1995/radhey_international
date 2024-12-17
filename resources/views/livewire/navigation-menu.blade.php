@@ -125,6 +125,12 @@
                         Sub Categories
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'admin.fabrics.index' ? 'active bg-gradient-primary' : '' }}"
+                        href="{{route('admin.fabrics.index')}}">
+                        Sub Fabrics
+                    </a>
+                </li>
             </ul>
             <li class="nav-item">
                 <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add']) ? 'active bg-gradient-primary' : '' }}"
