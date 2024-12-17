@@ -98,14 +98,6 @@ class UserAddressForm extends Component
         return $rules;
     }
     
-
-    // public function mount($userId = null)
-    // {
-    //     if ($userId) {
-    //         $this->userId = $userId;
-    //         $this->loadUserData();
-    //     }
-    // }
     private function uploadImage()
     {
         if ($this->image) {

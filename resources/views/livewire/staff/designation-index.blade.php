@@ -15,7 +15,7 @@
                             <div class="col-lg-6 col-7">
                                 <h6>Designation</h6>
                             </div>
-                            <div class="col-lg-6 col-5 my-auto text-end">
+                            {{-- <div class="col-lg-6 col-5 my-auto text-end">
                                 <div class="ms-md-auto pe-md-3 d-flex align-items-center">
                                     <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
                                         <input type="text" wire:model.debounce.500ms="search" class="form-control border border-2 p-2 custom-input-sm" placeholder="Enter Title">
@@ -26,7 +26,7 @@
                                         <!-- Optionally, add a search icon button -->
                                     
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                     <div class="card-body px-0 pb-2">
