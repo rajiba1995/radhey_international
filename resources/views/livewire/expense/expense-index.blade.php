@@ -19,7 +19,7 @@
                                 <div class="ms-md-auto pe-md-3 d-flex align-items-center">
                                     <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
                                         <input type="text" wire:model.debounce.500ms="search" class="form-control border border-2 p-2 custom-input-sm" placeholder="Enter Title">
-                                        <button type="button" wire:target="search" class="btn btn-dark text-light mb-0 custom-input-sm">
+                                        <button type="button" wire:click="$refresh" class="btn btn-dark text-light mb-0 custom-input-sm">
                                             <span class="material-icons">search</span>
                                         </button>
                                     </div>
@@ -48,35 +48,58 @@
                                             For Partner</th>
                                         <th class="text-end text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle px-4">
                                             Status</th>
-                                        {{-- <th class="text-end text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle px-4">
-                                            Action</th> --}}
+                                        <th class="text-end text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle px-4">
+                                            Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- @foreach($designations as $k => $designation)
+                                    @foreach($expenses as $k => $expense)
                                         <tr>
-                                            <td class="align-middle text-center">{{ucwords($designation->name)}}</td>
-                                            <td class="align-middle text-center">{{ $designation->role_names }}</td>
-                                            <td class="align-middle text-center"> {{ $designation->users_count > 0 ? $designation->users_count : 'No Roles Assigned' }}</td>
+                                            <td class="align-middle text-center"><strong>{{ucwords($expense->title)}}</strong></td>
+                                            <td class="align-middle text-center">
+                                                <span class="badge {{$expense->for_debit == 1 ? 'bg-success' :   'bg-danger'}}">  
+                                                   {{ $expense->for_debit == 1 ? 'Yes' : 'No' }}
+                                                </span>
+                                           </td>
+                                            <td class="align-middle text-center"> 
+                                                <span class="badge {{$expense->for_credit == 1? "bg-success" : "bg-danger" }}">
+                                                    {{$expense->for_credit == 1? "Yes" : "No" }}
+                                                </span>
+                                            </td>
+                                            <td class="align-middle text-center"> 
+                                                <span class="badge {{$expense->for_store  == 1? "bg-success" : "bg-danger" }}">
+                                                    {{$expense->for_store  == 1? "Yes" : "No" }}
+                                                </span>
+                                            </td>
+                                            <td class="align-middle text-center"> 
+                                                <span class="badge {{$expense->for_staff == 1? "bg-success" : "bg-danger" }}">
+                                                    {{$expense->for_staff == 1? "Yes" : "No" }}
+                                                </span>
+                                            </td>
+                                            <td class="align-middle text-center"> 
+                                                <span class="badge {{$expense->for_partner  == 1? "bg-success" : "bg-danger" }}">
+                                                    {{$expense->for_partner  == 1? "Yes" : "No" }}
+                                                </span>
+                                            </td>
                                             <td class="align-middle text-sm" style="text-align: center;">
                                                 <div class="form-check form-switch">
                                                     <input 
                                                         class="form-check-input ms-auto" 
                                                         type="checkbox" 
-                                                        id="flexSwitchCheckDefault{{$designation->id}}" 
-                                                        wire:click="toggleStatus({{$designation->id}})"
-                                                        @if($designation->status) checked @endif
+                                                        id="flexSwitchCheckDefault{{$expense->id}}" 
+                                                        wire:click="toggleStatus({{$expense->id}})"
+                                                        @if($expense->status) checked @endif
                                                     >
                                                 </div>
                                             </td>
                                             <td class="align-middle text-end px-4">
-                                                <button wire:click="edit({{$designation->id}})" class="btn btn-outline-info btn-sm custom-btn-sm">Edit</button>
+                                                <button wire:click="edit({{$expense->id}})" class="btn btn-outline-info btn-sm custom-btn-sm">Edit</button>
                                             </td>
                                         </tr>
-                                    @endforeach --}}
+                                    @endforeach
                                 </tbody>
                             </table>
-                            {{-- {{ $designations->links() }} --}}
+                            {{-- {{ $expenses->links() }} --}}
                         </div>
                     </div>
                 </div>
@@ -89,25 +112,25 @@
             <div class="col-12">
                 <div class="card my-4">
                     <div class="card-body px-0 pb-2 mx-4">
-                        <form wire.submit.prevent="saveExpense">
+                        <form wire:submit.prevent="saveExpense">
                             @csrf
-                                <h4 class="page__subtitle">Add New</h4>
+                                <h4 class="page__subtitle">{{ $expenseId ? 'Edit Expense' : 'Add New Expense' }}</h4>
                                 <input type="hidden" name="parent_id" value="{{$parent_id}}">                         
                                 <div class="form-group mb-3">
                                     <label class="label-control">Title <span class="text-danger">*</span> </label>
-                                    <input type="text" name="title" placeholder="Enter Expense Title" class="form-control border border-2 p-2" value="{{old('title')}}" >
+                                    <input type="text" wire:model="title" placeholder="Enter Expense Title" class="form-control border border-2 p-2" value="{{old('title')}}" >
                                     @error('title') <p class="small text-danger">{{ $message }}</p> @enderror
                                 </div>
                                 <div class="form-group mb-3">
                                     <label class="label-control">Description </label>
-                                    <textarea name="description" placeholder="Enter Expense Description" class="form-control border border-2 p-2" rows="5">{{old('description')}}</textarea>
+                                    <textarea wire:model="description" placeholder="Enter Expense Description" class="form-control border border-2 p-2" rows="5">{{old('description')}}</textarea>
                                     @error('description') <p class="small text-danger">{{ $message }}</p> @enderror
                                 </div> 
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group mb-3">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="1" name="for_debit" id="for_debit">
+                                                <input wire:model="for_debit" class="form-check-input" type="checkbox" value="1"  id="for_debit">
                                                 <label class="form-check-label" for="for_debit">
                                                   Debit Purpose
                                                 </label>
@@ -118,7 +141,7 @@
                                     <div class="col-sm-6">
                                         <div class="form-group mb-3">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="1" name="for_credit" id="for_credit">
+                                                <input wire:model="for_credit" class="form-check-input" type="checkbox" value="1" id="for_credit">
                                                 <label class="form-check-label" for="for_credit">
                                                   Credit Purpose
                                                 </label>
@@ -131,7 +154,7 @@
                                     <div class="col-sm-4">
                                         <div class="form-group mb-3">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="1" name="for_staff" id="for_staff">
+                                                <input wire:model="for_staff" class="form-check-input" type="checkbox" value="1"  id="for_staff">
                                                 <label class="form-check-label" for="for_staff">
                                                   For Staff
                                                 </label>
@@ -142,7 +165,7 @@
                                     <div class="col-sm-4">
                                         <div class="form-group mb-3">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="1" name="for_store" id="for_store">
+                                                <input wire:model="for_store" class="form-check-input" type="checkbox" value="1"  id="for_store">
                                                 <label class="form-check-label" for="for_store">
                                                   For Store
                                                 </label>
@@ -153,7 +176,7 @@
                                     <div class="col-sm-4">
                                         <div class="form-group mb-3">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="1" name="for_partner" id="for_partner">
+                                                <input wire:model="for_partner" class="form-check-input" type="checkbox" value="1"  id="for_partner">
                                                 <label class="form-check-label" for="for_partner">
                                                   For Partner
                                                 </label>
@@ -167,7 +190,7 @@
                                     <button type="submit" class="btn btn-primary btn-sm mt-1" 
                                             wire:loading.attr="disabled">
                                         <span> 
-                                         Create Expense
+                                         {{$expenseId ? 'Update Expense' : 'Create Expense'}}
                                         </span>
                                     </button>
                                 </div>
