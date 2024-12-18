@@ -27,7 +27,7 @@ class MasterProduct extends Component
 
     public function render()
     {
-        $products = Product::with('category','sub_category')->where('deleted_at',1)->latest()->get();
+        $products = Product::with('category','sub_category')->latest()->get();
         return view('livewire.product.master-product',['products'=>$products]);
     }
 }
