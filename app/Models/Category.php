@@ -14,7 +14,7 @@ class Category extends Model
     protected $table = 'categories';
 
     // Define the fillable columns to protect against mass assignment vulnerabilities
-    protected $fillable = ['title', 'status'];
+    protected $fillable = ['title','image' ,'status'];
 
     // Specify the columns that should be used for soft deletes
     protected $dates = ['deleted_at'];
