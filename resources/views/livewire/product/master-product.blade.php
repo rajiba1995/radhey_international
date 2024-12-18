@@ -69,17 +69,17 @@
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
-                                                    {{ $product->name }}
+                                                    {{ ucwords($product->name) }}
                                                 </p>
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
-                                                    {{ $product->category->title ?? 'N/A' }}
+                                                    {{ ucwords($product->category->title ?? 'N/A') }}
                                                 </p>
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
-                                                    {{ $product->sub_category->title ?? 'N/A' }}
+                                                    {{ ucwords($product->sub_category->title ?? 'N/A') }}
                                                 </p>
                                             </td>
                                             <td>
@@ -95,6 +95,7 @@
                                                     <span class="material-icons">edit</span>
                                                 </a>
                                                 <button wire:click="deleteProduct({{ $product->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm"><span class="material-icons">delete</span></button>
+                                                <a href="{{route('product.galary',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm">Galary</a>
                                             </td>
                                         </tr>
                                         @empty

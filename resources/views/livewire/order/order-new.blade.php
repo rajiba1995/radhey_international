@@ -1,7 +1,3 @@
-<!-- Include Select2 CSS and JS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.full.min.js"></script>
 
 <div class="container-fluid px-2 px-md-4">
     <div class="d-flex justify-content-between mb-3">
@@ -22,11 +18,11 @@
                         <label for="searchCustomer" class="form-label mb-0">Search Existing Customer</label>
                     </div>
                     <!-- Select2 Dropdown for searching -->
-                    <select id="searchCustomer" class="js-select2 form-select">
+                    <select id="searchCustomer" class="form-select form-control-sm border border-2" wire:change="selectCustomer($event.target.value)" style="padding-left: 20px;">
                         <option value="AK" data-image="{{asset('assets/img/user.png') }}" selected>Select customer</option>
                         @foreach ($customers as $item)
                             <option value="{{ $item->id }}" data-image="{{ $item->profile_image ? asset('storage/'.$item->profile_image) : asset('assets/img/user.png') }}">
-                                {{$item->name}} <span class="badge bg-danger custom_danger_badge"> ({{$item->phone}})</span>
+                                {{$item->name}} - ({{$item->phone}})
                             </option>
                         @endforeach
                     </select>
@@ -39,7 +35,7 @@
                     <!-- Customer Details -->
                     <div class="mb-3 col-md-6">
                         <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
-                        <input type="text" wire:model="name" id="name" class="form-control form-control-sm border border-2 p-2" placeholder="Enter Customer Name">
+                        <input type="text" wire:model="name" id="name" class="form-control form-control-sm border border-2 p-2" placeholder="Enter Customer Name" @if($name) disabled @endif>
                         @error('name')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
@@ -47,7 +43,7 @@
 
                     <div class="mb-3 col-md-6">
                         <label for="company_name" class="form-label">Company Name</label>
-                        <input type="text" wire:model="company_name" id="company_name" class="form-control form-control-sm border border-2 p-2" placeholder="Enter Company Name">
+                        <input type="text" wire:model="company_name" id="company_name" class="form-control form-control-sm border border-2 p-2" placeholder="Enter Company Name" @if($company_name) disabled @endif>
                         @error('company_name')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
@@ -55,7 +51,7 @@
 
                     <div class="mb-3 col-md-3">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" wire:model="email" id="email" class="form-control form-control-sm border border-2 p-2" placeholder="Enter Email">
+                        <input type="email" wire:model="email" id="email" class="form-control form-control-sm border border-2 p-2" placeholder="Enter Email" @if($email) disabled @endif>
                         @error('email')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
@@ -63,7 +59,7 @@
 
                     <div class="mb-3 col-md-3">
                         <label for="dob" class="form-label">Date Of Birth <span class="text-danger">*</span></label>
-                        <input type="date" wire:model="dob" id="dob" class="form-control form-control-sm border border-2 p-2">
+                        <input type="date" wire:model="dob" id="dob" class="form-control form-control-sm border border-2 p-2"  @if($dob) disabled @endif>
                         
                         @error('phone')
                             <div class="text-danger">{{ $message }}</div>
@@ -71,7 +67,7 @@
                     </div>
                     <div class="mb-3 col-md-3">
                         <label for="phone" class="form-label">Phone <span class="text-danger">*</span></label>
-                        <input type="text" wire:model="phone" id="phone" class="form-control form-control-sm border border-2 p-2" placeholder="Enter Phone Number">
+                        <input type="text" wire:model="phone" id="phone" class="form-control form-control-sm border border-2 p-2" placeholder="Enter Phone Number"  @if($phone) disabled @endif>
                         
                         @error('phone')
                             <div class="text-danger">{{ $message }}</div>
@@ -80,7 +76,7 @@
 
                     <div class="mb-3 col-md-3">
                         <label for="whatsapp_no" class="form-label">WhatsApp Number <span class="text-danger">*</span></label>
-                        <input type="text" wire:model="whatsapp_no" id="whatsapp_no" class="form-control form-control-sm border border-2 p-2" @if($is_wa_same) disabled @endif placeholder="Enter Whatsapp Number">
+                        <input type="text" wire:model="whatsapp_no" id="whatsapp_no" class="form-control form-control-sm border border-2 p-2" @if($is_wa_same) disabled @endif placeholder="Enter Whatsapp Number"  @if($whatsapp_no)disabled @endif>
 
                         <input type="checkbox" id="is_wa_same" wire:change="SameAsMobile" value="0" @if($is_wa_same) checked @endif>
                         <label for="is_wa_same" class="form-check-label ms-2">Same as Phone Number</label>
@@ -96,7 +92,7 @@
                 <div class="row">
                     <div class="mb-3 col-md-4">
                         <label for="billing_address" class="form-label">Street Address</label>
-                        <textarea wire:model="billing_address" id="billing_address" cols="30" rows="3" class="form-control form-control-sm border border-2 p-2"></textarea>
+                        <textarea wire:model="billing_address" id="billing_address" cols="30" rows="3" class="form-control form-control-sm border border-2 p-2" placeholder="Enter billing address" ></textarea>
                         @error('billing_address')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
@@ -149,7 +145,7 @@
                 <div class="row">
                     <div class="mb-3 col-md-4">
                         <label for="shipping_address" class="form-label">Street Address</label>
-                        <input type="text" wire:model="shipping_address" id="shipping_address" class="form-control form-control-sm border border-2 p-2" placeholder="Enter shipping address" @if($is_billing_shipping_same) disabled @endif>
+                        <textarea  wire:model="shipping_address" id="shipping_address" class="form-control form-control-sm border border-2 p-2" placeholder="Enter shipping address" @if($is_billing_shipping_same) disabled @endif></textarea>
                         @error('shipping_address')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
@@ -190,37 +186,56 @@
                         @enderror
                     </div>
                 </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <h6 class="badge bg-danger custom_danger_badge">Product Information</h6>
+                </div>
+
+                <div class="row">
+                  <!-- Category -->
+                    <div class="mb-3 col-md-4">
+                        <label for="category" class="form-label">Category</label>
+                        <select id="category" class="form-select form-control-sm border border-2" wire:model="category" wire:change="CatWiseSubCatProduct($event.target.value)" style="padding-left: 20px;">
+                            <option value="" selected hidden> Select Category</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->title }}</option>
+                            @endforeach
+                        </select>
+                        @error('category')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Sub-Category -->
+                    <div class="mb-3 col-md-4">
+                        <label for="subcategory" class="form-label">Sub-Category</label>
+                        <select id="subcategory" class="form-select form-control-sm border border-2" wire:model="selectedSubCategory" wire:change="SubCatWiseProduct($event.target.value)"  style="padding-left: 20px;">
+                            <option value="" selected hidden>Select Sub-Category</option>
+                            @foreach($subCategories as $subCategory)
+                                <option value="{{ $subCategory->id }}">{{ $subCategory->title }}</option>
+                            @endforeach
+                        </select>
+                        @error('selectedSubCategory')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Product -->
+                    <div class="mb-3 col-md-4">
+                        <label for="product" class="form-label">Product</label>
+                        <select id="product" class="form-select form-control-sm border border-2" wire:model="selectedProduct" style="padding-left: 20px;">
+                            <option value="" selected hidden>Select Product</option>
+                            @foreach($products as $product)
+                                <option value="{{ $product->id }}">{{ $product->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('selectedProduct')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
             </form>
         </div>
     </div>
 </div>
 
-<script>
-    // Function to initialize Select2
-    $(document).ready(function () {
-        $(".js-select2").select2({
-            placeholder: "Select customer",
-            theme: "material",
-
-            // Customize how options are displayed in the dropdown
-            templateResult: function (data) {
-                if (!data.id) { return data.text; } // Skip the placeholder option
-                var $result = $(
-                    '<div><img src="' + $(data.element).data('image') + '" style="width: 30px; height: 30px; object-fit: cover; margin-right: 10px;">' + data.text + '</div>'
-                );
-                return $result;
-            },
-
-            // Customize how the selected option is displayed in the input field
-            templateSelection: function (data) {
-                if (!data.id) { return data.text; } // Skip the placeholder option
-                var $selection = $(
-                    '<div><img src="' + $(data.element).data('image') + '" style="width: 30px; height: 30px; object-fit: cover; margin-right: 10px;">' + data.text + '</div>'
-                );
-                return $selection;
-            }
-        });
-    });
-
-
-</script>

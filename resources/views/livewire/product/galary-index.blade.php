@@ -13,7 +13,7 @@
                         </div>
                         <div class="row">
                             <div class="col-lg-6 col-7">
-                                <h6>Sub Categories</h6>
+                                <h6>Galary</h6>
                             </div>
                             <div class="col-lg-6 col-5 my-auto text-end">
                                 <div class="ms-md-auto pe-md-3 d-flex align-items-center">
@@ -37,45 +37,39 @@
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
                                             SL</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
-                                            SubCategory</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
-                                            category</th>
+                                            Title</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
                                             Status</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle px-4">
+                                        <th class="text-end text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle px-4">
                                             Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($subcategories as $k => $subcategory)
+                                    {{-- @foreach($categories as $k => $category)
                                         <tr>
                                             <td class="align-middle text-center">{{ $k + 1 }}</td>
-                                            <td class="align-middle text-center">{{ ucwords($subcategory->title) }}</td>
-                                            <td class="align-middle text-center">{{ ucwords($subcategory->category?$subcategory->category->title : "") }}</td>
-                                           
+                                            <td class="align-middle text-center">{{ ucwords($category->title) }}</td>
                                             <td class="align-middle text-sm" style="text-align: center;">
                                                 <div class="form-check form-switch">
                                                     <input 
                                                         class="form-check-input ms-auto" 
                                                         type="checkbox" 
-                                                        id="flexSwitchCheckDefault{{ $subcategory->id }}" 
-                                                        wire:click="toggleStatus({{ $subcategory->id }})"
-                                                        @if($subcategory->status) checked @endif
+                                                        id="flexSwitchCheckDefault{{ $category->id }}" 
+                                                        wire:click="toggleStatus({{ $category->id }})"
+                                                        @if($category->status) checked @endif
                                                     >
                                                 </div>
                                             </td>
                                             <td class="align-middle text-end px-4">
-                                                <a href="{{ route('measurements.index',$subcategory->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm" title="">Measurement
-                                                </a>
-                                                <button wire:click="edit({{ $subcategory->id }})" class="btn btn-outline-info btn-sm custom-btn-sm" title="Edit"> <span class="material-icons">edit</span></button>
-                                                <button wire:click="destroy({{ $subcategory->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm" title="Delete"><span class="material-icons">delete</span> </button>
+                                                <button wire:click="edit({{ $category->id }})" class="btn btn-outline-info btn-sm custom-btn-sm" title="Edit"><span class="material-icons">edit</span></button>
+                                                <button wire:click="destroy({{ $category->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm" title="Delete"><span class="material-icons">delete</span></button>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @endforeach --}}
                                 </tbody>
                             </table>
                             <div class="d-flex justify-content-end mt-2">
-                                {{$subcategories->links('pagination::bootstrap-4')}}
+                                {{-- {{ $categories->links('pagination::bootstrap-4') }} --}}
                             </div>
                         </div>
                     </div>
@@ -86,39 +80,32 @@
     
     <div class="col-lg-4 col-md-6 mb-md-0 mb-4">
         <div class="row">
-            <div class="col-12">             
-                <div class="card my-4">       
+            <div class="col-12">
+                <div class="card my-4">
                     <div class="card-body px-0 pb-2 mx-4">
-                        @if ($categories->isEmpty())
-                            <div class="d-flex justify-content-between mb-3">
-                                <h5>Create Subcategory</h5>  
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5>Create Galary</h5>  
+                        </div>
+                        <form wire:submit.prevent="">
+                            <div class="row">
+                                <label class="form-label">Images</label>
+                                <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
+                                    <input type="hidden" wire:model="product_id" id="product_id">
+                                    <input type="file" wire:model="images" class="form-control border border-2 p-2" placeholder="Choose Images" multiple>
+                                </div>
+                                @error('images')
+                                    <p class='text-danger inputerror'>{{ $message }} </p>
+                                @enderror
+                                <div class="mb-2 text-end">
+                                    <button type="submit" class="btn btn-primary btn-sm mt-1" 
+                                            wire:loading.attr="disabled">
+                                        <span> 
+                                           Submit
+                                        </span>
+                                    </button>
+                                </div>
                             </div>
-                        @endif   
-                         <form wire:submit.prevent="{{ $subCategoryId ? 'update' : 'store' }}">
-                            <div class="form-group">
-                                <label>
-                                    Category
-                                    <a href="{{ route('admin.categories') }}" class="badge bg-secondary text-decoration-none">
-                                        Categories
-                                    </a>
-                                </label>
-                                <select wire:model="category_id" class="form-control border border-2 p-2">
-                                    <option value="" selected hidden>Select Category</option>
-                                    @foreach($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->title }}</option>
-                                    @endforeach
-                                </select>
-                                @error('category_id') <span class="text-danger">{{ $message }}</span> @enderror
-                            </div>
-                            <div class="form-group">
-                                <label>Subcategory Title</label>
-                                <input type="text" wire:model="title" class="form-control border border-2 p-2" placeholder="Enter Sub-Category">
-                                @error('title') <span class="text-danger">{{ $message }}</span> @enderror
-                            </div>
-                            <button type="submit" class="btn btn-sm btn-primary mt-3">
-                                {{ $subCategoryId ? 'Update Subcategory' : 'Create Subcategory' }}
-                            </button>
-                         </form>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -36,10 +36,19 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-3">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" wire:model="email" id="email" class="form-control border border-2 p-2" placeholder="Enter Email">
                             @error('email')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3 col-md-3">
+                            <label for="dob" class="form-label">Date Of Birth <span class="text-danger">*</span></label>
+                            <input type="date" wire:model="dob" id="dob" class="form-control border border-2 p-2">
+                            
+                            @error('dob')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>

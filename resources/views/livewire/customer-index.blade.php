@@ -2,8 +2,19 @@
     <!-- Navbar -->
     <!-- End Navbar -->
     <div class="container-fluid py-4">
-        <div class="d-flex justify-content-between mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <!-- Customer List Title -->
             <h4 class="m-0">Customer List</h4> 
+    
+            <!-- Search Bar -->
+            <div class="input-group w-50">
+                <input type="text" class="form-control border" placeholder=" Search Customers" aria-label="Search" aria-describedby="button-search" style="height: fit-content">
+                <button class="btn btn-outline-primary" type="button" id="button-search">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+    
+            <!-- Add Customer Button -->
             <a href="{{ route('admin.user-address-form') }}" class="btn btn-primary">
                 <i class="material-icons text-white">add</i>
                 Add Customer
@@ -20,7 +31,6 @@
                                         {{ session('success') }}
                                     </div>
                                 @endif
-                               
 
                                 @if (session()->has('error'))
                                     <div class="alert alert-danger">
