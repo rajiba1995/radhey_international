@@ -14,7 +14,7 @@ class MasterProduct extends Component
             \Storage::disk('public')->delete($product->product_image);
         }
         $product->save();
-        session()->flash('message','Product deleted successfully');
+        session()->flash('message','Product deleted successfully.');
     }
 
     public function toggleStatus($product_id){
