@@ -22,18 +22,20 @@ class Helper
             throw new \Exception("Invalid image file.");
         }
 
-       // Generate folder path in the public directory
-        $folderPath = public_path('uploads' . DIRECTORY_SEPARATOR . $folderName);
-
-        // Create folder if it doesn't exist
-        if (!File::exists($folderPath)) {
-            // This will create the folder with proper permissions if it doesn't exist
-            File::makeDirectory($folderPath, 0755, true);
-        }
+        $folderPath = 'uploads/' . DIRECTORY_SEPARATOR . $folderName;
 
         // Generate a unique filename
         $filename = Str::uuid() . '.' . $image->getClientOriginalExtension();
-        $image->move($folderPath, $filename);
+        // Use Laravel's Storage facade for managing file uploads
+       
+
+        try {
+            // Save the file to the desired location
+            $image->storeAs($folderPath, $filename, 'public');
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+            throw new \Exception("Image could not be moved. Error: " . $e->getMessage());
+        }
         // Return the relative path of the uploaded file
         return 'uploads/' . $folderName . '/' . $filename;
     }

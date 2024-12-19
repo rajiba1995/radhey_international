@@ -44,9 +44,12 @@ class FabricIndex extends Component
             'code' => $this->code,
             'status' => $this->status,
         ]);
+        $this->title = null;
+        $this->code = null;
 
         session()->flash('message', 'Fabric created successfully!');
-        return redirect()->route('admin.fabrics.index');
+        $this->fabrics = Fabric::orderBy('id', 'desc')->get();
+        // return redirect()->route('admin.fabrics.index');
     }
 
     // Edit Fabric
@@ -82,9 +85,13 @@ class FabricIndex extends Component
             'code' => $this->code,
             'status' => $this->status,
         ]);
+        $this->title = null;
+        $this->code = null;
+
 
         session()->flash('message', 'Fabric updated successfully!');
-        return redirect()->route('admin.fabrics.index');
+        $this->fabrics = Fabric::orderBy('id', 'desc')->get();
+        // return redirect()->route('admin.fabrics.index');
     }
 
     // Delete Fabric
@@ -92,7 +99,7 @@ class FabricIndex extends Component
     {
         Fabric::findOrFail($id)->delete();
         session()->flash('message', 'Fabric deleted successfully!');
-        return redirect()->route('admin.fabrics.index');
+        $this->fabrics = Fabric::orderBy('id', 'desc')->get();
     }
 
     // Toggle Status

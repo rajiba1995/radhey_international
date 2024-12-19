@@ -366,5 +366,41 @@ button[disabled] {
 .form-control-sm{
     height: 35px;
     border-radius: 9px;
+    padding: inherit !important;
 }
+#fetch_customer_details {
+    position: absolute;
+    z-index: 1000;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+#fetch_customer_details img {
+    width: 40px;
+    height: 40px;
+    margin-right: 6px;
+    object-fit: cover;
+}
+.customer_input{
+    padding-left: 5px !important;
+}
+.measurement_input{
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    background-color: #fff;
+}
+.measurement_input:focus{
+    background-color: #fff;
+}
+.alert-danger{
+    background-image:none !important;
+    color: #7e342e !important;
+}
+.measurement_div{
+    background: #73d46a1c;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
 

@@ -122,15 +122,6 @@
                                 @error('image')
                                     <p class='text-danger inputerror'>{{ $message }}</p>
                                 @enderror
-
-                                @if ($image)
-                                    <div class="mt-2">
-                                        <label class="form-label">Image Preview:</label>
-                                        <img src="{{ $image instanceof \Livewire\TemporaryUploadedFile ? $image->temporaryUrl() : asset('storage/' . $image) }}" 
-                                            alt="Preview" class="img-thumbnail" width="100">
-                                    </div>
-                                @endif
-
                                 <div class="mb-2 text-end mt-4">
                                     <button type="submit" class="btn btn-primary btn-sm mt-1" wire:loading.attr="disabled">
                                         <span>{{ $categoryId ? 'Update Category' : 'Create Category' }}</span>
