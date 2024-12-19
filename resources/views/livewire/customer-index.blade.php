@@ -15,8 +15,8 @@
             </div>
     
             <!-- Add Customer Button -->
-            <a href="{{ route('admin.user-address-form') }}" class="btn btn-primary">
-                <i class="material-icons text-white">add</i>
+            <a href="{{ route('admin.user-address-form') }}" class="btn btn-primary btn-sm">
+                <i class="material-icons text-white" style="font-size: 15px;">add</i>
                 Add Customer
             </a>
         </div>
@@ -69,7 +69,7 @@
                                         @if($user->email != 'admin@gmail.com') 
                                             <tr>
                                                 <td>
-                                                    <img src="{{asset('storage/'.$user->profile_image)}}" alt="profile-image" width="85px">
+                                                    <img src="{{asset($user->profile_image)}}" alt="profile-image" width="85px">
                                                 </td>
                                                 <td>
                                                     <div class="d-flex px-2 py-1">

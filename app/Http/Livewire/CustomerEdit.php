@@ -70,9 +70,9 @@ class CustomerEdit extends Component
         $this->gst_number = $user->gst_number ?? "";
         $this->credit_limit = $user->credit_limit ?? "";
         $this->credit_days = $user->credit_days ?? "";
-        $this->image = $user->profile_image ? asset('storage/' . $user->profile_image) : "";
-        $this->verified_video = $user->verified_video ? asset('storage/' . $user->verified_video) : "";
-        $this->gst_certificate_image = $user->gst_certificate_image ? asset('storage/' . $user->gst_certificate_image) : "";
+        $this->image = $user->profile_image ? asset( $user->profile_image) : "";
+        $this->verified_video = $user->verified_video ? asset( $user->verified_video) : "";
+        $this->gst_certificate_image = $user->gst_certificate_image ? asset( $user->gst_certificate_image) : "";
     }
 
     private function fillAddressData($billingAddress, $shippingAddress)
@@ -236,7 +236,8 @@ class CustomerEdit extends Component
         if ($file && $file instanceof \Illuminate\Http\UploadedFile) {
             $timestamp = now()->timestamp;
             $fileName = $timestamp . '.' . $file->getClientOriginalExtension();
-            return $file->storeAs($folder, $fileName, 'public');
+            $storedPath = $file->storeAs($folder, $fileName, 'public');
+            return "storage/".$storedPath;
         }
         return null;
     }

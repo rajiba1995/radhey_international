@@ -5,12 +5,12 @@
         <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
             <div class="nav-wrapper position-relative end text-end">
                 <!-- Single Button -->
-                <a class="btn btn-primary btn-sm" href="{{route('product.import')}}" role="button" >
+                {{-- <a class="btn btn-primary btn-sm" href="{{route('product.import')}}" role="button" >
                     <i class="material-icons text-white">file_upload</i>
                     <span class="ms-1">Import</span>
-                </a>
+                </a> --}}
                 <a class="btn btn-primary btn-sm" href="{{route('product.add')}}" role="button" >
-                    <i class="material-icons text-white">add</i>
+                    <i class="material-icons text-white" style="font-size: 15px;">add</i>
                     <span class="ms-1">Create Product</span>
                 </a>
             </div>

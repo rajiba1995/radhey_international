@@ -19,7 +19,7 @@ class UpdateProduct extends Component
     public $category_id;
     public $sub_category_id;
     public $name;
-    public $hsn_code;
+    public $product_code;
     public $short_description;
     public $description;
     public $gst_details;
@@ -36,7 +36,7 @@ class UpdateProduct extends Component
         $this->category_id = $product->category_id;
         $this->sub_category_id = $product->sub_category_id;
         $this->name = $product->name;
-        $this->hsn_code = $product->hsn_code;
+        $this->product_code = $product->product_code;
         $this->short_description = $product->short_description;
         $this->description = $product->description;
         $this->gst_details = $product->gst_details;
@@ -52,11 +52,12 @@ class UpdateProduct extends Component
 
     public function update()
     {
+        // dd($this->all());
         $this->validate([
             'category_id' => 'required',
             'sub_category_id' => 'required',
             'name' => 'required|string|max:255',
-            'hsn_code' => 'nullable|string|max:50',
+            'product_code' => 'required|string|max:50',
             'short_description' => 'nullable|string|max:500',
             'description' => 'nullable|string',
             'gst_details' => 'nullable|numeric|min:0',
@@ -80,7 +81,7 @@ class UpdateProduct extends Component
             'category_id' => $this->category_id,
             'sub_category_id' => $this->sub_category_id,
             'name' => $this->name,
-            'hsn_code' => $this->hsn_code,
+            'product_code' => $this->product_code,
             'short_description' => $this->short_description,
             'description' => $this->description,
             'gst_details' => $this->gst_details,

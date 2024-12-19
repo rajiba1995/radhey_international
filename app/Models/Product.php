@@ -14,7 +14,7 @@ class Product extends Model
         'category_id',
         'sub_category_id',
         'name',
-        'hsn_code',
+        'product_code',
         'short_description',
         'description',
         'gst_details',

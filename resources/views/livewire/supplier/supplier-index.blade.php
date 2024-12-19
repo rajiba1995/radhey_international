@@ -1,8 +1,8 @@
     <div class="container-fluid py-4">
         <div class="d-flex justify-content-between mb-1">
             <h4 class="m-0">Supplier List</h4> 
-            <a href="{{ route('suppliers.add') }}" class="btn btn-primary mb-3">
-                <i class="material-icons text-white">add</i>
+            <a href="{{ route('suppliers.add') }}" class="btn btn-primary mb-3 btn-sm">
+                <i class="material-icons text-white" style="font-size: 15px;">add</i>
                 Add Supplier
             </a>
         </div>

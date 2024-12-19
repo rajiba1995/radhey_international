@@ -7,6 +7,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Validation\Rule;
 use App\Models\Measurement;
+use App\Models\SubCategory;
 use Illuminate\Http\Request;
 
 
@@ -166,6 +167,8 @@ class MeasurementIndex extends Component
     // Render Method with Search and Pagination
     public function render()
     {
+        $subCat = SubCategory::select('title')->find($this->subcategory_id);
+        $subcatTitle = $subCat->title;
         $measurements = Measurement::where('title', 'like', "%{$this->search}%")
             ->orWhere('short_code', 'like', "%{$this->search}%")
             ->orderBy('id', 'desc')
@@ -173,6 +176,7 @@ class MeasurementIndex extends Component
 
         return view('livewire.measurement.measurement-index', [
             'measurements' => $measurements,
+            'subCat' => $subcatTitle,
         ]);
     }
 }

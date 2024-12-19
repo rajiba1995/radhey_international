@@ -10,11 +10,11 @@
             <div class="nav-wrapper position-relative end text-end">
                 <!-- Single Button -->
                 <a class="btn btn-primary btn-sm" href="{{route('staff.task.add',$staff->id)}}" role="button" >
-                    <i class="material-icons text-white">add</i>
+                    <i class="material-icons text-white" style="font-size: 15px;">add</i>
                     <span class="ms-1"> New Task</span>
                 </a>
-                <a class="btn btn-primary btn-sm" href="{{route('staff.index')}}" role="button" >
-                    <i class="material-icons text-white">chevron_left</i>
+                <a class="btn btn-dark btn-sm" href="{{route('staff.index')}}" role="button" >
+                    <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
                     <span class="ms-1"> Back</span>
                 </a>
             </div>

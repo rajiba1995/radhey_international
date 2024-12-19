@@ -72,7 +72,7 @@
                 <div class="card my-4">
                     <div class="card-body px-0 pb-2 mx-4">
                         <div class="d-flex justify-content-between mb-3">
-                            <h5>{{ $fabricId ? 'Edit Fabric' : 'Create Fabric' }}</h5>
+                            <h5>{{ $fabricId ? 'Update Fabric' : 'Create Fabric' }}</h5>
                         </div>
                         <form wire:submit.prevent="{{ $fabricId ? 'update' : 'store' }}">
                             <!-- Measurement Title -->
@@ -106,9 +106,15 @@
                             </div>
 
                             <!-- Submit Button -->
-                            <button type="submit" class="btn btn-sm btn-primary mt-3">
-                                {{ $fabricId ? 'Update Fabric' : 'Create Fabric' }}
-                            </button>
+                            <div class="text-end">
+                                <a href="" class="btn btn-dark btn-sm mt-2">
+                                    <i class="material-icons text-white" style="font-size: 15px;">refresh</i> 
+                                    Refresh
+                                </a>
+                                <button type="submit" class="btn btn-sm btn-primary mt-2">
+                                    {{ $fabricId ? 'Update Fabric' : 'Create Fabric' }}
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>
