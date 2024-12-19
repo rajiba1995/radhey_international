@@ -13,7 +13,7 @@
                         </div>
                         <div class="row">
                             <div class="col-lg-6 col-7">
-                                <h6>{{$productName}} ->>Galary</h6>
+                                <h6>{{$productName}} ->>Gallery</h6>
                             </div>
                         </div>
                     </div>
@@ -41,7 +41,7 @@
                 <div class="card my-4">
                     <div class="card-body px-0 pb-2 mx-4">
                         <div class="d-flex justify-content-between mb-3">
-                            <h5>Create Galary</h5>  
+                            <h5>Create Gallery</h5>  
                         </div>
                         <form wire:submit.prevent="save">
                             <div class="row">
