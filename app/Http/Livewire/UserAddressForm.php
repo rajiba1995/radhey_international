@@ -12,7 +12,7 @@ class UserAddressForm extends Component
 {
     use WithFileUploads;
 
-    public $id,$name, $company_name, $email, $phone, $whatsapp_no,$is_wa_same, $gst_number, $credit_limit, $credit_days,$gst_certificate_image,$image,$verified_video;
+    public $id,$name,$dob, $company_name, $email, $phone, $whatsapp_no,$is_wa_same, $gst_number, $credit_limit, $credit_days,$gst_certificate_image,$image,$verified_video;
     public $address_type, $address, $landmark, $city, $state, $country, $zip_code;
     public $billing_address;
     public $billing_landmark;
@@ -20,7 +20,7 @@ class UserAddressForm extends Component
     public $billing_state;
     public $billing_country;
     public $billing_pin;
-
+  
     public $is_billing_shipping_same;
 
     public $shipping_address;
@@ -64,6 +64,7 @@ class UserAddressForm extends Component
             'verified_video' => 'nullable|mimes:mp4,mov,avi,wmv',
             'company_name'=>'nullable|string|max:255',
             'email' => 'nullable|email|unique:users,email',
+            'dob'=> 'required|date',
             'phone' => 'required|digits:'.env('VALIDATE_MOBILE'),
             'whatsapp_no' => 'required|digits:'.env('VALIDATE_WHATSAPP'),
             'gst_number' => 'nullable|string|max:15',
@@ -144,6 +145,7 @@ class UserAddressForm extends Component
    
     public function save()
     {
+        // dd($this->all());
         $this->validate();
     // Start the transaction
     DB::beginTransaction();
@@ -168,6 +170,7 @@ class UserAddressForm extends Component
             'verified_video' =>  $videoPath,
             'company_name' => $this->company_name,
             'email' => $this->email,
+            'dob'=>$this->dob,
             'phone' => $this->phone,
             'whatsapp_no' => $this->whatsapp_no,
             'gst_number' => $this->gst_number,
@@ -175,8 +178,7 @@ class UserAddressForm extends Component
             'credit_days' => $this->credit_days,
             'gst_certificate_image' => $this->gst_certificate_image ? $this->uploadGSTCertificate() : null, // Handle file upload
         ];
-       
-            
+        
         $user = User::create($userData);
          // Store billing address
          $this->storeAddress($user->id, 1, $this->billing_address, $this->billing_landmark, $this->billing_city, $this->billing_state, $this->billing_country, $this->billing_pin);

@@ -11,7 +11,7 @@ class CustomerEdit extends Component
 {
     use WithFileUploads;
 
-    public $id, $name, $company_name, $email, $phone, $whatsapp_no, $is_wa_same, $gst_number, $credit_limit, $credit_days, $gst_certificate_image, $image, $verified_video;
+    public $id, $name,$dob, $company_name, $email, $phone, $whatsapp_no, $is_wa_same, $gst_number, $credit_limit, $credit_days, $gst_certificate_image, $image, $verified_video;
     public $billing_address, $billing_landmark, $billing_city, $billing_state, $billing_country, $billing_pin;
     public $shipping_address, $shipping_landmark, $shipping_city, $shipping_state, $shipping_country, $shipping_pin;
     public $is_billing_shipping_same;
@@ -61,17 +61,18 @@ class CustomerEdit extends Component
 
     private function fillUserData($user)
     {
-        $this->name = $user->name;
-        $this->company_name = $user->company_name;
-        $this->email = $user->email;
-        $this->phone = $user->phone;
-        $this->whatsapp_no = $user->whatsapp_no;
-        $this->gst_number = $user->gst_number;
-        $this->credit_limit = $user->credit_limit;
-        $this->credit_days = $user->credit_days;
-        $this->image = $user->profile_image ? asset('storage/' . $user->profile_image) : null;
-        $this->verified_video = $user->verified_video ? asset('storage/' . $user->verified_video) : null;
-        $this->gst_certificate_image = $user->gst_certificate_image ? asset('storage/' . $user->gst_certificate_image) : null;
+        $this->name = $user->name ?? "";
+        $this->company_name = $user->company_name ?? "";
+        $this->email = $user->email ?? "";
+        $this->dob   = $user->dob ?? "";  
+        $this->phone = $user->phone ?? "";
+        $this->whatsapp_no = $user->whatsapp_no ?? "";
+        $this->gst_number = $user->gst_number ?? "";
+        $this->credit_limit = $user->credit_limit ?? "";
+        $this->credit_days = $user->credit_days ?? "";
+        $this->image = $user->profile_image ? asset('storage/' . $user->profile_image) : "";
+        $this->verified_video = $user->verified_video ? asset('storage/' . $user->verified_video) : "";
+        $this->gst_certificate_image = $user->gst_certificate_image ? asset('storage/' . $user->gst_certificate_image) : "";
     }
 
     private function fillAddressData($billingAddress, $shippingAddress)
@@ -105,6 +106,7 @@ class CustomerEdit extends Component
             'verified_video' => $this->verified_video instanceof \Illuminate\Http\UploadedFile ? 'nullable|mimes:mp4,mov,avi,wmv' : 'nullable',
             'company_name' => 'nullable|string|max:255',
             'email' => 'nullable|email|unique:users,email,' . $this->id,
+            'dob'=> 'required|date',
             'phone' => 'required|digits:'.env('VALIDATE_MOBILE'),
             'whatsapp_no' => 'required|digits:'.env('VALIDATE_WHATSAPP'),
             'gst_number' => 'nullable|string|max:15',
@@ -197,6 +199,7 @@ class CustomerEdit extends Component
             'name' => $this->name,
             'company_name' => $this->company_name,
             'email' => $this->email,
+            'dob'=>$this->dob,
             'phone' => $this->phone,
             'whatsapp_no' => $this->whatsapp_no,
             'gst_number' => $this->gst_number,

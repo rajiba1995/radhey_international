@@ -163,7 +163,7 @@
                 <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['expense.index']) ? 'active bg-gradient-primary' : '' }}"
                     href="#ExpenseManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['expense.index']) ? 'true' : 'false' }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">assignment_ind</i>
+                        <i class="material-icons opacity-10">attach_money</i>
                     </div>
                     <span class="nav-link-text ms-1">Expense Management</span>
                 </a>

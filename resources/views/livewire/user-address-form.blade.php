@@ -32,15 +32,24 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3 col-md-4">
+                        <div class="mb-3 col-md-3">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" wire:model="email" id="email" class="form-control border border-2 p-2" placeholder="Enter Email">
                             @error('email')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
+                        
+                        <div class="mb-3 col-md-3">
+                            <label for="dob" class="form-label">Date Of Birth <span class="text-danger">*</span></label>
+                            <input type="date" wire:model="dob" id="dob" class="form-control border border-2 p-2">
+                            
+                            @error('dob')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                        <div class="mb-3 col-md-4">
+                        <div class="mb-3 col-md-3">
                             <label for="phone" class="form-label">Phone <span class="text-danger">*</span></label>
                             <input type="text" wire:model="phone" id="phone" class="form-control border border-2 p-2" placeholder="Enter Phone Number">
                             
@@ -49,7 +58,7 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3 col-md-4">
+                        <div class="mb-3 col-md-3">
                             <label for="whatsapp_no" class="form-label">WhatsApp Number <span class="text-danger">*</span></label>
                             <input type="text" wire:model="whatsapp_no" id="whatsapp_no" class="form-control border border-2 p-2" @if($is_wa_same) disabled @endif placeholder="Enter Whatsapp Number">
 

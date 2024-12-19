@@ -20,7 +20,7 @@ use App\Http\Livewire\Tables;
 use App\Http\Livewire\{VirtualReality,CustomerIndex};
 use GuzzleHttp\Middleware;
 use App\Http\Livewire\Order\{OrderIndex, OrderNew};
-use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory,FabricIndex};
+use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory,FabricIndex,GalaryIndex};
 use App\Http\Livewire\Staff\{DesignationIndex,StaffIndex,StaffAdd,StaffUpdate,StaffView,StaffTask,StaffTaskAdd};
 use App\Http\Livewire\Expense\{ExpenseIndex};
 use App\Http\Livewire\UserAddressForm; 
@@ -98,7 +98,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
         Route::get('/measurements/{subcategory}', MeasurementIndex::class)->name('measurements.index');
         Route::post('/measurements/update-positions', [MeasurementIndex::class, 'updatePositions'])->name('measurements.updatePositions');
         Route::get('/fabrics', FabricIndex::class)->name('admin.fabrics.index');
-    
+        Route::get('/galary/{id}', GalaryIndex::class)->name('product.galary');
     });
 
     Route::get('/designation',DesignationIndex::class)->name('staff.designation');

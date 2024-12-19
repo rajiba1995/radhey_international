@@ -109,6 +109,7 @@
                             <button type="submit" class="btn btn-sm btn-primary mt-3">
                                 {{ $measurementId ? 'Update Measurement' : 'Create Measurement' }}
                             </button>
+                            <a href="{{route('admin.subcategories')}}"class="btn btn-sm btn-dark mt-3">Back</a>
                         </form>
                     </div>
                 </div>
