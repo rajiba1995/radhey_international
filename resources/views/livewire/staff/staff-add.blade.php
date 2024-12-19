@@ -6,8 +6,8 @@
                     <h5 class="mb-3">Create Staff Information</h5>
                 </div>
                 <div class="col-md-4 text-end">
-                    <a href="{{ route('staff.index') }}" class="btn btn-primary">
-                        <i class="material-icons text-white">chevron_left</i> Back
+                    <a href="{{ route('staff.index') }}" class="btn btn-dark btn-sm">
+                        <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i> Back
                     </a>
                 </div>
             </div>

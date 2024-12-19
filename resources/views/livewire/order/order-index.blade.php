@@ -18,8 +18,8 @@
                     <option value="completed">Completed</option>
                     <option value="cancelled">Cancelled</option>
                 </select> --}}
-                <a href="{{route('admin.order.new')}}" class="btn btn-primary mb-3">
-                    <i class="material-icons text-white">add</i>Place New Order
+                <a href="{{route('admin.order.new')}}" class="btn btn-primary mb-3 btn-sm">
+                    <i class="material-icons text-white" style="font-size: 15px;">add</i>Place New Order
                 </a>
             </div>
             <div class="row">

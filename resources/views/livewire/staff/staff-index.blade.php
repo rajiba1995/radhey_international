@@ -10,7 +10,7 @@
             <div class="nav-wrapper position-relative end text-end">
                 <!-- Single Button -->
                 <a class="btn btn-primary btn-sm" href="{{route('staff.add')}}" role="button" >
-                    <i class="material-icons text-white">add</i>
+                    <i class="material-icons text-white" style="font-size: 15px;">add</i>
                     <span class="ms-1">Add New Staff</span>
                 </a>
             </div>

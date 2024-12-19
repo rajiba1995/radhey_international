@@ -11,8 +11,8 @@
             <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
                 <div class="nav-wrapper position-relative end text-end">
                     <!-- Single Button -->
-                    <a class="btn btn-primary btn-lg" href="javascript:history.back();" role="button" >
-                        <i class="material-icons text-white">chevron_left</i>
+                    <a class="btn btn-dark btn-sm" href="javascript:history.back();" role="button" >
+                        <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
                         <span class="ms-1">Back</span>
                     </a>
                 </div>
@@ -61,9 +61,9 @@
                 
                         <!-- HSN Code -->
                         <div class="mb-3 col-md-6">
-                            <label class="form-label">HSN Code</label>
-                            <input wire:model="hsn_code" type="text" class="form-control border border-2 p-2" placeholder="HSN Code">
-                            @error('hsn_code')
+                            <label class="form-label">Product Code <span class="text-danger">*</span></label>
+                            <input wire:model="product_code" type="text" class="form-control border border-2 p-2" placeholder="Product Code">
+                            @error('product_code')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                             @enderror
                         </div>
@@ -109,7 +109,7 @@
                         </div>
                 
                         <div class="col-12">
-                            <button type="submit" class="btn bg-gradient-dark">Submit</button>
+                            <button type="submit" class="btn bg-gradient-dark">Update</button>
                         </div>
                     </div>
                 </form>

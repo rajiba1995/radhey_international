@@ -13,7 +13,7 @@
                         </div>
                         <div class="row">
                             <div class="col-lg-6 col-7">
-                                <h6>Measurements</h6>
+                                <h6>{{$subCat}}->>Measurements</h6>
                             </div>
                             <div class="col-lg-6 col-5 my-auto text-end">
                                 <div class="ms-md-auto pe-md-3 d-flex align-items-center">
@@ -106,10 +106,15 @@
                             </div>
 
                             <!-- Submit Button -->
-                            <button type="submit" class="btn btn-sm btn-primary mt-3">
-                                {{ $measurementId ? 'Update Measurement' : 'Create Measurement' }}
-                            </button>
-                            <a href="{{route('admin.subcategories')}}"class="btn btn-sm btn-dark mt-3">Back</a>
+                            <div class="text-end">
+                                <a href="{{route('admin.subcategories')}}"class="btn btn-sm btn-dark mt-3">
+                                    <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
+                                    Back
+                                </a>
+                                <button type="submit" class="btn btn-sm btn-primary mt-3">
+                                    {{ $measurementId ? 'Update Measurement' : 'Create Measurement' }}
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>

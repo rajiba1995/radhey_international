@@ -17,8 +17,8 @@
             <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
                 <div class="nav-wrapper position-relative end text-end">
                     <!-- Single Button -->
-                    <a class="btn btn-primary btn-lg" href="javascript:history.back();" role="button" >
-                        <i class="material-icons text-white">chevron_left</i>
+                    <a class="btn btn-dark btn-sm" href="javascript:history.back();" role="button" >
+                        <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
                         <span class="ms-1">Back</span>
                     </a>
                 </div>
@@ -70,7 +70,7 @@
                         <!-- Product Name -->
                         <div class="mb-3 col-md-6">
                             <label class="form-label">Product Name <span class="text-danger">*</span></label>
-                            <input wire:model="name" type="text" class="form-control border border-2 p-2" placeholder="Product Name" value="{{ old('name', $name) }}">
+                            <input wire:model="name" type="text" class="form-control border border-2 p-2" placeholder="Product Name" >
                             @error('name')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                             @enderror
@@ -79,7 +79,7 @@
                         <!-- HSN Code -->
                         <div class="mb-3 col-md-6">
                             <label class="form-label">Product Code <span class="text-danger">*</span></label>
-                            <input wire:model="product_code" type="text" class="form-control border border-2 p-2" placeholder="Product Code" value="{{ old('product_code', $product_code) }}">
+                            <input wire:model="product_code" type="text" class="form-control border border-2 p-2" placeholder="Product Code">
                             @error('product_code')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                             @enderror
@@ -88,7 +88,7 @@
                         <!-- Short Description -->
                         <div class="mb-3 col-md-12">
                             <label class="form-label">Short Description</label>
-                            <textarea wire:model="short_description" id="short_description" class="form-control border border-2 p-2">{{ old('short_description', $short_description) }}</textarea>
+                            <textarea wire:model="short_description" id="short_description" class="form-control border border-2 p-2"></textarea>
                             @error('short_description')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                             @enderror
@@ -97,7 +97,7 @@
                         <!-- Description -->
                         <div class="mb-3 col-md-12">
                             <label class="form-label">Description</label>
-                            <textarea wire:model="description" id="description" class="form-control border border-2 p-2">{{ old('description', $description) }}</textarea>
+                            <textarea wire:model="description" id="description" class="form-control border border-2 p-2"></textarea>
                             @error('description')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                             @enderror
@@ -106,7 +106,7 @@
                         <!-- GST Details -->
                         <div class="mb-3 col-md-6">
                             <label class="form-label">GST Details (%)</label>
-                            <input wire:model="gst_details" type="text" class="form-control border border-2 p-2" placeholder="GST Percentage" value="{{ old('gst_details', $gst_details) }}">
+                            <input wire:model="gst_details" type="text" class="form-control border border-2 p-2" placeholder="GST Percentage" >
                             @error('gst_details')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                             @enderror

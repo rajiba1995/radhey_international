@@ -88,7 +88,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
     Route::get('rtl', RTL::class)->name('rtl');
 
     
-    Route::group(['prefix' => 'products'], function () {
+    
+Route::group(['prefix' => 'products'], function () {
         Route::get('/', MasterProduct::class)->name('product.view');
         Route::get('/products/import', MasterProduct::class)->name('product.import');
         Route::get('/add/products', AddProduct::class)->name('product.add');
@@ -98,9 +99,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
         Route::get('/measurements/{subcategory}', MeasurementIndex::class)->name('measurements.index');
         Route::post('/measurements/update-positions', [MeasurementIndex::class, 'updatePositions'])->name('measurements.updatePositions');
         Route::get('/fabrics', FabricIndex::class)->name('admin.fabrics.index');
-        Route::get('/galary/{id}', GalaryIndex::class)->name('product.galary');
+        Route::get('/galary/{product_id}', GalaryIndex::class)->name('product.galary');
     });
-
     Route::get('/designation',DesignationIndex::class)->name('staff.designation');
     
     // Staff

@@ -106,24 +106,26 @@ class UserAddressForm extends Component
             $timestamp = now()->timestamp;
             $extension = $this->image->getClientOriginalExtension();
             $imageName = $timestamp . '.' . $extension;
-            return $this->image->storeAs('profile_image', $imageName, 'public');
+            $storedPath =  $this->image->storeAs('profile_image', $imageName, 'public');
+            return 'storage/' . $storedPath;
         }
         return null;
     }
     
 
     private function uploadVideo()
-{
-    if ($this->verified_video) {
-        $timestamp = now()->timestamp;
-        $extension = $this->verified_video->getClientOriginalExtension();
-        $videoName = $timestamp . '.' . $extension;
+    {
+        if ($this->verified_video) {
+            $timestamp = now()->timestamp;
+            $extension = $this->verified_video->getClientOriginalExtension();
+            $videoName = $timestamp . '.' . $extension;
 
-        // Store the video and return the path
-        return $this->verified_video->storeAs('verified_video', $videoName, 'public');
+            // Store the video and return the path
+            $storedVideoPath =  $this->verified_video->storeAs('verified_video', $videoName, 'public');
+            return 'storage/'.$storedVideoPath;
+        }
+        return null;
     }
-    return null;
-}
 
     public function updatedImage(){
         if($this->image){
@@ -133,16 +135,17 @@ class UserAddressForm extends Component
 
 
     private function uploadGSTCertificate()
-{
-    // Handle file upload
-    if ($this->gst_certificate_image) {
-        $timestamp = now()->timestamp;
-        $imageName = $timestamp . '-' . $this->gst_certificate_image->getClientOriginalExtension();
-        return $this->gst_certificate_image->storeAs('gst_certificate_image', $imageName, 'public');
+    {
+        // Handle file upload
+        if ($this->gst_certificate_image) {
+            $timestamp = now()->timestamp;
+            $imageName = $timestamp . '-' . $this->gst_certificate_image->getClientOriginalExtension();
+            $storedGstPath =  $this->gst_certificate_image->storeAs('gst_certificate_image', $imageName, 'public');
+            return "storage/".$storedGstPath;
+        }
+        return null;
     }
-    return null;
-}
-   
+    
     public function save()
     {
         // dd($this->all());

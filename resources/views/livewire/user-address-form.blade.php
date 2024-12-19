@@ -7,7 +7,7 @@
                         <h5 class="mb-3">Customer Information</h5>
                     </div>
                     <div class="col-md-4 text-end">
-                        <a href="{{ route('customers.index') }}" class="btn btn-primary">Back</a>
+                        <a href="{{ route('customers.index') }}" class="btn btn-dark btn-sm"> <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i> Back</a>
                     </div>
                 </div>
             </div>

@@ -115,9 +115,15 @@
                                 <input type="text" wire:model="title" class="form-control border border-2 p-2" placeholder="Enter Sub-Category">
                                 @error('title') <span class="text-danger">{{ $message }}</span> @enderror
                             </div>
-                            <button type="submit" class="btn btn-sm btn-primary mt-3">
-                                {{ $subCategoryId ? 'Update Subcategory' : 'Create Subcategory' }}
-                            </button>
+                            <div class="text-end">
+                                <a href="" class="btn btn-dark btn-sm mt-3">
+                                    <i class="material-icons text-white" style="font-size: 15px;">refresh</i> 
+                                    Refresh
+                                </a>
+                                <button type="submit" class="btn btn-sm btn-primary mt-3">
+                                    {{ $subCategoryId ? 'Update Subcategory' : 'Create Subcategory' }}
+                                </button>
+                            </div>
                          </form>
                     </div>
                 </div>

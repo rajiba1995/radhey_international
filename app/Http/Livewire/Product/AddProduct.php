@@ -29,7 +29,7 @@ class AddProduct extends Component
             'category_id' => 'required',
             'sub_category_id' => 'required',
             'name' => 'required|string|max:255',
-            'product_code' => 'required|string|max:10|unique:products,product_code',
+            'product_code' => 'required|string|max:10',
             'short_description' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'gst_details' => 'nullable|numeric',
