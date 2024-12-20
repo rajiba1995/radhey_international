@@ -36,6 +36,7 @@ class MasterCategory extends Component
 
         session()->flash('message', 'Category created successfully!');
         $this->resetFields();
+       
     }
 
     public function edit($id)
@@ -70,6 +71,7 @@ class MasterCategory extends Component
             DB::commit(); // Commit the transaction
             session()->flash('message', 'Category updated successfully!');
             $this->resetFields();
+
         } catch (\Throwable $e) {
             DB::rollBack(); // Rollback the transaction in case of error
 

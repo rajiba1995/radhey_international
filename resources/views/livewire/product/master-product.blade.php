@@ -2,8 +2,9 @@
     <!-- Navbar -->
     <!-- End Navbar -->
     <div class="container-fluid py-4">
-        <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
-            <div class="nav-wrapper position-relative end text-end">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <h4 class="m-0">Product List</h4> 
+            <div class="d-flex align-items-center">
                 <!-- Single Button -->
                 {{-- <a class="btn btn-primary btn-sm" href="{{route('product.import')}}" role="button" >
                     <i class="material-icons text-white">file_upload</i>
@@ -13,6 +14,12 @@
                     <i class="material-icons text-white" style="font-size: 15px;">add</i>
                     <span class="ms-1">Create Product</span>
                 </a>
+                <div class="input-group custom-input-group">
+                    <input type="text" wire:model.debounce.500ms="search" class="form-control border border-2 p-2 custom-input-sm" placeholder="Search here...">
+                    <button type="button" wire:click="$refresh" class="btn btn-dark text-light mb-0 custom-input-sm">
+                        <span class="material-icons">search</span>
+                    </button>
+                </div>
             </div>
         </div>
         <div class="row">
@@ -67,6 +74,13 @@
                                                 <p class="text-secondary text-xs font-weight-bold">
                                                     {{ $product->collection?$product->collection->title:""}}
                                                 </p>
+                                                <span class="text-secondary text-xs font-weight-bold">
+                                                    @if ($product->product_image)
+                                                        <img src="{{ asset('storage/'.$product->product_image) }}" alt="" style="width: 50px; height: 50px;">
+                                                    @else
+                                                        <img src="{{asset('assets/img/cubes.png')}}" alt="no-img" style="width: 50px; height: 50px;">    
+                                                    @endif
+                                                </span>
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
@@ -96,9 +110,10 @@
                                                     <span class="material-icons">edit</span>
                                                 </a>
                                                 <button wire:click="deleteProduct({{ $product->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm"><span class="material-icons">delete</span></button>
+                                                <a href="{{route('product.gallery',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm">Gallery</a>
+                                                <a href="{{route('product.fabrics',$product->id)}}" class="btn btn-outline-warning btn-sm custom-btn-sm">Fabrics</a>
                                                 <a href="{{ route('measurements.index',$product->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm" title="">Measurement
                                                 </a>
-                                                <a href="{{route('product.galary',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm">Galary</a>
                                             </td>
                                         </tr>
                                         @empty

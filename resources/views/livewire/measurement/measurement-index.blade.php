@@ -5,9 +5,9 @@
                 <div class="card my-4">
                     <div class="card-header pb-0">
                         <div class="row">
-                            @if(session()->has('message'))
+                            @if(session()->has('success'))
                                 <div class="alert alert-success" id="flashMessage">
-                                    {{ session('message') }}
+                                    {{ session('success') }}
                                 </div>
                             @endif
                         </div>

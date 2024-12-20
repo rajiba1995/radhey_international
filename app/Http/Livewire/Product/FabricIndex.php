@@ -13,11 +13,12 @@ use Illuminate\Http\Request;
 class FabricIndex extends Component
 {
     public $fabrics;
-    public  $code, $title, $status = 1, $fabricId;
+    public  $hexacode, $title, $status = 1, $fabricId,$product_id;
     public $search = '';
 
-    public function mount()
+    public function mount($product_id)
     {
+        $this->product_id = $product_id;
         $this->fabrics = Fabric::orderBy('id', 'desc')->get();
     }
 
@@ -30,22 +31,23 @@ class FabricIndex extends Component
                 'max:255',
                 'unique:fabrics,title', // Ensure title is unique in fabrics table
             ],
-            'code' => [
+            'hexacode' => [
                 'required',
                 'string',
                 'max:255',
-                'unique:fabrics,code', // Ensure code is unique in fabrics table
+                'unique:fabrics,hexacode', // Ensure hexacode is unique in fabrics table
             ],
         ]);
         
 
         Fabric::create([
+            'product_id' => $this->product_id,
             'title' => $this->title,
-            'code' => $this->code,
+            'hexacode' => $this->hexacode,
             'status' => $this->status,
         ]);
         $this->title = null;
-        $this->code = null;
+        $this->hexacode = null;
 
         session()->flash('message', 'Fabric created successfully!');
         $this->fabrics = Fabric::orderBy('id', 'desc')->get();
@@ -58,7 +60,7 @@ class FabricIndex extends Component
         $fabric = Fabric::findOrFail($id);
         $this->fabricId = $fabric->id;
         $this->title = $fabric->title;
-        $this->code = $fabric->code;
+        $this->hexacode = $fabric->hexacode;
         $this->status = $fabric->status;
     }
     // Update Fabric
@@ -71,22 +73,23 @@ class FabricIndex extends Component
                 'max:255',
                 Rule::unique('fabrics', 'title')->ignore($this->fabricId), 
             ],
-            'code' => [
+            'hexacode' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('fabrics', 'code')->ignore($this->fabricId),
+                Rule::unique('fabrics', 'hexacode')->ignore($this->fabricId),
             ],
         ]);
         
         $fabric = Fabric::findOrFail($this->fabricId);
         $fabric->update([
+            'product_id' => $this->product_id,
             'title' => $this->title,
-            'code' => $this->code,
+            'hexacode' => $this->hexacode,
             'status' => $this->status,
         ]);
         $this->title = null;
-        $this->code = null;
+        $this->hexacode = null;
 
 
         session()->flash('message', 'Fabric updated successfully!');
@@ -110,47 +113,12 @@ class FabricIndex extends Component
         session()->flash('message', 'Fabric status updated successfully!');
     }
 
-    // Reset Form Fields
-   
-  
-    public function updatePositions(Request $request)
-    {
-        try {
-            $sortOrder = $request->sortOrder;
-    
-            // Check if sortOrder is a string, then decode it; otherwise, use it directly
-            if (is_string($sortOrder)) {
-                $sortOrder = json_decode($sortOrder, true);
-            }
-    
-            if (!is_array($sortOrder)) {
-                return response()->json(['error' => 'Invalid data format'], 400);
-            }
-    
-            foreach ($sortOrder as $item) {
-                Fabric::where('id', $item['id'])->update(['position' => $item['position']]);
-            }
-    
-            // Flash message after successful update
-            session()->flash('message', 'Positions updated successfully!');
-    
-            // Redirect to the index route with the subcategory_id
-            return redirect()->route('admin.fabrics.index');
-        } catch (\Exception $e) {
-            Log::error('Error updating positions: ' . $e->getMessage());
-            return response()->json(['error' => 'Something went wrong.'], 500);
-        }
-    }
-    
-
-
-
     
     // Render Method with Search and Pagination
     public function render()
     {
         $fabrics = Fabric::where('title', 'like', "%{$this->search}%")
-            ->orWhere('code', 'like', "%{$this->search}%")
+            ->orWhere('hexacode', 'like', "%{$this->search}%")
             ->orderBy('id', 'desc')
             ->paginate(10);
 

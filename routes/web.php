@@ -20,7 +20,7 @@ use App\Http\Livewire\Tables;
 use App\Http\Livewire\{VirtualReality,CustomerIndex};
 use GuzzleHttp\Middleware;
 use App\Http\Livewire\Order\{OrderIndex, OrderNew};
-use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory,FabricIndex,CollectionIndex,GalaryIndex};
+use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory,FabricIndex,CollectionIndex,GalleryIndex};
 use App\Http\Livewire\Staff\{DesignationIndex,StaffIndex,StaffAdd,StaffUpdate,StaffView,StaffTask,StaffTaskAdd};
 use App\Http\Livewire\Expense\{ExpenseIndex};
 use App\Http\Livewire\UserAddressForm; 
@@ -99,9 +99,10 @@ Route::group(['prefix' => 'products'], function () {
         Route::get('/measurements/{product_id}', MeasurementIndex::class)->name('measurements.index');
         Route::post('/measurements/update-positions', [MeasurementIndex::class, 'updatePositions'])->name('measurements.updatePositions');
         Route::get('/fabrics', FabricIndex::class)->name('admin.fabrics.index');
-        Route::get('/galary/{product_id}', GalaryIndex::class)->name('product.galary');
 
         Route::get('/collections', CollectionIndex::class)->name('admin.collections.index');
+        Route::get('/gallery/{product_id}', GalleryIndex::class)->name('product.gallery');
+        Route::get('/fabrics/{product_id}', FabricIndex::class)->name('product.fabrics');
     });
     Route::get('/designation',DesignationIndex::class)->name('staff.designation');
     
@@ -129,7 +130,9 @@ Route::group(['prefix' => 'products'], function () {
         Route::get('/details/{id}', SupplierDetails::class)->name('details');
     });
     // Expense
-    Route::get('/expense/{parent_id}', ExpenseIndex::class)->name('expense.index');
+    Route::prefix('expense')->name('expense.')->group(function() {
+        Route::get('/{parent_id}', ExpenseIndex::class)->name('index');
+    });
     
     // Route::get('/measurements/add', MeasurementAdd::class)->name('measurements.add');
     // Route::get('/measurements/edit/{id}', MeasurementEdit::class)->name('measurements.edit');

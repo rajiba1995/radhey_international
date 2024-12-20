@@ -3,11 +3,11 @@
 namespace App\Http\Livewire\Product;
 
 use Livewire\Component;
-use App\Models\Galary;
+use App\Models\Gallery;
 use App\Models\Product;
 use Livewire\WithFileUploads;
 
-class GalaryIndex extends Component
+class GalleryIndex extends Component
 {
 
     use WithFileUploads;
@@ -32,11 +32,6 @@ class GalaryIndex extends Component
         $this->product_id = $product_id; 
     }
 
-    // public function resetFields()
-    // {
-    //     $this->reset(['images']);  // Reset the images field
-    // }
-
     public function save(){
         $this->validate();
         foreach ($this->images as $image) {
@@ -44,7 +39,7 @@ class GalaryIndex extends Component
             $path = $image->store('galaries', 'public');
             $imagePath = 'storage/'.$path;
             
-            Galary::create([
+            Gallery::create([
                 'product_id' => $this->product_id,
                 'image' => $imagePath,
             ]);
@@ -55,7 +50,7 @@ class GalaryIndex extends Component
     }
 
     public function destroy($id){
-        $galaries = Galary::find($id);
+        $galaries = Gallery::find($id);
         if($galaries){
             $imagePath = public_path('storage/'.$galaries->image);
 
@@ -72,7 +67,7 @@ class GalaryIndex extends Component
     {
         $product = Product::select('name')->find($this->product_id);
         $product_name = $product->name;
-        $galleries = Galary::with('product')->where('product_id', $this->product_id)->get();
-        return view('livewire.product.galary-index',['galleries'=>$galleries,'productName'=>$product_name]);
+        $galleries = Gallery::with('product')->where('product_id', $this->product_id)->get();
+        return view('livewire.product.gallery-index',['galleries'=>$galleries,'productName'=>$product_name]);
     }
 }

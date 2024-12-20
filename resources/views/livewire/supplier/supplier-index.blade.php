@@ -1,10 +1,18 @@
     <div class="container-fluid py-4">
-        <div class="d-flex justify-content-between mb-1">
+        <div class="d-flex justify-content-between align-items-center mb-1">
             <h4 class="m-0">Supplier List</h4> 
-            <a href="{{ route('suppliers.add') }}" class="btn btn-primary mb-3 btn-sm">
-                <i class="material-icons text-white" style="font-size: 15px;">add</i>
-                Add Supplier
-            </a>
+            <div class="d-flex align-items-center">
+                <a href="{{ route('suppliers.add') }}" class="btn btn-primary mb-3 btn-sm me-2">
+                    <i class="material-icons text-white" style="font-size:15px;">add</i>
+                    Add Supplier
+                </a>
+                <div class="input-group custom-input-group">
+                    <input type="text" wire:model.debounce.500ms="search" class="form-control border border-2 p-2 custom-input-sm" placeholder="Search here...">
+                    <button type="button" wire:click="$refresh" class="btn btn-dark text-light mb-0 custom-input-sm">
+                        <span class="material-icons">search</span>
+                    </button>
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col-12">
@@ -86,6 +94,7 @@
                                 </tbody>
 
                             </table>
+                             {{-- {{ $suppliers->links() }} --}}
                         </div>
                         <div class="mt-3">
                             <nav aria-label="Page navigation">

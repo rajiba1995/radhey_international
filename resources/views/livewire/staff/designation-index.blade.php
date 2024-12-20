@@ -71,7 +71,7 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                            {{-- {{ $designations->links('pagination::bootstrap-4') }} --}}
+                            {{-- {{ $designations->links() }} --}}
                         </div>
                     </div>
                 </div>
