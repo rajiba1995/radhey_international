@@ -37,7 +37,7 @@ class CustomerIndex extends Component
         $users = User::where('user_type',1)
         ->when($this->search, function ($query) {
             $query->where('name', 'like', '%' . $this->search . '%');
-        })->paginate(1);
+        })->paginate(10);
         
         return view('livewire.customer-index', compact('users'));
     }
