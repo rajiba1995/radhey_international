@@ -58,7 +58,7 @@ class MeasurementIndex extends Component
             'status' => $this->status,
         ]);
 
-        session()->flash('message', 'Measurement created successfully!');
+        session()->flash('success', 'Measurement created successfully!');
         return redirect()->route('measurements.index', ['subcategory' => $this->subcategory_id]);
     }
 
@@ -101,7 +101,7 @@ class MeasurementIndex extends Component
             'status' => $this->status,
         ]);
 
-        session()->flash('message', 'Measurement updated successfully!');
+        session()->flash('success', 'Measurement updated successfully!');
         return redirect()->route('measurements.index', ['subcategory' => $this->subcategory_id]);
     }
 
@@ -109,7 +109,7 @@ class MeasurementIndex extends Component
     public function destroy($id)
     {
         Measurement::findOrFail($id)->delete();
-        session()->flash('message', 'Measurement deleted successfully!');
+        session()->flash('success', 'Measurement deleted successfully!');
         return redirect()->route('measurements.index', ['subcategory' => $this->subcategory_id]);
     }
 
@@ -118,7 +118,7 @@ class MeasurementIndex extends Component
     {
         $measurement = Measurement::findOrFail($id);
         $measurement->update(['status' => !$measurement->status]);
-        session()->flash('message', 'Measurement status updated successfully!');
+        session()->flash('success', 'Measurement status updated successfully!');
     }
 
     // Reset Form Fields
@@ -150,10 +150,9 @@ class MeasurementIndex extends Component
             }
     
             // Flash message after successful update
-            session()->flash('message', 'Positions updated successfully!');
-    
-            // Redirect to the index route with the subcategory_id
-            return redirect()->route('measurements.index', ['subcategory' => $this->subcategory_id]);
+            session()->flash('success', 'Positions updated successfully!');
+            return response()->json(['message' => session('success')]);
+           
         } catch (\Exception $e) {
             Log::error('Error updating positions: ' . $e->getMessage());
             return response()->json(['error' => 'Something went wrong.'], 500);

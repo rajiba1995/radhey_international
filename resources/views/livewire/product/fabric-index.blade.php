@@ -29,7 +29,7 @@
                             <table class="table align-items-center mb-0" id="sortableTable">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">SL</th>
+                                        <th class="text-center">Color</th>
                                         <th class="text-center">Title</th>
                                         <th class="text-center">Code</th>
                                         <th class="text-center">Status</th>
@@ -39,9 +39,14 @@
                                 <tbody id="sortable">
                                     @foreach ($fabrics as $k => $fabric)
                                         <tr data-id="{{ $fabric->id }}" class="handle">
-                                            <td class="align-middle text-center">{{ $k + 1 }}</td>
-                                            <td class="align-middle text-center">{{ $fabric->title }}</td>
-                                            <td class="align-middle text-center">{{ $fabric->code }}</td>
+                                            <td class="align-middle text-center">
+                                                <span 
+                                                    style="display: inline-block; width: 24px; height: 24px; border-radius: 50%; background-color: {{ $fabric->hexacode }};"
+                                                    title="{{ ucwords($fabric->title) }}">
+                                                </span>
+                                            </td>
+                                            <td class="align-middle text-center">{{ ucwords($fabric->title) }}</td>
+                                            <td class="align-middle text-center">{{ $fabric->hexacode }}</td>
                                             <td class="align-middle text-center">
                                                 <div class="form-check form-switch">
                                                     <input type="checkbox" 
@@ -77,6 +82,7 @@
                         <form wire:submit.prevent="{{ $fabricId ? 'update' : 'store' }}">
                             <!-- Measurement Title -->
                             <div class="form-group mb-3">
+                                <input type="hidden" wire:model="product_id" id="product_id">
                                 <label for="title">Fabric Title</label>
                                 <input 
                                     type="text" 
@@ -92,24 +98,23 @@
                             
                             <!--  Code -->
                             <div class="form-group mb-3">
-                                <label for="code">Code</label>
+                                <label for="hexacode">Color Code</label>
                                 <input 
-                                    type="text" 
-                                    id="code" 
-                                    wire:model="code" 
+                                    type="color" 
+                                    id="hexacode" 
+                                    wire:model="hexacode" 
                                     class="form-control border border-2 p-2" 
-                                    placeholder="Enter Code" 
-                                    aria-describedby="codeHelp">
-                                @error('code') 
-                                    <small id="codeHelp" class="text-danger">{{ $message }}</small> 
+                                    aria-describedby="hexacodeHelp">
+                                @error('hexacode') 
+                                    <small id="hexacodeHelp" class="text-danger">{{ $message }}</small> 
                                 @enderror
                             </div>
 
                             <!-- Submit Button -->
                             <div class="text-end">
-                                <a href="" class="btn btn-dark btn-sm mt-2">
-                                    <i class="material-icons text-white" style="font-size: 15px;">refresh</i> 
-                                    Refresh
+                                <a href="{{route('product.view')}}" class="btn btn-dark btn-sm mt-2">
+                                    <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i> 
+                                    Back
                                 </a>
                                 <button type="submit" class="btn btn-sm btn-primary mt-2">
                                     {{ $fabricId ? 'Update Fabric' : 'Create Fabric' }}

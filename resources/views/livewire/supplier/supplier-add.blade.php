@@ -155,29 +155,4 @@
         </div>
     </div>
 </div>
-<script>
-    function toggleWhatsAppField() {
-    const isWaSameCheckbox = document.getElementById('is_wa_same');
-    const whatsappField = document.getElementById('whatsappField');
 
-    // Show or hide the WhatsApp number input field based on checkbox state
-    if (isWaSameCheckbox.checked) {
-        whatsappField.style.display = 'none'; // Hide the field
-    } else {
-        whatsappField.style.display = 'block'; // Show the field
-    }
-}
-
-
-function ShippinAddressField() {
-    const isBillingShippingSameCheckbox = document.getElementById('isBillingShippingSame');
-    const ShippinAddressField = document.getElementById('ShippinAddressField');
-
-    // Show or hide the WhatsApp number input field based on checkbox state
-    if (isBillingShippingSameCheckbox.checked) {
-        ShippinAddressField.style.display = 'none'; // Hide the field
-    } else {
-        ShippinAddressField.style.display = 'block'; // Show the field
-    }
-}
-</script>

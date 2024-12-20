@@ -88,7 +88,7 @@
                         </table>
 
                             <div class="d-flex justify-content-end mt-2">
-                                {{ $categories->links('pagination::bootstrap-4') }}
+                                {{ $categories->links() }}
                             </div>
                         </div>
                     </div>
@@ -123,20 +123,16 @@
                                     <p class='text-danger inputerror'>{{ $message }}</p>
                                 @enderror
                                 <div class="mb-2 text-end mt-4">
-                                    <button type="submit" class="btn btn-primary btn-sm mt-1" wire:loading.attr="disabled">
-                                        <span>{{ $categoryId ? 'Update Category' : 'Create Category' }}</span>
-                                <div class="mb-2 text-end">
                                     <a href="" class="btn btn-dark btn-sm mt-1">
-                                     <i class="material-icons text-white" style="font-size: 15px;">refresh</i> 
+                                    <i class="material-icons text-white" style="font-size: 15px;">refresh</i> 
                                         Refresh</a>
                                     <button type="submit" class="btn btn-primary btn-sm mt-1" 
                                             wire:loading.attr="disabled">
                                         <span> 
-                                            {{ $categoryId ? 'Update Category' : 'Create     Category' }}
+                                            {{ $categoryId ? 'Update Category' : 'Create Category' }}
                                         </span>
                                     </button>
                                 </div>
-                            </div>
                         </form>
 
                     </div>

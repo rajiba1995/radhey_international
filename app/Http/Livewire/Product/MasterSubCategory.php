@@ -70,7 +70,7 @@ class MasterSubCategory extends Component
                     'max:255',
                     Rule::unique('sub_categories')->where(function ($query) {
                         return $query->where('category_id', $this->category_id);
-                    }),
+                    })->ignore($this->subCategoryId),
                 ],
         ]);
 

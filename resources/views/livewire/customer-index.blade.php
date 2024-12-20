@@ -8,8 +8,8 @@
     
             <!-- Search Bar -->
             <div class="input-group w-50">
-                <input type="text" class="form-control border" placeholder=" Search Customers" aria-label="Search" aria-describedby="button-search" style="height: fit-content">
-                <button class="btn btn-outline-primary" type="button" id="button-search">
+                <input type="text" wire:model.debounce.500ms="search" class="form-control border" placeholder=" Search Customers" aria-label="Search" aria-describedby="button-search" style="height: fit-content">
+                <button wire:click="$refresh" class="btn btn-outline-primary" type="button" id="button-search">
                     <i class="fas fa-search"></i>
                 </button>
             </div>
@@ -125,7 +125,7 @@
                         </div>
                         <div class="mt-3">
                             <nav aria-label="Page navigation">
-                                {{ $users->links('pagination::bootstrap-5') }}
+                                {{ $users->links() }}
                             </nav>
                         </div>
                     </div>

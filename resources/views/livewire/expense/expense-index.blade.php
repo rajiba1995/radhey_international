@@ -13,7 +13,7 @@
                         </div>
                         <div class="row">
                             <div class="col-lg-6 col-7">
-                                <h6>Recurring Expense</h6>
+                                <h6>{{$parent_id == 1 ?'Recurring Expense' : 'Non Recurring Expense'}}</h6>
                             </div>
                             <div class="col-lg-6 col-5 my-auto text-end">
                                 <div class="ms-md-auto pe-md-3 d-flex align-items-center">

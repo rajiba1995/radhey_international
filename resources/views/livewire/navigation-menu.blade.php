@@ -96,8 +96,8 @@
                 <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Master Modules</h6>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white {{ Request::is('admin/products*') ? 'active bg-gradient-primary' : '' }}"
-                    href="#productManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ Request::is('admin/products*') ? 'true' : 'false' }}">
+                <a class="nav-link text-white {{ Request::is('admin/products*') || in_array(Route::currentRouteName(), ['product.view', 'product.gallery', 'product.add', 'product.update', 'admin.categories', 'admin.subcategories', 'measurements.index', 'product.fabrics']) ? 'active bg-gradient-primary' : '' }}"
+                    href="#productManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['product.view','product.gallery','product.add','product.update','admin.categories','admin.subcategories','measurements.index','product.gallery','product.fabrics']) ? 'true' : 'false' }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">category</i>
                     </div>
@@ -106,31 +106,31 @@
             </li>
         
             <!-- Submenu -->
-            <ul id="productManagementSubmenu" class="collapse list-unstyled ms-4 {{ Request::is('admin/products*') ? 'show' : '' }}">  
+            <ul id="productManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['product.view', 'product.gallery', 'product.add', 'product.update', 'admin.categories', 'admin.subcategories', 'measurements.index', 'product.fabrics']) ? 'show' : '' }}">  
                 <li class="nav-item">
-                    <a class="nav-link text-white {{ Request::is('admin/products') ? 'active bg-gradient-primary' : '' }}"
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'product.view' ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('product.view')}}">
                          Products
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white {{ Request::is('admin/products/categories*') ? 'active bg-gradient-primary' : '' }}"
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'admin.categories' ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('admin.categories')}}">
                         Categories
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white {{ Request::is('admin/products/subcategories*') || Request::is('admin/products/measurements*') ? 'active bg-gradient-primary' : '' }}"
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'admin.subcategories' || Route::currentRouteName() == 'measurements.index' ? 'active bg-gradient-primary' : '' }}"
                         href="{{ route('admin.subcategories') }}">
                         Sub Categories
                     </a>
                 </li>
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a class="nav-link text-white {{ Route::currentRouteName() == 'admin.fabrics.index' ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('admin.fabrics.index')}}">
                         Fabrics
                     </a>
-                </li>
+                </li> --}}
                 
             </ul>
             <li class="nav-item">
@@ -170,9 +170,15 @@
             </li>
             <ul id="ExpenseManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['expense.index']) ? 'show' : '' }}">
                 <li class="nav-item">
-                    <a class="nav-link text-white {{ Route::currentRouteName() == 'expense.index' ? 'active bg-gradient-primary' : '' }}"
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'expense.index' && request()->get('parent_id') == 1 ? 'active bg-gradient-primary' : '' }}"
                     href="{{ route('expense.index', ['parent_id' => 1]) }}">
                         Recurring 
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'expense.index' && request()->get('parent_id') == 2 ? 'active bg-gradient-primary' : '' }}"
+                    href="{{ route('expense.index', ['parent_id' => 2]) }}">
+                       Non Recurring 
                     </a>
                 </li>
             </ul>

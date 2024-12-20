@@ -147,7 +147,6 @@ class OrderNew extends Component
             session()->flash('measurements_error', '🚨 Oops! Measurement data not added for this product.');
             return;
         }
-        
     }   
     /**
      * Populate address fields based on the address type (billing or shipping).
