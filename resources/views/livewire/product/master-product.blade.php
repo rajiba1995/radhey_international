@@ -111,7 +111,7 @@
                                                 </a>
                                                 <button wire:click="deleteProduct({{ $product->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm"><span class="material-icons">delete</span></button>
                                                 <a href="{{route('product.gallery',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm">Gallery</a>
-                                                <a href="{{route('product.fabrics',$product->id)}}" class="btn btn-outline-warning btn-sm custom-btn-sm">Fabrics</a>
+                                                <a href="{{route('product.fabrics',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm">Fabrics</a>
                                                 <a href="{{ route('measurements.index',$product->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm" title="">Measurement
                                                 </a>
                                             </td>
