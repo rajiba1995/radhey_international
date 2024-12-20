@@ -20,7 +20,7 @@ use App\Http\Livewire\Tables;
 use App\Http\Livewire\{VirtualReality,CustomerIndex};
 use GuzzleHttp\Middleware;
 use App\Http\Livewire\Order\{OrderIndex, OrderNew};
-use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory,FabricIndex,GalaryIndex};
+use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory,FabricIndex,CollectionIndex,GalaryIndex};
 use App\Http\Livewire\Staff\{DesignationIndex,StaffIndex,StaffAdd,StaffUpdate,StaffView,StaffTask,StaffTaskAdd};
 use App\Http\Livewire\Expense\{ExpenseIndex};
 use App\Http\Livewire\UserAddressForm; 
@@ -96,10 +96,12 @@ Route::group(['prefix' => 'products'], function () {
         Route::get('/update/products/{product_id}', UpdateProduct::class)->name('product.update');
         Route::get('/categories', MasterCategory::class)->name('admin.categories');
         Route::get('/subcategories', MasterSubCategory::class)->name('admin.subcategories');
-        Route::get('/measurements/{subcategory}', MeasurementIndex::class)->name('measurements.index');
+        Route::get('/measurements/{product_id}', MeasurementIndex::class)->name('measurements.index');
         Route::post('/measurements/update-positions', [MeasurementIndex::class, 'updatePositions'])->name('measurements.updatePositions');
         Route::get('/fabrics', FabricIndex::class)->name('admin.fabrics.index');
         Route::get('/galary/{product_id}', GalaryIndex::class)->name('product.galary');
+
+        Route::get('/collections', CollectionIndex::class)->name('admin.collections.index');
     });
     Route::get('/designation',DesignationIndex::class)->name('staff.designation');
     

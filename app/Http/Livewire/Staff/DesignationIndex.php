@@ -58,7 +58,7 @@ class DesignationIndex extends Component
         }
         // Reset form
         $this->resetForm();
-        return redirect()->route('staff.designation');
+        // return redirect()->route('staff.designation');
 
 
     }

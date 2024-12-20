@@ -4,6 +4,11 @@
         <div class="card-header pb-0">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h4 class="m-0">Place Order</h4>
+                @if (session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
                 <a href="{{route('admin.order.index')}}" class="btn btn-dark"> <i class="material-icons text-white">chevron_left</i> 
                     Back </a>
             </div>
@@ -225,15 +230,18 @@
                         <!-- Product -->
                         <div class="mb-3 col-md-6">
                             <label for="product" class="form-label">Product</label>
-                            <input type="text" wire:keyup="FindPrduct($event.target.value)" 
-                                    wire:model="searchproduct" 
-                                    class="form-control form-control-sm border border-1 customer_input" 
-                                    placeholder="Enter product name" wire:click="GetProduct({{$selectedCategory}},{{$selectedSubCategory}})">
+                            <input type="text" 
+                                wire:keyup="FindPrduct($event.target.value)" 
+                                wire:model="searchproduct" 
+                                class="form-control form-control-sm border border-1 customer_input" 
+                                placeholder="Enter product name"
+                                wire:click="GetProduct({{ $selectedCategory ?? 'null' }}, {{ $selectedSubCategory ?? 'null' }})">
+
                                     <input type="hidden" wire:model="product_id" value="{{$product_id}}">
                                 @if($FetchProduct !=1 && count($products)>0)
                                     <div id="fetch_customer_details" class="dropdown-menu show w-50" style="max-height: 200px; overflow-y: auto;">
                                         @foreach ($products as $product)
-                                            <button class="dropdown-item" type="button" wire:click="selectProduct('{{ $product->name }}', {{$product->id}})">
+                                            <button class="dropdown-item" type="button" wire:click='selectProduct("{{ $product->name }}", {{$product->id}})'>
                                                 <img src="{{ $product->product_image ? asset($product->product_image) : asset('assets/img/cubes.png') }}" alt=""> {{ $product->name }}({{ $product->product_code }})
                                             </button>
                                         @endforeach
@@ -249,8 +257,8 @@
                             <div class="col-12 col-md-6 mb-2 mb-md-0 measurement_div">
                                 <div class="row">
                                     @forelse ($measurements as $index => $item)
-                                        <div class="col-md-2">
-                                            <label>{{ $item->short_code }}</label>
+                                        <div class="col-md-3">
+                                            <label>{{ $item->title }} <strong>[{{$item->short_code}}]</strong> </label>
                                             <input type="text" class="form-control form-control-sm border border-1 customer_input text-center measurement_input">
                                         </div>
                                     @empty

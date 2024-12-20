@@ -114,6 +114,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link text-white {{ Request::is('admin/products/collections') ? 'active bg-gradient-primary' : '' }}"
+                        href="{{route('admin.collections.index')}}">
+                         Collections
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link text-white {{ Request::is('admin/products/categories*') ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('admin.categories')}}">
                         Categories

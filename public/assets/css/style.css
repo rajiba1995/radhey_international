@@ -53,6 +53,11 @@ button[disabled] {
     color: #00000096 !important;
     height: max-content;
 }
+.custom_success_badge{
+    background-color: #21e91e3b !important;
+    color: #00000096 !important;
+    height: max-content;
+}
 
 .image-box {
     position: relative;
@@ -421,6 +426,11 @@ button[disabled] {
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.measurement_div label{
+    margin-bottom:0 !important;
+    margin-left:0 !important;
+    font-size: 11px !important;
 }
 
 

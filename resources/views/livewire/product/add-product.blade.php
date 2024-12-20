@@ -35,8 +35,34 @@
             <div class="card-body p-3">
                 <form wire:submit='create'>
                     <div class="row">               
+                        <!-- Collection Type Dropdown -->
+                        <div class="mb-3 col-md-2">
+                            <label class="form-label">Collection Type <span class="text-danger">*</span></label>
+                            <select wire:model="collection_type" wire:change="GetCollection($event.target.value)" class="form-control border border-2 p-2">
+                                <option value="" selected hidden>Select type</option>
+                                    @foreach($collectionsType as $type)
+                                        <option value="{{ $type->id }}">{{ ucwords($type->title) }}</option>
+                                    @endforeach
+                            </select>
+                            @error('collection_type')
+                                 <p class='text-danger inputerror'>{{ $message }} </p>
+                            @enderror
+                        </div>
+                        <!-- Collection Type Dropdown -->
+                        <div class="mb-3 col-md-2">
+                            <label class="form-label">Collection <span class="text-danger">*</span></label>
+                            <select wire:model="collection" class="form-control border border-2 p-2">
+                                <option value="" selected hidden>Select collection</option>
+                                    @foreach($Collections as $items)
+                                        <option value="{{ $items->id }}">{{ ucwords($items->title) }}@if($items->short_code)({{$items->short_code}})@endif</option>
+                                    @endforeach
+                            </select>
+                            @error('collection')
+                                 <p class='text-danger inputerror'>{{ $message }} </p>
+                            @enderror
+                        </div>
                         <!-- Category Dropdown -->
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-4">
                             <label class="form-label">Category <span class="text-danger">*</span></label>
                             <select wire:model="category_id" wire:change="GetSubcat($event.target.value)" class="form-control border border-2 p-2">
                                 <option value="" selected hidden>Select Category</option>
@@ -52,8 +78,8 @@
                         </div>
                 
                         <!-- Sub-Category Dropdown (depends on selected Category) -->
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label">Sub Category <span class="text-danger">*</span></label>
+                        <div class="mb-3 col-md-4">
+                            <label class="form-label">Sub Category</label>
                             <select wire:model="sub_category_id" class="form-control border border-2 p-2">
                                 <option value="" selected hidden>Select Sub Category</option>
                                 @if($subCategories && count($subCategories))
@@ -62,13 +88,13 @@
                                     @endforeach
                                 @endif
                             </select>
-                            @error('sub_category_id')
+                            {{-- @error('sub_category_id')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
-                            @enderror
+                            @enderror --}}
                         </div>
                 
                         <!-- Product Name -->
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-8">
                             <label class="form-label">Product Name <span class="text-danger">*</span></label>
                             <input wire:model="name" type="text" class="form-control border border-2 p-2" placeholder="Product Name" >
                             @error('name')
@@ -77,7 +103,7 @@
                         </div>
                 
                         <!-- HSN Code -->
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-4">
                             <label class="form-label">Product Code <span class="text-danger">*</span></label>
                             <input wire:model="product_code" type="text" class="form-control border border-2 p-2" placeholder="Product Code">
                             @error('product_code')

@@ -65,8 +65,6 @@
                                                 </div>
                                             </td>
                                             <td class="align-middle text-end px-4">
-                                                <a href="{{ route('measurements.index',$subcategory->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm" title="">Measurement
-                                                </a>
                                                 <button wire:click="edit({{ $subcategory->id }})" class="btn btn-outline-info btn-sm custom-btn-sm" title="Edit"> <span class="material-icons">edit</span></button>
                                                 <button wire:click="destroy({{ $subcategory->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm" title="Delete"><span class="material-icons">delete</span> </button>
                                             </td>

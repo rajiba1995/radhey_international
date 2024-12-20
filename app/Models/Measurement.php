@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Measurement extends Model
 {
-    protected $fillable = ['subcategory_id', 'title', 'short_code', 'status', 'position'];
+    protected $fillable = ['product_id', 'title', 'short_code', 'status', 'position'];
 
     public function subcategory()
     {

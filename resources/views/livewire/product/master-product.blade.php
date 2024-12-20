@@ -39,7 +39,7 @@
                                     <thead>
                                         <tr>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Published Date
+                                                Collection
                                             </th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                                 Name
@@ -63,9 +63,10 @@
                                         @forelse ($products as $product)
                                         <tr>
                                             <td>
-                                                <span class="text-secondary text-xs font-weight-bold">
-                                                    {{ $product->created_at->format('d/m/Y') }}
-                                                </span>
+                                                <span class="badge bg-danger custom_danger_badge">{{ $product->collection?$product->collection->type->title:""}}</span>
+                                                <p class="text-secondary text-xs font-weight-bold">
+                                                    {{ $product->collection?$product->collection->title:""}}
+                                                </p>
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
@@ -95,6 +96,8 @@
                                                     <span class="material-icons">edit</span>
                                                 </a>
                                                 <button wire:click="deleteProduct({{ $product->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm"><span class="material-icons">delete</span></button>
+                                                <a href="{{ route('measurements.index',$product->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm" title="">Measurement
+                                                </a>
                                                 <a href="{{route('product.galary',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm">Galary</a>
                                             </td>
                                         </tr>

@@ -28,7 +28,7 @@ class OrderNew extends Component
 
     //  product 
     public $categories,$subCategories = [], $products = [], $measurements = [];
-    public $selectedCategory,$selectedSubCategory = null,$searchproduct, $product_id =null;
+    public $selectedCategory = null, $selectedSubCategory = null,$searchproduct, $product_id =null;
 
 
     public function mount(){
@@ -88,9 +88,11 @@ class OrderNew extends Component
         $this->product_id = null;
         if($cat_val){
             $this->CatWiseSubCatProduct($cat_val);
-        }
-        if($value){
+        }elseif($value){
             $this->SubCatWiseProduct($value);
+        }else{
+            session()->flash('error', '🚨 Oops! Please select first category or subcategory.');
+            return;
         }
       
     }
@@ -142,7 +144,7 @@ class OrderNew extends Component
         $this->searchproduct = $value;
         $this->product_id = $id;
         $this->products = [];
-        $this->measurements = Measurement::where('subcategory_id', $this->selectedSubCategory)->where('status', 1)->orderBy('position','ASC')->get();
+        $this->measurements = Measurement::where('product_id', $this->product_id)->where('status', 1)->orderBy('position','ASC')->get();
         if (count($this->measurements) == 0) {
             session()->flash('measurements_error', '🚨 Oops! Measurement data not added for this product.');
             return;

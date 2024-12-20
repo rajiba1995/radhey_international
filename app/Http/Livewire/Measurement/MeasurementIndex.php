@@ -7,20 +7,20 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Validation\Rule;
 use App\Models\Measurement;
-use App\Models\SubCategory;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 
 class MeasurementIndex extends Component
 {
     public $measurements;
-    public $subcategory_id, $short_code, $title, $status = 1, $measurementId;
+    public $product_id, $short_code, $title, $status = 1, $measurementId;
     public $search = '';
 
-    public function mount($subcategory)
+    public function mount($product_id)
     {
-        $this->subcategory_id = $subcategory; // Initialize with the passed subcategory
-        $this->measurements = Measurement::where('subcategory_id', $subcategory) ->orderBy('position', 'asc')->get();
+        $this->product_id = $product_id; // Initialize with the passed product
+        $this->measurements = Measurement::where('product_id', $product_id) ->orderBy('position', 'asc')->get();
     }
     public function rules()
     {
@@ -38,7 +38,7 @@ class MeasurementIndex extends Component
                 'string',
                 'max:255',
                 Rule::unique('measurements')->where(function ($query) {
-                    return $query->where('subcategory_id', $this->subcategory_id);
+                    return $query->where('product_id', $this->product_id);
                 }),
             ],
             'short_code' => [
@@ -46,20 +46,20 @@ class MeasurementIndex extends Component
                 'string',
                 'max:255',
                 Rule::unique('measurements')->where(function ($query) {
-                    return $query->where('subcategory_id', $this->subcategory_id);
+                    return $query->where('product_id', $this->product_id);
                 }),
             ],
         ]);
 
         Measurement::create([
-            'subcategory_id' => $this->subcategory_id,
+            'product_id' => $this->product_id,
             'title' => $this->title,
             'short_code' => $this->short_code,
             'status' => $this->status,
         ]);
-
+        $this->filterData();
         session()->flash('message', 'Measurement created successfully!');
-        return redirect()->route('measurements.index', ['subcategory' => $this->subcategory_id]);
+        // return redirect()->route('measurements.index', ['product' => $this->product_id]);
     }
 
     // Edit Measurement
@@ -67,7 +67,7 @@ class MeasurementIndex extends Component
     {
         $measurement = Measurement::findOrFail($id);
         $this->measurementId = $measurement->id;
-        $this->subcategory_id = $measurement->subcategory_id;
+        $this->product_id = $measurement->product_id;
         $this->title = $measurement->title;
         $this->short_code = $measurement->short_code;
         $this->status = $measurement->status;
@@ -81,7 +81,7 @@ class MeasurementIndex extends Component
                 'string',
                 'max:255',
                 Rule::unique('measurements')->where(function ($query) {
-                    return $query->where('subcategory_id', $this->subcategory_id);
+                    return $query->where('product_id', $this->product_id);
                 })->ignore($this->measurementId),
             ],
             'short_code' => [
@@ -89,20 +89,20 @@ class MeasurementIndex extends Component
                 'string',
                 'max:255',
                 Rule::unique('measurements')->where(function ($query) {
-                    return $query->where('subcategory_id', $this->subcategory_id);
+                    return $query->where('product_id', $this->product_id);
                 })->ignore($this->measurementId),
             ],
         ]);
         $measurement = Measurement::findOrFail($this->measurementId);
         $measurement->update([
-            'subcategory_id' => $this->subcategory_id,
+            'product_id' => $this->product_id,
             'title' => $this->title,
             'short_code' => $this->short_code,
             'status' => $this->status,
         ]);
-
+        $this->filterData();
         session()->flash('message', 'Measurement updated successfully!');
-        return redirect()->route('measurements.index', ['subcategory' => $this->subcategory_id]);
+        // return redirect()->route('measurements.index', ['product_id' => $this->product_id]);
     }
 
     // Delete Measurement
@@ -110,7 +110,7 @@ class MeasurementIndex extends Component
     {
         Measurement::findOrFail($id)->delete();
         session()->flash('message', 'Measurement deleted successfully!');
-        return redirect()->route('measurements.index', ['subcategory' => $this->subcategory_id]);
+        $this->filterData();
     }
 
     // Toggle Status
@@ -125,7 +125,7 @@ class MeasurementIndex extends Component
     public function resetFields()
     {
         $this->measurementId = null;
-        $this->subcategory_id = null;
+        $this->product_id = null;
         $this->title = '';
         $this->short_code = '';
         $this->status = 1;
@@ -152,8 +152,8 @@ class MeasurementIndex extends Component
             // Flash message after successful update
             session()->flash('message', 'Positions updated successfully!');
     
-            // Redirect to the index route with the subcategory_id
-            return redirect()->route('measurements.index', ['subcategory' => $this->subcategory_id]);
+            // Redirect to the index route with the product_id
+            $this->filterData();
         } catch (\Exception $e) {
             Log::error('Error updating positions: ' . $e->getMessage());
             return response()->json(['error' => 'Something went wrong.'], 500);
@@ -161,14 +161,17 @@ class MeasurementIndex extends Component
     }
     
 
-
+   public function filterData(){
+        return Measurement::where('product_id', $this->product_id)->orderBy('position', 'asc')->paginate(10);
+        $this->short_code = null;
+        $this->title = null;
+    }
 
     
     // Render Method with Search and Pagination
     public function render()
     {
-        $subCat = SubCategory::select('title')->find($this->subcategory_id);
-        $subcatTitle = $subCat->title;
+        $subCat = Product::select('name')->find($this->product_id);
         $measurements = Measurement::where('title', 'like', "%{$this->search}%")
             ->orWhere('short_code', 'like', "%{$this->search}%")
             ->orderBy('id', 'desc')
@@ -176,7 +179,7 @@ class MeasurementIndex extends Component
 
         return view('livewire.measurement.measurement-index', [
             'measurements' => $measurements,
-            'subCat' => $subcatTitle,
+            'products' => $subCat->name,
         ]);
     }
 }

@@ -6,28 +6,37 @@ use Livewire\Component;
 use App\Models\Category;
 use App\Models\SubCategory;
 use App\Models\Product;
+use App\Models\Collection;
+use App\Models\CollectionType;
 use Livewire\WithFileUploads;
 
 class AddProduct extends Component
 {
     use WithFileUploads;
     public $categories;
+    public $collectionsType = [];
+    public $Collections = [];
     public $subCategories = [];
-    public $category_id,$sub_category_id,$name,$product_code,$short_description,$description,$gst_details,$product_image;
+    public $collection_type,$collection,$category_id,$sub_category_id,$name,$product_code,$short_description,$description,$gst_details,$product_image;
    
     public function mount()
     {
         // Load categories when the component is mounted
         $this->categories = Category::where('status', 1)->orderBy('title','ASC')->get() ?? collect();
         $this->subCategories = []; 
+        $this->collectionsType = CollectionType::orderBy('title', 'ASC')->get();
     }
 
-
+    public function GetCollection($id){
+        $this->Collections = Collection::where('collection_type', $id)->orderBy('title', 'ASC')->get();
+    }
     public function create()
     {
         $this->validate([
+            'collection_type' => 'required',
+            'collection' => 'required',
             'category_id' => 'required',
-            'sub_category_id' => 'required',
+            // 'sub_category_id' => 'required',
             'name' => 'required|string|max:255',
             'product_code' => 'required|string|max:10',
             'short_description' => 'nullable|string|max:255',
@@ -43,6 +52,7 @@ class AddProduct extends Component
 
         // Create the product record in the database
         Product::create([
+            'collection_id' => $this->collection,
             'category_id' => $this->category_id,
             'sub_category_id' => $this->sub_category_id,
             'name' => $this->name,
