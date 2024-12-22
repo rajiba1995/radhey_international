@@ -8,12 +8,16 @@ use Livewire\WithPagination;
 use Illuminate\Validation\Rule;
 use App\Models\Fabric;
 use Illuminate\Http\Request;
+use App\Helpers\Helper;
+use Livewire\WithFileUploads;
+
 
 
 class FabricIndex extends Component
 {
+    use WithFileUploads;
     public $fabrics;
-    public  $hexacode, $title, $status = 1, $fabricId,$product_id;
+    public  $image, $title, $status = 1, $fabricId,$product_id;
     public $search = '';
 
     public function mount($product_id)
@@ -29,29 +33,35 @@ class FabricIndex extends Component
                 'required',
                 'string',
                 'max:255',
-                'unique:fabrics,title', // Ensure title is unique in fabrics table
+                'unique:fabrics,title', 
             ],
-            'hexacode' => [
+            'image' => [
                 'required',
-                'string',
+                'mimes:jpg,png,jpeg,gif',
                 'max:255',
-                'unique:fabrics,hexacode', // Ensure hexacode is unique in fabrics table
+                'unique:fabrics,image', 
             ],
         ]);
+        
+        if($this->image){
+            $imagePath = $this->image->store("fabrics",'public');
+            $absolutePath = "storage/".$imagePath;
+        }
         
 
         Fabric::create([
             'product_id' => $this->product_id,
             'title' => $this->title,
-            'hexacode' => $this->hexacode,
+            'image' =>  $absolutePath,
             'status' => $this->status,
         ]);
+        
         $this->title = null;
-        $this->hexacode = null;
+        $this->image = null;
 
         session()->flash('message', 'Fabric created successfully!');
         $this->fabrics = Fabric::orderBy('id', 'desc')->get();
-        // return redirect()->route('admin.fabrics.index');
+        
     }
 
     // Edit Fabric
@@ -60,7 +70,7 @@ class FabricIndex extends Component
         $fabric = Fabric::findOrFail($id);
         $this->fabricId = $fabric->id;
         $this->title = $fabric->title;
-        $this->hexacode = $fabric->hexacode;
+        $this->image = $fabric->image;
         $this->status = $fabric->status;
     }
     // Update Fabric
@@ -73,23 +83,35 @@ class FabricIndex extends Component
                 'max:255',
                 Rule::unique('fabrics', 'title')->ignore($this->fabricId), 
             ],
-            'hexacode' => [
+            'image' => [
                 'required',
-                'string',
+                'mimes:jpg,png,jpeg,gif',
                 'max:255',
-                Rule::unique('fabrics', 'hexacode')->ignore($this->fabricId),
+                Rule::unique('fabrics', 'image')->ignore($this->fabricId),
             ],
         ]);
         
         $fabric = Fabric::findOrFail($this->fabricId);
+        $imagePath = $fabric->image;
+        if ($this->image) {
+            // Store new image
+            $newImagePath = $this->image->store("fabrics", 'public');
+            $imagePath = "storage/" . $newImagePath;
+    
+            // Optionally delete old image if needed
+            if (File::exists(public_path($fabric->image))) {
+                File::delete(public_path($fabric->image));
+            }
+        }
         $fabric->update([
             'product_id' => $this->product_id,
             'title' => $this->title,
-            'hexacode' => $this->hexacode,
+            'image' => $imagePath,
             'status' => $this->status,
         ]);
+        
         $this->title = null;
-        $this->hexacode = null;
+        $this->image = null;
 
 
         session()->flash('message', 'Fabric updated successfully!');
@@ -118,7 +140,6 @@ class FabricIndex extends Component
     public function render()
     {
         $fabrics = Fabric::where('title', 'like', "%{$this->search}%")
-            ->orWhere('hexacode', 'like', "%{$this->search}%")
             ->orderBy('id', 'desc')
             ->paginate(10);
 
