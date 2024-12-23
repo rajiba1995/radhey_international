@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Fabric extends Model
 {
-    protected $fillable = ['title', 'hexacode', 'status'];
+    protected $table = "fabrics";
+    protected $fillable = ['title', 'image', 'status'];
 
     public function products()
     {

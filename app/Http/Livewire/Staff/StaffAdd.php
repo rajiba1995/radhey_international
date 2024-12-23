@@ -67,40 +67,40 @@ class StaffAdd extends Component
             // 1. Save the data into the users table
             $user = User::create([
                 'user_type' => 0, //for Staff
-                'designation' => $this->designation,
-                'name' => ucwords($this->person_name),
-                'email' => $this->email,
-                'phone' => $this->mobile,
-                'aadhar_name' => $this->aadhaar_number,
-                'whatsapp_no' => $this->whatsapp_no,
-                'image' =>  $imagePath,
-                'user_id_front' =>  $userIdFrontPath,
-                'user_id_back' => $userIdBackPath,
+                'designation' => $this->designation ?? "",
+                'name' => ucwords($this->person_name) ?? "",
+                'email' => $this->email ?? "",
+                'phone' => $this->mobile ?? "",
+                'aadhar_name' => $this->aadhaar_number ?? "",
+                'whatsapp_no' => $this->whatsapp_no ?? "",
+                'image' =>  $imagePath ?? "",
+                'user_id_front' =>  $userIdFrontPath ?? "",
+                'user_id_back' => $userIdBackPath ?? "",
                 'password'=>Hash::make('1234')
             ]);
 
             // 2. Save the data into the user_banks table
             UserBank::create([
                 'user_id' => $user->id,
-                'account_holder_name' => $this->account_holder_name,
-                'bank_name' => $this->bank_name,
-                'branch_name' => $this->branch_name,
-                'bank_account_no' => $this->account_no,
-                'ifsc' => $this->ifsc,
-                'monthly_salary' => $this->monthly_salary,
-                'daily_salary' => $this->daily_salary,
-                'travelling_allowance' => $this->travel_allowance,
+                'account_holder_name' => $this->account_holder_name ?? "",
+                'bank_name' => $this->bank_name ?? "",
+                'branch_name' => $this->branch_name ?? "",
+                'bank_account_no' => $this->account_no ?? "",
+                'ifsc' => $this->ifsc ?? "",
+                'monthly_salary' => $this->monthly_salary ?? "",
+                'daily_salary' => $this->daily_salary ?? "",
+                'travelling_allowance' => $this->travel_allowance ?? "",
             ]);
 
             // 3. Save the data into the user_address table
             UserAddress::create([
                 'user_id' => $user->id,
-                'address' => $this->address,
-                'landmark' => $this->landmark,
-                'state' => $this->state,
-                'city' => $this->city,
-                'zip_code' => $this->pincode,
-                'country' => $this->country,
+                'address' => $this->address ?? "",
+                'landmark' => $this->landmark ?? "",
+                'state' => $this->state ?? "",
+                'city' => $this->city ?? "",
+                'zip_code' => $this->pincode ?? "",
+                'country' => $this->country ?? "",
             ]);
 
             // Commit the transaction if everything is successful

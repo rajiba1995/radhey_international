@@ -26,27 +26,23 @@
                     </div>
                     <div class="card-body px-0 pb-2">
                         <div class="table-responsive p-0">
-                            <table class="table align-items-center mb-0" id="sortableTable">
+                            <table class="table align-items-center mb-0" >
                                 <thead>
                                     <tr>
-                                        <th class="text-center">Color</th>
+                                        <th class="text-center">Image</th>
                                         <th class="text-center">Title</th>
-                                        <th class="text-center">Code</th>
                                         <th class="text-center">Status</th>
                                         <th class="text-center">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="sortable">
+                                <tbody id="">
                                     @foreach ($fabrics as $k => $fabric)
+                                    {{-- @dd($fabric->image) --}}
                                         <tr data-id="{{ $fabric->id }}" class="handle">
                                             <td class="align-middle text-center">
-                                                <span 
-                                                    style="display: inline-block; width: 24px; height: 24px; border-radius: 50%; background-color: {{ $fabric->hexacode }};"
-                                                    title="{{ ucwords($fabric->title) }}">
-                                                </span>
+                                                <img src="{{ url($fabric->image) }}" alt="Fabric Image" width="100">
                                             </td>
                                             <td class="align-middle text-center">{{ ucwords($fabric->title) }}</td>
-                                            <td class="align-middle text-center">{{ $fabric->hexacode }}</td>
                                             <td class="align-middle text-center">
                                                 <div class="form-check form-switch">
                                                     <input type="checkbox" 
@@ -98,15 +94,21 @@
                             
                             <!--  Code -->
                             <div class="form-group mb-3">
-                                <label for="hexacode">Color Code</label>
+                                <label for="image">Color Image</label>
                                 <input 
-                                    type="color" 
-                                    id="hexacode" 
-                                    wire:model="hexacode" 
+                                    type="file" 
+                                    id="image" 
+                                    wire:model="image" 
                                     class="form-control border border-2 p-2" 
-                                    aria-describedby="hexacodeHelp">
-                                @error('hexacode') 
-                                    <small id="hexacodeHelp" class="text-danger">{{ $message }}</small> 
+                                    aria-describedby="imageHelp">
+                                    @if($image)
+                                        <img src="{{ $image->temporaryUrl() }}" alt="Preview" width="100">
+                                    @elseif ($fabricId)
+                                        <!-- Show existing image if no new image is uploaded -->
+                                        <img src="{{ asset("storage/".$fabrics->where('id', $fabricId)->first()->image ?? '') }}" alt="Current Image" width="100">
+                                    @endif
+                                @error('image') 
+                                    <small id="imageHelp" class="text-danger">{{ $message }}</small> 
                                 @enderror
                             </div>
 
