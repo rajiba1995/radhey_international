@@ -19,7 +19,7 @@ class FabricIndex extends Component
     public function mount($product_id)
     {
         $this->product_id = $product_id;
-        $this->fabrics = Fabric::orderBy('id', 'desc')->get();
+        $this->fabrics = Fabric::orderBy('id', 'desc')->where('product_id', $product_id)->get();
     }
 
     public function store()

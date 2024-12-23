@@ -28,10 +28,17 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-4">
                             <label for="company_name" class="form-label">Company Name</label>
                             <input type="text" wire:model="company_name" id="company_name" class="form-control border border-2 p-2" placeholder="Enter Company Name">
                             @error('company_name')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-3 col-md-2">
+                            <label for="employee_rank" class="form-label">Employee Rank</label>
+                            <input type="text" wire:model="employee_rank" class="form-control border border-2 p-2" placeholder="Enter rank">
+                            @error('employee_rank')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
