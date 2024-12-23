@@ -87,14 +87,15 @@ class StaffAdd extends Component
                 'branch_name' => $this->branch_name ?? "",
                 'bank_account_no' => $this->account_no ?? "",
                 'ifsc' => $this->ifsc ?? "",
-                'monthly_salary' => $this->monthly_salary ?? "",
-                'daily_salary' => $this->daily_salary ?? "",
-                'travelling_allowance' => $this->travel_allowance ?? "",
+                'monthly_salary' => is_numeric($this->monthly_salary) ? $this->monthly_salary : null,
+                'daily_salary' => is_numeric($this->daily_salary) ?  $this->daily_salary : null,
+                'travelling_allowance' => is_numeric($this->travel_allowance) ? $this->travel_allowance : null,
             ]);
 
             // 3. Save the data into the user_address table
             UserAddress::create([
                 'user_id' => $user->id,
+                'address_type' => 1, //for Staff
                 'address' => $this->address ?? "",
                 'landmark' => $this->landmark ?? "",
                 'state' => $this->state ?? "",
