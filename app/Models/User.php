@@ -23,6 +23,7 @@ class User extends Authenticatable
         'user_type',
         'designation',
         'company_name',
+        'employee_rank',
         'email',
         'password',
         'phone',
@@ -67,6 +68,10 @@ class User extends Authenticatable
     // {
     //     return $this->hasMany(UserAddress::class);
     // }
+    public function cities()
+    {
+        return $this->belongsToMany(City::class, 'city_user');
+    }
     public function designationDetails()
     {
         return $this->belongsTo(Designation::class, 'designation', 'id');

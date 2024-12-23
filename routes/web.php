@@ -114,8 +114,7 @@ Route::group(['prefix' => 'products'], function () {
         Route::get('/view/{staff_id}',StaffView::class)->name('view');
         Route::get('/task/{staff_id}',StaffTask::class)->name('task');
         Route::get('/task/add/{staff_id}',StaffTaskAdd::class)->name('task.add');
-        Route::get('cities/add/{staff_id}',StaffCities::class)->name('cities.add');
-
+        Route::get('cities/add/{salesman_id}',StaffCities::class)->name('cities.add');
     });
     
     Route::group(['prefix' => 'customers'], function () {

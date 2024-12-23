@@ -17,6 +17,21 @@ class OrderIndex extends Component
     }
     public function render()
     {
-        return view('livewire.order.order-index');
+        // Query the orders table with search and status filters
+        $orders = Order::query()
+            ->when($this->search, function($query) {
+                $query->where('order_number', 'like', '%' . $this->search . '%')
+                    ->orWhere('customer_name', 'like', '%' . $this->search . '%');
+            })
+            ->when($this->status, function($query) {
+                $query->where('status', $this->status);
+            })
+            ->orderBy('created_at', 'desc') // You can customize the ordering as needed
+            ->paginate(10); // Paginate the results, 10 orders per page
+
+        // Return the view and pass the orders data to it
+        return view('livewire.order.order-index', [
+            'orders' => $orders
+        ]);
     }
 }

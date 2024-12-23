@@ -46,6 +46,9 @@
                                     <thead>
                                         <tr>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                Image
+                                            </th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Collection
                                             </th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
@@ -70,10 +73,6 @@
                                         @forelse ($products as $product)
                                         <tr>
                                             <td>
-                                                <span class="badge bg-danger custom_danger_badge">{{ $product->collection?$product->collection->type->title:""}}</span>
-                                                <p class="text-secondary text-xs font-weight-bold">
-                                                    {{ $product->collection?$product->collection->title:""}}
-                                                </p>
                                                 <span class="text-secondary text-xs font-weight-bold">
                                                     @if ($product->product_image)
                                                         <img src="{{ asset('storage/'.$product->product_image) }}" alt="" style="width: 50px; height: 50px;">
@@ -81,6 +80,12 @@
                                                         <img src="{{asset('assets/img/cubes.png')}}" alt="no-img" style="width: 50px; height: 50px;">    
                                                     @endif
                                                 </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-danger custom_danger_badge">{{ $product->collection?$product->collection->type->title:""}}</span>
+                                                <p class="text-secondary text-xs font-weight-bold">
+                                                    {{ $product->collection?$product->collection->title:""}}
+                                                </p>
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">

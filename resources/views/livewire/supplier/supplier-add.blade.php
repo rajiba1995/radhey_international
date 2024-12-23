@@ -42,15 +42,9 @@
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="mb-3 col-md-1">
-                                    <input type="checkbox" id="is_wa_same" wire:change="SameAsMobile" value="0">
-                                    <label for="is_wa_same" class="form-check-label ms-2">Same as Mobile</label>
-                            </div>
-                            <div class="mb-3 col-md-5">
-                                
-                                    <div id="whatsappField">
+                           
+                            <div class="mb-3 col-md-6">
                                 <label for="is_wa_same" class="form-label">WhatsApp number </label>
-                               
                                     <div class="d-flex align-items-center">
                                     <input type="text" wire:model="whatsapp_no" id="whatsapp_no" class="form-control border border-2 p-2 me-2" placeholder="Enter WhatsApp number" @if ($is_wa_same) disabled @endif>
 
@@ -62,9 +56,7 @@
                                 </div>
                                 @error('whatsapp_no')
                                     <div class="text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
-                      
+                                @enderror        
                         </div>
                     </div>
 

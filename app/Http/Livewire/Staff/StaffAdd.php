@@ -53,9 +53,9 @@ class StaffAdd extends Component
             'pincode' => 'nullable|string|max:10',
             'country' => 'nullable|string|max:255',
        ]);
-    //    DB::beginTransaction();
+       DB::beginTransaction();
 
-    //    try {
+       try {
         // Check and upload the images only if they are provided
             $imagePath = $this->image ? Helper::uploadImage($this->image, 'staff2') : null;
             $userIdFrontPath = $this->user_id_front ? Helper::uploadImage($this->user_id_front, 'staff') : null;
@@ -105,18 +105,18 @@ class StaffAdd extends Component
             ]);
 
             // Commit the transaction if everything is successful
-            // DB::commit();
+            DB::commit();
 
             session()->flash('message', 'Staff information saved successfully!');
             return redirect()->route('staff.index');
-        // } catch (\Exception $e) {
-        //     // Rollback the transaction in case of an error
-        //     DB::rollBack();
+        } catch (\Exception $e) {
+            // Rollback the transaction in case of an error
+            DB::rollBack();
 
-        //     // Handle the exception (e.g., log the error and show an error message)
-        //     session()->flash('error', 'An error occurred while saving staff information: ' . $e->getMessage());
-        //     return back()->withInput();
-        // }
+            // Handle the exception (e.g., log the error and show an error message)
+            session()->flash('error', 'An error occurred while saving staff information: ' . $e->getMessage());
+            return back()->withInput();
+        }
     }
 
     public function SameAsMobile(){

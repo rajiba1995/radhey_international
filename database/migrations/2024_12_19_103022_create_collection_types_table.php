@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('collection_types', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->timestamps();
-        });
+        // Schema::create('collection_types', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('title');
+        //     $table->timestamps();
+        // });
     }
 
     /**
