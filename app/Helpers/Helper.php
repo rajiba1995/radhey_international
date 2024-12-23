@@ -33,7 +33,7 @@ class Helper
             // Save the file to the desired location
             $image->storeAs($folderPath, $filename, 'public');
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            // dd($e->getMessage());
             throw new \Exception("Image could not be moved. Error: " . $e->getMessage());
         }
         // Return the relative path of the uploaded file

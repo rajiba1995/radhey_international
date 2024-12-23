@@ -1,6 +1,11 @@
 <div class="">
     <!-- Navbar -->
     <!-- End Navbar -->
+    <style>
+
+
+
+    </style>
     <div class="container-fluid py-4">
         <div class="d-flex justify-content-between align-items-center mb-1">
             <h4 class="m-0">Product List</h4> 
@@ -110,15 +115,15 @@
                                                     @endif>
                                                 </div>
                                             </td>
-                                            <td class="align-middle">
+                                            <td class="align-middle action_tab">
                                                 <a href="{{route('product.update',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Edit product">
                                                     <span class="material-icons">edit</span>
                                                 </a>
                                                 <button wire:click="deleteProduct({{ $product->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm"><span class="material-icons">delete</span></button>
-                                                <a href="{{route('product.gallery',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm">Gallery</a>
-                                                <a href="{{route('product.fabrics',$product->id)}}" class="btn btn-outline-warning btn-sm custom-btn-sm">Fabrics</a>
+                                                <a href="{{route('product.gallery',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm">Gallery </a>
+                                                <a href="{{route('product.fabrics',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm">Fabrics <span class="count">18</span></a>
                                                 <a href="{{ route('measurements.index',$product->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm" title="">Measurement
-                                                </a>
+                                                    <span class="count">18</span></a>
                                             </td>
                                         </tr>
                                         @empty

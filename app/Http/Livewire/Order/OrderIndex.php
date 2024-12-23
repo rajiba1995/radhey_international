@@ -34,4 +34,8 @@ class OrderIndex extends Component
             'orders' => $orders
         ]);
     }
+
+    public function invoice($id){
+        dd($id);
+    }
 }

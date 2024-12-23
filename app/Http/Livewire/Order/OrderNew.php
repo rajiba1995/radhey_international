@@ -39,7 +39,10 @@ class OrderNew extends Component
     //  product 
     public $categories,$subCategories = [], $products = [], $measurements = [];
     public $selectedCategory = null, $selectedSubCategory = null,$searchproduct, $product_id =null,$collection_type,$collection;
-    public $billingAmount = 0;
+    public $paid_amount = 0;
+    public $billing_amount = 0;
+    public $remaining_amount = 0;
+    public $payment_mode = null;
 
     public function mount(){
         $this->customers = User::where('user_type', 1)->where('status', 1)->orderBy('name', 'ASC')->get();
@@ -53,7 +56,9 @@ class OrderNew extends Component
         'items.*.collection_type' => 'required|string',
         'items.*.collection' => 'required|string',
         'items.*.product_id' => 'required|integer',
-        'items.*.price' => 'required|numeric|min:0',  // Ensuring that price is a valid number (and greater than or equal to 0).
+        'items.*.price' => 'required|numeric|min:1',  // Ensuring that price is a valid number (and greater than or equal to 0).
+        'paid_amount' => 'required|numeric|min:1',   // Ensuring that price is a valid number (and greater than or equal to 0).
+        'payment_mode' => 'required|string',  // Ensuring that price is a valid number (and greater than or equal to 0).
         'items.*.measurements.*' => 'nullable|string',
     ];
     public function FindCustomer($term)
@@ -226,9 +231,40 @@ class OrderNew extends Component
     public function updateBillingAmount()
     {
         // Recalculate the total billing amount
-        $this->billingAmount = array_sum(array_column($this->items, 'price'));
+        $this->billing_amount = array_sum(array_column($this->items, 'price'));
+        $this->paid_amount = $this->billing_amount;
+        $this->GetRemainingAmount($this->paid_amount);
+        return;
     }
-
+    public function GetRemainingAmount($paid_amount)
+    {
+       // Remove leading zeros if present in the paid amount
+        
+        // Ensure the values are numeric before performing subtraction
+        $billingAmount = (float) $this->billing_amount;
+        $paidAmount = (float) $paid_amount;
+        $paidAmount = ltrim($paidAmount, '0');
+        if ($billingAmount > 0) {
+            if(empty($paid_amount)){
+                $this->paid_amount = 0;
+                $this->remaining_amount = $billingAmount;
+                return;
+            }
+            $this->paid_amount = $paidAmount;
+            $this->remaining_amount = $billingAmount - $this->paid_amount;
+        
+            // Check if the remaining amount is negative
+            if ($this->remaining_amount < 0) {
+                $this->remaining_amount = 0;
+                $this->paid_amount = $this->billing_amount;
+                session()->flash('errorAmount', '🚨 The paid amount exceeds the billing amount.');
+            }
+        } else {
+            $this->paid_amount = 0;
+           
+            session()->flash('errorAmount', '🚨 Please add item amount first.');
+        }
+    }
 
     
 
@@ -249,14 +285,20 @@ class OrderNew extends Component
 
     public function save()
     {
-        // dd($this->items);
         // Validate the input fields based on the rules
+        
         $this->validate();
-    
+
         DB::beginTransaction();  // Begin transaction
     
         try {
-            // Create the order (this will hold general info about the order)
+            // Calculate the total amount (you can calculate this based on item prices)
+            $total_amount = array_sum(array_column($this->items, 'price'));  // Assuming $this->items contains the price of each item
+            if ($this->paid_amount > $total_amount) {
+                session()->flash('error', '🚨 The paid amount cannot exceed the total billing amount.');
+                return;
+            }
+            $this->remaining_amount = $total_amount-$this->paid_amount;
             $order = new Order();
             $order->order_number = 'ORD-' . strtoupper(uniqid()); // Generate a unique order number
             $order->customer_name = $this->name;
@@ -274,10 +316,11 @@ class OrderNew extends Component
                 $order->shipping_address = $shipping_address;
             }
     
-            // Calculate the total amount (you can calculate this based on item prices)
-            $total_amount = array_sum(array_column($this->items, 'price'));  // Assuming $this->items contains the price of each item
             $order->total_amount = $total_amount;
-    
+            $order->paid_amount = $this->paid_amount;
+            $order->remaining_amount = $this->remaining_amount;
+            $order->payment_mode = $this->payment_mode;
+            $order->last_payment_date = date('Y-m-d H:i:s');
             $order->save();  // Save the order
     
             // Now loop through the items and save them as OrderItem and OrderMeasurement

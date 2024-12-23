@@ -34,29 +34,34 @@
                     <tr>
                         <th>Order #</th>
                         <th>Customer Name</th>
-                        {{-- <th>Billing Address</th>
-                        <th>Shipping Address</th> --}}
                         <th>Billing Amount</th>
+                        <th>Remaining Amount</th>
                         <th>Status</th>
-                        <th>Created At</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($orders as $order)
                         <tr>
-                            <td>{{ $order->order_number }}</td>
+                            <td>
+                                <span class="badge bg-danger custom_danger_badge"> {{ $order->created_at->format('Y-m-d H:i') }}</span>
+                                <br>
+                                {{ $order->order_number }}
+                            </td>
                             <td>{{ $order->customer_name }}</td>
                             {{-- <td>{{ $order->billing_address }}</td>
                             <td>{{ $order->shipping_address }}</td> --}}
                             <td>{{ $order->total_amount }}</td>
+                            <td class="{{$order->remaining_amount>0?"text-danger":""}}">{{ $order->remaining_amount }}</td>
                             <td>
                                 <a href="#" class="badge bg-info btn-sm">{{$order->status==1?"Pending":""}}</a>
                             </td>
-                            <td>{{ $order->created_at->format('Y-m-d H:i') }}</td>
                             <td>
-                                <!-- Add actions like View, Edit, or Delete -->
-                                {{-- <a href="{{ route('orders.show', $order->id) }}" class="btn btn-info btn-sm">View</a> --}}
+                                <a href="#" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Edit product">
+                                    <span class="material-icons">edit</span>
+                                </a>
+                                <a href="#" class="btn btn-outline-info btn-sm custom-btn-sm">Payment History</a>
+                                <a href="{{route('admin.order.invoice', $order->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm">Invoice</a>
                             </td>
                         </tr>
                     @endforeach

@@ -19,9 +19,9 @@ use App\Http\Livewire\StaticSignUp;
 use App\Http\Livewire\Tables;
 use App\Http\Livewire\{VirtualReality,CustomerIndex};
 use GuzzleHttp\Middleware;
-use App\Http\Livewire\Order\{OrderIndex, OrderNew};
+use App\Http\Livewire\Order\{OrderIndex, OrderNew, OrderInvoice};
 use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory,FabricIndex,CollectionIndex,GalleryIndex};
-use App\Http\Livewire\Staff\{DesignationIndex,StaffIndex,StaffAdd,StaffUpdate,StaffView,StaffTask,StaffTaskAdd};
+use App\Http\Livewire\Staff\{DesignationIndex,StaffIndex,StaffAdd,StaffUpdate,StaffView,StaffTask,StaffTaskAdd,StaffCities};
 use App\Http\Livewire\Expense\{ExpenseIndex};
 use App\Http\Livewire\UserAddressForm; 
 use App\Http\Livewire\CustomerEdit; 
@@ -114,6 +114,8 @@ Route::group(['prefix' => 'products'], function () {
         Route::get('/view/{staff_id}',StaffView::class)->name('view');
         Route::get('/task/{staff_id}',StaffTask::class)->name('task');
         Route::get('/task/add/{staff_id}',StaffTaskAdd::class)->name('task.add');
+        Route::get('cities/add/{staff_id}',StaffCities::class)->name('cities.add');
+
     });
     
     Route::group(['prefix' => 'customers'], function () {
@@ -140,6 +142,7 @@ Route::group(['prefix' => 'products'], function () {
 
     Route::group(['prefix' => 'orders'], function () {
         Route::get('/', OrderIndex::class)->name('admin.order.index');
+        Route::get('/invoice/{id}', OrderInvoice::class)->name('admin.order.invoice');
         Route::get('/new', OrderNew::class)->name('admin.order.new');
     });
 });

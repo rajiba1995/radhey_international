@@ -150,7 +150,7 @@
             </li>
         
             <!-- Submenu -->
-            <ul id="StaffManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add','staff.update','staff.view','staff.task','staff.task.add']) ? 'show' : '' }}">
+            <ul id="StaffManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add','staff.update','staff.view','staff.task','staff.task.add','staff.cities.add']) ? 'show' : '' }}">
                 <li class="nav-item">
                     <a class="nav-link text-white {{ Route::currentRouteName() == 'staff.designation' ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('staff.designation')}}">
@@ -158,7 +158,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['staff.index','staff.add','staff.update','staff.view','staff.task','staff.task.add']) ? 'active bg-gradient-primary' : '' }}"
+                    <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['staff.index','staff.add','staff.update','staff.view','staff.task','staff.task.add','staff.cities.add']) ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('staff.index')}}">
                         Staff
                     </a>

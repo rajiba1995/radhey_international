@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->tinyInteger('status')->default(1)->comment('1: Active, 0: Inactive')->after('product_image');
+        Schema::create('cities', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -21,9 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('status');
-            $table->dropSoftDeletes();
-        });
+        Schema::dropIfExists('cities');
     }
 };

@@ -4,11 +4,6 @@
         <div class="card-header pb-0">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h4 class="m-0">Generate Order</h4>
-                @if (session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
                 @if (session('error'))
                     <div class="alert alert-danger">
                         {{ session('error') }}
@@ -373,14 +368,57 @@
 
                 
                     <!-- Add Item Button -->
+
                     <div class="row align-items-end mb-4" style="justify-content: end;">
-                        <div class="col-auto">
-                            <label for="">Billing Amount</label>
-                            <!-- Show the dynamically calculated billing amount -->
-                            <input type="text" class="form-control form-control-sm" class="billing_amount" disabled value="{{ number_format($billingAmount, 2) }}">
-                        </div>
-                        <div class="col-auto">
-                            <button type="button" class="btn btn-success btn-sm" wire:click="addItem">Add Item</button>
+
+                        <div class="col-md-3" style="text-align: -webkit-center;">
+                            <table>
+                                <tr>
+                                    <td>
+                                        @if (session()->has('errorAmount')) 
+                                            <div class="alert alert-danger">
+                                                {{ session('errorAmount') }}
+                                            </div>
+                                        @endif
+                                    </td>
+                                    <td style="text-align: end;">
+                                        <button type="button" class="btn btn-success btn-sm" wire:click="addItem">Add Item</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="w-70"><label class="form-label"><strong>Total Amount</strong></label></td>
+                                    <td>
+                                        <!-- Sub Total -->
+                                        <input type="text" class="form-control form-control-sm text-center" wire:model="billing_amount" disabled value="{{ number_format($billing_amount, 2) }}">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="w-70"><label class="form-label"><strong>Paid Amount</strong></label></td>
+                                    <td>
+                                        <!-- Amount Paid -->
+                                        <input type="text" class="form-control border border-2 p-2 form-control-sm text-center @error('paid_amount') border-danger  @enderror" wire:keyup="GetRemainingAmount($event.target.value)" 
+                                        wire:model="paid_amount" placeholder="0" value="{{ number_format($paid_amount, 2) }}">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="w-70"><label class="form-label"><strong>Remaining Amount</strong></label></td>
+                                    <td>
+                                        <!-- Remaining Amount -->
+                                        <input type="text" class="form-control form-control-sm remaining_amount text-center" name="remaining_amount" disabled value="{{ number_format($remaining_amount, 2) }}">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label class="form-label"><strong>Payment Mode</strong></label></td>
+                                    <td>
+                                         <select class="form-control border border-2 p-2 form-control-sm @error('payment_mode') border-danger  @enderror" wire:model="payment_mode">
+                                            <option value="" selected hidden>Choose one..</option>
+                                            <option value="Cash">Cach</option>
+                                            <option value="Online">Online</option>
+                                         </select>
+                                    </td>
+                                </tr>
+                            </table>
+                           
                         </div>
                     </div>
                 </div>

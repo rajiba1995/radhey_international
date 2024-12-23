@@ -433,4 +433,28 @@ button[disabled] {
     font-size: 11px !important;
 }
 
+.action_tab .btn-outline-info {
+    overflow: inherit;
+}
+.action_tab .btn-outline-info span.count {
+    position: absolute;
+    background: #f44335;
+    border-radius: 50%;
+    color: #fff;
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    right: -5px;
+    bottom: 74%;
+    padding: 0 6px;
+}
+.remaining_amount{
+    color: red;
+    font-weight: 500;
+}
+
 
