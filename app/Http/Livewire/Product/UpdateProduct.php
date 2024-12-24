@@ -20,7 +20,7 @@ class UpdateProduct extends Component
     public $product_id;
     public $collection;
     public $category_id;
-    public $sub_category_id;
+    // public $sub_category_id;
     public $name;
     public $product_code;
     public $short_description;
@@ -30,8 +30,6 @@ class UpdateProduct extends Component
     public $categories = []; // For categories dropdown
     public $subCategories = []; // For subcategories dropdown
     PUBLIC $existing_image;
-
-    public $collectionsType = [];
     public $Collections = [];
 
     public function mount($product_id)
@@ -41,27 +39,30 @@ class UpdateProduct extends Component
         $this->product_id = $product->id;
         $this->collection = $product->collection_id;
         $this->category_id = $product->category_id;
-        $this->sub_category_id = $product->sub_category_id;
+        // $this->sub_category_id = $product->sub_category_id;
         $this->name = $product->name;
         $this->product_code = $product->product_code;
         $this->short_description = $product->short_description;
         $this->description = $product->description;
         $this->gst_details = $product->gst_details;
-        $this->categories = Category::all(); // Load categories
-        $this->subCategories = SubCategory::where('category_id', $this->category_id)->get(); // Load subcategories
+        // Load categories based on the product's collection
+        $this->categories = Category::where('collection_id', $this->collection)
+                                    ->where('status', 1) 
+                                    ->orderBy('title', 'ASC')
+                                    ->get();
+        // $this->subCategories = SubCategory::where('category_id', $this->category_id)->get(); // Load subcategories
         $this->existing_image = $product->product_image; // Store existing image path
-
-        $this->collectionsType = CollectionType::orderBy('title', 'ASC')->get();
-        $this->Collections = Collection::where('id', $this->collection)->orderBy('title', 'ASC')->get();
+        $this->Collections = Collection::orderBy('title', 'ASC')->get();
     }
-
+    // Collection wise category
     public function GetCollection($id){
-        $this->Collections = Collection::where('collection_type', $id)->orderBy('title', 'ASC')->get();
+        $this->categories = Category::where('collection_id', $id)->where('status', 1)->orderBy('title','ASC')->get() ?? collect();
     }
-    public function GetSubcat($categoryId)
-    {
-        $this->subCategories = SubCategory::where('category_id', $categoryId)->get();
-    }
+    
+    // public function GetSubcat($categoryId)
+    // {
+    //     $this->subCategories = SubCategory::where('category_id', $categoryId)->get();
+    // }
 
   
     public function update()
@@ -96,7 +97,7 @@ class UpdateProduct extends Component
         $product->update([
             'collection_id' => $this->collection,
             'category_id' => $this->category_id,
-            'sub_category_id' => $this->sub_category_id,
+            // 'sub_category_id' => $this->sub_category_id,
             'name' => $this->name,
             'product_code' => $this->product_code,
             'short_description' => $this->short_description,

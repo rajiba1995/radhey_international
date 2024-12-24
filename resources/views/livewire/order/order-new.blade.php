@@ -4,11 +4,6 @@
         <div class="card-header pb-0">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h4 class="m-0">Generate Order</h4>
-                @if (session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
                 @if (session('error'))
                     <div class="alert alert-danger">
                         {{ session('error') }}
@@ -69,7 +64,7 @@
                             <input type="text" wire:model="company_name" id="company_name" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Company Name">
                         </div>
                         <div class="mb-3 col-md-2">
-                            <label for="employee_rank" class="form-label">Employee Rank</label>
+                            <label for="employee_rank" class="form-label"> Rank</label>
                             <input type="text" wire:model="employee_rank" id="employee_rank" class="form-control form-control-sm border border-1 p-2" placeholder="Enter rank">
                         </div>
     
@@ -217,30 +212,12 @@
                             <!-- Collection Type -->
                             <div class="mb-3 col-md-2">
                                
-                                <label class="form-label"><strong>Collection Type </strong><span class="text-danger">*</span></label>
-                               <select wire:model="items.{{ $index }}.collection_type" wire:change="GetCollection($event.target.value, {{ $index }})" class="form-control border border-2 p-2 form-control-sm">
-                                    <option value="" selected hidden>Select type</option>
-                                    @foreach($collectionsType as $type)
-                                        <option value="{{ $type->id }}">{{ ucwords($type->title) }}</option>
-                                    @endforeach
-                                </select>
-                                @error("items.$index.collection_type")
-                                    <p class='text-danger inputerror'>{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <!-- Collection -->
-                            <div class="mb-3 col-md-2">
-                                <label class="form-label"><strong>Collection</strong> <span class="text-danger">*</span></label>
-                                <select wire:model="items.{{ $index }}.collection" class="form-control border border-2 p-2 form-control-sm" wire:change="CollectionWiseProduct($event.target.value, {{ $index }})">
+                                <label class="form-label"><strong>Collection </strong><span class="text-danger">*</span></label>
+                               <select wire:model="items.{{ $index }}.collection" wire:change="GetCategory($event.target.value, {{ $index }})" class="form-control border border-2 p-2 form-control-sm">
                                     <option value="" selected hidden>Select collection</option>
-                                    @if (isset($items[$index]['collections']) && count($items[$index]['collections']) > 0)
-                                        @foreach($this->items[$index]['collections'] as $citems)
-                                            <option value="{{ $citems->id }}">{{ ucwords($citems->title) }}@if($citems->short_code)({{ $citems->short_code }})@endif</option>
-                                        @endforeach
-                                    @else
-                                        <option value="" disabled>No collection available</option>
-                                    @endif
+                                    @foreach($collections as $citems)
+                                        <option value="{{ $citems->id }}">{{ ucwords($citems->title) }} @if($citems->short_code)({{ $citems->short_code }})@endif</option>
+                                    @endforeach
                                 </select>
                                 @error("items.$index.collection")
                                     <p class='text-danger inputerror'>{{ $message }}</p>
@@ -250,7 +227,7 @@
                             <!-- Category -->
                             <div class="mb-3 col-md-2">
                                 <label class="form-label"><strong>Category</strong></label>
-                                <select wire:model="items.{{ $index }}.category" class="form-select form-control-sm border border-1" wire:change="CatWiseSubCatProduct($event.target.value, {{ $index }})">
+                                <select wire:model="items.{{ $index }}.category" class="form-select form-control-sm border border-1" wire:change="CategoryWiseProduct($event.target.value, {{ $index }})">
                                     <option value="" selected hidden>Select Category</option>
                                     @if (isset($items[$index]['categories']) && count($items[$index]['categories']) > 0)
                                         @foreach ($items[$index]['categories'] as $category)
@@ -268,7 +245,7 @@
                             <!-- Product -->
                             <div class="mb-3 col-md-4">
                                 <label class="form-label"><strong>Product</strong></label>
-                                <input type="text" wire:keyup="FindProduct($event.target.value, {{ $index }}, 'items.{{ $index }}.collection')" wire:model="items.{{ $index }}.searchproduct" class="form-control form-control-sm border border-1 customer_input" placeholder="Enter product name">
+                                <input type="text" wire:keyup="FindProduct($event.target.value, {{ $index }}" wire:model="items.{{ $index }}.searchproduct" class="form-control form-control-sm border border-1 customer_input" placeholder="Enter product name">
                                 @if (session()->has('errorProduct.' . $index)) 
                                     <p class="text-danger">{{ session('errorProduct.' . $index) }}</p>
                                 @endif
@@ -300,7 +277,7 @@
                             </div>
                             {{-- Append Measurements data --}}
                             {{-- {{dd($items[$index]['searchproduct'])}} --}}
-                            @if(isset($this->items[$index]['product_id']) && $items[$index]['collection_type'] == 1)
+                            {{-- @if(isset($this->items[$index]['product_id']) && $items[$index]['collection_type'] == 1) --}}
                                 <div class="row">
                                     <div class="col-12 col-md-6 mb-2 mb-md-0 measurement_div">
                                         <h6 class="badge bg-danger custom_success_badge">Measurements</h6>
@@ -366,21 +343,64 @@
                                     </div>
                                     
                                 </div>
-                            @endif
+                            {{-- @endif --}}
                         
                         </div>
                     @endforeach
 
                 
                     <!-- Add Item Button -->
+
                     <div class="row align-items-end mb-4" style="justify-content: end;">
-                        <div class="col-auto">
-                            <label for="">Billing Amount</label>
-                            <!-- Show the dynamically calculated billing amount -->
-                            <input type="text" class="form-control form-control-sm" class="billing_amount" disabled value="{{ number_format($billingAmount, 2) }}">
-                        </div>
-                        <div class="col-auto">
-                            <button type="button" class="btn btn-success btn-sm" wire:click="addItem">Add Item</button>
+
+                        <div class="col-md-3" style="text-align: -webkit-center;">
+                            <table>
+                                <tr>
+                                    <td>
+                                        @if (session()->has('errorAmount')) 
+                                            <div class="alert alert-danger">
+                                                {{ session('errorAmount') }}
+                                            </div>
+                                        @endif
+                                    </td>
+                                    <td style="text-align: end;">
+                                        <button type="button" class="btn btn-success btn-sm" wire:click="addItem">Add Item</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="w-70"><label class="form-label"><strong>Total Amount</strong></label></td>
+                                    <td>
+                                        <!-- Sub Total -->
+                                        <input type="text" class="form-control form-control-sm text-center" wire:model="billing_amount" disabled value="{{ number_format($billing_amount, 2) }}">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="w-70"><label class="form-label"><strong>Paid Amount</strong></label></td>
+                                    <td>
+                                        <!-- Amount Paid -->
+                                        <input type="text" class="form-control border border-2 p-2 form-control-sm text-center @error('paid_amount') border-danger  @enderror" wire:keyup="GetRemainingAmount($event.target.value)" 
+                                        wire:model="paid_amount" placeholder="0" value="{{ number_format($paid_amount, 2) }}">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="w-70"><label class="form-label"><strong>Remaining Amount</strong></label></td>
+                                    <td>
+                                        <!-- Remaining Amount -->
+                                        <input type="text" class="form-control form-control-sm remaining_amount text-center" name="remaining_amount" disabled value="{{ number_format($remaining_amount, 2) }}">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label class="form-label"><strong>Payment Mode</strong></label></td>
+                                    <td>
+                                         <select class="form-control border border-2 p-2 form-control-sm @error('payment_mode') border-danger  @enderror" wire:model="payment_mode">
+                                            <option value="" selected hidden>Choose one..</option>
+                                            <option value="Cash">Cach</option>
+                                            <option value="Online">Online</option>
+                                         </select>
+                                    </td>
+                                </tr>
+                            </table>
+                           
                         </div>
                     </div>
                 </div>

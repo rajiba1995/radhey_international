@@ -32,7 +32,7 @@
                             @enderror
                         </div>
                         <div class="mb-3 col-md-2">
-                            <label for="employee_rank" class="form-label">Employee Rank <span class="text-danger">*</span></label>
+                            <label for="employee_rank" class="form-label"> Rank <span class="text-danger">*</span></label>
                             <input type="text" wire:model="employee_rank" class="form-control border border-2 p-2" placeholder="Enter rank">
                             @error('employee_rank')
                                 <div class="text-danger">{{ $message }}</div>

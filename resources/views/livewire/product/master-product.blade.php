@@ -1,6 +1,11 @@
 <div class="">
     <!-- Navbar -->
     <!-- End Navbar -->
+    <style>
+
+
+
+    </style>
     <div class="container-fluid py-4">
         <div class="d-flex justify-content-between align-items-center mb-1">
             <h4 class="m-0">Product List</h4> 
@@ -48,18 +53,18 @@
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Image
                                             </th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            {{-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Collection
-                                            </th>
+                                            </th> --}}
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                                 Name
                                             </th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                                 Category
                                             </th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            {{-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                                 SubCategory
-                                            </th>
+                                            </th> --}}
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Status
                                             </th>
@@ -81,13 +86,14 @@
                                                     @endif
                                                 </span>
                                             </td>
-                                            <td>
+                                            {{-- <td>
                                                 <span class="badge bg-danger custom_danger_badge">{{ $product->collection?$product->collection->type->title:""}}</span>
                                                 <p class="text-secondary text-xs font-weight-bold">
                                                     {{ $product->collection?$product->collection->title:""}}
                                                 </p>
-                                            </td>
+                                            </td> --}}
                                             <td>
+         
                                                 <p class="text-xs font-weight-bold mb-0">
                                                     {{ ucwords($product->name) }}
                                                 </p>
@@ -97,11 +103,11 @@
                                                     {{ ucwords($product->category->title ?? 'N/A') }}
                                                 </p>
                                             </td>
-                                            <td>
+                                            {{-- <td>
                                                 <p class="text-xs font-weight-bold mb-0">
                                                     {{ ucwords($product->sub_category->title ?? 'N/A') }}
                                                 </p>
-                                            </td>
+                                            </td> --}}
                                             <td>
                                                 <div class="form-check form-switch">
                                                     <input class="form-check-input ms-auto" type="checkbox" wire:click="toggleStatus({{ $product->id }})" 
@@ -110,15 +116,15 @@
                                                     @endif>
                                                 </div>
                                             </td>
-                                            <td class="align-middle">
+                                            <td class="align-middle action_tab">
                                                 <a href="{{route('product.update',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Edit product">
                                                     <span class="material-icons">edit</span>
                                                 </a>
                                                 <button wire:click="deleteProduct({{ $product->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm"><span class="material-icons">delete</span></button>
-                                                <a href="{{route('product.gallery',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm">Gallery</a>
-                                                <a href="{{route('product.fabrics',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm">Fabrics</a>
+                                                <a href="{{route('product.gallery',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm">Gallery </a>
+                                                <a href="{{route('product.fabrics',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm">Fabrics <span class="count">18</span></a>
                                                 <a href="{{ route('measurements.index',$product->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm" title="">Measurement
-                                                </a>
+                                                    <span class="count">18</span></a>
                                             </td>
                                         </tr>
                                         @empty

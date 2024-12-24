@@ -28,9 +28,7 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center">SL</th>
-                                        <th class="text-center">Type</th>
                                         <th class="text-center">Title</th>
-                                        <th class="text-center">Short Code</th>
                                         <th class="text-center">Actions</th>
                                     </tr>
                                 </thead>
@@ -38,9 +36,7 @@
                                     @foreach ($collections as $k => $collection)
                                         <tr data-id="{{ $collection->id }}" class="handle">
                                             <td class="align-middle text-center">{{ $k + 1 }}</td>
-                                            <td class="align-middle text-center">{{ $collection->type ? $collection->type->title : "N/A" }}</td>
                                             <td class="align-middle text-center">{{ $collection->title }}</td>
-                                            <td class="align-middle text-center">{{ $collection->short_code }}</td>
                                             <td class="align-middle text-center">
                                                 <button wire:click="edit({{ $collection->id }})" class="btn btn-outline-info custom-btn-sm">
                                                     <i class="fas fa-edit"></i>
@@ -73,18 +69,6 @@
                         </div>
                         <form wire:submit.prevent="{{ $collectionId ? 'update' : 'store' }}">
                             <div class="form-group mb-3">
-                                <label for="collection_type">Collection Type <span class="text-danger">*</span></label>
-                                <select wire:model="collection_type" class="form-control border border-2 p-2" wire:click="changeType($event.target.value)">
-                                    <option value="" selected hidden>Select type</option>
-                                    @foreach ($collectionsType as $item)
-                                        <option value="{{ $item->id }}">{{ $item->title }}</option>
-                                    @endforeach
-                                </select>
-                                @error('collection_type') 
-                                    <small class="text-danger">{{ $message }}</small> 
-                                @enderror
-                            </div>
-                            <div class="form-group mb-3">
                                 <label for="title">Collection Title <span class="text-danger">*</span></label>
                                 <input 
                                     type="text" 
@@ -97,21 +81,6 @@
                                     <small id="titleHelp" class="text-danger">{{ $message }}</small> 
                                 @enderror
                             </div>
-                            @if($collection_type == 1)
-                                <div class="form-group mb-3">
-                                    <label for="short_code">Short Code</label>
-                                    <input 
-                                        type="text" 
-                                        id="short_code" 
-                                        wire:model="short_code" 
-                                        class="form-control border border-2 p-2" 
-                                        placeholder="Enter Short Code" 
-                                        aria-describedby="codeHelp">
-                                    @error('short_code') 
-                                        <small id="codeHelp" class="text-danger">{{ $message }}</small> 
-                                    @enderror
-                                </div>
-                            @endif
                             <div class="text-end">
                                 <button type="submit" class="btn btn-sm btn-primary mt-2">
                                     {{ $collectionId ? 'Update Collection' : 'Create Collection' }}

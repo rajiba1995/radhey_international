@@ -21,10 +21,10 @@ class OrderNew extends Component
     public $searchTerm = '';
     public $searchResults = [];
     public $errorClass = [];
-    public $collectionsType = [];
-    public $Collections = [];
+    // public $collectionsType = [];
+    public $collections = [];
     public $errorMessage = [];
-    public $activeTab = 1;
+    public $activeTab = 2;
     public $items = [];
     public $FetchProduct = 1;
 
@@ -39,12 +39,16 @@ class OrderNew extends Component
     //  product 
     public $categories,$subCategories = [], $products = [], $measurements = [];
     public $selectedCategory = null, $selectedSubCategory = null,$searchproduct, $product_id =null,$collection_type,$collection;
-    public $billingAmount = 0;
+    public $paid_amount = 0;
+    public $billing_amount = 0;
+    public $remaining_amount = 0;
+    public $payment_mode = null;
 
     public function mount(){
         $this->customers = User::where('user_type', 1)->where('status', 1)->orderBy('name', 'ASC')->get();
-        $this->collectionsType = CollectionType::orderBy('title', 'ASC')->get();
+        // $this->collectionsType = CollectionType::orderBy('title', 'ASC')->get();
         $this->categories = Category::where('status', 1)->orderBy('title', 'ASC')->get();
+        $this->collections = Collection::orderBy('title', 'ASC')->get();
         $this->addItem();
     }
 
@@ -53,7 +57,9 @@ class OrderNew extends Component
         'items.*.collection_type' => 'required|string',
         'items.*.collection' => 'required|string',
         'items.*.product_id' => 'required|integer',
-        'items.*.price' => 'required|numeric|min:0',  // Ensuring that price is a valid number (and greater than or equal to 0).
+        'items.*.price' => 'required|numeric|min:1',  // Ensuring that price is a valid number (and greater than or equal to 0).
+        'paid_amount' => 'required|numeric|min:1',   // Ensuring that price is a valid number (and greater than or equal to 0).
+        'payment_mode' => 'required|string',  // Ensuring that price is a valid number (and greater than or equal to 0).
         'items.*.measurements.*' => 'nullable|string',
     ];
     public function FindCustomer($term)
@@ -82,7 +88,7 @@ class OrderNew extends Component
     public function addItem()
     {
         $this->items[] = [
-            'collection_type' => '',
+            // 'collection_type' => '',
             'collection' => '',
             'category' => '',
             'sub_category' => '',
@@ -120,72 +126,49 @@ class OrderNew extends Component
         $this->updateBillingAmount();  // Update billing amount after checking price
     }
 
-    public function GetCollection($typeId, $index)
+    public function GetCategory($value,$index)
     {
-        // Reset collection, products, and product_id for the selected item
-        $this->items[$index]['collection'] = ''; 
-        $this->items[$index]['products'] = [];
+        // Reset products, and product_id for the selected item
         $this->items[$index]['product_id'] = null;
         $this->items[$index]['measurements'] = [];
         $this->items[$index]['fabrics'] = [];
-        $this->items[$index]['categories'] = [];
-        if ($typeId) {
-            // Fetch collections based on the selected collection type
-            $this->items[$index]['collections'] = Collection::where('collection_type', $typeId)
-                ->orderBy('title', 'ASC')
-                ->get();
-        }
+      
+            // Fetch categories and products based on the selected collection 
+            $this->items[$index]['categories'] = Category::orderBy('title', 'ASC')->where('collection_id', $value)->get();
+            $this->items[$index]['products'] = Product::orderBy('name', 'ASC')->where('collection_id', $value)->get();
+       
     }
     
-    public function CollectionWiseProduct($value, $index)
-    {
-        
-        // If a collection is selected, fetch the products and categories
-        if ($value) {
-            // Fetch products related to the selected collection
-            $this->items[$index]['products'] = Product::where('collection_id', $value)->get();
-            
-            // Fetch categories based on products related to the selected collection
-            $bulkCategory = Product::where('collection_id', $value)
-                ->pluck('category_id')
-                ->toArray();
 
-            // Fetch and set categories
-            $this->items[$index]['categories'] = Category::where('status', 1)
-                ->whereIn('id', $bulkCategory)
-                ->orderBy('title', 'ASC')
-                ->get();
-        } else {
-            // Reset products and categories if no collection is selected
-            $this->items[$index]['products'] = [];
-            $this->items[$index]['categories'] = [];
-        }
-    }
 
-    public function CatWiseSubCatProduct($categoryId, $index)
+    public function CategoryWiseProduct($categoryId, $index)
     {
-        // Reset products and product_id for the selected item
+        // Reset products for the selected item
         $this->items[$index]['products'] = [];
         $this->items[$index]['product_id'] = null;
 
         if ($categoryId) {
-            // Fetch subcategories and products based on the selected category
-            $this->subCategories = SubCategory::where('category_id', $categoryId)->get();
-            $this->items[$index]['products'] = Product::where('category_id', $categoryId)->get();
-        } else {
-            // Reset subcategories and products if no category is selected
-            $this->subCategories = [];
-            $this->items[$index]['products'] = [];
+            // Fetch products based on the selected category and collection
+            $this->items[$index]['products'] = Product::where('category_id', $categoryId)
+                ->where('collection_id', $this->items[$index]['collection']) // Ensure the selected collection is considered
+                ->get();
         }
     }
+
 
 
     public function FindProduct($term, $index)
     {
         $collection = $this->items[$index]['collection'];
-    
+        $category = $this->items[$index]['category']; 
+
         if (empty($collection)) {
             session()->flash('errorProduct.' . $index, '🚨 Please select a collection before searching for a product.');
+            return;
+        }
+
+        if (empty($category)) {
+            session()->flash('errorProduct.' . $index, '🚨 Please select a category before searching for a product.');
             return;
         }
     
@@ -195,6 +178,7 @@ class OrderNew extends Component
         if (!empty($term)) {
             // Search for products within the specified collection and matching the term
             $this->items[$index]['products'] = Product::where('collection_id', $collection)
+                ->where('category_id', $category)
                 ->where(function ($query) use ($term) {
                     $query->where('name', 'like', '%' . $term . '%')
                           ->orWhere('product_code', 'like', '%' . $term . '%');
@@ -226,9 +210,40 @@ class OrderNew extends Component
     public function updateBillingAmount()
     {
         // Recalculate the total billing amount
-        $this->billingAmount = array_sum(array_column($this->items, 'price'));
+        $this->billing_amount = array_sum(array_column($this->items, 'price'));
+        $this->paid_amount = $this->billing_amount;
+        $this->GetRemainingAmount($this->paid_amount);
+        return;
     }
-
+    public function GetRemainingAmount($paid_amount)
+    {
+       // Remove leading zeros if present in the paid amount
+        
+        // Ensure the values are numeric before performing subtraction
+        $billingAmount = (float) $this->billing_amount;
+        $paidAmount = (float) $paid_amount;
+        $paidAmount = ltrim($paidAmount, '0');
+        if ($billingAmount > 0) {
+            if(empty($paid_amount)){
+                $this->paid_amount = 0;
+                $this->remaining_amount = $billingAmount;
+                return;
+            }
+            $this->paid_amount = $paidAmount;
+            $this->remaining_amount = $billingAmount - $this->paid_amount;
+        
+            // Check if the remaining amount is negative
+            if ($this->remaining_amount < 0) {
+                $this->remaining_amount = 0;
+                $this->paid_amount = $this->billing_amount;
+                session()->flash('errorAmount', '🚨 The paid amount exceeds the billing amount.');
+            }
+        } else {
+            $this->paid_amount = 0;
+           
+            session()->flash('errorAmount', '🚨 Please add item amount first.');
+        }
+    }
 
     
 
@@ -249,14 +264,20 @@ class OrderNew extends Component
 
     public function save()
     {
-        // dd($this->items);
         // Validate the input fields based on the rules
+        
         $this->validate();
-    
+
         DB::beginTransaction();  // Begin transaction
     
         try {
-            // Create the order (this will hold general info about the order)
+            // Calculate the total amount (you can calculate this based on item prices)
+            $total_amount = array_sum(array_column($this->items, 'price'));  // Assuming $this->items contains the price of each item
+            if ($this->paid_amount > $total_amount) {
+                session()->flash('error', '🚨 The paid amount cannot exceed the total billing amount.');
+                return;
+            }
+            $this->remaining_amount = $total_amount-$this->paid_amount;
             $order = new Order();
             $order->order_number = 'ORD-' . strtoupper(uniqid()); // Generate a unique order number
             $order->customer_name = $this->name;
@@ -274,10 +295,11 @@ class OrderNew extends Component
                 $order->shipping_address = $shipping_address;
             }
     
-            // Calculate the total amount (you can calculate this based on item prices)
-            $total_amount = array_sum(array_column($this->items, 'price'));  // Assuming $this->items contains the price of each item
             $order->total_amount = $total_amount;
-    
+            $order->paid_amount = $this->paid_amount;
+            $order->remaining_amount = $this->remaining_amount;
+            $order->payment_mode = $this->payment_mode;
+            $order->last_payment_date = date('Y-m-d H:i:s');
             $order->save();  // Save the order
     
             // Now loop through the items and save them as OrderItem and OrderMeasurement
@@ -598,7 +620,7 @@ class OrderNew extends Component
     public function render()
     {
         return view('livewire.order.order-new', [
-            'collectionsType' => $this->collectionsType,
+            // 'collectionsType' => $this->collectionsType,
             'categories' => $this->categories,
         ]);
     }

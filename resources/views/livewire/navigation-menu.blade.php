@@ -125,12 +125,12 @@
                         Categories
                     </a>
                 </li>
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a class="nav-link text-white {{ Route::currentRouteName() == 'admin.subcategories' || Route::currentRouteName() == 'measurements.index' ? 'active bg-gradient-primary' : '' }}"
                         href="{{ route('admin.subcategories') }}">
                         Sub Categories
                     </a>
-                </li>
+                </li> --}}
                 {{-- <li class="nav-item">
                     <a class="nav-link text-white {{ Route::currentRouteName() == 'admin.fabrics.index' ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('admin.fabrics.index')}}">
