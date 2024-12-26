@@ -13,10 +13,10 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Order::class);
     }
-    public function ctype()
-    {
-        return $this->belongsTo(CollectionType::class, 'collection_type');
-    }
+    // public function ctype()
+    // {
+    //     return $this->belongsTo(CollectionType::class, 'collection_type');
+    // }
 
     public function measurements()
     {

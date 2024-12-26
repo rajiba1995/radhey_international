@@ -89,7 +89,6 @@ class CollectionIndex extends Component
     {
         $this->title = null;
         $this->short_code = null;
-        $this->collection_type = null;
         $this->collectionId = null;
     }
 

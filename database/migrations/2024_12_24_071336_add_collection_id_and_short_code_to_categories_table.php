@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Run the migrations.2024_12_24_065427_remove_column_from_collections_table
      */
     public function up(): void
     {

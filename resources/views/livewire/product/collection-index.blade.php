@@ -36,7 +36,7 @@
                                     @foreach ($collections as $k => $collection)
                                         <tr data-id="{{ $collection->id }}" class="handle">
                                             <td class="align-middle text-center">{{ $k + 1 }}</td>
-                                            <td class="align-middle text-center">{{ $collection->title }}</td>
+                                            <td class="align-middle text-center">{{ strtoupper($collection->title) }}</td>
                                             <td class="align-middle text-center">
                                                 <button wire:click="edit({{ $collection->id }})" class="btn btn-outline-info custom-btn-sm">
                                                     <i class="fas fa-edit"></i>

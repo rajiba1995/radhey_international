@@ -57,7 +57,7 @@
                         <div class="card-footer p-3 d-flex justify-content-between align-items-center">
                           <p class="mb-0"><span class="text-danger text-sm font-weight-bolder">-2%</span> than
                               yesterday</p>
-                              <button class="btn btn-primary mt-2">Add Customer</button>
+                              <a href="{{route('admin.user-address-form')}}" class="btn btn-primary mt-2">Add Customer</a>
                         </div>
                   </div>
               </div>

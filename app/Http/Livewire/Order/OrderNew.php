@@ -24,11 +24,12 @@ class OrderNew extends Component
     // public $collectionsType = [];
     public $collections = [];
     public $errorMessage = [];
-    public $activeTab = 2;
+    public $activeTab = 1;
     public $items = [];
     public $FetchProduct = 1;
 
     public $customers = null;
+    public $orders = null;
     public $is_wa_same, $name, $company_name,$employee_rank, $email, $dob, $customer_id, $whatsapp_no, $phone;
     public $billing_address,$billing_landmark,$billing_city,$billing_state,$billing_country,$billing_pin;
 
@@ -38,7 +39,7 @@ class OrderNew extends Component
 
     //  product 
     public $categories,$subCategories = [], $products = [], $measurements = [];
-    public $selectedCategory = null, $selectedSubCategory = null,$searchproduct, $product_id =null,$collection_type,$collection;
+    public $selectedCategory = null, $selectedSubCategory = null,$searchproduct, $product_id =null,$collection;
     public $paid_amount = 0;
     public $billing_amount = 0;
     public $remaining_amount = 0;
@@ -46,7 +47,6 @@ class OrderNew extends Component
 
     public function mount(){
         $this->customers = User::where('user_type', 1)->where('status', 1)->orderBy('name', 'ASC')->get();
-        // $this->collectionsType = CollectionType::orderBy('title', 'ASC')->get();
         $this->categories = Category::where('status', 1)->orderBy('title', 'ASC')->get();
         $this->collections = Collection::orderBy('title', 'ASC')->get();
         $this->addItem();
@@ -54,7 +54,6 @@ class OrderNew extends Component
 
     // Define rules for validation
     protected $rules = [
-        'items.*.collection_type' => 'required|string',
         'items.*.collection' => 'required|string',
         'items.*.product_id' => 'required|integer',
         'items.*.price' => 'required|numeric|min:1',  // Ensuring that price is a valid number (and greater than or equal to 0).
@@ -77,18 +76,41 @@ class OrderNew extends Component
                 })
                 ->take(20)
                 ->get();
+                $orders = Order::where('order_number', 'like', '%' . $this->searchTerm . '%')
+                    ->orWhereHas('customer', function ($query) {
+                        $query->where('name', 'like', '%' . $this->searchTerm . '%');
+                    })
+                    ->latest()
+                    ->take(1)
+                    ->get();
+
+                if ($orders->count()) {
+                    // If orders are found, show the customer name, phone, and email in search results
+                    $this->orders = $orders;
+        
+                    // Prepend customer details from the first order into search results
+                    $customerFromOrder = $orders->first()->customer;
+                    $this->searchResults->prepend($customerFromOrder);
+                    session()->flash('orders-found', 'Orders found for this customer.');
+                } else {
+                    $this->orders = collect(); // No orders found
+                    session()->flash('no-orders-found', 'No orders found for this customer.');
+                }
+
+                 // If no orders are found, flash a session message
+            // if ($this->orders->isEmpty()) {
+            // }
         } else {
+            // Reset results when the search term is empty
             $this->searchResults = [];
+            $this->orders = collect(); 
         }
-    }
-
-
-    
+      }
 
     public function addItem()
     {
         $this->items[] = [
-            // 'collection_type' => '',
+           
             'collection' => '',
             'category' => '',
             'sub_category' => '',
@@ -265,7 +287,7 @@ class OrderNew extends Component
     public function save()
     {
         // Validate the input fields based on the rules
-        
+        // dd($this->all());
         $this->validate();
 
         DB::beginTransaction();  // Begin transaction
@@ -280,6 +302,7 @@ class OrderNew extends Component
             $this->remaining_amount = $total_amount-$this->paid_amount;
             $order = new Order();
             $order->order_number = 'ORD-' . strtoupper(uniqid()); // Generate a unique order number
+            $order->customer_id = $this->customer_id;
             $order->customer_name = $this->name;
             $order->customer_email = $this->email;
     
@@ -313,7 +336,7 @@ class OrderNew extends Component
                 $orderItem = new OrderItem();
                 $orderItem->order_id = $order->id;
                 $orderItem->product_id = $item['product_id'];
-                $orderItem->collection_type = $item['collection_type'];
+               
                 $orderItem->collection = $collection_data?$collection_data->title:"";
                 $orderItem->category = $category_data?$category_data->title:"";
                 $orderItem->sub_category = $sub_category_data?$sub_category_data->title:"";
@@ -323,7 +346,7 @@ class OrderNew extends Component
                 $orderItem->save();  // Save the order item
     
                 // Now handle the measurements for each item
-                if ($item['collection_type']==1 && isset($item['get_measurements']) && count($item['get_measurements']) > 0) {
+                if (isset($item['get_measurements']) && count($item['get_measurements']) > 0) {
                     foreach ($item['get_measurements'] as $mindex =>$measurement) {
                         $measurement_data = Measurement::where('id', $mindex)->first();
                         // Save the measurement for this order item
@@ -347,10 +370,12 @@ class OrderNew extends Component
             DB::rollBack();
             // dd($e->getMessage());
             // Flash error message
-            session()->flash('error', '🚨 Something went wrong. The operation has been rolled back.');
-    
-            // Optionally log the error
             \Log::error('Error saving items: ' . $e->getMessage());
+            // dd($e->getMessage());
+            session()->flash('error', '🚨 Something went wrong. The operation has been rolled back.');
+            
+           
+            // Optionally log the error
         }
     }
     
@@ -378,6 +403,7 @@ class OrderNew extends Component
 
         if ($customer) {
             // Populate customer details
+            $this->customer_id = $customer->id;
             $this->name = $customer->name;
             $this->company_name = $customer->company_name;
             $this->employee_rank = $customer->employee_rank;

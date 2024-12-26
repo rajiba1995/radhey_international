@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('collections', function (Blueprint $table) {
-            $table->dropColumn('short_code');
-            $table->dropColumn('collection_type');
+            // $table->dropColumn('short_code');
+            // $table->dropColumn('collection_type');
         });
     }
 
@@ -23,8 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('collections', function (Blueprint $table) {
-            $table->string('short_code');
-            $table->string('collection_type');
+            // $table->string('short_code');
+            // $table->string('collection_type');
         });
     }
 };

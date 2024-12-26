@@ -49,9 +49,49 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Order Customer Fields... -->
+                    @if(session()->has('orders-found') && $orders->count() > 0)
+                        <div class="alert alert-success mt-3">
+                            {{ session('orders-found') }}
+                        </div>
+                    @endif
+
+                    @if (session()->has('no-orders-found'))
+                        <div class="alert alert-danger mt-3">
+                            {{ session('no-orders-found') }}
+                        </div>
+                    @endif
+                    @if(!empty($orders) && $orders->count())
+                        <h5 class="mt-4">Previous Order Details</h5>
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <tr class="text-center">
+                                    <th>Order Number</th>
+                                    <th>Customer Name</th>
+                                    <th>Billing Amount</th>
+                                    <th>Remaining Amount</th>
+                                    <th>Billing Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($orders as $order)
+                                    <tr class="text-center">
+                                        <td>{{ $order->order_number }}</td>
+                                        <td>{{ $order->customer->name }}</td>
+                                        <td>{{ $order->total_amount }}</td>
+                                        <td>{{ $order->remaining_amount }}</td>
+                                        <td>{{ $order->last_payment_date }}</td>
+                                        <td><a href="{{route('admin.order.invoice',$order->id)}}" class="btn btn-sm btn-outline-info" target="_blank">Invoice</a></td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
                     <!-- Customer Details -->
                     <div class="row">
                         <div class="mb-3 col-md-6">
+                            <input type="hidden" name="customer_id" wire:model="customer_id">
                             <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
                             <input type="text" wire:model="name" id="name" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['name'] ?? '' }}" placeholder="Enter Customer Name">
                             @if(isset($errorMessage['name']))
@@ -209,7 +249,7 @@
                     {{-- {{dd($items)}} --}}
                     @foreach($items as $index => $item)
                         <div class="row align-items-center my-5">
-                            <!-- Collection Type -->
+                            <!-- Collection  -->
                             <div class="mb-3 col-md-2">
                                
                                 <label class="form-label"><strong>Collection </strong><span class="text-danger">*</span></label>
@@ -277,7 +317,7 @@
                             </div>
                             {{-- Append Measurements data --}}
                             {{-- {{dd($items[$index]['searchproduct'])}} --}}
-                            {{-- @if(isset($this->items[$index]['product_id']) && $items[$index]['collection_type'] == 1) --}}
+                            @if(isset($this->items[$index]['product_id'])) 
                                 <div class="row">
                                     <div class="col-12 col-md-6 mb-2 mb-md-0 measurement_div">
                                         <h6 class="badge bg-danger custom_success_badge">Measurements</h6>
@@ -343,7 +383,7 @@
                                     </div>
                                     
                                 </div>
-                            {{-- @endif --}}
+                            @endif
                         
                         </div>
                     @endforeach

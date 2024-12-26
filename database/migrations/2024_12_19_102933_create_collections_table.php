@@ -12,13 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         
-        // Schema::create('collections', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->string('title');
-        //     $table->string('short_code')->nullable();
-        //     $table->foreignId('collection_type')->constrained('collection_types');
-        //     $table->timestamps();
-        // });
+        Schema::create('collections', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->timestamps();
+        });
     }
 
     /**
