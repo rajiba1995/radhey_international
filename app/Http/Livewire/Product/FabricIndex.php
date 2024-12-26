@@ -16,6 +16,7 @@ use Livewire\WithFileUploads;
 class FabricIndex extends Component
 {
     use WithFileUploads;
+    use WithPagination;
     public $fabrics;
     public  $image, $title, $status = 1, $fabricId,$product_id;
     public $search = '';
@@ -23,7 +24,7 @@ class FabricIndex extends Component
     public function mount($product_id)
     {
         $this->product_id = $product_id;
-        $this->fabrics = Fabric::orderBy('id', 'desc')->where('product_id', $product_id)->get();
+        $this->fabrics = Fabric::orderBy('id', 'desc')->where('product_id', $this->product_id)->get();
     }
 
     public function store()
@@ -38,7 +39,6 @@ class FabricIndex extends Component
             'image' => [
                 'required',
                 'mimes:jpg,png,jpeg,gif',
-                'max:255',
                 'unique:fabrics,image', 
             ],
         ]);
@@ -58,9 +58,11 @@ class FabricIndex extends Component
         
         $this->title = null;
         $this->image = null;
-
+        
+        // Refresh the fabrics list for the current product
+       $this->fabrics = Fabric::orderBy('id', 'desc')->where('product_id', $this->product_id)->get();
         session()->flash('message', 'Fabric created successfully!');
-        $this->fabrics = Fabric::orderBy('id', 'desc')->get();
+        // $this->fabrics = Fabric::orderBy('id', 'desc')->get();
         
     }
 
@@ -86,7 +88,6 @@ class FabricIndex extends Component
             'image' => [
                 'required',
                 'mimes:jpg,png,jpeg,gif',
-                'max:255',
                 Rule::unique('fabrics', 'image')->ignore($this->fabricId),
             ],
         ]);
@@ -97,11 +98,6 @@ class FabricIndex extends Component
             // Store new image
             $newImagePath = $this->image->store("fabrics", 'public');
             $imagePath = "storage/" . $newImagePath;
-    
-            // Optionally delete old image if needed
-            if (File::exists(public_path($fabric->image))) {
-                File::delete(public_path($fabric->image));
-            }
         }
         $fabric->update([
             'product_id' => $this->product_id,
@@ -113,9 +109,10 @@ class FabricIndex extends Component
         $this->title = null;
         $this->image = null;
 
-
+        // Refresh the fabrics list for the current product
+         $this->fabrics = Fabric::orderBy('id', 'desc')->where('product_id', $this->product_id)->get();  
         session()->flash('message', 'Fabric updated successfully!');
-        $this->fabrics = Fabric::orderBy('id', 'desc')->get();
+       
         // return redirect()->route('admin.fabrics.index');
     }
 

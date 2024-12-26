@@ -7,14 +7,11 @@
                     <div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
                         <div class="d-flex justify-content-center align-items-center">
                             <!-- Logo Section -->
-                            <img src="{{ asset('assets') }}/img/logo.png" alt="Logo" style="width: 80px; height: auto; max-height:60px;" class="me-2">
+                            <img src="{{ asset('assets') }}/img/logo.webp" alt="Logo" style="width: 100px; height: auto;" class="me-2">
                 
                             <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">Admin Login</h4>
                         </div>
-                        <div class="row">
-                            <h6 class='text-white text-center'>
-                                <span class="font-weight-normal">Sign in</span> </h6>
-                        </div>
+                       
                     </div>
                 </div>
                 <div class="card-body">
@@ -49,16 +46,6 @@
                             <button type="submit" class="btn bg-gradient-primary w-100 my-4 mb-2">Sign
                                 in</button>
                         </div>
-                        {{-- <p class="mt-4 text-sm text-center">
-                            Don't have an account?
-                            <a href="{{ route('register') }}"
-                                class="text-primary text-gradient font-weight-bold">Sign up</a>
-                        </p> --}}
-                        {{-- <p class="text-sm text-center">
-                            Forgot your password? Reset your password
-                            <a href="{{ route('password.forgot') }}"
-                                class="text-primary text-gradient font-weight-bold">here</a>
-                        </p> --}}
                     </form>
                 </div>
             </div>

@@ -32,8 +32,15 @@ class StaffAdd extends Component
             'designation' => 'required',
             'person_name' => 'required|string|max:255',
             'email' => 'nullable|email|unique:users,email',
-            'mobile' => 'required|digits:' . env('VALIDATE_MOBILE') . '|unique:users,phone,' . ($this->user_id ?? 'null'),
-            'whatsapp_no' => 'required|digits:'.env('VALIDATE_WHATSAPP'),
+          'mobile' => [
+                'required',
+                'regex:/^\d{' . env('VALIDATE_MOBILE', 8) . ',}$/', // At least VALIDATE_MOBILE digits
+                'unique:users,phone,' . ($this->user_id ?? 'null'),
+            ],
+            'whatsapp_no' => [
+                'required',
+                'regex:/^\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/', // At least VALIDATE_WHATSAPP digits
+            ],
             'aadhaar_number' => 'required|numeric',
             'image' => 'nullable|image|max:2048',
             'user_id_front' => 'nullable|image|max:2048',
@@ -53,9 +60,9 @@ class StaffAdd extends Component
             'pincode' => 'nullable|string|max:10',
             'country' => 'nullable|string|max:255',
        ]);
-    //    DB::beginTransaction();
+       DB::beginTransaction();
 
-    //    try {
+       try {
         // Check and upload the images only if they are provided
             $imagePath = $this->image ? Helper::uploadImage($this->image, 'staff2') : null;
             $userIdFrontPath = $this->user_id_front ? Helper::uploadImage($this->user_id_front, 'staff') : null;
@@ -87,14 +94,15 @@ class StaffAdd extends Component
                 'branch_name' => $this->branch_name ?? "",
                 'bank_account_no' => $this->account_no ?? "",
                 'ifsc' => $this->ifsc ?? "",
-                'monthly_salary' => $this->monthly_salary ?? "",
-                'daily_salary' => $this->daily_salary ?? "",
-                'travelling_allowance' => $this->travel_allowance ?? "",
+                'monthly_salary' => is_numeric($this->monthly_salary) ? $this->monthly_salary : null,
+                'daily_salary' => is_numeric($this->daily_salary) ?  $this->daily_salary : null,
+                'travelling_allowance' => is_numeric($this->travel_allowance) ? $this->travel_allowance : null,
             ]);
 
             // 3. Save the data into the user_address table
             UserAddress::create([
                 'user_id' => $user->id,
+                'address_type' => 1, //for Staff
                 'address' => $this->address ?? "",
                 'landmark' => $this->landmark ?? "",
                 'state' => $this->state ?? "",
@@ -104,18 +112,18 @@ class StaffAdd extends Component
             ]);
 
             // Commit the transaction if everything is successful
-            // DB::commit();
+            DB::commit();
 
             session()->flash('message', 'Staff information saved successfully!');
             return redirect()->route('staff.index');
-        // } catch (\Exception $e) {
-        //     // Rollback the transaction in case of an error
-        //     DB::rollBack();
+        } catch (\Exception $e) {
+            // Rollback the transaction in case of an error
+            DB::rollBack();
 
-        //     // Handle the exception (e.g., log the error and show an error message)
-        //     session()->flash('error', 'An error occurred while saving staff information: ' . $e->getMessage());
-        //     return back()->withInput();
-        // }
+            // Handle the exception (e.g., log the error and show an error message)
+            session()->flash('error', 'An error occurred while saving staff information: ' . $e->getMessage());
+            return back()->withInput();
+        }
     }
 
     public function SameAsMobile(){

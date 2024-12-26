@@ -38,6 +38,12 @@
                                         SL
                                     </th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
+                                        Collection
+                                    </th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
+                                        Short Code
+                                    </th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
                                         Image
                                     </th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
@@ -55,9 +61,11 @@
                                 @foreach($categories as $k => $category)
                                     <tr>
                                         <td class="align-middle text-center">{{ $k + 1 }}</td>
+                                        <td class="align-middle text-center">{{ $category->collection?$category->collection->title : "" }}</td>
+                                        <td class="align-middle text-center">{{ $category->short_code}}</td>
                                         <td class="align-middle text-center">
                                             @if($category->image)
-                                                <img src="{{ asset('storage/' . $category->image) }}"  class="img-thumbnail" width="50">
+                                                <img src="{{ asset($category->image) }}"  class="img-thumbnail" width="50">
                                             @else
                                                 <span class="text-secondary">No Image</span>
                                             @endif
@@ -107,6 +115,29 @@
                         </div>
                         <form wire:submit.prevent="{{ $categoryId ? 'update' : 'store' }}">
                             <div class="row">
+
+                                <label class="form-label mt-3">Collection</label>
+                                <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
+                                    <select wire:model="collection_id" class="form-control border border-2 p-2">
+                                        <option value="" selected hidden>Select Collection</option>
+                                        @foreach ($collections as $id=> $title)
+                                            <option value="{{$id}}">{{$title}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                @error('collection_id')
+                                    <p class='text-danger inputerror'>{{ $message }}</p>
+                                @enderror
+
+                                {{-- short code --}}
+                                <label class="form-label">Short Code</label>
+                                <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
+                                    <input type="text" wire:model="short_code" class="form-control border border-2 p-2" placeholder="Enter short_code">
+                                </div>
+                                @error('short_code')
+                                    <p class='text-danger inputerror'>{{ $message }}</p>
+                                @enderror
+
                                 <label class="form-label">Category Title</label>
                                 <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
                                     <input type="text" wire:model="title" class="form-control border border-2 p-2" placeholder="Enter Title">
@@ -118,6 +149,13 @@
                                 <label class="form-label mt-3">Category Image</label>
                                 <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
                                     <input type="file" wire:model="image" class="form-control border border-2 p-2">
+                                </div>
+                                <div>
+                                    @if (is_object($image))
+                                    <img src="{{ $image->temporaryUrl() }}" class="img-thumbnail" width="50%">
+                                    @elseif ($categoryId)
+                                        <img src="{{ asset($categories->where('id', $categoryId)->first()->image ?? '') }}" class="img-thumbnail" width="50%">    
+                                    @endif
                                 </div>
                                 @error('image')
                                     <p class='text-danger inputerror'>{{ $message }}</p>
@@ -133,6 +171,7 @@
                                         </span>
                                     </button>
                                 </div>
+                            </div>
                         </form>
 
                     </div>

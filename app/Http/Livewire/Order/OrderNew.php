@@ -21,14 +21,15 @@ class OrderNew extends Component
     public $searchTerm = '';
     public $searchResults = [];
     public $errorClass = [];
-    public $collectionsType = [];
-    public $Collections = [];
+    // public $collectionsType = [];
+    public $collections = [];
     public $errorMessage = [];
     public $activeTab = 1;
     public $items = [];
     public $FetchProduct = 1;
 
     public $customers = null;
+    public $orders = null;
     public $is_wa_same, $name, $company_name,$employee_rank, $email, $dob, $customer_id, $whatsapp_no, $phone;
     public $billing_address,$billing_landmark,$billing_city,$billing_state,$billing_country,$billing_pin;
 
@@ -38,7 +39,7 @@ class OrderNew extends Component
 
     //  product 
     public $categories,$subCategories = [], $products = [], $measurements = [];
-    public $selectedCategory = null, $selectedSubCategory = null,$searchproduct, $product_id =null,$collection_type,$collection;
+    public $selectedCategory = null, $selectedSubCategory = null,$searchproduct, $product_id =null,$collection;
     public $paid_amount = 0;
     public $billing_amount = 0;
     public $remaining_amount = 0;
@@ -46,14 +47,13 @@ class OrderNew extends Component
 
     public function mount(){
         $this->customers = User::where('user_type', 1)->where('status', 1)->orderBy('name', 'ASC')->get();
-        $this->collectionsType = CollectionType::orderBy('title', 'ASC')->get();
         $this->categories = Category::where('status', 1)->orderBy('title', 'ASC')->get();
+        $this->collections = Collection::orderBy('title', 'ASC')->get();
         $this->addItem();
     }
 
     // Define rules for validation
     protected $rules = [
-        'items.*.collection_type' => 'required|string',
         'items.*.collection' => 'required|string',
         'items.*.product_id' => 'required|integer',
         'items.*.price' => 'required|numeric|min:1',  // Ensuring that price is a valid number (and greater than or equal to 0).
@@ -76,18 +76,41 @@ class OrderNew extends Component
                 })
                 ->take(20)
                 ->get();
+                $orders = Order::where('order_number', 'like', '%' . $this->searchTerm . '%')
+                    ->orWhereHas('customer', function ($query) {
+                        $query->where('name', 'like', '%' . $this->searchTerm . '%');
+                    })
+                    ->latest()
+                    ->take(1)
+                    ->get();
+
+                if ($orders->count()) {
+                    // If orders are found, show the customer name, phone, and email in search results
+                    $this->orders = $orders;
+        
+                    // Prepend customer details from the first order into search results
+                    $customerFromOrder = $orders->first()->customer;
+                    $this->searchResults->prepend($customerFromOrder);
+                    session()->flash('orders-found', 'Orders found for this customer.');
+                } else {
+                    $this->orders = collect(); // No orders found
+                    session()->flash('no-orders-found', 'No orders found for this customer.');
+                }
+
+                 // If no orders are found, flash a session message
+            // if ($this->orders->isEmpty()) {
+            // }
         } else {
+            // Reset results when the search term is empty
             $this->searchResults = [];
+            $this->orders = collect(); 
         }
-    }
-
-
-    
+      }
 
     public function addItem()
     {
         $this->items[] = [
-            'collection_type' => '',
+           
             'collection' => '',
             'category' => '',
             'sub_category' => '',
@@ -125,72 +148,49 @@ class OrderNew extends Component
         $this->updateBillingAmount();  // Update billing amount after checking price
     }
 
-    public function GetCollection($typeId, $index)
+    public function GetCategory($value,$index)
     {
-        // Reset collection, products, and product_id for the selected item
-        $this->items[$index]['collection'] = ''; 
-        $this->items[$index]['products'] = [];
+        // Reset products, and product_id for the selected item
         $this->items[$index]['product_id'] = null;
         $this->items[$index]['measurements'] = [];
         $this->items[$index]['fabrics'] = [];
-        $this->items[$index]['categories'] = [];
-        if ($typeId) {
-            // Fetch collections based on the selected collection type
-            $this->items[$index]['collections'] = Collection::where('collection_type', $typeId)
-                ->orderBy('title', 'ASC')
-                ->get();
-        }
+      
+            // Fetch categories and products based on the selected collection 
+            $this->items[$index]['categories'] = Category::orderBy('title', 'ASC')->where('collection_id', $value)->get();
+            $this->items[$index]['products'] = Product::orderBy('name', 'ASC')->where('collection_id', $value)->get();
+       
     }
     
-    public function CollectionWiseProduct($value, $index)
-    {
-        
-        // If a collection is selected, fetch the products and categories
-        if ($value) {
-            // Fetch products related to the selected collection
-            $this->items[$index]['products'] = Product::where('collection_id', $value)->get();
-            
-            // Fetch categories based on products related to the selected collection
-            $bulkCategory = Product::where('collection_id', $value)
-                ->pluck('category_id')
-                ->toArray();
 
-            // Fetch and set categories
-            $this->items[$index]['categories'] = Category::where('status', 1)
-                ->whereIn('id', $bulkCategory)
-                ->orderBy('title', 'ASC')
-                ->get();
-        } else {
-            // Reset products and categories if no collection is selected
-            $this->items[$index]['products'] = [];
-            $this->items[$index]['categories'] = [];
-        }
-    }
 
-    public function CatWiseSubCatProduct($categoryId, $index)
+    public function CategoryWiseProduct($categoryId, $index)
     {
-        // Reset products and product_id for the selected item
+        // Reset products for the selected item
         $this->items[$index]['products'] = [];
         $this->items[$index]['product_id'] = null;
 
         if ($categoryId) {
-            // Fetch subcategories and products based on the selected category
-            $this->subCategories = SubCategory::where('category_id', $categoryId)->get();
-            $this->items[$index]['products'] = Product::where('category_id', $categoryId)->get();
-        } else {
-            // Reset subcategories and products if no category is selected
-            $this->subCategories = [];
-            $this->items[$index]['products'] = [];
+            // Fetch products based on the selected category and collection
+            $this->items[$index]['products'] = Product::where('category_id', $categoryId)
+                ->where('collection_id', $this->items[$index]['collection']) // Ensure the selected collection is considered
+                ->get();
         }
     }
+
 
 
     public function FindProduct($term, $index)
     {
         $collection = $this->items[$index]['collection'];
-    
+        $category = $this->items[$index]['category']; 
+
         if (empty($collection)) {
             session()->flash('errorProduct.' . $index, '🚨 Please select a collection before searching for a product.');
+            return;
+        }
+
+        if (empty($category)) {
+            session()->flash('errorProduct.' . $index, '🚨 Please select a category before searching for a product.');
             return;
         }
     
@@ -200,6 +200,7 @@ class OrderNew extends Component
         if (!empty($term)) {
             // Search for products within the specified collection and matching the term
             $this->items[$index]['products'] = Product::where('collection_id', $collection)
+                ->where('category_id', $category)
                 ->where(function ($query) use ($term) {
                     $query->where('name', 'like', '%' . $term . '%')
                           ->orWhere('product_code', 'like', '%' . $term . '%');
@@ -286,7 +287,7 @@ class OrderNew extends Component
     public function save()
     {
         // Validate the input fields based on the rules
-        
+        // dd($this->all());
         $this->validate();
 
         DB::beginTransaction();  // Begin transaction
@@ -301,6 +302,7 @@ class OrderNew extends Component
             $this->remaining_amount = $total_amount-$this->paid_amount;
             $order = new Order();
             $order->order_number = 'ORD-' . strtoupper(uniqid()); // Generate a unique order number
+            $order->customer_id = $this->customer_id;
             $order->customer_name = $this->name;
             $order->customer_email = $this->email;
     
@@ -334,7 +336,7 @@ class OrderNew extends Component
                 $orderItem = new OrderItem();
                 $orderItem->order_id = $order->id;
                 $orderItem->product_id = $item['product_id'];
-                $orderItem->collection_type = $item['collection_type'];
+               
                 $orderItem->collection = $collection_data?$collection_data->title:"";
                 $orderItem->category = $category_data?$category_data->title:"";
                 $orderItem->sub_category = $sub_category_data?$sub_category_data->title:"";
@@ -344,7 +346,7 @@ class OrderNew extends Component
                 $orderItem->save();  // Save the order item
     
                 // Now handle the measurements for each item
-                if ($item['collection_type']==1 && isset($item['get_measurements']) && count($item['get_measurements']) > 0) {
+                if (isset($item['get_measurements']) && count($item['get_measurements']) > 0) {
                     foreach ($item['get_measurements'] as $mindex =>$measurement) {
                         $measurement_data = Measurement::where('id', $mindex)->first();
                         // Save the measurement for this order item
@@ -368,10 +370,12 @@ class OrderNew extends Component
             DB::rollBack();
             // dd($e->getMessage());
             // Flash error message
-            session()->flash('error', '🚨 Something went wrong. The operation has been rolled back.');
-    
-            // Optionally log the error
             \Log::error('Error saving items: ' . $e->getMessage());
+            // dd($e->getMessage());
+            session()->flash('error', '🚨 Something went wrong. The operation has been rolled back.');
+            
+           
+            // Optionally log the error
         }
     }
     
@@ -399,6 +403,7 @@ class OrderNew extends Component
 
         if ($customer) {
             // Populate customer details
+            $this->customer_id = $customer->id;
             $this->name = $customer->name;
             $this->company_name = $customer->company_name;
             $this->employee_rank = $customer->employee_rank;
@@ -495,25 +500,26 @@ class OrderNew extends Component
             if (empty($this->phone)) {
                 $this->errorClass['phone'] = 'border-danger';
                 $this->errorMessage['phone'] = 'Please enter customer phone number';
-            } elseif (strlen($this->phone) != env('VALIDATE_MOBILE', 12)) {
+            } elseif (!preg_match('/^\d{' . env('VALIDATE_MOBILE', 8) . ',}$/', $this->phone)) {
                 $this->errorClass['phone'] = 'border-danger';
-                $this->errorMessage['phone'] = 'Phone number must be ' . env('VALIDATE_MOBILE', 12) . ' digits long';
+                $this->errorMessage['phone'] = 'Phone number must be ' . env('VALIDATE_MOBILE', 8) . ' or more digits long';
             } else {
                 $this->errorClass['phone'] = null;
                 $this->errorMessage['phone'] = null;
             }
-    
+
             // Validate WhatsApp Number
-            if (empty($this->whatsapp_no)) {
+           if (empty($this->whatsapp_no)) {
                 $this->errorClass['whatsapp_no'] = 'border-danger';
                 $this->errorMessage['whatsapp_no'] = 'Please enter WhatsApp number';
-            } elseif (strlen($this->whatsapp_no) != env('VALIDATE_WHATSAPP', 12)) {
+            } elseif (!preg_match('/^\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/', $this->whatsapp_no)) {
                 $this->errorClass['whatsapp_no'] = 'border-danger';
-                $this->errorMessage['whatsapp_no'] = 'WhatsApp number must be ' . env('VALIDATE_WHATSAPP', 12) . ' digits long';
+                $this->errorMessage['whatsapp_no'] = 'WhatsApp number must be ' . env('VALIDATE_WHATSAPP', 8) . ' or more digits long';
             } else {
                 $this->errorClass['whatsapp_no'] = null;
                 $this->errorMessage['whatsapp_no'] = null;
             }
+
     
             // Validate Billing Information
             if (empty($this->billing_address)) {
@@ -641,7 +647,7 @@ class OrderNew extends Component
     public function render()
     {
         return view('livewire.order.order-new', [
-            'collectionsType' => $this->collectionsType,
+            // 'collectionsType' => $this->collectionsType,
             'categories' => $this->categories,
         ]);
     }

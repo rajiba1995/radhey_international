@@ -49,9 +49,49 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Order Customer Fields... -->
+                    @if(session()->has('orders-found') && $orders->count() > 0)
+                        <div class="alert alert-success mt-3">
+                            {{ session('orders-found') }}
+                        </div>
+                    @endif
+
+                    @if (session()->has('no-orders-found'))
+                        <div class="alert alert-danger mt-3">
+                            {{ session('no-orders-found') }}
+                        </div>
+                    @endif
+                    @if(!empty($orders) && $orders->count())
+                        <h5 class="mt-4">Previous Order Details</h5>
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <tr class="text-center">
+                                    <th>Order Number</th>
+                                    <th>Customer Name</th>
+                                    <th>Billing Amount</th>
+                                    <th>Remaining Amount</th>
+                                    <th>Billing Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($orders as $order)
+                                    <tr class="text-center">
+                                        <td>{{ $order->order_number }}</td>
+                                        <td>{{ $order->customer->name }}</td>
+                                        <td>{{ $order->total_amount }}</td>
+                                        <td>{{ $order->remaining_amount }}</td>
+                                        <td>{{ $order->last_payment_date }}</td>
+                                        <td><a href="{{route('admin.order.invoice',$order->id)}}" class="btn btn-sm btn-outline-info" target="_blank">Invoice</a></td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
                     <!-- Customer Details -->
                     <div class="row">
                         <div class="mb-3 col-md-6">
+                            <input type="hidden" name="customer_id" wire:model="customer_id">
                             <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
                             <input type="text" wire:model="name" id="name" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['name'] ?? '' }}" placeholder="Enter Customer Name">
                             @if(isset($errorMessage['name']))
@@ -64,7 +104,7 @@
                             <input type="text" wire:model="company_name" id="company_name" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Company Name">
                         </div>
                         <div class="mb-3 col-md-2">
-                            <label for="employee_rank" class="form-label">Employee Rank</label>
+                            <label for="employee_rank" class="form-label"> Rank</label>
                             <input type="text" wire:model="employee_rank" id="employee_rank" class="form-control form-control-sm border border-1 p-2" placeholder="Enter rank">
                         </div>
     
@@ -209,33 +249,15 @@
                     {{-- {{dd($items)}} --}}
                     @foreach($items as $index => $item)
                         <div class="row align-items-center my-5">
-                            <!-- Collection Type -->
+                            <!-- Collection  -->
                             <div class="mb-3 col-md-2">
                                
-                                <label class="form-label"><strong>Collection Type </strong><span class="text-danger">*</span></label>
-                               <select wire:model="items.{{ $index }}.collection_type" wire:change="GetCollection($event.target.value, {{ $index }})" class="form-control border border-2 p-2 form-control-sm">
-                                    <option value="" selected hidden>Select type</option>
-                                    @foreach($collectionsType as $type)
-                                        <option value="{{ $type->id }}">{{ ucwords($type->title) }}</option>
-                                    @endforeach
-                                </select>
-                                @error("items.$index.collection_type")
-                                    <p class='text-danger inputerror'>{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <!-- Collection -->
-                            <div class="mb-3 col-md-2">
-                                <label class="form-label"><strong>Collection</strong> <span class="text-danger">*</span></label>
-                                <select wire:model="items.{{ $index }}.collection" class="form-control border border-2 p-2 form-control-sm" wire:change="CollectionWiseProduct($event.target.value, {{ $index }})">
+                                <label class="form-label"><strong>Collection </strong><span class="text-danger">*</span></label>
+                               <select wire:model="items.{{ $index }}.collection" wire:change="GetCategory($event.target.value, {{ $index }})" class="form-control border border-2 p-2 form-control-sm">
                                     <option value="" selected hidden>Select collection</option>
-                                    @if (isset($items[$index]['collections']) && count($items[$index]['collections']) > 0)
-                                        @foreach($this->items[$index]['collections'] as $citems)
-                                            <option value="{{ $citems->id }}">{{ ucwords($citems->title) }}@if($citems->short_code)({{ $citems->short_code }})@endif</option>
-                                        @endforeach
-                                    @else
-                                        <option value="" disabled>No collection available</option>
-                                    @endif
+                                    @foreach($collections as $citems)
+                                        <option value="{{ $citems->id }}">{{ ucwords($citems->title) }} @if($citems->short_code)({{ $citems->short_code }})@endif</option>
+                                    @endforeach
                                 </select>
                                 @error("items.$index.collection")
                                     <p class='text-danger inputerror'>{{ $message }}</p>
@@ -245,7 +267,7 @@
                             <!-- Category -->
                             <div class="mb-3 col-md-2">
                                 <label class="form-label"><strong>Category</strong></label>
-                                <select wire:model="items.{{ $index }}.category" class="form-select form-control-sm border border-1" wire:change="CatWiseSubCatProduct($event.target.value, {{ $index }})">
+                                <select wire:model="items.{{ $index }}.category" class="form-select form-control-sm border border-1" wire:change="CategoryWiseProduct($event.target.value, {{ $index }})">
                                     <option value="" selected hidden>Select Category</option>
                                     @if (isset($items[$index]['categories']) && count($items[$index]['categories']) > 0)
                                         @foreach ($items[$index]['categories'] as $category)
@@ -263,7 +285,7 @@
                             <!-- Product -->
                             <div class="mb-3 col-md-4">
                                 <label class="form-label"><strong>Product</strong></label>
-                                <input type="text" wire:keyup="FindProduct($event.target.value, {{ $index }}, 'items.{{ $index }}.collection')" wire:model="items.{{ $index }}.searchproduct" class="form-control form-control-sm border border-1 customer_input" placeholder="Enter product name">
+                                <input type="text" wire:keyup="FindProduct($event.target.value, {{ $index }}" wire:model="items.{{ $index }}.searchproduct" class="form-control form-control-sm border border-1 customer_input" placeholder="Enter product name">
                                 @if (session()->has('errorProduct.' . $index)) 
                                     <p class="text-danger">{{ session('errorProduct.' . $index) }}</p>
                                 @endif
@@ -295,7 +317,7 @@
                             </div>
                             {{-- Append Measurements data --}}
                             {{-- {{dd($items[$index]['searchproduct'])}} --}}
-                            @if(isset($this->items[$index]['product_id']) && $items[$index]['collection_type'] == 1)
+                            @if(isset($this->items[$index]['product_id'])) 
                                 <div class="row">
                                     <div class="col-12 col-md-6 mb-2 mb-md-0 measurement_div">
                                         <h6 class="badge bg-danger custom_success_badge">Measurements</h6>

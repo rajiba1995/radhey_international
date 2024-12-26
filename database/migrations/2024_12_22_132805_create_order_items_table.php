@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade'); // Assuming you have a 'products' table.
-            $table->foreignId('collection_type')->constrained('collection_types')->onDelete('cascade');
+            // $table->foreignId('collection_type')->constrained('collection_types')->onDelete('cascade');
             $table->string('fabrics')->nullable(); // Assuming 'fabrics' table exists.
             $table->string('collection');
             $table->string('category')->nullable(); // Assuming you have a 'categories' table.

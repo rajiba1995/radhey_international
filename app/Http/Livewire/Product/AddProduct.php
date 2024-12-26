@@ -14,29 +14,30 @@ class AddProduct extends Component
 {
     use WithFileUploads;
     public $categories;
-    public $collectionsType = [];
     public $Collections = [];
-    public $subCategories = [];
-    public $collection_type,$collection,$category_id,$sub_category_id,$name,$product_code,$short_description,$description,$gst_details,$product_image;
+    // public $subCategories = [];
+    public $collection,$category_id,$sub_category_id,$name,$product_code,$short_description,$description,$gst_details,$product_image;
    
     public function mount()
     {
         // Load categories when the component is mounted
-        $this->categories = Category::where('status', 1)->orderBy('title','ASC')->get() ?? collect();
-        $this->subCategories = []; 
-        $this->collectionsType = CollectionType::orderBy('title', 'ASC')->get();
+        // $this->categories = Category::where('status', 1)->orderBy('title','ASC')->get() ?? collect();
+        // $this->subCategories = []; 
+        $this->Collections = Collection::orderBy('title', 'ASC')->get() ?? collect();
+      
     }
 
     public function GetCollection($id){
-        $this->Collections = Collection::where('collection_type', $id)->orderBy('title', 'ASC')->get();
+        $this->categories = Category::where('collection_id', $id)->where('status', 1)->orderBy('title','ASC')->get() ?? collect();
     }
+    
     public function create()
     {
         $this->validate([
-            'collection_type' => 'required',
+            // 'collection_type' => 'required',
             'collection' => 'required',
             'category_id' => 'required',
-            // 'sub_category_id' => 'required',
+            // 'sub_category_id' => 'nullable',
             'name' => 'required|string|max:255',
             'product_code' => 'required|string|max:10',
             'short_description' => 'nullable|string|max:255',
@@ -54,7 +55,7 @@ class AddProduct extends Component
         Product::create([
             'collection_id' => $this->collection,
             'category_id' => $this->category_id,
-            'sub_category_id' => $this->sub_category_id,
+            // 'sub_category_id' => $this->sub_category_id,
             'name' => $this->name,
             'product_code' => $this->product_code,
             'short_description' => $this->short_description,
@@ -67,11 +68,11 @@ class AddProduct extends Component
         return redirect()->route('product.view');
     }
 
-    public function GetSubcat($category_id){
-        $this->subCategories = SubCategory::where('category_id', $category_id)->where('status', 1)  // Ensure only active sub-categories
-        ->get() ?? collect();
-        $this->sub_category_id = null; // Reset sub-category when category changes
-    }
+    // public function GetSubcat($category_id){
+    //     $this->subCategories = SubCategory::where('category_id', $category_id)->where('status', 1)  // Ensure only active sub-categories
+    //     ->get() ?? collect();
+    //     $this->sub_category_id = null; // Reset sub-category when category changes
+    // }
 
     public function render()
     {

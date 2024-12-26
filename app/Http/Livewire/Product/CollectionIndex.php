@@ -14,38 +14,29 @@ class CollectionIndex extends Component
 {
     use WithPagination;
 
-    public $collectionsType;
-    public $short_code, $title, $collectionId, $collection_type;
+    public $title;
     public $status = 1;
     public $search = '';
-
+    public $collectionId;
+    
     public function mount()
     {
-        $this->collectionsType = CollectionType::orderBy('title', 'ASC')->get();
+        
     }
 
     public function store()
     {
         $this->validate([
-            'collection_type' => ['required'],
             'title' => [
                 'required',
                 'string',
                 'max:255',
                 'unique:collections,title',
             ],
-            'short_code' => [
-                'nullable',
-                'string',
-                'max:255',
-                'unique:collections,short_code',
-            ],
         ]);
 
         Collection::create([
             'title' => ucfirst($this->title),
-            'short_code' => $this->short_code,
-            'collection_type' => $this->collection_type,
         ]);
 
         $this->resetForm();
@@ -58,8 +49,6 @@ class CollectionIndex extends Component
         $collection = Collection::findOrFail($id);
         $this->collectionId = $collection->id;
         $this->title = $collection->title;
-        $this->short_code = $collection->short_code;
-        $this->collection_type = $collection->collection_type;
     }
 
     public function update()
@@ -71,19 +60,11 @@ class CollectionIndex extends Component
                 'max:255',
                 Rule::unique('collections', 'title')->ignore($this->collectionId),
             ],
-            'short_code' => [
-                'nullable',
-                'string',
-                'max:255',
-                Rule::unique('collections', 'short_code')->ignore($this->collectionId),
-            ],
         ]);
 
         $collection = Collection::findOrFail($this->collectionId);
         $collection->update([
             'title' => ucfirst($this->title),
-            'short_code' => $this->short_code,
-            'collection_type' => $this->collection_type,
         ]);
 
         $this->resetForm();
@@ -108,18 +89,12 @@ class CollectionIndex extends Component
     {
         $this->title = null;
         $this->short_code = null;
-        $this->collection_type = null;
         $this->collectionId = null;
-    }
-    public function changeType($value){
-        $this->collection_type = $value;
     }
 
     public function render()
     {
         $collections = Collection::where('title', 'like', "%{$this->search}%")
-            ->orWhere('short_code', 'like', "%{$this->search}%")
-            ->orderBy('collection_type', 'ASC')
             ->orderBy('title', 'ASC')
             ->paginate(10);
 

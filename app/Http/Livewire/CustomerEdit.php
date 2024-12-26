@@ -103,13 +103,20 @@ class CustomerEdit extends Component
     {
         $rules = [
             'name' => 'required|string|max:255',
+            'employee_rank'=>'nullable|string',
             'image' => $this->image instanceof \Illuminate\Http\UploadedFile ? 'nullable|mimes:jpg,jpeg,png,gif' : 'nullable',
             'verified_video' => $this->verified_video instanceof \Illuminate\Http\UploadedFile ? 'nullable|mimes:mp4,mov,avi,wmv' : 'nullable',
             'company_name' => 'nullable|string|max:255',
             'email' => 'nullable|email|unique:users,email,' . $this->id,
             'dob'=> 'required|date',
-            'phone' => 'required|digits:'.env('VALIDATE_MOBILE'),
-            'whatsapp_no' => 'required|digits:'.env('VALIDATE_WHATSAPP'),
+            'phone' => [
+                'required',
+                'regex:/^\d{' . env('VALIDATE_MOBILE', 8) . ',}$/'
+            ],
+            'whatsapp_no' => [
+                'required',
+                'regex:/^\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/'
+            ],
             'gst_number' => 'nullable|string|max:15',
             'credit_limit' => 'nullable|numeric|min:0',
             'credit_days' => 'nullable|integer|min:0',
@@ -205,8 +212,8 @@ class CustomerEdit extends Component
             'phone' => $this->phone,
             'whatsapp_no' => $this->whatsapp_no,
             'gst_number' => $this->gst_number,
-            // 'credit_limit' => isset($this->credit_limit)?$this->credit_limit:0,
-            // 'credit_days' => $this->credit_days,
+            'credit_limit' => $this->credit_limit === '' ? 0 : $this->credit_limit,
+            'credit_days' => $this->credit_days === '' ? 0 : $this->credit_days,
         ];
     }
 
