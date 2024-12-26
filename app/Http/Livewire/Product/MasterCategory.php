@@ -64,9 +64,14 @@ class MasterCategory extends Component
         ]);
 
         $category = Category::findOrFail($this->categoryId);
-        $absoluteAssetPath = $this->image instanceof \Livewire\TemporaryUploadedFile
-            ? 'storage/' . $this->image->store('category_image', 'public')
-            : $category->image;
+        // $absoluteAssetPath = $this->image instanceof \Livewire\TemporaryUploadedFile
+        //     ? 'storage/' . $this->image->store('category_image', 'public')
+        //     : $category->image;
+
+        if ($this->image) {
+            $filePath = $this->gst_file->store('category_image','public');
+                $absoluteAssetPath = 'storage/' . $filePath;
+        }
 
         $category->update([
             'title' => $this->title,
