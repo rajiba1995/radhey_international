@@ -32,8 +32,15 @@ class StaffAdd extends Component
             'designation' => 'required',
             'person_name' => 'required|string|max:255',
             'email' => 'nullable|email|unique:users,email',
-            'mobile' => 'required|digits:' . env('VALIDATE_MOBILE') . '|unique:users,phone,' . ($this->user_id ?? 'null'),
-            'whatsapp_no' => 'required|digits:'.env('VALIDATE_WHATSAPP'),
+          'mobile' => [
+                'required',
+                'regex:/^\d{' . env('VALIDATE_MOBILE', 8) . ',}$/', // At least VALIDATE_MOBILE digits
+                'unique:users,phone,' . ($this->user_id ?? 'null'),
+            ],
+            'whatsapp_no' => [
+                'required',
+                'regex:/^\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/', // At least VALIDATE_WHATSAPP digits
+            ],
             'aadhaar_number' => 'required|numeric',
             'image' => 'nullable|image|max:2048',
             'user_id_front' => 'nullable|image|max:2048',

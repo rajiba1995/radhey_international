@@ -48,9 +48,11 @@ class MasterCategory extends Component
             'title.max' => 'The title must not exceed 255 characters.',
             'title.unique' => 'The title has already been taken.',
         ]);
-        if ($this->image && $this->image instanceof \Illuminate\Http\UploadedFile) {
-              $absoluteAssetPath = $this->image ? 'storage/' . $this->image->store('category_image', 'public') : null;
-        }
+                 $absoluteAssetPath = null;  // Initialize the variable in case no image is uploaded
+            if ($this->image && $this->image instanceof \Illuminate\Http\UploadedFile) {
+                $absoluteAssetPath = 'storage/' . $this->image->store('category_image', 'public');
+            }
+
         Category::create([
             'collection_id' => $this->collection_id,
             'title' => $this->title,
@@ -97,7 +99,7 @@ class MasterCategory extends Component
         try {
             // Find the category
             $category = Category::findOrFail($this->categoryId);
-
+            
             $absoluteAssetPath = $category->image; // Default to the current image if no new one is uploaded
             if ($this->image && $this->image instanceof \Illuminate\Http\UploadedFile) {
                 $absoluteAssetPath = 'storage/' . $this->image->store('category_image', 'public');

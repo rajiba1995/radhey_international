@@ -474,25 +474,26 @@ class OrderNew extends Component
             if (empty($this->phone)) {
                 $this->errorClass['phone'] = 'border-danger';
                 $this->errorMessage['phone'] = 'Please enter customer phone number';
-            } elseif (strlen($this->phone) != env('VALIDATE_MOBILE', 12)) {
+            } elseif (!preg_match('/^\d{' . env('VALIDATE_MOBILE', 8) . ',}$/', $this->phone)) {
                 $this->errorClass['phone'] = 'border-danger';
-                $this->errorMessage['phone'] = 'Phone number must be ' . env('VALIDATE_MOBILE', 12) . ' digits long';
+                $this->errorMessage['phone'] = 'Phone number must be ' . env('VALIDATE_MOBILE', 8) . ' or more digits long';
             } else {
                 $this->errorClass['phone'] = null;
                 $this->errorMessage['phone'] = null;
             }
-    
+
             // Validate WhatsApp Number
-            if (empty($this->whatsapp_no)) {
+           if (empty($this->whatsapp_no)) {
                 $this->errorClass['whatsapp_no'] = 'border-danger';
                 $this->errorMessage['whatsapp_no'] = 'Please enter WhatsApp number';
-            } elseif (strlen($this->whatsapp_no) != env('VALIDATE_WHATSAPP', 12)) {
+            } elseif (!preg_match('/^\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/', $this->whatsapp_no)) {
                 $this->errorClass['whatsapp_no'] = 'border-danger';
-                $this->errorMessage['whatsapp_no'] = 'WhatsApp number must be ' . env('VALIDATE_WHATSAPP', 12) . ' digits long';
+                $this->errorMessage['whatsapp_no'] = 'WhatsApp number must be ' . env('VALIDATE_WHATSAPP', 8) . ' or more digits long';
             } else {
                 $this->errorClass['whatsapp_no'] = null;
                 $this->errorMessage['whatsapp_no'] = null;
             }
+
     
             // Validate Billing Information
             if (empty($this->billing_address)) {
