@@ -5,7 +5,9 @@ namespace App\Http\Livewire\Product;
 use Livewire\WithPagination;
 use App\Models\Category;
 use Livewire\Component;
+use App\Helpers\Helper;
 use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\DB;
 
 class MasterCategory extends Component
 {
@@ -17,18 +19,6 @@ class MasterCategory extends Component
         'title' => 'required|string|max:255',
         'image' => 'nullable|image|mimes:jpg,jpeg,png,svg,gif|max:2048',
     ];
-
-    public function render()
-    {
-        $categories = Category::query()
-            ->when($this->search, function ($query) {
-                $query->where('title', 'like', '%' . $this->search . '%');
-            })
-            ->orderBy('title', 'ASC')
-            ->paginate(5);
-
-        return view('livewire.product.master-category', compact('categories'));
-    }
 
     public function store()
     {
@@ -46,6 +36,7 @@ class MasterCategory extends Component
 
         session()->flash('message', 'Category created successfully!');
         $this->resetFields();
+       
     }
 
     public function edit($id)
@@ -59,28 +50,34 @@ class MasterCategory extends Component
 
     public function update()
     {
+       
         $this->validate([
             'title' => 'required|string|max:255|unique:categories,title,' . $this->categoryId . ',id,deleted_at,NULL',
         ]);
+        DB::beginTransaction(); // Start the transaction
+        try {
+            // Find the category
+            $category = Category::findOrFail($this->categoryId);
 
-        $category = Category::findOrFail($this->categoryId);
-        // $absoluteAssetPath = $this->image instanceof \Livewire\TemporaryUploadedFile
-        //     ? 'storage/' . $this->image->store('category_image', 'public')
-        //     : $category->image;
+            // Determine the image path
+            $imagePath = $this->image ? Helper::uploadImage($this->image, 'category') : null;
+            // Update the category
+            $category->update([
+                'title' => $this->title,
+                'status' => $this->status,
+                'image' => $imagePath,
+            ]);
 
-        if ($this->image) {
-            $filePath = $this->gst_file->store('category_image','public');
-                $absoluteAssetPath = 'storage/' . $filePath;
+            DB::commit(); // Commit the transaction
+            session()->flash('message', 'Category updated successfully!');
+            $this->resetFields();
+
+        } catch (\Throwable $e) {
+            DB::rollBack(); // Rollback the transaction in case of error
+
+            // Flash an error message to the session or return a response
+            session()->flash('error', $e->getMessage());
         }
-
-        $category->update([
-            'title' => $this->title,
-            'status' => $this->status,
-            'image' => $absoluteAssetPath,
-        ]);
-
-        session()->flash('message', 'Category updated successfully!');
-        $this->resetFields();
     }
 
     public function destroy($id)
@@ -108,10 +105,16 @@ class MasterCategory extends Component
         $this->image = null;
     }
 
-    public function getImagePreviewProperty()
+    public function render()
     {
-        return $this->image instanceof \Livewire\TemporaryUploadedFile
-            ? $this->image->temporaryUrl()
-            : ($this->image ? asset($this->image) : null);
+        $categories = Category::query()
+            ->when($this->search, function ($query) {
+                $query->where('title', 'like', '%' . $this->search . '%');
+            })
+            ->orderBy('title', 'ASC')
+            ->paginate(5);
+
+        return view('livewire.product.master-category', compact('categories'));
     }
+
 }

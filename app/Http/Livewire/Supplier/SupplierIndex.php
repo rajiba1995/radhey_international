@@ -8,11 +8,13 @@ use Livewire\Component;
 class SupplierIndex extends Component
 {
     public $suppliers;
+    public $search;
+    protected $updatesQueryString = ['search'];
 
-    public function mount()
-    {
-        $this->suppliers = Supplier::all();
-    }
+    // public function mount()
+    // {
+        
+    // }
 
     public function toggleStatus($id){
         $supplier = Supplier::find($id);
@@ -24,6 +26,10 @@ class SupplierIndex extends Component
 
     public function render()
     {
+        $this->suppliers = Supplier::where('deleted_at',NULL)
+        ->when($this->search, function ($query) {
+                $query->where('name', 'like', '%' . $this->search . '%');
+            })->get();
         return view('livewire.supplier.supplier-index');
     }
 

@@ -11,10 +11,11 @@ class Product extends Model
     protected $table = "products";
 
     protected $fillable = [
+        'collection_id',
         'category_id',
         'sub_category_id',
         'name',
-        'hsn_code',
+        'product_code',
         'short_description',
         'description',
         'gst_details',
@@ -27,6 +28,11 @@ class Product extends Model
 
     public function sub_category(){
         return $this->belongsTo(SubCategory::class,'sub_category_id');
+    }
+
+    public function collection()
+    {
+        return $this->belongsTo(Collection::class,'collection_id');
     }
 
     

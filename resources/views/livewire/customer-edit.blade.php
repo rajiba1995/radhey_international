@@ -7,8 +7,8 @@
                         <h5 class="mb-3">Customer Information</h5>
                     </div>
                     <div class="col-md-4 text-end">
-                        <a href="{{ route('customers.index') }}" class="btn btn-primary">
-                            <i class="material-icons text-white">chevron_left</i> 
+                        <a href="{{ route('customers.index') }}" class="btn btn-dark btn-sm">
+                            <i class="material-icons text-white" style="font-size: 15px">chevron_left</i> 
                             Back
                         </a>
                     </div>
@@ -28,18 +28,34 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-4">
                             <label for="company_name" class="form-label">Company Name</label>
                             <input type="text" wire:model="company_name" id="company_name" class="form-control border border-2 p-2" placeholder="Enter Company Name">
                             @error('company_name')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
+                        <div class="mb-3 col-md-2">
+                            <label for="employee_rank" class="form-label">Employee Rank</label>
+                            <input type="text" wire:model="employee_rank" class="form-control border border-2 p-2" placeholder="Enter rank">
+                            @error('employee_rank')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-3">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" wire:model="email" id="email" class="form-control border border-2 p-2" placeholder="Enter Email">
                             @error('email')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3 col-md-3">
+                            <label for="dob" class="form-label">Date Of Birth <span class="text-danger">*</span></label>
+                            <input type="date" wire:model="dob" id="dob" class="form-control border border-2 p-2">
+                            
+                            @error('dob')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
@@ -68,7 +84,7 @@
                             <input type="file" wire:model="image" id="image" class="form-control border border-2 p-2">
                             @if($this->image)
                                 <div class="mt-2">
-                                    <img src="{{ $this->image }}" alt="Profile Image" class="img-thumbnail" style="max-width: 100px;">
+                                    <img src="{{ asset($this->image) }}" alt="Profile Image" class="img-thumbnail" style="max-width: 100px;">
                                 </div>
                            @endif
                             @error('image')
@@ -81,7 +97,7 @@
                             @if($verified_video)
                                 <div class="mt-2">
                                     <video controls width="200">
-                                        <source src="{{ $verified_video }}" type="video/mp4">
+                                        <source src="{{ asset($verified_video) }}" type="video/mp4">
                                         Your browser does not support the video tag.
                                     </video>
                                 </div>
@@ -200,6 +216,11 @@
                         <div class="mb-3 col-md-6">
                             <label for="gst_certificate_image" class="form-label">GST Certificate Image</label>
                             <input type="file" wire:model="gst_certificate_image" id="gst_certificate_image" class="form-control border border-2 p-2">
+                            @if ($this->gst_certificate_image)
+                                <div class="mt-2">
+                                    <img src="{{ asset($this->gst_certificate_image) }}" alt="Gst Certificate Image" class="img-thumbnail" style="max-width: 100px;">
+                                </div>
+                            @endif
                             @error('gst_certificate_image')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror

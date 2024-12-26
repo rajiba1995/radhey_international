@@ -13,7 +13,7 @@
                         </div>
                         <div class="row">
                             <div class="col-lg-6 col-7">
-                                <h6>Recurring Expense</h6>
+                                <h6>{{$parent_id == 1 ?'Recurring Expense' : 'Non Recurring Expense'}}</h6>
                             </div>
                             <div class="col-lg-6 col-5 my-auto text-end">
                                 <div class="ms-md-auto pe-md-3 d-flex align-items-center">
@@ -187,6 +187,10 @@
                                 </div>                       
                                                         
                                 <div class="mb-2 text-end">
+                                    <a href="" class="btn btn-dark btn-sm mt-1">
+                                        <i class="material-icons text-white" style="font-size: 15px;">refresh</i>
+                                        Refresh
+                                    </a>
                                     <button type="submit" class="btn btn-primary btn-sm mt-1" 
                                             wire:loading.attr="disabled">
                                         <span> 

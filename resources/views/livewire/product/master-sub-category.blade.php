@@ -65,8 +65,6 @@
                                                 </div>
                                             </td>
                                             <td class="align-middle text-end px-4">
-                                                <a href="{{ route('measurements.index',$subcategory->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm" title="Measurement">        <span class="material-icons">straighten</span> 
-                                                </a>
                                                 <button wire:click="edit({{ $subcategory->id }})" class="btn btn-outline-info btn-sm custom-btn-sm" title="Edit"> <span class="material-icons">edit</span></button>
                                                 <button wire:click="destroy({{ $subcategory->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm" title="Delete"><span class="material-icons">delete</span> </button>
                                             </td>
@@ -75,7 +73,7 @@
                                 </tbody>
                             </table>
                             <div class="d-flex justify-content-end mt-2">
-                                {{$subcategories->links('pagination::bootstrap-4')}}
+                                {{$subcategories->links()}}
                             </div>
                         </div>
                     </div>
@@ -115,9 +113,15 @@
                                 <input type="text" wire:model="title" class="form-control border border-2 p-2" placeholder="Enter Sub-Category">
                                 @error('title') <span class="text-danger">{{ $message }}</span> @enderror
                             </div>
-                            <button type="submit" class="btn btn-sm btn-primary mt-3">
-                                {{ $subCategoryId ? 'Update Subcategory' : 'Create Subcategory' }}
-                            </button>
+                            <div class="text-end">
+                                <a href="" class="btn btn-dark btn-sm mt-3">
+                                    <i class="material-icons text-white" style="font-size: 15px;">refresh</i> 
+                                    Refresh
+                                </a>
+                                <button type="submit" class="btn btn-sm btn-primary mt-3">
+                                    {{ $subCategoryId ? 'Update Subcategory' : 'Create Subcategory' }}
+                                </button>
+                            </div>
                          </form>
                     </div>
                 </div>

@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->tinyInteger('status')->default(1)->comment('1: Active, 0: Inactive')->after('product_image');
-            $table->softDeletes();
         });
     }
 

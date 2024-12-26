@@ -10,7 +10,7 @@
             <div class="nav-wrapper position-relative end text-end">
                 <!-- Single Button -->
                 <a class="btn btn-primary btn-sm" href="{{route('staff.add')}}" role="button" >
-                    <i class="material-icons text-white">add</i>
+                    <i class="material-icons text-white" style="font-size: 15px;">add</i>
                     <span class="ms-1">Add New Staff</span>
                 </a>
             </div>
@@ -61,14 +61,10 @@
                                         @forelse ($staff as $key=> $member)
                                         <tr>
                                             <td>
-                                              
-                                                   {{ucwords($member->name)}}
-                                                
+                                                {{ucwords($member->name)}}
                                             </td>
                                             <td>
-                                               
-                                                    {{ ucwords($member->designationDetails->name ?? 'N/A')  }}
-                                                
+                                                {{ ucwords($member->designationDetails->name ?? 'N/A')  }}
                                             </td>
                                             <td>
                                                 <span>Mobile:</span><strong>{{ $member->phone ?? 'N/A' }}</strong> <br>
@@ -92,6 +88,12 @@
                                                  <a href="{{route('staff.task',$member->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Staff Task" title="Task">
                                                     <span class="material-icons">assignment</span>
                                                 </a>
+                                                @if ($member->designationDetails && $member->designationDetails->id == 2)
+                                                    <a href="{{route('staff.cities.add',$member->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Staff Task" title="Task">
+                                                        <span class="material-icons">place</span>
+                                                    </a>
+                                                @endif
+                                               
                                                {{-- <button wire:click="deleteProduct({{ $member->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm">Delete</button> --}}
                                             </td>
                                         </tr>

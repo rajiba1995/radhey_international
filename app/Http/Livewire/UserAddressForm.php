@@ -12,7 +12,7 @@ class UserAddressForm extends Component
 {
     use WithFileUploads;
 
-    public $id,$name, $company_name, $email, $phone, $whatsapp_no,$is_wa_same, $gst_number, $credit_limit, $credit_days,$gst_certificate_image,$image,$verified_video;
+    public $id,$name,$dob, $company_name,$employee_rank, $email, $phone, $whatsapp_no,$is_wa_same, $gst_number, $credit_limit, $credit_days,$gst_certificate_image,$image,$verified_video;
     public $address_type, $address, $landmark, $city, $state, $country, $zip_code;
     public $billing_address;
     public $billing_landmark;
@@ -20,7 +20,7 @@ class UserAddressForm extends Component
     public $billing_state;
     public $billing_country;
     public $billing_pin;
-
+  
     public $is_billing_shipping_same;
 
     public $shipping_address;
@@ -60,10 +60,11 @@ class UserAddressForm extends Component
         // Base rules
         $rules = [
             'name' => 'required|string|max:255',
-            'image' => 'required|mimes:jpeg,png,jpg,gif',
+            'image' => 'nullable|mimes:jpeg,png,jpg,gif',
             'verified_video' => 'nullable|mimes:mp4,mov,avi,wmv',
             'company_name'=>'nullable|string|max:255',
             'email' => 'nullable|email|unique:users,email',
+            'dob'=> 'required|date',
             'phone' => 'required|digits:'.env('VALIDATE_MOBILE'),
             'whatsapp_no' => 'required|digits:'.env('VALIDATE_WHATSAPP'),
             'gst_number' => 'nullable|string|max:15',
@@ -105,24 +106,26 @@ class UserAddressForm extends Component
             $timestamp = now()->timestamp;
             $extension = $this->image->getClientOriginalExtension();
             $imageName = $timestamp . '.' . $extension;
-            return $this->image->storeAs('profile_image', $imageName, 'public');
+            $storedPath =  $this->image->storeAs('profile_image', $imageName, 'public');
+            return 'storage/' . $storedPath;
         }
         return null;
     }
     
 
     private function uploadVideo()
-{
-    if ($this->verified_video) {
-        $timestamp = now()->timestamp;
-        $extension = $this->verified_video->getClientOriginalExtension();
-        $videoName = $timestamp . '.' . $extension;
+    {
+        if ($this->verified_video) {
+            $timestamp = now()->timestamp;
+            $extension = $this->verified_video->getClientOriginalExtension();
+            $videoName = $timestamp . '.' . $extension;
 
-        // Store the video and return the path
-        return $this->verified_video->storeAs('verified_video', $videoName, 'public');
+            // Store the video and return the path
+            $storedVideoPath =  $this->verified_video->storeAs('verified_video', $videoName, 'public');
+            return 'storage/'.$storedVideoPath;
+        }
+        return null;
     }
-    return null;
-}
 
     public function updatedImage(){
         if($this->image){
@@ -132,18 +135,20 @@ class UserAddressForm extends Component
 
 
     private function uploadGSTCertificate()
-{
-    // Handle file upload
-    if ($this->gst_certificate_image) {
-        $timestamp = now()->timestamp;
-        $imageName = $timestamp . '-' . $this->gst_certificate_image->getClientOriginalExtension();
-        return $this->gst_certificate_image->storeAs('gst_certificate_image', $imageName, 'public');
+    {
+        // Handle file upload
+        if ($this->gst_certificate_image) {
+            $timestamp = now()->timestamp;
+            $imageName = $timestamp . '-' . $this->gst_certificate_image->getClientOriginalExtension();
+            $storedGstPath =  $this->gst_certificate_image->storeAs('gst_certificate_image', $imageName, 'public');
+            return "storage/".$storedGstPath;
+        }
+        return null;
     }
-    return null;
-}
-   
+    
     public function save()
     {
+        // dd($this->all());
         $this->validate();
     // Start the transaction
     DB::beginTransaction();
@@ -167,7 +172,9 @@ class UserAddressForm extends Component
             'profile_image' => $imagePath,
             'verified_video' =>  $videoPath,
             'company_name' => $this->company_name,
+            'employee_rank' => $this->employee_rank,
             'email' => $this->email,
+            'dob'=>$this->dob,
             'phone' => $this->phone,
             'whatsapp_no' => $this->whatsapp_no,
             'gst_number' => $this->gst_number,
@@ -176,7 +183,7 @@ class UserAddressForm extends Component
             'gst_certificate_image' => $this->gst_certificate_image ? $this->uploadGSTCertificate() : null, // Handle file upload
         ];
        
-            
+        
         $user = User::create($userData);
          // Store billing address
          $this->storeAddress($user->id, 1, $this->billing_address, $this->billing_landmark, $this->billing_city, $this->billing_state, $this->billing_country, $this->billing_pin);

@@ -26,22 +26,23 @@
                     </div>
                     <div class="card-body px-0 pb-2">
                         <div class="table-responsive p-0">
-                            <table class="table align-items-center mb-0" id="sortableTable">
+                            <table class="table align-items-center mb-0" >
                                 <thead>
                                     <tr>
-                                        <th class="text-center">SL</th>
+                                        <th class="text-center">Image</th>
                                         <th class="text-center">Title</th>
-                                        <th class="text-center">Code</th>
                                         <th class="text-center">Status</th>
                                         <th class="text-center">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="sortable">
+                                <tbody id="">
                                     @foreach ($fabrics as $k => $fabric)
+                                    {{-- @dd($fabric->image) --}}
                                         <tr data-id="{{ $fabric->id }}" class="handle">
-                                            <td class="align-middle text-center">{{ $k + 1 }}</td>
-                                            <td class="align-middle text-center">{{ $fabric->title }}</td>
-                                            <td class="align-middle text-center">{{ $fabric->code }}</td>
+                                            <td class="align-middle text-center">
+                                                <img src="{{ url($fabric->image) }}" alt="Fabric Image" width="100">
+                                            </td>
+                                            <td class="align-middle text-center">{{ ucwords($fabric->title) }}</td>
                                             <td class="align-middle text-center">
                                                 <div class="form-check form-switch">
                                                     <input type="checkbox" 
@@ -72,11 +73,12 @@
                 <div class="card my-4">
                     <div class="card-body px-0 pb-2 mx-4">
                         <div class="d-flex justify-content-between mb-3">
-                            <h5>{{ $fabricId ? 'Edit Fabric' : 'Create Fabric' }}</h5>
+                            <h5>{{ $fabricId ? 'Update Fabric' : 'Create Fabric' }}</h5>
                         </div>
                         <form wire:submit.prevent="{{ $fabricId ? 'update' : 'store' }}">
                             <!-- Measurement Title -->
                             <div class="form-group mb-3">
+                                <input type="hidden" wire:model="product_id" id="product_id">
                                 <label for="title">Fabric Title</label>
                                 <input 
                                     type="text" 
@@ -92,23 +94,34 @@
                             
                             <!--  Code -->
                             <div class="form-group mb-3">
-                                <label for="code">Code</label>
+                                <label for="image">Color Image</label>
                                 <input 
-                                    type="text" 
-                                    id="code" 
-                                    wire:model="code" 
+                                    type="file" 
+                                    id="image" 
+                                    wire:model="image" 
                                     class="form-control border border-2 p-2" 
-                                    placeholder="Enter Code" 
-                                    aria-describedby="codeHelp">
-                                @error('code') 
-                                    <small id="codeHelp" class="text-danger">{{ $message }}</small> 
+                                    aria-describedby="imageHelp">
+                                    @if($image)
+                                        <img src="{{ $image->temporaryUrl() }}" alt="Preview" width="100">
+                                    @elseif ($fabricId)
+                                        <!-- Show existing image if no new image is uploaded -->
+                                        <img src="{{ asset("storage/".$fabrics->where('id', $fabricId)->first()->image ?? '') }}" alt="Current Image" width="100">
+                                    @endif
+                                @error('image') 
+                                    <small id="imageHelp" class="text-danger">{{ $message }}</small> 
                                 @enderror
                             </div>
 
                             <!-- Submit Button -->
-                            <button type="submit" class="btn btn-sm btn-primary mt-3">
-                                {{ $fabricId ? 'Update Fabric' : 'Create Fabric' }}
-                            </button>
+                            <div class="text-end">
+                                <a href="{{route('product.view')}}" class="btn btn-dark btn-sm mt-2">
+                                    <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i> 
+                                    Back
+                                </a>
+                                <button type="submit" class="btn btn-sm btn-primary mt-2">
+                                    {{ $fabricId ? 'Update Fabric' : 'Create Fabric' }}
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>

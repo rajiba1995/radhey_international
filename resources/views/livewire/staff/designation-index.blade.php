@@ -64,17 +64,14 @@
                                                     >
                                                 </div>
                                             </td>
-                                            <td class="align-middle text-end px-4">
-                                                @if($designation->id>1)
+                                            <td class="align-middle text-end px-4"> 
                                                 <button wire:click="edit({{$designation->id}})" class="btn btn-outline-info btn-sm custom-btn-sm" title="Edit"><span class="material-icons">edit</span></button>
-                                                @endif
-                                                {{-- <button wire:click="destroy({{ $category->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm">Delete</button> --}}
                                             </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
-                            {{-- {{ $designations->links('pagination::bootstrap-4') }} --}}
+                            {{-- {{ $designations->links() }} --}}
                         </div>
                     </div>
                 </div>
@@ -114,6 +111,10 @@
                                     </div>
                                 </div>
                                 <div class="mb-2 text-end">
+                                    <a href="" class="btn btn-dark btn-sm">
+                                        <i class="material-icons text-white" style="font-size: 15px;">refresh</i> 
+                                        Refresh
+                                    </a>
                                     <button type="submit" class="btn btn-primary btn-sm" 
                                             wire:loading.attr="disabled">
                                         <span> 

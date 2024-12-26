@@ -7,8 +7,8 @@
                         <h5 class="mb-3">Supplier Information</h5>
                     </div>
                     <div class="col-md-4 text-end">
-                        <a href="{{ route('suppliers.index') }}" class="btn btn-primary">
-                            <i class="material-icons text-white">chevron_left</i> 
+                        <a href="{{ route('suppliers.index') }}" class="btn btn-dark btn-sm">
+                            <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i> 
                             Back
                         </a>
                     </div>
@@ -155,29 +155,4 @@
         </div>
     </div>
 </div>
-<script>
-    function toggleWhatsAppField() {
-    const isWaSameCheckbox = document.getElementById('is_wa_same');
-    const whatsappField = document.getElementById('whatsappField');
 
-    // Show or hide the WhatsApp number input field based on checkbox state
-    if (isWaSameCheckbox.checked) {
-        whatsappField.style.display = 'none'; // Hide the field
-    } else {
-        whatsappField.style.display = 'block'; // Show the field
-    }
-}
-
-
-function ShippinAddressField() {
-    const isBillingShippingSameCheckbox = document.getElementById('isBillingShippingSame');
-    const ShippinAddressField = document.getElementById('ShippinAddressField');
-
-    // Show or hide the WhatsApp number input field based on checkbox state
-    if (isBillingShippingSameCheckbox.checked) {
-        ShippinAddressField.style.display = 'none'; // Hide the field
-    } else {
-        ShippinAddressField.style.display = 'block'; // Show the field
-    }
-}
-</script>

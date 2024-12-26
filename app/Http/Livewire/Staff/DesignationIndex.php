@@ -21,24 +21,6 @@ class DesignationIndex extends Component
 
     public function mount(){
         $this->allRoles = Role::all();
-
-       // Fetch designations with related data
-    $this->designations = Designation::withCount('users') // Get the count of users related to the designation
-        ->with(['roles' => function ($query) {
-            $query->select('roles.id', 'roles.name'); // Load roles for each designation
-        }])
-        ->orderBy('name','ASC')
-        ->paginate(5); 
-
-    // Check the designations data with the roles
-    // dd($this->designations);
-
-    // Manually add a comma-separated list of role names to each designation
-    $this->designations = $this->designations->map(function ($designation) {
-        // Manually add a comma-separated list of role names to each designation
-        $designation->role_names = $designation->roles->pluck('name')->implode(', ');
-        return $designation;
-    });
        
     }
     public function storeOrUpdate(){
@@ -76,36 +58,19 @@ class DesignationIndex extends Component
         }
         // Reset form
         $this->resetForm();
-        return redirect()->route('staff.designation');
+        // return redirect()->route('staff.designation');
 
 
     }
 
     public function edit($id)
     {
-        // Find the designation by ID
-        $designation = Designation::findOrFail($id);
         
-        // Set the component's properties for editing
+        $designation = Designation::findOrFail($id);
         $this->designationId = $designation->id;
         $this->name = ucwords($designation->name);
-        
-        // Fetch the roles assigned to the designation
         $this->roles = $designation->roles->pluck('id')->toArray();
        
-        // Reload designations after editing
-        $this->designations = Designation::withCount('users')
-        ->with(['roles' => function ($query) {
-            $query->select('roles.id', 'roles.name');
-        }])
-        ->latest()
-        ->paginate(10);
-
-        // Manually add a comma-separated list of role names
-        $this->designations = $this->designations->map(function ($designation) {
-            $designation->role_names = $designation->roles->pluck('name')->implode(', ');
-            return $designation;
-        });
     }
 
     public function toggleStatus($id){
@@ -137,6 +102,18 @@ class DesignationIndex extends Component
 
     public function render()
     {
+        $this->designations = Designation::withCount('users')
+        ->with(['roles' => function ($query) {
+            $query->select('roles.id', 'roles.name');
+        }])
+        ->latest()
+        ->paginate(10);
+
+        // Manually add a comma-separated list of role names
+        $this->designations = $this->designations->map(function ($designation) {
+            $designation->role_names = $designation->roles->pluck('name')->implode(', ');
+            return $designation;
+        });
         return view('livewire.staff.designation-index',[
             'designations' => $this->designations,
             'roleList'=>$this->allRoles

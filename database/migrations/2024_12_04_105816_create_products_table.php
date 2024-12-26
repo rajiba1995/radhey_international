@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id(); // Primary key
             $table->unsignedBigInteger('category_id'); // Foreign key to categories
-            $table->unsignedBigInteger('sub_category_id'); // Foreign key to sub_categories, nullable if not mandatory
+            $table->unsignedBigInteger('sub_category_id')->nullable(); // Foreign key to sub_categories, nullable if not mandatory
             $table->string('name'); // Product name
             $table->string('hsn_code')->nullable(); // HSN Code, nullable if not mandatory
             $table->string('short_description', 255)->nullable(); // Short Description

@@ -7,7 +7,7 @@
                         <h5 class="mb-3">Customer Information</h5>
                     </div>
                     <div class="col-md-4 text-end">
-                        <a href="{{ route('customers.index') }}" class="btn btn-primary">Back</a>
+                        <a href="{{ route('customers.index') }}" class="btn btn-dark btn-sm"> <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i> Back</a>
                     </div>
                 </div>
             </div>
@@ -24,23 +24,39 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-4">
                             <label for="company_name" class="form-label">Company Name</label>
                             <input type="text" wire:model="company_name" id="company_name" class="form-control border border-2 p-2" placeholder="Enter Company Name">
                             @error('company_name')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
+                        <div class="mb-3 col-md-2">
+                            <label for="employee_rank" class="form-label">Employee Rank</label>
+                            <input type="text" wire:model="employee_rank" class="form-control border border-2 p-2" placeholder="Enter rank">
+                            @error('employee_rank')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                        <div class="mb-3 col-md-4">
+                        <div class="mb-3 col-md-3">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" wire:model="email" id="email" class="form-control border border-2 p-2" placeholder="Enter Email">
                             @error('email')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
+                        
+                        <div class="mb-3 col-md-3">
+                            <label for="dob" class="form-label">Date Of Birth <span class="text-danger">*</span></label>
+                            <input type="date" wire:model="dob" id="dob" class="form-control border border-2 p-2">
+                            
+                            @error('dob')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                        <div class="mb-3 col-md-4">
+                        <div class="mb-3 col-md-3">
                             <label for="phone" class="form-label">Phone <span class="text-danger">*</span></label>
                             <input type="text" wire:model="phone" id="phone" class="form-control border border-2 p-2" placeholder="Enter Phone Number">
                             
@@ -49,7 +65,7 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3 col-md-4">
+                        <div class="mb-3 col-md-3">
                             <label for="whatsapp_no" class="form-label">WhatsApp Number <span class="text-danger">*</span></label>
                             <input type="text" wire:model="whatsapp_no" id="whatsapp_no" class="form-control border border-2 p-2" @if($is_wa_same) disabled @endif placeholder="Enter Whatsapp Number">
 

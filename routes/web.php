@@ -19,9 +19,9 @@ use App\Http\Livewire\StaticSignUp;
 use App\Http\Livewire\Tables;
 use App\Http\Livewire\{VirtualReality,CustomerIndex};
 use GuzzleHttp\Middleware;
-use App\Http\Livewire\Order\{OrderIndex, OrderNew};
-use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory,FabricIndex};
-use App\Http\Livewire\Staff\{DesignationIndex,StaffIndex,StaffAdd,StaffUpdate,StaffView,StaffTask,StaffTaskAdd};
+use App\Http\Livewire\Order\{OrderIndex, OrderNew, OrderInvoice};
+use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory,FabricIndex,CollectionIndex,GalleryIndex};
+use App\Http\Livewire\Staff\{DesignationIndex,StaffIndex,StaffAdd,StaffUpdate,StaffView,StaffTask,StaffTaskAdd,StaffCities};
 use App\Http\Livewire\Expense\{ExpenseIndex};
 use App\Http\Livewire\UserAddressForm; 
 use App\Http\Livewire\CustomerEdit; 
@@ -88,19 +88,22 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
     Route::get('rtl', RTL::class)->name('rtl');
 
     
-    Route::group(['prefix' => 'products'], function () {
+    
+Route::group(['prefix' => 'products'], function () {
         Route::get('/', MasterProduct::class)->name('product.view');
         Route::get('/products/import', MasterProduct::class)->name('product.import');
         Route::get('/add/products', AddProduct::class)->name('product.add');
         Route::get('/update/products/{product_id}', UpdateProduct::class)->name('product.update');
         Route::get('/categories', MasterCategory::class)->name('admin.categories');
         Route::get('/subcategories', MasterSubCategory::class)->name('admin.subcategories');
-        Route::get('/measurements/{subcategory}', MeasurementIndex::class)->name('measurements.index');
+        Route::get('/measurements/{product_id}', MeasurementIndex::class)->name('measurements.index');
         Route::post('/measurements/update-positions', [MeasurementIndex::class, 'updatePositions'])->name('measurements.updatePositions');
         Route::get('/fabrics', FabricIndex::class)->name('admin.fabrics.index');
-    
-    });
 
+        Route::get('/collections', CollectionIndex::class)->name('admin.collections.index');
+        Route::get('/gallery/{product_id}', GalleryIndex::class)->name('product.gallery');
+        Route::get('/fabrics/{product_id}', FabricIndex::class)->name('product.fabrics');
+    });
     Route::get('/designation',DesignationIndex::class)->name('staff.designation');
     
     // Staff
@@ -111,6 +114,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
         Route::get('/view/{staff_id}',StaffView::class)->name('view');
         Route::get('/task/{staff_id}',StaffTask::class)->name('task');
         Route::get('/task/add/{staff_id}',StaffTaskAdd::class)->name('task.add');
+        Route::get('cities/add/{staff_id}',StaffCities::class)->name('cities.add');
+
     });
     
     Route::group(['prefix' => 'customers'], function () {
@@ -127,7 +132,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
         Route::get('/details/{id}', SupplierDetails::class)->name('details');
     });
     // Expense
-    Route::get('/expense/{parent_id}', ExpenseIndex::class)->name('expense.index');
+    Route::prefix('expense')->name('expense.')->group(function() {
+        Route::get('/{parent_id}', ExpenseIndex::class)->name('index');
+    });
     
     // Route::get('/measurements/add', MeasurementAdd::class)->name('measurements.add');
     // Route::get('/measurements/edit/{id}', MeasurementEdit::class)->name('measurements.edit');
@@ -135,6 +142,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
 
     Route::group(['prefix' => 'orders'], function () {
         Route::get('/', OrderIndex::class)->name('admin.order.index');
+        Route::get('/invoice/{id}', OrderInvoice::class)->name('admin.order.invoice');
         Route::get('/new', OrderNew::class)->name('admin.order.new');
     });
 });

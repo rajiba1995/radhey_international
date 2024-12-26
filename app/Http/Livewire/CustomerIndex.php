@@ -9,7 +9,10 @@ use Livewire\WithPagination;
 class CustomerIndex extends Component
 {
     use WithPagination;
-    
+
+    public $search;
+    protected $updatesQueryString = ['search'];
+
     public function deleteCustomer($id)
     {
         $user = User::find($id);
@@ -31,7 +34,11 @@ class CustomerIndex extends Component
 
     public function render()
     {
-        $users = User::where('user_type',1)->paginate(5);
+        $users = User::where('user_type',1)
+        ->when($this->search, function ($query) {
+            $query->where('name', 'like', '%' . $this->search . '%');
+        })->paginate(10);
+        
         return view('livewire.customer-index', compact('users'));
     }
 }

@@ -8,17 +8,22 @@ use Livewire\WithPagination;
 use Illuminate\Validation\Rule;
 use App\Models\Fabric;
 use Illuminate\Http\Request;
+use App\Helpers\Helper;
+use Livewire\WithFileUploads;
+
 
 
 class FabricIndex extends Component
 {
+    use WithFileUploads;
     public $fabrics;
-    public  $code, $title, $status = 1, $fabricId;
+    public  $image, $title, $status = 1, $fabricId,$product_id;
     public $search = '';
 
-    public function mount()
+    public function mount($product_id)
     {
-        $this->fabrics = Fabric::orderBy('id', 'desc')->get();
+        $this->product_id = $product_id;
+        $this->fabrics = Fabric::orderBy('id', 'desc')->where('product_id', $product_id)->get();
     }
 
     public function store()
@@ -28,25 +33,35 @@ class FabricIndex extends Component
                 'required',
                 'string',
                 'max:255',
-                'unique:fabrics,title', // Ensure title is unique in fabrics table
+                'unique:fabrics,title', 
             ],
-            'code' => [
+            'image' => [
                 'required',
-                'string',
+                'mimes:jpg,png,jpeg,gif',
                 'max:255',
-                'unique:fabrics,code', // Ensure code is unique in fabrics table
+                'unique:fabrics,image', 
             ],
         ]);
         
+        if($this->image){
+            $imagePath = $this->image->store("fabrics",'public');
+            $absolutePath = "storage/".$imagePath;
+        }
+        
 
         Fabric::create([
+            'product_id' => $this->product_id,
             'title' => $this->title,
-            'code' => $this->code,
+            'image' =>  $absolutePath,
             'status' => $this->status,
         ]);
+        
+        $this->title = null;
+        $this->image = null;
 
         session()->flash('message', 'Fabric created successfully!');
-        return redirect()->route('admin.fabrics.index');
+        $this->fabrics = Fabric::orderBy('id', 'desc')->get();
+        
     }
 
     // Edit Fabric
@@ -55,7 +70,7 @@ class FabricIndex extends Component
         $fabric = Fabric::findOrFail($id);
         $this->fabricId = $fabric->id;
         $this->title = $fabric->title;
-        $this->code = $fabric->code;
+        $this->image = $fabric->image;
         $this->status = $fabric->status;
     }
     // Update Fabric
@@ -68,23 +83,40 @@ class FabricIndex extends Component
                 'max:255',
                 Rule::unique('fabrics', 'title')->ignore($this->fabricId), 
             ],
-            'code' => [
+            'image' => [
                 'required',
-                'string',
+                'mimes:jpg,png,jpeg,gif',
                 'max:255',
-                Rule::unique('fabrics', 'code')->ignore($this->fabricId),
+                Rule::unique('fabrics', 'image')->ignore($this->fabricId),
             ],
         ]);
         
         $fabric = Fabric::findOrFail($this->fabricId);
+        $imagePath = $fabric->image;
+        if ($this->image) {
+            // Store new image
+            $newImagePath = $this->image->store("fabrics", 'public');
+            $imagePath = "storage/" . $newImagePath;
+    
+            // Optionally delete old image if needed
+            if (File::exists(public_path($fabric->image))) {
+                File::delete(public_path($fabric->image));
+            }
+        }
         $fabric->update([
+            'product_id' => $this->product_id,
             'title' => $this->title,
-            'code' => $this->code,
+            'image' => $imagePath,
             'status' => $this->status,
         ]);
+        
+        $this->title = null;
+        $this->image = null;
+
 
         session()->flash('message', 'Fabric updated successfully!');
-        return redirect()->route('admin.fabrics.index');
+        $this->fabrics = Fabric::orderBy('id', 'desc')->get();
+        // return redirect()->route('admin.fabrics.index');
     }
 
     // Delete Fabric
@@ -92,7 +124,7 @@ class FabricIndex extends Component
     {
         Fabric::findOrFail($id)->delete();
         session()->flash('message', 'Fabric deleted successfully!');
-        return redirect()->route('admin.fabrics.index');
+        $this->fabrics = Fabric::orderBy('id', 'desc')->get();
     }
 
     // Toggle Status
@@ -103,47 +135,11 @@ class FabricIndex extends Component
         session()->flash('message', 'Fabric status updated successfully!');
     }
 
-    // Reset Form Fields
-   
-  
-    public function updatePositions(Request $request)
-    {
-        try {
-            $sortOrder = $request->sortOrder;
-    
-            // Check if sortOrder is a string, then decode it; otherwise, use it directly
-            if (is_string($sortOrder)) {
-                $sortOrder = json_decode($sortOrder, true);
-            }
-    
-            if (!is_array($sortOrder)) {
-                return response()->json(['error' => 'Invalid data format'], 400);
-            }
-    
-            foreach ($sortOrder as $item) {
-                Fabric::where('id', $item['id'])->update(['position' => $item['position']]);
-            }
-    
-            // Flash message after successful update
-            session()->flash('message', 'Positions updated successfully!');
-    
-            // Redirect to the index route with the subcategory_id
-            return redirect()->route('admin.fabrics.index');
-        } catch (\Exception $e) {
-            Log::error('Error updating positions: ' . $e->getMessage());
-            return response()->json(['error' => 'Something went wrong.'], 500);
-        }
-    }
-    
-
-
-
     
     // Render Method with Search and Pagination
     public function render()
     {
         $fabrics = Fabric::where('title', 'like', "%{$this->search}%")
-            ->orWhere('code', 'like', "%{$this->search}%")
             ->orderBy('id', 'desc')
             ->paginate(10);
 
