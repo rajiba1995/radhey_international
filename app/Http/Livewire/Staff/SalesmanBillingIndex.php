@@ -18,7 +18,6 @@ class SalesmanBillingIndex extends Component
             'salesman_id' => 'required|exists:users,id',
             'start_no' => [
                 'required',
-                'digits:4', // Ensure it's 4 digits
                 function ($attribute, $value, $fail) {
                     $overlap = SalesmanBilling::where(function ($query) {
                         $query->whereBetween('start_no', [$this->start_no, $this->end_no])
@@ -37,7 +36,6 @@ class SalesmanBillingIndex extends Component
             ],
             'end_no' => [
                 'required',
-                'digits:4', // Ensure it's 4 digits
                 function ($attribute, $value, $fail) {
                     if ((int)$value <= (int)$this->start_no) {
                         $fail('The end number must be greater than the start number.');
@@ -74,7 +72,6 @@ class SalesmanBillingIndex extends Component
             'salesman_id' => 'required|exists:users,id',
             'start_no' => [
                 'required',
-                'digits:4',
                 function ($attribute, $value, $fail) {
                     $overlap = SalesmanBilling::where(function ($query) {
                         $query->whereBetween('start_no', [$this->start_no, $this->end_no])
@@ -95,7 +92,6 @@ class SalesmanBillingIndex extends Component
             ],
             'end_no' => [
                 'required',
-                'digits:4',
                 function ($attribute, $value, $fail) {
                     if ((int)$value <= (int)$this->start_no) {
                         $fail('The end number must be greater than the start number.');

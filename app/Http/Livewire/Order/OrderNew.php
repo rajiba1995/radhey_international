@@ -209,8 +209,6 @@ class OrderNew extends Component
                 ->get();
         }
     
-        // Optional: Log the products for debugging
-        // dd($this->items[$index]['products']);
     }
 
     public function checkproductPrice($value, $index)
@@ -285,102 +283,6 @@ class OrderNew extends Component
         }
     }
 
-    // public function save()
-    // {
-    //     // Validate the input fields based on the rules
-    //     // dd($this->all());
-    //     $this->validate();
-
-    //     DB::beginTransaction();  // Begin transaction
-    
-    //     try {
-    //         // Calculate the total amount (you can calculate this based on item prices)
-    //         $total_amount = array_sum(array_column($this->items, 'price'));  // Assuming $this->items contains the price of each item
-    //         if ($this->paid_amount > $total_amount) {
-    //             session()->flash('error', '🚨 The paid amount cannot exceed the total billing amount.');
-    //             return;
-    //         }
-    //         $this->remaining_amount = $total_amount-$this->paid_amount;
-    //         $order = new Order();
-    //         $order->order_number = 'ORD-' . strtoupper(uniqid()); // Generate a unique order number
-    //         $order->customer_id = $this->customer_id;
-    //         $order->customer_name = $this->name;
-    //         $order->customer_email = $this->email;
-    
-    //         // Construct the billing address (assuming you have the billing data available)
-    //         $billing_address = $this->billing_address . ', ' . $this->billing_landmark . ', ' . $this->billing_city . ', ' . $this->billing_state . ', ' . $this->billing_country . ' - ' . $this->billing_pin;
-    //         $order->billing_address = $billing_address;
-    
-    //         // Check if shipping address is same as billing address
-    //         if ($this->is_billing_shipping_same) {
-    //             $order->shipping_address = $billing_address;
-    //         } else {
-    //             $shipping_address = $this->shipping_address . ', ' . $this->shipping_landmark . ', ' . $this->shipping_city . ', ' . $this->shipping_state . ', ' . $this->shipping_country . ' - ' . $this->shipping_pin;
-    //             $order->shipping_address = $shipping_address;
-    //         }
-    
-    //         $order->total_amount = $total_amount;
-    //         $order->paid_amount = $this->paid_amount;
-    //         $order->remaining_amount = $this->remaining_amount;
-    //         $order->payment_mode = $this->payment_mode;
-    //         $order->last_payment_date = date('Y-m-d H:i:s');
-    //         $order->save();  // Save the order
-    
-    //         // Now loop through the items and save them as OrderItem and OrderMeasurement
-    //         foreach ($this->items as $k=>$item) {
-    //             // Create and save the order item
-    //             $collection_data = Collection::where('id',$item['collection'])->first();
-    //             $category_data = Category::where('id',$item['category'])->first();
-    //             $sub_category_data = SubCategory::where('id',$item['sub_category'])->first();
-
-    //             $fabric_data = Fabric::where('id',$item['selected_fabric'])->first();
-    //             $orderItem = new OrderItem();
-    //             $orderItem->order_id = $order->id;
-    //             $orderItem->product_id = $item['product_id'];
-               
-    //             $orderItem->collection = $collection_data?$collection_data->title:"";
-    //             $orderItem->category = $category_data?$category_data->title:"";
-    //             $orderItem->sub_category = $sub_category_data?$sub_category_data->title:"";
-    //             $orderItem->product_name = $item['searchproduct'];
-    //             $orderItem->price = $item['price'];
-    //             $orderItem->fabrics = $fabric_data?$fabric_data->title:"";  // Save fabric selection
-    //             $orderItem->save();  // Save the order item
-    
-    //             // Now handle the measurements for each item
-    //             if (isset($item['get_measurements']) && count($item['get_measurements']) > 0) {
-    //                 foreach ($item['get_measurements'] as $mindex =>$measurement) {
-    //                     $measurement_data = Measurement::where('id', $mindex)->first();
-    //                     // Save the measurement for this order item
-    //                     $orderMeasurement = new OrderMeasurement();
-    //                     $orderMeasurement->order_item_id = $orderItem->id;
-    //                     $orderMeasurement->measurement_name = $measurement_data?$measurement_data->title:"";  // Assuming 'title' is the name of the measurement
-    //                     $orderMeasurement->measurement_value = $measurement['value'];  // Assuming 'value' is the entered value
-    //                     $orderMeasurement->save();  // Save the order measurement
-    //                 }
-    //             }
-    //         }
-
-    //         // Commit the transaction if everything is fine
-    //         DB::commit();
-    
-    //         // Flash success message
-    //         session()->flash('success', 'Order has been generated successfully.');
-    //         return redirect()->route('admin.order.index');
-    //     } catch (\Exception $e) {
-    //         // Rollback the transaction in case of any error
-    //         DB::rollBack();
-    //         // dd($e->getMessage());
-    //         // Flash error message
-    //         \Log::error('Error saving items: ' . $e->getMessage());
-    //         // dd($e->getMessage());
-    //         session()->flash('error', '🚨 Something went wrong. The operation has been rolled back.');
-            
-           
-    //         // Optionally log the error
-    //     }
-    // }
-    
-
     public function save()
     {
         $this->validate();
@@ -398,6 +300,49 @@ class OrderNew extends Component
 
             // Retrieve user details
             $user = User::find($this->customer_id);
+             // If customer does not exist, create a new user
+            if (!$user) {
+                $user = User::create([
+                    'name' => $this->name,
+                    'company_name' => $this->company_name,
+                    'employee_rank' => $this->employee_rank,
+                    'email' => $this->email,
+                    'dob' => $this->dob,
+                    'phone' => $this->phone,
+                    'whatsapp_no' => $this->whatsapp_no,
+                    'user_type' => 1, // Customer
+                ]);
+             } 
+                // Store Billing Address for the new user
+             $billingAddress = $user->address()->where('address_type', 1)->first();
+             if (!$billingAddress) {
+                 $user->address()->create([
+                     'address_type' => 1, // Billing address
+                     'state' => $this->billing_state,
+                     'city' => $this->billing_city,
+                     'address' => $this->billing_address,
+                     'landmark' => $this->billing_landmark,
+                     'country' => $this->billing_country,
+                     'zip_code' => $this->billing_pin,
+                 ]);
+             }
+                // Store Shipping Address if applicable
+                if (!$this->is_billing_shipping_same) {
+                    $shippingAddress = $user->address()->where('address_type', 2)->first();
+                    if (!$shippingAddress) {
+                        $user->address()->create([
+                            'address_type' => 2, // Shipping address
+                            'state' => $this->shipping_state,
+                            'city' => $this->shipping_city,
+                            'address' => $this->shipping_address,
+                            'landmark' => $this->shipping_landmark,
+                            'country' => $this->shipping_country,
+                            'zip_code' => $this->shipping_pin,
+                        ]);
+                    }
+                }
+
+
             if ($user) {
                 // Retrieve existing billing address
                 $existingBillingAddress = $user->address()->where('address_type', 1)->first();
@@ -490,7 +435,7 @@ class OrderNew extends Component
             // Create the order
             $order = new Order();
             $order->order_number = 'ORD-' . strtoupper(uniqid());
-            $order->customer_id = $this->customer_id;
+            $order->customer_id = $user->id;
             $order->customer_name = $this->name;
             $order->customer_email = $this->email;
             $order->billing_address = $this->billing_address . ', ' . $this->billing_landmark . ', ' . $this->billing_city . ', ' . $this->billing_state . ', ' . $this->billing_country . ' - ' . $this->billing_pin;

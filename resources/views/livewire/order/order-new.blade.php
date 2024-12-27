@@ -434,7 +434,7 @@
                                     <td>
                                          <select class="form-control border border-2 p-2 form-control-sm @error('payment_mode') border-danger  @enderror" wire:model="payment_mode">
                                             <option value="" selected hidden>Choose one..</option>
-                                            <option value="Cash">Cach</option>
+                                            <option value="Cash">Cash</option>
                                             <option value="Online">Online</option>
                                          </select>
                                     </td>
@@ -462,39 +462,5 @@
         </div>
     </div>
 </div>
-<script>
-    // document.addEventListener('DOMContentLoaded', function () {
-    //     // Set the first tab and content as active by default
-    //     const firstTab = document.querySelector('#sales_order_data .nav-link');
-    //     const firstPane = document.querySelector('#sales_order_data .tab-pane');
 
-    //     if (firstTab && firstPane) {
-    //         firstTab.classList.add('active');
-    //         firstPane.classList.add('show', 'active');
-    //     }
-
-    //     // Attach event listeners to tabs under #sales_order_data
-    //     document.querySelectorAll('#sales_order_data .nav-link').forEach(function (tabLink) {
-    //         tabLink.addEventListener('click', function (event) {
-    //             event.preventDefault();
-
-    //             // Remove 'active' class from all tabs and content
-    //             document.querySelectorAll('#sales_order_data .nav-link').forEach(function (link) {
-    //                 link.classList.remove('active');
-    //             });
-    //             document.querySelectorAll('#sales_order_data .tab-pane').forEach(function (pane) {
-    //                 pane.classList.remove('show', 'active');
-    //             });
-
-    //             // Add 'active' class to clicked tab and corresponding content
-    //             const targetId = this.getAttribute('href').substring(1);
-    //             this.classList.add('active');
-    //             const targetPane = document.getElementById(targetId);
-    //             if (targetPane) {
-    //                 targetPane.classList.add('show', 'active');
-    //             }
-    //         });
-    //     });
-    // });
-</script>
 

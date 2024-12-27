@@ -18,7 +18,7 @@
                             <div class="col-lg-6 col-5 my-auto text-end">
                                 <div class="ms-md-auto pe-md-3 d-flex align-items-center">
                                     <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
-                                        <input type="text" wire:model.debounce.500ms="search" class="form-control border border-2 p-2 custom-input-sm" placeholder="Enter Title">
+                                        <input type="text" wire:model.debounce.500ms="search" class="form-control border border-2 p-2 custom-input-sm" placeholder="Enter Name">
                                         <button type="button" wire:target="search" class="btn btn-dark text-light mb-0 custom-input-sm">
                                             <span class="material-icons">search</span>
                                         </button>
