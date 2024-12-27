@@ -57,7 +57,11 @@
                                 <a href="#" class="badge bg-info btn-sm">{{$order->status==1?"Pending":""}}</a>
                             </td>
                             <td>
-                                <a href="#" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Edit product">
+                                <!-- <a href="#" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Edit product">
+                                    <span class="material-icons">edit</span>
+                                </a> -->
+
+                                <a href="{{route('admin.order.edit', $order->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Edit product">
                                     <span class="material-icons">edit</span>
                                 </a>
                                 <a href="#" class="btn btn-outline-info btn-sm custom-btn-sm">Payment History</a>
