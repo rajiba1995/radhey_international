@@ -4,6 +4,12 @@ namespace App\Http\Livewire\Order;
 
 use Livewire\Component;
 use App\Models\Order;
+use App\Models\User;
+use App\Models\Category;
+use App\Models\Collection;
+use App\Models\Product;
+use App\Models\Measurement;
+use App\Models\Fabric;
 
 class OrderEdit extends Component
 {
@@ -34,25 +40,271 @@ class OrderEdit extends Component
     public $remaining_amount = 0;
     public $payment_mode = null;
 
-    public $order;
+    // public $order;
+    // public $order;
 
+
+    // public function mount($id)
+    // {
+
+    //     $this->orders = Order::findOrFail($id); // Fetch the order by ID
+       
+            
+    //     // Split the address and assign to the properties
+    //     $billingAddress = explode(',', $this->orders->billing_address);
+
+    //     // Assuming the address is saved in the format: street, landmark, city, state, country - pin
+    //     if (count($billingAddress) >= 5) {
+    //         $this->billing_address = trim($billingAddress[0]); // Street Address
+    //         $this->billing_landmark = trim($billingAddress[1]); // Landmark
+    //         $this->billing_city = trim($billingAddress[2]); // City
+    //         $this->billing_state = trim($billingAddress[3]); // State
+    //         $this->billing_country = trim($billingAddress[4]); // Country and PIN code
+
+    //         // Extract pin code from the country field (assuming it's at the end)
+    //         $countryAndPin = explode('-', $this->billing_country);
+    //         if (count($countryAndPin) > 1) {
+    //             $this->billing_country = trim($countryAndPin[0]);
+    //             $this->billing_pin = trim($countryAndPin[1]);
+    //         }
+    //     }
+
+    //     // Split the address and assign to the properties
+    //     $shippingAddress = explode(',', $this->orders->shipping_address);
+
+    //     // Assuming the address is saved in the format: street, landmark, city, state, country - pin
+    //     if (count($shippingAddress) >= 5) {
+    //         $this->shipping_address = trim($shippingAddress[0]); // Street Address
+    //         $this->shipping_landmark = trim($shippingAddress[1]); // Landmark
+    //         $this->shipping_city = trim($shippingAddress[2]); // City
+    //         $this->shipping_state = trim($shippingAddress[3]); // State
+    //         $this->shipping_country = trim($shippingAddress[4]); // Country and PIN code
+
+    //         // Extract pin code from the country field (assuming it's at the end)
+    //         $countryAndPin = explode('-', $this->shipping_country);
+    //         if (count($countryAndPin) > 1) {
+    //             $this->shipping_country = trim($countryAndPin[0]);
+    //             $this->shipping_pin = trim($countryAndPin[1]);
+    //         }
+    //     }
+
+
+    //     $this->customer_id = $this->orders->customer_id;
+    //     $this->name = $this->orders->customer_name;
+    //     $this->company_name = $this->orders->customer->company_name;
+    //     $this->employee_rank = $this->orders->customer->employee_rank;
+    //     $this->email = $this->orders->customer_email;
+    //     $this->dob = $this->orders->customer->dob;
+    //     $this->phone = $this->orders->customer->phone;
+    //     $this->whatsapp_no = $this->orders->customer->whatsapp_no;
+
+
+    //     $this->customers = User::where('user_type', 1)->where('status', 1)->orderBy('name', 'ASC')->get();
+    //     $this->categories = Category::where('status', 1)->orderBy('title', 'ASC')->get();
+    //     $this->collections = Collection::orderBy('title', 'ASC')->get();
+    //     $this->addItem();
+    // }
 
     public function mount($id)
     {
+        $this->orders = Order::with(['items.measurements'])->findOrFail($id); // Fetch the order by ID
+        // Collect measurements related to the order items
+        $this->measurements = [];
+        foreach ($this->orders->items as $item) {
+            foreach ($item->measurements as $measurement) {
+                $this->measurements[] = $measurement;
+            }
+        }
 
-        $this->order = Order::findOrFail($id); // Fetch the order by ID
-        // dd($this->order->customer_name);
+        if ($this->orders) {
+            $this->customer_id = $this->orders->customer_id;
+            $this->name = $this->orders->customer_name;
+            $this->email = $this->orders->customer_email;
+            $this->dob = $this->orders->customer->dob;
+            $this->billing_address = $this->orders->billing_address;
+            $this->shipping_address = $this->orders->shipping_address;
+            $this->paid_amount = $this->orders->paid_amount;
+            $this->payment_mode = $this->orders->payment_mode;
+            $this->phone = $this->orders->customer->phone;
+            $this->whatsapp_no = $this->orders->customer->whatsapp_no;
 
-        $this->customer_id = $this->order->customer_id;
-        $this->name = $this->order->customer_name;
-        $this->company_name = $this->order->company_name;
-        $this->employee_rank = $this->order->employee_rank;
-        $this->email = $this->order->email;
-        $this->dob = $this->order->dob;
-        $this->phone = $this->order->phone;
-        $this->whatsapp_no = $this->order->whatsapp_no;
+            $this->items = $this->orders->items->map(function ($item) {
+                // dd($item->collection);
+                return [
+                    'product_id' => $item->product_id,
+                    'searchproduct' => $item->product_name,
+                    'price' => $item->price,
+                    'collection' => $item->collection,
+                    'category' => $item->category,
+                    'sub_category' => $item->sub_category,
+                    'selected_fabric' => $item->fabrics,
+                    'get_measurements' => $item->measurements->mapWithKeys(function ($measurement) {
+                        return [$measurement->id => ['value' => $measurement->measurement_value]];
+                    })->toArray(),
+                ];
+            })->toArray();
+        }
+
+        // Split the address and assign to the properties
+        $billingAddress = explode(',', $this->orders->billing_address);
+
+        // Assuming the address is saved in the format: street, landmark, city, state, country - pin
+        if (count($billingAddress) >= 5) {
+            $this->billing_address = trim($billingAddress[0]); // Street Address
+            $this->billing_landmark = trim($billingAddress[1]); // Landmark
+            $this->billing_city = trim($billingAddress[2]); // City
+            $this->billing_state = trim($billingAddress[3]); // State
+            $this->billing_country = trim($billingAddress[4]); // Country and PIN code
+
+            // Extract pin code from the country field (assuming it's at the end)
+            $countryAndPin = explode('-', $this->billing_country);
+            if (count($countryAndPin) > 1) {
+                $this->billing_country = trim($countryAndPin[0]);
+                $this->billing_pin = trim($countryAndPin[1]);
+            }
+        }
+
+        // Split the address and assign to the properties
+        $shippingAddress = explode(',', $this->orders->shipping_address);
+
+        // Assuming the address is saved in the format: street, landmark, city, state, country - pin
+        if (count($shippingAddress) >= 5) {
+            $this->shipping_address = trim($shippingAddress[0]); // Street Address
+            $this->shipping_landmark = trim($shippingAddress[1]); // Landmark
+            $this->shipping_city = trim($shippingAddress[2]); // City
+            $this->shipping_state = trim($shippingAddress[3]); // State
+            $this->shipping_country = trim($shippingAddress[4]); // Country and PIN code
+
+            // Extract pin code from the country field (assuming it's at the end)
+            $countryAndPin = explode('-', $this->shipping_country);
+            if (count($countryAndPin) > 1) {
+                $this->shipping_country = trim($countryAndPin[0]);
+                $this->shipping_pin = trim($countryAndPin[1]);
+            }
+        }
+
+        // $this->customer_id = $this->orders->customer_id;
+        // $this->name = $this->orders->customer_name;
+        // $this->company_name = $this->orders->customer->company_name;
+        // $this->employee_rank = $this->orders->customer->employee_rank;
+        // $this->email = $this->orders->customer_email;
+        // $this->dob = $this->orders->customer->dob;
+        // $this->phone = $this->orders->customer->phone;
+        // $this->whatsapp_no = $this->orders->customer->whatsapp_no;
+       
+
+        $this->customers = User::where('user_type', 1)->where('status', 1)->orderBy('name', 'ASC')->get();
+        $this->categories = Category::where('status', 1)->orderBy('title', 'ASC')->get();
+        $this->collections = Collection::orderBy('title', 'ASC')->get();
+        $this->addItem();
     }
 
+
+    public function addItem()
+    {
+        $this->items[] = [
+           
+            'collection' => '',
+            'category' => '',
+            'sub_category' => '',
+            'searchproduct' => '',
+            'selected_fabric' => null,
+            'measurements' => [],
+            'products' => [],
+            'product_id' => null,
+            'price' => '', // Ensure price is initialized to an empty string, not null.
+        ];
+        // $this->validate();
+    }
+
+    public function removeItem($index)
+    {
+        unset($this->items[$index]);
+        $this->items = array_values($this->items);
+        $this->updateBillingAmount();  // Update billing amount after checking price
+    }
+
+    public function updateBillingAmount()
+    {
+        // Recalculate the total billing amount
+        $this->billing_amount = array_sum(array_column($this->items, 'price'));
+        $this->paid_amount = $this->billing_amount;
+        $this->GetRemainingAmount($this->paid_amount);
+        return;
+    }
+
+    public function GetRemainingAmount($paid_amount)
+    {
+       // Remove leading zeros if present in the paid amount
+        
+        // Ensure the values are numeric before performing subtraction
+        $billingAmount = (float) $this->billing_amount;
+        $paidAmount = (float) $paid_amount;
+        $paidAmount = ltrim($paidAmount, '0');
+        if ($billingAmount > 0) {
+            if(empty($paid_amount)){
+                $this->paid_amount = 0;
+                $this->remaining_amount = $billingAmount;
+                return;
+            }
+            $this->paid_amount = $paidAmount;
+            $this->remaining_amount = $billingAmount - $this->paid_amount;
+        
+            // Check if the remaining amount is negative
+            if ($this->remaining_amount < 0) {
+                $this->remaining_amount = 0;
+                $this->paid_amount = $this->billing_amount;
+                session()->flash('errorAmount', '🚨 The paid amount exceeds the billing amount.');
+            }
+        } else {
+            $this->paid_amount = 0;
+           
+            session()->flash('errorAmount', '🚨 Please add item amount first.');
+        }
+    }
+
+    public function GetCategory($value,$index)
+    {
+        // Reset products, and product_id for the selected item
+        $this->items[$index]['product_id'] = null;
+        $this->items[$index]['measurements'] = [];
+        $this->items[$index]['fabrics'] = [];
+      
+            // Fetch categories and products based on the selected collection 
+            $this->items[$index]['categories'] = Category::orderBy('title', 'ASC')->where('collection_id', $value)->get();
+            $this->items[$index]['products'] = Product::orderBy('name', 'ASC')->where('collection_id', $value)->get();
+       
+    }
+
+
+    public function selectProduct($index, $name, $id)
+    {
+        $this->items[$index]['searchproduct'] = $name;
+        $this->items[$index]['product_id'] = $id;
+        $this->items[$index]['products'] = [];
+        $this->items[$index]['measurements'] = Measurement::where('product_id', $id)->where('status', 1)->orderBy('position','ASC')->get();
+        $this->items[$index]['fabrics'] = Fabric::where('product_id', $id)->where('status', 1)->get();
+        
+        session()->forget('measurements_error.' . $index);
+        if (count($this->items[$index]['measurements']) == 0) {
+            session()->flash('measurements_error.' . $index, '🚨 Oops! Measurement data not added for this product.');
+            return;
+        }
+    }
+
+    public function CategoryWiseProduct($categoryId, $index)
+    {
+        // Reset products for the selected item
+        $this->items[$index]['products'] = [];
+        $this->items[$index]['product_id'] = null;
+
+        if ($categoryId) {
+            // Fetch products based on the selected category and collection
+            $this->items[$index]['products'] = Product::where('category_id', $categoryId)
+                ->where('collection_id', $this->items[$index]['collection']) // Ensure the selected collection is considered
+                ->get();
+        }
+    }
 
     public function toggleShippingAddress()
     {
@@ -245,11 +497,39 @@ class OrderEdit extends Component
        
     }
 
+    public function checkproductPrice($value, $index)
+    {
+        // Remove any non-numeric characters except for the decimal point
+        $formattedValue = preg_replace('/[^0-9.]/', '', $value);
+
+        // Check if the value is numeric
+        if (is_numeric($formattedValue)) {
+            // Format the value to two decimal places if it's a valid number
+            // $this->items[$index]['price'] = number_format((float)$formattedValue, 2, '.', '');
+            session()->forget('errorPrice.' . $index); // Clear any previous error message
+        } else {
+            // If the value is invalid, reset the price and show an error message
+            $this->items[$index]['price'] = 0;
+            session()->flash('errorPrice.' . $index, '🚨 Please enter a valid price.');
+        }
+        $this->updateBillingAmount();  // Update billing amount after checking price
+    }
+
+    public function SameAsMobile(){
+        if($this->is_wa_same == 0){
+            $this->whatsapp_no = $this->phone;
+            $this->is_wa_same = 1;
+        }else{
+            $this->whatsapp_no = '';
+            $this->is_wa_same = 0;
+        }
+    }
+
     public function render()
     {
         // dd($this->order);
         return view('livewire.order.order-edit' ,[
-            'order' => $this->order
+            'order' => $this->orders
         ]);
     }
 }

@@ -12,6 +12,10 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+    public function measurements()
+    {
+        return $this->hasMany(OrderMeasurement::class);
+    }
     
     public function customer()
     {
