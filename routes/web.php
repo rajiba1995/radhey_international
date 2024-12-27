@@ -21,7 +21,7 @@ use App\Http\Livewire\{VirtualReality,CustomerIndex};
 use GuzzleHttp\Middleware;
 use App\Http\Livewire\Order\{OrderIndex, OrderNew, OrderInvoice};
 use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory,FabricIndex,CollectionIndex,GalleryIndex};
-use App\Http\Livewire\Staff\{DesignationIndex,StaffIndex,StaffAdd,StaffUpdate,StaffView,StaffTask,StaffTaskAdd,StaffCities};
+use App\Http\Livewire\Staff\{DesignationIndex,StaffIndex,StaffAdd,StaffUpdate,StaffView,StaffTask,StaffTaskAdd,StaffCities,SalesmanBillingIndex};
 use App\Http\Livewire\Expense\{ExpenseIndex};
 use App\Http\Livewire\UserAddressForm; 
 use App\Http\Livewire\CustomerEdit; 
@@ -117,6 +117,12 @@ Route::group(['prefix' => 'products'], function () {
         Route::get('cities/add/{salesman_id}',StaffCities::class)->name('cities.add');
     });
     
+    // Salesman
+    Route::prefix('salesman')->name('salesman.')->group(function() {
+        Route::get('/',SalesmanBillingIndex::class)->name('index');
+    });
+
+
     Route::group(['prefix' => 'customers'], function () {
         Route::get('/', CustomerIndex::class)->name('customers.index');
         Route::get('/add', UserAddressForm::class)->name('admin.user-address-form');
