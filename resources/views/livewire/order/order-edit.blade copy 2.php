@@ -206,130 +206,169 @@
 
     <!-- Loop through items -->
     @foreach($items as $index => $item)
-    <div class="row align-items-center my-5">
-        <!-- Collection -->
-        <div class="mb-3 col-md-2">
-            <label class="form-label"><strong>Collection </strong><span class="text-danger">*</span></label>
-            <select wire:model="items.{{ $index }}.collection" wire:change="GetCategory($event.target.value, {{ $index }})" class="form-control border border-2 p-2 form-control-sm">
-                <option value="" selected hidden>Select collection</option>
-                @foreach($collections as $citems)
-                    <option value="{{ $citems->id }}"
-                        {{ ucwords($citems->title) }} @if($citems->short_code)({{ $citems->short_code }})@endif
+        <div class="row align-items-center my-5">
+            <!-- Collection Dropdown -->
+            <div class="mb-3 col-md-2">
+                <label class="form-label"><strong>Collection </strong><span class="text-danger">*</span></label>
+                <select 
+                    wire:model="items.{{ $index }}.collection" 
+                    wire:change="GetCategory($event.target.value, {{ $index }})" 
+                    class="form-control form-control-sm border border-2 p-2"
+                >
+                    <option value="" selected hidden>Select collection</option>
+                    @foreach($collections as $citems)
+                    <option value="{{ $citems->title }}" 
+                            {{ $item['collection'] == $citems->title ? 'selected' : '' }}>
+                        {{ ucwords($citems->title) }}
+                        @if($citems->short_code) 
+                            ({{ $citems->short_code }}) 
+                        @endif
                     </option>
-                @endforeach
-            </select>
-            @error("items.$index.collection")
-                <p class='text-danger inputerror'>{{ $message }}</p>
-            @enderror
-        </div>
+                    @endforeach
+                </select>
+                @error("items.$index.collection")
+                    <p class='text-danger inputerror'>{{ $message }}</p>
+                @enderror
+            </div>
 
-        <!-- Category -->
-        <div class="mb-3 col-md-2">
-            <label class="form-label"><strong>Category</strong></label>
-            <select wire:model="items.{{ $index }}.category" class="form-select form-control-sm border border-1" wire:change="CategoryWiseProduct($event.target.value, {{ $index }})">
-                <option value="" selected hidden>Select Category</option>
-                @if (isset($items[$index]['categories']) && count($items[$index]['categories']) > 0)
-                    @foreach ($items[$index]['categories'] as $category)
-                        <option value="{{ $category['id'] }}" @if($category['title'] == $item['category']) selected @endif>
+            <!-- Category Dropdown -->
+            <div class="mb-3 col-md-2">
+                <label class="form-label"><strong>Category</strong></label>
+                <select 
+                    wire:model="items.{{ $index }}.category" 
+                    class="form-select form-control-sm border border-1"
+                    wire:change="CategoryWiseProduct($event.target.value, {{ $index }})"
+                >
+                    <option value="" selected hidden>Select Category</option>
+                    @if (isset($items[$index]['categories']) && count($items[$index]['categories']) > 0)
+                        @foreach ($items[$index]['categories'] as $category)
+                        <option value="{{ $category['id'] }}" {{ $item['category'] == $category['title'] ? 'selected' : '' }}>
                             {{ $category['title'] }}
                         </option>
-                    @endforeach
-                @else
-                    <option value="" disabled>No categories available</option>
-                @endif
-            </select>
-            @error("items.$index.category")
-                <p class="text-danger">{{ $message }}</p>
-            @enderror
-        </div>
-
-        <!-- Product -->
-        <div class="mb-3 col-md-4">
-            <label class="form-label"><strong>Product</strong></label>
-            <input type="text" wire:keyup="FindProduct($event.target.value, {{ $index }})" wire:model="items.{{ $index }}.searchproduct" class="form-control form-control-sm border border-1 customer_input" placeholder="Enter product name" value="{{ $item['searchproduct'] }}">
-            @if (session()->has('errorProduct.' . $index)) 
-                <p class="text-danger">{{ session('errorProduct.' . $index) }}</p>
-            @endif
-            @if(isset($items[$index]['products']) && count($items[$index]['products']) > 0)
-                <div id="fetch_customer_details" class="dropdown-menu show w-25" style="max-height: 200px; overflow-y: auto;">
-                    @foreach ($items[$index]['products'] as $product)
-                        <button class="dropdown-item" type="button" wire:click='selectProduct({{ $index }}, "{{ $product->name }}", {{ $product->id }})'>
-                            <img src="{{ $product->product_image ? asset($product->product_image) : asset('assets/img/cubes.png') }}" alt=""> {{ $product->name }}({{ $product->product_code }})
-                        </button>
-                    @endforeach
-                </div>
-            @endif
-        </div>
-
-        <!-- Price -->
-        <div class="mb-3 col-md-1">
-            <label class="form-label"><strong>Price</strong></label>
-            <input type="text" wire:keyup="checkproductPrice($event.target.value, {{ $index }})" wire:model="items.{{ $index }}.price" class="form-control form-control-sm border border-1 customer_input text-center @if(session()->has('errorPrice.' . $index)) border-danger @endif @error('items.' . $index . '.price') border-danger  @enderror" placeholder="Enter Price" value="{{ $item['price'] }}">
-        </div>
-
-        <!-- Delete Button -->
-        <div class="mb-3 col-md-1" style="margin-top: 19px;">
-            <button type="button" class="btn btn-danger btn-sm mb-0" wire:click="removeItem({{ $index }})">
-                <span class="material-icons">delete</span>
-            </button>
-        </div>
-
-        <!-- Measurements -->
-        @if(isset($item['product_id'])) 
-            <div class="row">
-                <div class="col-12 col-md-6 mb-2 mb-md-0 measurement_div">
-                    <h6 class="badge bg-danger custom_success_badge">Measurements</h6>
-                    <div class="row">
-                    @if(isset($items[$index]['measurements']) && count($items[$index]['measurements']) > 0)
-                        @foreach ($items[$index]['measurements'] as $measurement)
-                            <div class="col-md-3">
-                                <label>{{ $measurement['measurement_name'] }} <strong>[{{ $measurement['short_code'] }}]</strong></label>
-                                <input 
-                                    type="text" 
-                                    class="form-control form-control-sm border border-1 customer_input text-center measurement_input"
-                                    wire:model="items.{{ $index }}.measurements.{{ $measurement['id'] }}.value"
-                                    value="{{ $measurement['value'] }}">
-                                @error('items.' . $index . '.measurements.' . $measurement['id']) 
-                                    <div class="text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
                         @endforeach
-
-
-                        @endif
-                    </div>
-                </div>
-                <!-- Fabrics -->
-                <div class="col-12 col-md-6 mb-2 mb-md-0">
-                    <h6 class="badge bg-danger custom_success_badge">Fabrics</h6>
-                    <div class="row mx-2">
-                        @if(isset($item['fabrics']) && count($item['fabrics']) > 0)
-                            @foreach ($item['fabrics'] as $fabric)
-                                <div class="btn-group" style="display: contents !important">
-                                    <input 
-                                        type="radio" 
-                                        class="btn-check" 
-                                        name="fabric_{{ $index }}" 
-                                        id="fabric_{{ $index }}_{{ $fabric->id }}" 
-                                        wire:model="items.{{ $index }}.selected_fabric" 
-                                        value="{{ $fabric->id }}" 
-                                        @if($item['selected_fabric'] == $fabric->id) checked @endif
-                                    />
-                                    <label class="btn btn-outline-success" for="fabric_{{ $index }}_{{ $fabric->id }}" data-mdb-ripple-init>
-                                        {{ $fabric->title }}
-                                    </label>
-                                </div>
-                            @endforeach
-                        @else
-                            <p>No fabrics available for this item.</p>
-                        @endif
-                    </div>
-                </div>
+                    @else
+                        <option value="" disabled>No categories available</option>
+                    @endif
+                </select>
+                @error("items.$index.category")
+                    <p class="text-danger">{{ $message }}</p>
+                @enderror
             </div>
-        @endif
-    </div>
-@endforeach
 
+            <!-- Product Search -->
+            <div class="mb-3 col-md-4">
+                <label class="form-label"><strong>Product</strong></label>
+                <input 
+                    type="text" 
+                    wire:keyup="FindProduct($event.target.value, {{ $index }})" 
+                    wire:model="items.{{ $index }}.searchproduct" 
+                    class="form-control form-control-sm border border-1 customer_input" 
+                    placeholder="Enter product name"
+                >
+                @if (session()->has('errorProduct.' . $index)) 
+                    <p class="text-danger">{{ session('errorProduct.' . $index) }}</p>
+                @endif
+                @if(isset($items[$index]['products']) && count($items[$index]['products']) > 0)
+                    <div class="dropdown-menu show w-25" style="max-height: 200px; overflow-y: auto;">
+                        @foreach ($items[$index]['products'] as $product)
+                            <button 
+                                class="dropdown-item" 
+                                type="button" 
+                                wire:click='selectProduct({{ $index }}, "{{ $product->name }}", {{ $product->id }})'
+                            >
+                                <img src="{{ $product->product_image ? asset($product->product_image) : asset('assets/img/cubes.png') }}" alt="">
+                                {{ $product->name }}({{ $product->product_code }})
+                            </button>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+
+            <!-- Price Input -->
+            <div class="mb-3 col-md-1">
+                <label class="form-label"><strong>Price</strong></label>
+                <input 
+                    type="text" 
+                    wire:keyup="checkproductPrice($event.target.value, {{ $index }})" 
+                    wire:model="items.{{ $index }}.price" 
+                    class="form-control form-control-sm border border-1 customer_input text-center @error('items.' . $index . '.price') border-danger  @enderror" 
+                    placeholder="Enter Price"
+                >
+            </div>
+
+            <!-- Delete Button -->
+            <div class="mb-3 col-md-1" style="margin-top: 19px;">
+                <button 
+                    type="button" 
+                    class="btn btn-danger btn-sm mb-0" 
+                    wire:click="removeItem({{ $index }})"
+                >
+                    <span class="material-icons">delete</span>
+                </button>
+            </div>
+
+            <!-- Measurements and Fabrics Section -->
+            @if(isset($this->items[$index]['product_id']))
+                <div class="row">
+                    <!-- Measurements -->
+                    <div class="col-12 col-md-6 mb-2 measurement_div">
+                        <h6 class="badge bg-danger custom_success_badge">Measurements</h6>
+                        <div class="row">
+                            @if(isset($items[$index]['measurements']) && count($items[$index]['measurements']) > 0)
+                                @foreach ($items[$index]['measurements'] as $measurement)
+                                    <div class="col-md-3">
+                                        <label>
+                                            {{ $measurement['title'] }} <strong>[{{ $measurement['short_code'] }}]</strong>
+                                        </label>
+                                        <input 
+                                            type="hidden" 
+                                            wire:model="items.{{ $index }}.get_measurements.{{ $measurement['id'] }}.title" 
+                                            value="{{ $measurement['title'] }}"
+                                        >
+                                        <input 
+                                            type="text" 
+                                            class="form-control form-control-sm border border-1 customer_input text-center measurement_input"
+                                            wire:model="items.{{ $index }}.get_measurements.{{ $measurement['id'] }}.value"
+                                        >
+                                    </div>
+                                @endforeach
+                            @endif
+                        </div>
+                    </div>
+                    
+                    <!-- Fabrics -->
+                    <div class="col-12 col-md-6 mb-2">
+                        <h6 class="badge bg-danger custom_success_badge">Fabrics</h6>
+                        <div class="row mx-2">
+                            @if(isset($items[$index]['fabrics']) && count($items[$index]['fabrics']) > 0)
+                                @foreach ($items[$index]['fabrics'] as $fabric)
+                                    <div class="btn-group" style="display: contents !important">
+                                        <input 
+                                            type="radio" 
+                                            class="btn-check" 
+                                            name="fabric_{{ $index }}" 
+                                            id="fabric_{{ $index }}_{{ $fabric->id }}" 
+                                            wire:model="items.{{ $index }}.selected_fabric" 
+                                            value="{{ $fabric->id }}" 
+                                            autocomplete="off"
+                                        />
+                                        <label 
+                                            class="btn btn-outline-success" 
+                                            for="fabric_{{ $index }}_{{ $fabric->id }}" 
+                                        >
+                                            {{ $fabric->title }}
+                                        </label>
+                                    </div>
+                                @endforeach
+                            @else
+                                <p>No fabrics available for this item.</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @endif
+        </div>
+    @endforeach
 
     <!-- Add Item Button and Payment Section -->
     <div class="row align-items-end mb-4" style="justify-content: end;">

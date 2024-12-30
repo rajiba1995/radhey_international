@@ -108,6 +108,7 @@ class OrderEdit extends Component
     public function mount($id)
     {
         $this->orders = Order::with(['items.measurements'])->findOrFail($id); // Fetch the order by ID
+        // dd($this->orders);
         // Collect measurements related to the order items
         $this->measurements = [];
         foreach ($this->orders->items as $item) {
@@ -138,11 +139,18 @@ class OrderEdit extends Component
                     'category' => $item->category,
                     'sub_category' => $item->sub_category,
                     'selected_fabric' => $item->fabrics,
-                    'get_measurements' => $item->measurements->mapWithKeys(function ($measurement) {
-                        return [$measurement->id => ['value' => $measurement->measurement_value]];
+                    'measurements' => $item->measurements->map(function ($measurement) {
+                        return [
+                            'id' => $measurement->id,
+                            'measurement_name' => $measurement->measurement_name,
+                            'short_code' => $measurement->short_code,
+                            'value' => $measurement->measurement_value, // Assuming this field exists
+                        ];
                     })->toArray(),
                 ];
             })->toArray();
+
+            // dd( $this->items);
         }
 
         // Split the address and assign to the properties
@@ -183,19 +191,20 @@ class OrderEdit extends Component
             }
         }
 
-        // $this->customer_id = $this->orders->customer_id;
-        // $this->name = $this->orders->customer_name;
-        // $this->company_name = $this->orders->customer->company_name;
-        // $this->employee_rank = $this->orders->customer->employee_rank;
-        // $this->email = $this->orders->customer_email;
-        // $this->dob = $this->orders->customer->dob;
-        // $this->phone = $this->orders->customer->phone;
-        // $this->whatsapp_no = $this->orders->customer->whatsapp_no;
+        $this->customer_id = $this->orders->customer_id;
+        $this->name = $this->orders->customer_name;
+        $this->company_name = $this->orders->customer->company_name;
+        $this->employee_rank = $this->orders->customer->employee_rank;
+        $this->email = $this->orders->customer_email;
+        $this->dob = $this->orders->customer->dob;
+        $this->phone = $this->orders->customer->phone;
+        $this->whatsapp_no = $this->orders->customer->whatsapp_no;
        
 
         $this->customers = User::where('user_type', 1)->where('status', 1)->orderBy('name', 'ASC')->get();
         $this->categories = Category::where('status', 1)->orderBy('title', 'ASC')->get();
         $this->collections = Collection::orderBy('title', 'ASC')->get();
+        // $this->collections = Collection::all();
         $this->addItem();
     }
 
@@ -305,6 +314,20 @@ class OrderEdit extends Component
                 ->get();
         }
     }
+    // public function updatedSelectedCollection($collectionId)
+    // {
+    //     // Load categories for the selected collection
+    //     $this->categories = Category::where('collection_id', $collectionId)->get();
+    //     $this->products = Product::where('category_id', $categoryId)->get();
+    //     $this->selectedCategory = null; // Reset category and product selections
+    // }
+
+    // public function updatedSelectedCategory($categoryId)
+    // {
+    //     // Load products for the selected category
+    //     $this->products = Product::where('category_id', $categoryId)->get();
+    //     $this->selectedProduct = null; // Reset product selection
+    // }
 
     public function toggleShippingAddress()
     {

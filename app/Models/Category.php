@@ -36,5 +36,9 @@ class Category extends Model
     {
         return $this->belongsTo(Collection::class, 'collection_id', 'id');
     }
-
+    // public function products()
+    // {
+    //     return $this->hasMany(Product::class);
+    // }
+    
 }

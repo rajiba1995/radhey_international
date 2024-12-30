@@ -10,5 +10,9 @@ class Collection extends Model
     use HasFactory;
     protected $fillable = ['title'];
 
-
+    public function categories()
+    {
+        return $this->hasMany(Category::class);
+    }
+    
 }
