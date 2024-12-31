@@ -14,7 +14,7 @@ class Category extends Model
     protected $table = 'categories';
 
     // Define the fillable columns to protect against mass assignment vulnerabilities
-    protected $fillable = ['title','image' ,'status'];
+    protected $fillable = ['collection_id','short_code','title','image' ,'status'];
 
     // Specify the columns that should be used for soft deletes
     protected $dates = ['deleted_at'];
@@ -31,4 +31,14 @@ class Category extends Model
     {
         return $this->hasMany(Product::class);
     }
+
+    public function collection()
+    {
+        return $this->belongsTo(Collection::class, 'collection_id', 'id');
+    }
+    // public function products()
+    // {
+    //     return $this->hasMany(Product::class);
+    // }
+    
 }

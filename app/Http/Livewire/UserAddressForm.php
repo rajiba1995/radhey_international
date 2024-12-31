@@ -60,13 +60,20 @@ class UserAddressForm extends Component
         // Base rules
         $rules = [
             'name' => 'required|string|max:255',
+            'employee_rank' => 'nullable|string',
             'image' => 'nullable|mimes:jpeg,png,jpg,gif',
             'verified_video' => 'nullable|mimes:mp4,mov,avi,wmv',
             'company_name'=>'nullable|string|max:255',
             'email' => 'nullable|email|unique:users,email',
             'dob'=> 'required|date',
-            'phone' => 'required|digits:'.env('VALIDATE_MOBILE'),
-            'whatsapp_no' => 'required|digits:'.env('VALIDATE_WHATSAPP'),
+             'phone' => [
+                'required',
+                'regex:/^\d{' . env('VALIDATE_MOBILE', 8) . ',}$/',
+            ],
+            'whatsapp_no' => [
+                'required',
+                'regex:/^\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/',
+            ],
             'gst_number' => 'nullable|string|max:15',
             'credit_limit' => 'nullable|numeric',
             'credit_days' => 'nullable|integer',

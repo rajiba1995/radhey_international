@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Collection extends Model
 {
     use HasFactory;
-    protected $fillable = ['title', 'short_code', 'collection_type'];
+    protected $fillable = ['title'];
 
-    public function type()
+    public function categories()
     {
-        return $this->belongsTo(CollectionType::class,'collection_type');
+        return $this->hasMany(Category::class);
     }
+    
 }

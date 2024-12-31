@@ -21,14 +21,15 @@ class OrderNew extends Component
     public $searchTerm = '';
     public $searchResults = [];
     public $errorClass = [];
-    public $collectionsType = [];
-    public $Collections = [];
+    // public $collectionsType = [];
+    public $collections = [];
     public $errorMessage = [];
-    public $activeTab = 1;
+    public $activeTab = 2;
     public $items = [];
     public $FetchProduct = 1;
 
     public $customers = null;
+    public $orders = null;
     public $is_wa_same, $name, $company_name,$employee_rank, $email, $dob, $customer_id, $whatsapp_no, $phone;
     public $billing_address,$billing_landmark,$billing_city,$billing_state,$billing_country,$billing_pin;
 
@@ -38,7 +39,7 @@ class OrderNew extends Component
 
     //  product 
     public $categories,$subCategories = [], $products = [], $measurements = [];
-    public $selectedCategory = null, $selectedSubCategory = null,$searchproduct, $product_id =null,$collection_type,$collection;
+    public $selectedCategory = null, $selectedSubCategory = null,$searchproduct, $product_id =null,$collection;
     public $paid_amount = 0;
     public $billing_amount = 0;
     public $remaining_amount = 0;
@@ -46,14 +47,13 @@ class OrderNew extends Component
 
     public function mount(){
         $this->customers = User::where('user_type', 1)->where('status', 1)->orderBy('name', 'ASC')->get();
-        $this->collectionsType = CollectionType::orderBy('title', 'ASC')->get();
         $this->categories = Category::where('status', 1)->orderBy('title', 'ASC')->get();
+        $this->collections = Collection::orderBy('title', 'ASC')->get();
         $this->addItem();
     }
 
     // Define rules for validation
     protected $rules = [
-        'items.*.collection_type' => 'required|string',
         'items.*.collection' => 'required|string',
         'items.*.product_id' => 'required|integer',
         'items.*.price' => 'required|numeric|min:1',  // Ensuring that price is a valid number (and greater than or equal to 0).
@@ -76,18 +76,42 @@ class OrderNew extends Component
                 })
                 ->take(20)
                 ->get();
+                $orders = Order::where('order_number', 'like', '%' . $this->searchTerm . '%')
+                    ->orWhereHas('customer', function ($query) {
+                        $query->where('name', 'like', '%' . $this->searchTerm . '%');
+                    })
+                    ->latest()
+                    ->take(1)
+                    ->get();
+
+                if ($orders->count()) {
+                    // If orders are found, show the customer name, phone, and email in search results
+                    $this->orders = $orders;
+        // dd($orders);
+                    // Prepend customer details from the first order into search results
+                    $customerFromOrder = $orders->first()->customer;
+                    // dd($customerFromOrder);
+                    $this->searchResults->prepend($customerFromOrder);
+                    session()->flash('orders-found', 'Orders found for this customer.');
+                } else {
+                    $this->orders = collect(); // No orders found
+                    session()->flash('no-orders-found', 'No orders found for this customer.');
+                }
+
+                 // If no orders are found, flash a session message
+            // if ($this->orders->isEmpty()) {
+            // }
         } else {
+            // Reset results when the search term is empty
             $this->searchResults = [];
+            $this->orders = collect(); 
         }
-    }
-
-
-    
+      }
 
     public function addItem()
     {
         $this->items[] = [
-            'collection_type' => '',
+           
             'collection' => '',
             'category' => '',
             'sub_category' => '',
@@ -125,72 +149,49 @@ class OrderNew extends Component
         $this->updateBillingAmount();  // Update billing amount after checking price
     }
 
-    public function GetCollection($typeId, $index)
+    public function GetCategory($value,$index)
     {
-        // Reset collection, products, and product_id for the selected item
-        $this->items[$index]['collection'] = ''; 
-        $this->items[$index]['products'] = [];
+        // Reset products, and product_id for the selected item
         $this->items[$index]['product_id'] = null;
         $this->items[$index]['measurements'] = [];
         $this->items[$index]['fabrics'] = [];
-        $this->items[$index]['categories'] = [];
-        if ($typeId) {
-            // Fetch collections based on the selected collection type
-            $this->items[$index]['collections'] = Collection::where('collection_type', $typeId)
-                ->orderBy('title', 'ASC')
-                ->get();
-        }
+      
+            // Fetch categories and products based on the selected collection 
+            $this->items[$index]['categories'] = Category::orderBy('title', 'ASC')->where('collection_id', $value)->get();
+            $this->items[$index]['products'] = Product::orderBy('name', 'ASC')->where('collection_id', $value)->get();
+       
     }
     
-    public function CollectionWiseProduct($value, $index)
-    {
-        
-        // If a collection is selected, fetch the products and categories
-        if ($value) {
-            // Fetch products related to the selected collection
-            $this->items[$index]['products'] = Product::where('collection_id', $value)->get();
-            
-            // Fetch categories based on products related to the selected collection
-            $bulkCategory = Product::where('collection_id', $value)
-                ->pluck('category_id')
-                ->toArray();
 
-            // Fetch and set categories
-            $this->items[$index]['categories'] = Category::where('status', 1)
-                ->whereIn('id', $bulkCategory)
-                ->orderBy('title', 'ASC')
-                ->get();
-        } else {
-            // Reset products and categories if no collection is selected
-            $this->items[$index]['products'] = [];
-            $this->items[$index]['categories'] = [];
-        }
-    }
 
-    public function CatWiseSubCatProduct($categoryId, $index)
+    public function CategoryWiseProduct($categoryId, $index)
     {
-        // Reset products and product_id for the selected item
+        // Reset products for the selected item
         $this->items[$index]['products'] = [];
         $this->items[$index]['product_id'] = null;
 
         if ($categoryId) {
-            // Fetch subcategories and products based on the selected category
-            $this->subCategories = SubCategory::where('category_id', $categoryId)->get();
-            $this->items[$index]['products'] = Product::where('category_id', $categoryId)->get();
-        } else {
-            // Reset subcategories and products if no category is selected
-            $this->subCategories = [];
-            $this->items[$index]['products'] = [];
+            // Fetch products based on the selected category and collection
+            $this->items[$index]['products'] = Product::where('category_id', $categoryId)
+                ->where('collection_id', $this->items[$index]['collection']) // Ensure the selected collection is considered
+                ->get();
         }
     }
+
 
 
     public function FindProduct($term, $index)
     {
         $collection = $this->items[$index]['collection'];
-    
+        $category = $this->items[$index]['category']; 
+
         if (empty($collection)) {
             session()->flash('errorProduct.' . $index, '🚨 Please select a collection before searching for a product.');
+            return;
+        }
+
+        if (empty($category)) {
+            session()->flash('errorProduct.' . $index, '🚨 Please select a category before searching for a product.');
             return;
         }
     
@@ -200,6 +201,7 @@ class OrderNew extends Component
         if (!empty($term)) {
             // Search for products within the specified collection and matching the term
             $this->items[$index]['products'] = Product::where('collection_id', $collection)
+                ->where('category_id', $category)
                 ->where(function ($query) use ($term) {
                     $query->where('name', 'like', '%' . $term . '%')
                           ->orWhere('product_code', 'like', '%' . $term . '%');
@@ -207,8 +209,6 @@ class OrderNew extends Component
                 ->get();
         }
     
-        // Optional: Log the products for debugging
-        // dd($this->items[$index]['products']);
     }
 
     public function checkproductPrice($value, $index)
@@ -285,96 +285,216 @@ class OrderNew extends Component
 
     public function save()
     {
-        // Validate the input fields based on the rules
-        
         $this->validate();
 
-        DB::beginTransaction();  // Begin transaction
-    
+        DB::beginTransaction(); // Begin transaction
+
         try {
-            // Calculate the total amount (you can calculate this based on item prices)
-            $total_amount = array_sum(array_column($this->items, 'price'));  // Assuming $this->items contains the price of each item
+            // Calculate the total amount
+            $total_amount = array_sum(array_column($this->items, 'price'));
             if ($this->paid_amount > $total_amount) {
                 session()->flash('error', '🚨 The paid amount cannot exceed the total billing amount.');
                 return;
             }
-            $this->remaining_amount = $total_amount-$this->paid_amount;
+            $this->remaining_amount = $total_amount - $this->paid_amount;
+
+            // Retrieve user details
+            $user = User::find($this->customer_id);
+             // If customer does not exist, create a new user
+            if (!$user) {
+                $user = User::create([
+                    'name' => $this->name,
+                    'company_name' => $this->company_name,
+                    'employee_rank' => $this->employee_rank,
+                    'email' => $this->email,
+                    'dob' => $this->dob,
+                    'phone' => $this->phone,
+                    'whatsapp_no' => $this->whatsapp_no,
+                    'user_type' => 1, // Customer
+                ]);
+             } 
+                // Store Billing Address for the new user
+             $billingAddress = $user->address()->where('address_type', 1)->first();
+             if (!$billingAddress) {
+                 $user->address()->create([
+                     'address_type' => 1, // Billing address
+                     'state' => $this->billing_state,
+                     'city' => $this->billing_city,
+                     'address' => $this->billing_address,
+                     'landmark' => $this->billing_landmark,
+                     'country' => $this->billing_country,
+                     'zip_code' => $this->billing_pin,
+                 ]);
+             }
+                // Store Shipping Address if applicable
+                if (!$this->is_billing_shipping_same) {
+                    $shippingAddress = $user->address()->where('address_type', 2)->first();
+                    if (!$shippingAddress) {
+                        $user->address()->create([
+                            'address_type' => 2, // Shipping address
+                            'state' => $this->shipping_state,
+                            'city' => $this->shipping_city,
+                            'address' => $this->shipping_address,
+                            'landmark' => $this->shipping_landmark,
+                            'country' => $this->shipping_country,
+                            'zip_code' => $this->shipping_pin,
+                        ]);
+                    }
+                }
+
+
+            if ($user) {
+                // Retrieve existing billing address
+                $existingBillingAddress = $user->address()->where('address_type', 1)->first();
+                // dd($existingBillingAddress);
+                // Check and update billing address if needed
+                $billingAddressUpdated = false;
+                if ($existingBillingAddress) {
+                    if (
+                        $existingBillingAddress->state !== $this->billing_state ||
+                        $existingBillingAddress->city !== $this->billing_city ||
+                        $existingBillingAddress->address !== $this->billing_address
+                    ) {
+                        $existingBillingAddress->update([
+                            'state' => $this->billing_state,
+                            'city' => $this->billing_city,
+                            'address' => $this->billing_address,
+                            'landmark' => $this->billing_landmark,
+                            'country' => $this->billing_country,
+                            'zip_code' => $this->billing_pin,
+                        ]);
+                        $billingAddressUpdated = true;
+                    }
+                } else {
+                    // Create new billing address if none exists
+                    $user->address()->create([
+                        'address_type' => 1, // Billing address
+                        'state' => $this->billing_state,
+                        'city' => $this->billing_city,
+                        'address' => $this->billing_address,
+                        'landmark' => $this->billing_landmark,
+                        'country' => $this->billing_country,
+                        'zip_code' => $this->billing_pin,
+                    ]);
+                    $billingAddressUpdated = true;
+                }
+
+                // Perform similar logic for shipping address
+                $existingShippingAddress = $user->address()->where('address_type', 2)->first();
+                if ($this->is_billing_shipping_same) {
+                    if ($existingShippingAddress) {
+                        $existingShippingAddress->update([
+                            'state' => $this->billing_state,
+                            'city' => $this->billing_city,
+                            'address' => $this->billing_address,
+                            'landmark' => $this->billing_landmark,
+                            'country' => $this->billing_country,
+                            'zip_code' => $this->billing_pin,
+                        ]);
+                    } else {
+                        $user->address()->create([
+                            'address_type' => 2, // Shipping address
+                            'state' => $this->billing_state,
+                            'city' => $this->billing_city,
+                            'address' => $this->billing_address,
+                            'landmark' => $this->billing_landmark,
+                            'country' => $this->billing_country,
+                            'zip_code' => $this->billing_pin,
+                        ]);
+                    }
+                } else {
+                    if ($existingShippingAddress) {
+                        if (
+                            $existingShippingAddress->state !== $this->shipping_state ||
+                            $existingShippingAddress->city !== $this->shipping_city ||
+                            $existingShippingAddress->address !== $this->shipping_address
+                        ) {
+                            $existingShippingAddress->update([
+                                'state' => $this->shipping_state,
+                                'city' => $this->shipping_city,
+                                'address' => $this->shipping_address,
+                                'landmark' => $this->shipping_landmark,
+                                'country' => $this->shipping_country,
+                                'zip_code' => $this->shipping_pin,
+                            ]);
+                        }
+                    } else {
+                        $user->address()->create([
+                            'address_type' => 2, // Shipping address
+                            'state' => $this->shipping_state,
+                            'city' => $this->shipping_city,
+                            'address' => $this->shipping_address,
+                            'landmark' => $this->shipping_landmark,
+                            'country' => $this->shipping_country,
+                            'zip_code' => $this->shipping_pin,
+                        ]);
+                    }
+                }
+            }
+
+            // Create the order
             $order = new Order();
-            $order->order_number = 'ORD-' . strtoupper(uniqid()); // Generate a unique order number
+            $order->order_number = 'ORD-' . strtoupper(uniqid());
+            $order->customer_id = $user->id;
             $order->customer_name = $this->name;
             $order->customer_email = $this->email;
-    
-            // Construct the billing address (assuming you have the billing data available)
-            $billing_address = $this->billing_address . ', ' . $this->billing_landmark . ', ' . $this->billing_city . ', ' . $this->billing_state . ', ' . $this->billing_country . ' - ' . $this->billing_pin;
-            $order->billing_address = $billing_address;
-    
-            // Check if shipping address is same as billing address
+            $order->billing_address = $this->billing_address . ', ' . $this->billing_landmark . ', ' . $this->billing_city . ', ' . $this->billing_state . ', ' . $this->billing_country . ' - ' . $this->billing_pin;
+
             if ($this->is_billing_shipping_same) {
-                $order->shipping_address = $billing_address;
+                $order->shipping_address = $order->billing_address;
             } else {
-                $shipping_address = $this->shipping_address . ', ' . $this->shipping_landmark . ', ' . $this->shipping_city . ', ' . $this->shipping_state . ', ' . $this->shipping_country . ' - ' . $this->shipping_pin;
-                $order->shipping_address = $shipping_address;
+                $order->shipping_address = $this->shipping_address . ', ' . $this->shipping_landmark . ', ' . $this->shipping_city . ', ' . $this->shipping_state . ', ' . $this->shipping_country . ' - ' . $this->shipping_pin;
             }
-    
+
             $order->total_amount = $total_amount;
             $order->paid_amount = $this->paid_amount;
             $order->remaining_amount = $this->remaining_amount;
             $order->payment_mode = $this->payment_mode;
             $order->last_payment_date = date('Y-m-d H:i:s');
-            $order->save();  // Save the order
-    
-            // Now loop through the items and save them as OrderItem and OrderMeasurement
-            foreach ($this->items as $k=>$item) {
-                // Create and save the order item
-                $collection_data = Collection::where('id',$item['collection'])->first();
-                $category_data = Category::where('id',$item['category'])->first();
-                $sub_category_data = SubCategory::where('id',$item['sub_category'])->first();
+            $order->save();
 
-                $fabric_data = Fabric::where('id',$item['selected_fabric'])->first();
+            // Save order items and measurements
+            foreach ($this->items as $k => $item) {
+                $collection_data = Collection::find($item['collection']);
+                $category_data = Category::find($item['category']);
+                $sub_category_data = SubCategory::find($item['sub_category']);
+                $fabric_data = Fabric::find($item['selected_fabric']);
+
                 $orderItem = new OrderItem();
                 $orderItem->order_id = $order->id;
                 $orderItem->product_id = $item['product_id'];
-                $orderItem->collection_type = $item['collection_type'];
-                $orderItem->collection = $collection_data?$collection_data->title:"";
-                $orderItem->category = $category_data?$category_data->title:"";
-                $orderItem->sub_category = $sub_category_data?$sub_category_data->title:"";
+                $orderItem->collection = $collection_data ? $collection_data->title : "";
+                $orderItem->category = $category_data ? $category_data->title : "";
+                $orderItem->sub_category = $sub_category_data ? $sub_category_data->title : "";
                 $orderItem->product_name = $item['searchproduct'];
                 $orderItem->price = $item['price'];
-                $orderItem->fabrics = $fabric_data?$fabric_data->title:"";  // Save fabric selection
-                $orderItem->save();  // Save the order item
-    
-                // Now handle the measurements for each item
-                if ($item['collection_type']==1 && isset($item['get_measurements']) && count($item['get_measurements']) > 0) {
-                    foreach ($item['get_measurements'] as $mindex =>$measurement) {
-                        $measurement_data = Measurement::where('id', $mindex)->first();
-                        // Save the measurement for this order item
+                $orderItem->fabrics = $fabric_data ? $fabric_data->title : "";
+                $orderItem->save();
+
+                if (isset($item['get_measurements']) && count($item['get_measurements']) > 0) {
+                    foreach ($item['get_measurements'] as $mindex => $measurement) {
+                        $measurement_data = Measurement::find($mindex);
+
                         $orderMeasurement = new OrderMeasurement();
                         $orderMeasurement->order_item_id = $orderItem->id;
-                        $orderMeasurement->measurement_name = $measurement_data?$measurement_data->title:"";  // Assuming 'title' is the name of the measurement
-                        $orderMeasurement->measurement_value = $measurement['value'];  // Assuming 'value' is the entered value
-                        $orderMeasurement->save();  // Save the order measurement
+                        $orderMeasurement->measurement_name = $measurement_data ? $measurement_data->title : "";
+                        $orderMeasurement->measurement_value = $measurement['value'];
+                        $orderMeasurement->save();
                     }
                 }
             }
 
-            // Commit the transaction if everything is fine
             DB::commit();
-    
-            // Flash success message
+
             session()->flash('success', 'Order has been generated successfully.');
             return redirect()->route('admin.order.index');
         } catch (\Exception $e) {
-            // Rollback the transaction in case of any error
             DB::rollBack();
-            // dd($e->getMessage());
-            // Flash error message
+            \Log::error('Error saving order: ' . $e->getMessage());
             session()->flash('error', '🚨 Something went wrong. The operation has been rolled back.');
-    
-            // Optionally log the error
-            \Log::error('Error saving items: ' . $e->getMessage());
         }
     }
-    
+
 
     public function resetForm()
     {
@@ -399,6 +519,7 @@ class OrderNew extends Component
 
         if ($customer) {
             // Populate customer details
+            $this->customer_id = $customer->id;
             $this->name = $customer->name;
             $this->company_name = $customer->company_name;
             $this->employee_rank = $customer->employee_rank;
@@ -495,25 +616,26 @@ class OrderNew extends Component
             if (empty($this->phone)) {
                 $this->errorClass['phone'] = 'border-danger';
                 $this->errorMessage['phone'] = 'Please enter customer phone number';
-            } elseif (strlen($this->phone) != env('VALIDATE_MOBILE', 12)) {
+            } elseif (!preg_match('/^\d{' . env('VALIDATE_MOBILE', 8) . ',}$/', $this->phone)) {
                 $this->errorClass['phone'] = 'border-danger';
-                $this->errorMessage['phone'] = 'Phone number must be ' . env('VALIDATE_MOBILE', 12) . ' digits long';
+                $this->errorMessage['phone'] = 'Phone number must be ' . env('VALIDATE_MOBILE', 8) . ' or more digits long';
             } else {
                 $this->errorClass['phone'] = null;
                 $this->errorMessage['phone'] = null;
             }
-    
+
             // Validate WhatsApp Number
-            if (empty($this->whatsapp_no)) {
+           if (empty($this->whatsapp_no)) {
                 $this->errorClass['whatsapp_no'] = 'border-danger';
                 $this->errorMessage['whatsapp_no'] = 'Please enter WhatsApp number';
-            } elseif (strlen($this->whatsapp_no) != env('VALIDATE_WHATSAPP', 12)) {
+            } elseif (!preg_match('/^\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/', $this->whatsapp_no)) {
                 $this->errorClass['whatsapp_no'] = 'border-danger';
-                $this->errorMessage['whatsapp_no'] = 'WhatsApp number must be ' . env('VALIDATE_WHATSAPP', 12) . ' digits long';
+                $this->errorMessage['whatsapp_no'] = 'WhatsApp number must be ' . env('VALIDATE_WHATSAPP', 8) . ' or more digits long';
             } else {
                 $this->errorClass['whatsapp_no'] = null;
                 $this->errorMessage['whatsapp_no'] = null;
             }
+
     
             // Validate Billing Information
             if (empty($this->billing_address)) {
@@ -620,6 +742,7 @@ class OrderNew extends Component
     }
     private function populateAddress($type, $address)
     {
+        // dd($address);
         if ($address) {
             $this->{$type . '_address'} = $address->address;
             $this->{$type . '_landmark'} = $address->landmark;
@@ -641,7 +764,7 @@ class OrderNew extends Component
     public function render()
     {
         return view('livewire.order.order-new', [
-            'collectionsType' => $this->collectionsType,
+            // 'collectionsType' => $this->collectionsType,
             'categories' => $this->categories,
         ]);
     }

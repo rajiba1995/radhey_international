@@ -59,8 +59,14 @@ class StaffUpdate extends Component
             'designation' => 'required',
             'person_name' => 'required|string|max:255',
             'email' => 'nullable|email',
-            'mobile' => 'required|digits:'.env('VALIDATE_MOBILE'),
-            'whatsapp_no' => 'required|digits:'.env('VALIDATE_WHATSAPP'),
+            'mobile' => [
+                'required',
+                'regex:/^\d{' . env('VALIDATE_MOBILE', 8) . ',}$/',
+            ],
+            'whatsapp_no' => [
+                'required',
+                'regex:/^\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/',
+            ],
             'aadhaar_number' => 'required|numeric',
             'image' => 'nullable|max:2048',
             'user_id_front' => 'nullable|max:2048',

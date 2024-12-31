@@ -53,25 +53,24 @@
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Image
                                             </th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            {{-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Collection
-                                            </th>
+                                            </th> --}}
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                                 Name
                                             </th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                                 Category
                                             </th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            {{-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                                 SubCategory
-                                            </th>
+                                            </th> --}}
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Status
                                             </th>
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Action
                                             </th>
-                                            <th class="text-secondary opacity-7"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -86,13 +85,14 @@
                                                     @endif
                                                 </span>
                                             </td>
-                                            <td>
+                                            {{-- <td>
                                                 <span class="badge bg-danger custom_danger_badge">{{ $product->collection?$product->collection->type->title:""}}</span>
                                                 <p class="text-secondary text-xs font-weight-bold">
                                                     {{ $product->collection?$product->collection->title:""}}
                                                 </p>
-                                            </td>
+                                            </td> --}}
                                             <td>
+         
                                                 <p class="text-xs font-weight-bold mb-0">
                                                     {{ ucwords($product->name) }}
                                                 </p>
@@ -102,11 +102,11 @@
                                                     {{ ucwords($product->category->title ?? 'N/A') }}
                                                 </p>
                                             </td>
-                                            <td>
+                                            {{-- <td>
                                                 <p class="text-xs font-weight-bold mb-0">
                                                     {{ ucwords($product->sub_category->title ?? 'N/A') }}
                                                 </p>
-                                            </td>
+                                            </td> --}}
                                             <td>
                                                 <div class="form-check form-switch">
                                                     <input class="form-check-input ms-auto" type="checkbox" wire:click="toggleStatus({{ $product->id }})" 
@@ -115,7 +115,7 @@
                                                     @endif>
                                                 </div>
                                             </td>
-                                            <td class="align-middle action_tab">
+                                            <td class="align-middle action_tab text-center">
                                                 <a href="{{route('product.update',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Edit product">
                                                     <span class="material-icons">edit</span>
                                                 </a>

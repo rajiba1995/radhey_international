@@ -1,12 +1,9 @@
 <div>
-    <h4>Customer Details :-</h4>
-    {{-- <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">Master</a></li>
-            <li class="breadcrumb-item"><a href="#">Customer Management</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Edit Details</li>
-        </ol>
-    </nav> --}}
+    <div class="d-flex justify-content-between align-items-center">
+      <h4>Customer Details :-</h4>
+      <a href="{{route('customers.index')}}" class="btn btn-dark btn-sm mt-3"><i class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
+        Back</a>
+   </div>
     <div class="card mt-3">
         <div class="row">
             <div class="col-12">
@@ -75,5 +72,5 @@
             </div>
         </div>
     </div>
-    <a href="{{route('customers.index')}}" class="btn btn-danger btn-sm mt-3">Back to Customer</a>
+    
 </div>

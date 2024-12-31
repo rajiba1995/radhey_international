@@ -58,9 +58,11 @@ class FabricIndex extends Component
         
         $this->title = null;
         $this->image = null;
-
+        
+        // Refresh the fabrics list for the current product
+       $this->fabrics = Fabric::orderBy('id', 'desc')->where('product_id', $this->product_id)->get();
         session()->flash('message', 'Fabric created successfully!');
-        $this->fabrics = Fabric::orderBy('id', 'desc')->get();
+        // $this->fabrics = Fabric::orderBy('id', 'desc')->get();
         
     }
 
@@ -107,9 +109,10 @@ class FabricIndex extends Component
         $this->title = null;
         $this->image = null;
 
-
+        // Refresh the fabrics list for the current product
+         $this->fabrics = Fabric::orderBy('id', 'desc')->where('product_id', $this->product_id)->get();  
         session()->flash('message', 'Fabric updated successfully!');
-        $this->fabrics = Fabric::orderBy('id', 'desc')->get();
+       
         // return redirect()->route('admin.fabrics.index');
     }
 
