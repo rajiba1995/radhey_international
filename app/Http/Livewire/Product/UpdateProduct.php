@@ -29,7 +29,7 @@ class UpdateProduct extends Component
     public $product_image;
     public $categories = []; // For categories dropdown
     public $subCategories = []; // For subcategories dropdown
-    PUBLIC $existing_image;
+    public $existing_image;
     public $Collections = [];
 
     public function mount($product_id)
