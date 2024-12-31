@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::create('collection_types', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->string('title');
-        //     $table->timestamps();
-        // });
+        Schema::table('users', function (Blueprint $table) {
+            $table->boolean('employee_rank')->default(false); // Adds a boolean column with a default value of false
+        });
     }
 
     /**
@@ -23,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('collection_types');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('employee_rank');
+        });
     }
 };

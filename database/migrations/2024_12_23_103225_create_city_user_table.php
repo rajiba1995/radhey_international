@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::create('collection_types', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->string('title');
-        //     $table->timestamps();
-        // });
+        Schema::create('city_user', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('city_id')->constrained()->onDelete('cascade'); 
+            $table->timestamps();
+        });
     }
 
     /**
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('collection_types');
+        Schema::dropIfExists('city_user');
     }
 };

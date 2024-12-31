@@ -178,8 +178,8 @@ class UserAddressForm extends Component
             'phone' => $this->phone,
             'whatsapp_no' => $this->whatsapp_no,
             'gst_number' => $this->gst_number,
-            'credit_limit' => $this->credit_limit,
-            'credit_days' => $this->credit_days,
+            'credit_limit' => $this->credit_limit === '' ? 0 : $this->credit_limit,
+            'credit_days' => $this->credit_days === '' ? 0 : $this->credit_days,
             'gst_certificate_image' => $this->gst_certificate_image ? $this->uploadGSTCertificate() : null, // Handle file upload
         ];
        
@@ -207,7 +207,7 @@ class UserAddressForm extends Component
 
         // Log the exception
         \Log::error('Error saving customer information: ' . $e->getMessage());
-
+       
         // Flash error message
         session()->flash('error', 'An error occurred while saving the customer information. Please try again.');
 

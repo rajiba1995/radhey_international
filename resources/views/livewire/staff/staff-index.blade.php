@@ -89,7 +89,7 @@
                                                     <span class="material-icons">assignment</span>
                                                 </a>
                                                 @if ($member->designationDetails && $member->designationDetails->id == 2)
-                                                    <a href="{{route('staff.cities.add',$member->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Staff Task" title="Task">
+                                                    <a href="{{route('staff.cities.add',$member->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Staff City" title="City">
                                                         <span class="material-icons">place</span>
                                                     </a>
                                                 @endif

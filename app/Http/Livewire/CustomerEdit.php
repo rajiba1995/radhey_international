@@ -205,8 +205,8 @@ class CustomerEdit extends Component
             'phone' => $this->phone,
             'whatsapp_no' => $this->whatsapp_no,
             'gst_number' => $this->gst_number,
-            // 'credit_limit' => isset($this->credit_limit)?$this->credit_limit:0,
-            // 'credit_days' => $this->credit_days,
+            'credit_limit' => $this->credit_limit === '' ? 0 : $this->credit_limit,
+            'credit_days' => $this->credit_days === '' ? 0 : $this->credit_days,
         ];
     }
 

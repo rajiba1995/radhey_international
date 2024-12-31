@@ -36,11 +36,11 @@
                                     </tr>
                                 </thead>
                                 <tbody id="">
-                                    @foreach ($fabrics as $k => $fabric)
-                                    {{-- @dd($fabric->image) --}}
+                                    @foreach ($fabrics as $fabric)
+                                  
                                         <tr data-id="{{ $fabric->id }}" class="handle">
                                             <td class="align-middle text-center">
-                                                <img src="{{ url($fabric->image) }}" alt="Fabric Image" width="100">
+                                                <img src="{{ asset($fabric->image) }}" alt="Fabric Image" width="100">
                                             </td>
                                             <td class="align-middle text-center">{{ ucwords($fabric->title) }}</td>
                                             <td class="align-middle text-center">
@@ -61,6 +61,9 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                            <div class="d-flex justify-content-end mt-2">
+                                {{-- {{$fabrics->links()}} --}}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -101,11 +104,11 @@
                                     wire:model="image" 
                                     class="form-control border border-2 p-2" 
                                     aria-describedby="imageHelp">
-                                    @if($image)
+                                    @if(is_object($image))
                                         <img src="{{ $image->temporaryUrl() }}" alt="Preview" width="100">
                                     @elseif ($fabricId)
                                         <!-- Show existing image if no new image is uploaded -->
-                                        <img src="{{ asset("storage/".$fabrics->where('id', $fabricId)->first()->image ?? '') }}" alt="Current Image" width="100">
+                                        <img src="{{ asset($fabrics->where('id', $fabricId)->first()->image ?? '') }}" alt="Current Image" width="100">
                                     @endif
                                 @error('image') 
                                     <small id="imageHelp" class="text-danger">{{ $message }}</small> 

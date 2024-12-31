@@ -68,6 +68,10 @@ class User extends Authenticatable
     // {
     //     return $this->hasMany(UserAddress::class);
     // }
+    public function cities()
+    {
+        return $this->belongsToMany(City::class, 'city_user');
+    }
     public function designationDetails()
     {
         return $this->belongsTo(Designation::class, 'designation', 'id');
