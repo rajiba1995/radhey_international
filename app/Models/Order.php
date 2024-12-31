@@ -13,14 +13,18 @@ class Order extends Model
     protected $table = 'orders';
 
     protected $fillable = [
-        'order_id ',
-        'product_id ',
-        'collection ',
-        'fabrics ',
-        'category ',
-        'sub_category ',
-        'product_name ',
-        'price ',
+        'customer_id ',
+        'order_number  ',
+        'customer_name ',
+        'customer_email ',
+        'billing_address ',
+        'shipping_address ',
+        'total_amount ',
+        'paid_amount ',
+        'remaining_amount ',
+        'last_payment_date ',
+        'payment_mode',
+        'status',
     ];
     public function items()
     {
