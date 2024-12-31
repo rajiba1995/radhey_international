@@ -94,7 +94,19 @@
                                     <small id="titleHelp" class="text-danger">{{ $message }}</small> 
                                 @enderror
                             </div>
-                            
+                            <div class="form-group mb-3">
+                                <label for="threshold_price">Threshold Price</label>
+                                <input 
+                                    type="text" 
+                                    id="threshold_price" 
+                                    wire:model="threshold_price" 
+                                    class="form-control border border-2 p-2" 
+                                    placeholder="Enter Theresh Hold Price" 
+                                    aria-describedby="thresholdpriceHelp">
+                                @error('threshold_price') 
+                                    <small id="thresholdpriceHelp" class="text-danger">{{ $message }}</small> 
+                                @enderror
+                            </div>
                             <!--  Code -->
                             <div class="form-group mb-3">
                                 <label for="image">Color Image</label>
