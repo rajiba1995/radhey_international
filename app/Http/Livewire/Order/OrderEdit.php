@@ -27,7 +27,7 @@ class OrderEdit extends Component
     public $FetchProduct = 1;
 
     public $customers = null;
-    public $orders = null;
+    public $orders;
     public $is_wa_same, $name, $company_name,$employee_rank, $email, $dob, $customer_id, $whatsapp_no, $phone;
     public $order_number, $billing_address,$billing_landmark,$billing_city,$billing_state,$billing_country,$billing_pin;
 
@@ -150,6 +150,7 @@ class OrderEdit extends Component
         $this->billing_amount =  $this->orders->total_amount;
         $this->remaining_amount =  $this->orders->remaining_amount;
         $this->payment_mode = $this->orders->payment_mode;
+        $this->addItem();
     }
 
 
@@ -651,21 +652,40 @@ class OrderEdit extends Component
             $paid_amount = $this->paid_amount;
             $remaining_amount = $this->remaining_amount;
             $payment_mode = $this->payment_mode;
-
-            $this->orders->update([
-                'customer_id' => $user->id,
-                'customer_name' => $name,
-                'customer_email' => $email,
-                'billing_address' => $billingadd . ', ' . $billingLandmark . ', ' . $billingCity . ', ' . $billingState . ', ' . $billingCountry . ' - ' . $billingPin,
-                'shipping_address' => $this->is_billing_shipping_same
+            $order = Order::find($this->orders->id);
+            if (!$order) {
+                session()->flash('error', 'Order not found.');
+                return redirect()->route('admin.order.index');
+            }else{
+                // $order->update([
+                //     'customer_id' => $user->id,
+                //     'customer_name' => $name,
+                //     'customer_email' => $email,
+                //     'billing_address' => $billingadd . ', ' . $billingLandmark . ', ' . $billingCity . ', ' . $billingState . ', ' . $billingCountry . ' - ' . $billingPin,
+                //     'shipping_address' => $this->is_billing_shipping_same
+                //         ? $billingadd . ', ' . $billingLandmark . ', ' . $billingCity . ', ' . $billingState . ', ' . $billingCountry . ' - ' . $billingPin
+                //         : $shippingadd . ', ' . $shippingLandmark . ', ' . $shippingCity . ', ' . $shippingState . ', ' . $shippingCountry . ' - ' . $shippingPin,
+                //     'total_amount' => $total_amount,
+                //     'paid_amount' => $paid_amount,
+                //     'remaining_amount' => $remaining_amount,
+                //     'payment_mode' => $payment_mode,
+                //     'last_payment_date' => now(),
+                // ]);
+                $order->customer_id = $user->id;
+                $order->customer_name = $this->name;
+                $order->customer_email = $this->email;
+                $order->billing_address = $billingadd . ', ' . $billingLandmark . ', ' . $billingCity . ', ' . $billingState . ', ' . $billingCountry . ' - ' . $billingPin;
+                $order->shipping_address = $this->is_billing_shipping_same
                     ? $billingadd . ', ' . $billingLandmark . ', ' . $billingCity . ', ' . $billingState . ', ' . $billingCountry . ' - ' . $billingPin
-                    : $shippingadd . ', ' . $shippingLandmark . ', ' . $shippingCity . ', ' . $shippingState . ', ' . $shippingCountry . ' - ' . $shippingPin,
-                'total_amount' => $total_amount,
-                'paid_amount' => $paid_amount,
-                'remaining_amount' => $remaining_amount,
-                'payment_mode' => $payment_mode,
-                'last_payment_date' => now(),
-            ]);
+                    : $shippingadd . ', ' . $shippingLandmark . ', ' . $shippingCity . ', ' . $shippingState . ', ' . $shippingCountry . ' - ' . $shippingPin;
+                $order->total_amount = $total_amount;
+                $order->paid_amount = $this->paid_amount;
+                $order->remaining_amount = $this->remaining_amount;
+                $order->payment_mode = $this->payment_mode;
+                $order->last_payment_date = now();
+                $order->save();
+            }
+           
 
             // dd($this->orders);
         // dd($order);
