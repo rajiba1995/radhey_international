@@ -44,6 +44,12 @@
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
                                         End No
                                     </th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
+                                       Total Bill
+                                    </th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
+                                       No of Used Bill
+                                    </th>
                                    
                                     <th class="text-end text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle px-4">
                                         Actions
@@ -59,6 +65,12 @@
                                         <td class="align-middle text-center">
                                             {{ $billing->end_no}}
                                         </td>
+                                        <td class="align-middle text-center">
+                                            {{ $billing->total_count}}
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            {{ $billing->no_of_used}}
+                                        </td>
                                         <td class="align-middle text-end px-4">
                                             <button wire:click="edit({{ $billing->id }})" class="btn btn-outline-info btn-sm custom-btn-sm" title="Edit">
                                                 <span class="material-icons">edit</span>
@@ -66,6 +78,12 @@
                                             <button wire:click="destroy({{ $billing->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm" title="Delete">
                                                 <span class="material-icons">delete</span>
                                             </button>
+                                            @if ($billing->no_of_used != $billing->total_count)
+                                                <button class="btn btn-outline-info btn-sm custom-btn-sm" title="Delete">
+                                                    Assigned new Salesman
+                                                </button>
+                                            @endif
+                                            
                                         </td>
                                     </tr>
                                 @endforeach
