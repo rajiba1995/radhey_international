@@ -25,4 +25,10 @@ class OrderMeasurement extends Model
 
 
     }
+
+    public function measurement()
+    {
+        // Ensure the foreign key and local key are correct
+        return $this->belongsTo(Measurement::class, 'measurement_name', 'title');
+    }
 }

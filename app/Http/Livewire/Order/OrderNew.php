@@ -87,7 +87,7 @@ class OrderNew extends Component
                 if ($orders->count()) {
                     // If orders are found, show the customer name, phone, and email in search results
                     $this->orders = $orders;
-                // dd($orders);
+        // dd($orders);
                     // Prepend customer details from the first order into search results
                     $customerFromOrder = $orders->first()->customer;
                     // dd($customerFromOrder);
@@ -106,7 +106,7 @@ class OrderNew extends Component
             $this->searchResults = [];
             $this->orders = collect(); 
         }
-    }
+      }
 
     public function addItem()
     {
@@ -125,20 +125,20 @@ class OrderNew extends Component
         // $this->validate();
     }
 
-    public function addMeasurement($index, $measurement)
-    {
-        // Initialize measurements array if it's not already set for the specific item
-        if (!isset($this->items[$index]['measurements'])) {
-            $this->items[$index]['measurements'] = [];
-        }
+    // public function addMeasurement($index, $measurement)
+    // {
+    //     // Initialize measurements array if it's not already set for the specific item
+    //     if (!isset($this->items[$index]['measurements'])) {
+    //         $this->items[$index]['measurements'] = [];
+    //     }
     
-        // Add the measurement to the measurements array
-        $this->items[$index]['measurements'][$measurement->id] = [
-            'title' => $measurement->title,
-            'short_code' => $measurement->short_code,
-            'value' => '',  // Initialize the value as empty or with a default value
-        ];
-    }
+    //     // Add the measurement to the measurements array
+    //     $this->items[$index]['measurements'][$measurement->id] = [
+    //         'title' => $measurement->title,
+    //         'short_code' => $measurement->short_code,
+    //         'value' => '',  // Initialize the value as empty or with a default value
+    //     ];
+    // }
 
     
 
@@ -268,18 +268,69 @@ class OrderNew extends Component
 
     
 
+    // public function selectProduct($index, $name, $id)
+    // {
+    //     $this->items[$index]['searchproduct'] = $name;
+    //     $this->items[$index]['product_id'] = $id;
+    //     $this->items[$index]['products'] = [];
+    //     $this->items[$index]['measurements'] = Measurement::where('product_id', $id)->where('status', 1)->orderBy('position','ASC')->get();
+    //     $this->items[$index]['fabrics'] = Fabric::where('product_id', $id)->where('status', 1)->get();
+        
+    //     session()->forget('measurements_error.' . $index);
+    //     if (count($this->items[$index]['measurements']) == 0) {
+    //         session()->flash('measurements_error.' . $index, '🚨 Oops! Measurement data not added for this product.');
+    //         return;
+    //     }
+    // }
+
     public function selectProduct($index, $name, $id)
     {
+        // Set the selected product details
         $this->items[$index]['searchproduct'] = $name;
         $this->items[$index]['product_id'] = $id;
         $this->items[$index]['products'] = [];
-        $this->items[$index]['measurements'] = Measurement::where('product_id', $id)->where('status', 1)->orderBy('position','ASC')->get();
-        $this->items[$index]['fabrics'] = Fabric::where('product_id', $id)->where('status', 1)->get();
         
+        // Get the measurements available for the selected product
+        $this->items[$index]['measurements'] = Measurement::where('product_id', $id)
+                                                            ->where('status', 1)
+                                                            ->orderBy('position','ASC')
+                                                            ->get();
+        // Get the fabrics available for the selected product
+        $this->items[$index]['fabrics'] = Fabric::where('product_id', $id)
+                                                  ->where('status', 1)
+                                                  ->get();
+        
+        // Clear any previous measurement error session
         session()->forget('measurements_error.' . $index);
+        
+        // Check if there are no measurements for the product
         if (count($this->items[$index]['measurements']) == 0) {
             session()->flash('measurements_error.' . $index, '🚨 Oops! Measurement data not added for this product.');
             return;
+        }
+    
+        // Auto-populate measurements if the user has ordered this product before
+        $this->populatePreviousOrderMeasurements($index, $id);
+        // dd( $this->populatePreviousOrderMeasurements($index, $id));
+    }
+    public function populatePreviousOrderMeasurements($index, $productId)
+    {
+        // Find previous order for this customer that includes the selected product
+        $previousOrder = OrderItem::where('product_id', $productId)
+                                  ->whereHas('order', function($query) {
+                                      $query->where('customer_id', $this->customer_id); // Ensure the same customer
+                                  })
+                                  ->latest()
+                                  ->first(); // Get the most recent order for the product
+        if ($previousOrder) {
+            // Get the measurements related to this previous order's product
+            $previousMeasurements = OrderMeasurement::where('order_item_id', $previousOrder->id)->get();
+            foreach ($previousMeasurements as $previousMeasurement) {
+                // $this->items[$index]['get_measurements'][$previousMeasurement->measurement_name]['value'] = $previousMeasurement->measurement_value;
+    
+                $measurement = $previousMeasurement->measurement; // This will return the related Measurement model
+                $this->items[$index]['get_measurements'][$measurement->id]['value'] = $previousMeasurement->measurement_value;
+            }
         }
     }
 
