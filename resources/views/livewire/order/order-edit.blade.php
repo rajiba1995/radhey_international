@@ -256,6 +256,7 @@
                                 <select wire:model="items.{{ $index }}.selected_collection"
                                     wire:change="GetCategory($event.target.value, {{ $index }})"
                                     class="form-control border border-2 p-2 form-control-sm">
+                                    <option value="" selected hidden>Select collection</option>
                                     @foreach($collections as $citems)
                                     <option value="{{ $citems->id }}" {{$item['selected_collection']==$citems->title?"selected":""}}>{{ ucwords($citems->title) }} 
                                         @if($citems->short_code)
@@ -275,6 +276,7 @@
                                 <select wire:model="items.{{ $index }}.selected_category"
                                     class="form-select form-control-sm border border-1"
                                     wire:change="CategoryWiseProduct($event.target.value, {{ $index }})">
+                                    <option value="" selected hidden>Select Category</option>
                                     @foreach ($item['categories'] as $category)
                                     <option value="{{ $category->id }}" {{$item['selected_category']==$category->id?"selected":""}}>{{ $category->title }}</option>
                                     @endforeach
@@ -331,22 +333,25 @@
                                 <div class="col-12 col-md-6 mb-2 mb-md-0 measurement_div">
                                     <h6 class="badge bg-danger custom_success_badge">Measurements</h6>
                                     <div class="row">
-                                        @if(isset($items[$index]['measurements']) && count($items[$index]['measurements']) > 0)
-                                            @foreach ($items[0]['measurements'] as $measurement)
-                                                <div class="col-md-3">
-                                                    <label>{{ $measurement['title'] }}
-                                                        <strong>[{{ $measurement['short_code'] }}]</strong>
-                                                    </label>
-                                                    <input 
-                                                        type="text" 
-                                                        class="form-control form-control-sm border border-1 customer_input text-center measurement_input" 
-                                                        wire:model="items.0.measurements.{{ $measurement['id'] }}.value">
-                                                    @error("items.0.measurements.{$measurement['id']}.value")
-                                                        <div class="text-danger">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-                                            @endforeach
-                                        @endif
+                                        
+                                    @if(isset($items[$index]['measurements']) && count($items[$index]['measurements']) > 0)
+                                        @foreach ($items[$index]['measurements'] as $key => $measurement)
+                                            <div class="col-md-3">
+                                                <label>
+                                                    {{ $measurement['title'] }}
+                                                    <strong>[{{ $measurement['short_code'] }}]</strong>
+                                                </label>
+                                                <input 
+                                                    type="text" 
+                                                    class="form-control form-control-sm border border-1 customer_input text-center measurement_input"
+                                                    wire:model="items.{{ $index }}.measurements.{{ $key }}.value">
+                                                @error("items.{$index}.measurements.{$key}.value")
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        @endforeach
+                                    @endif
+
                                     
                                     </div>
                                 </div>

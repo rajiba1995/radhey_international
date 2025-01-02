@@ -66,7 +66,7 @@ class OrderEdit extends Component
                 $selected_values = OrderMeasurement::where('order_item_id', $item->id)->pluck('measurement_value')->toArray();
 
                 // Map measurements with selected values
-                $measurements = Measurement::where('product_id', $item->product_id)
+                $measurements = Measurement::where('product_id', $item->product_id)->orderBy('position','ASC')
                     ->get()
                     ->map(function ($measurement) use ($selected_titles, $selected_values) {
                         $index = array_search($measurement->title, $selected_titles); // Check if title exists in selected titles
@@ -76,7 +76,7 @@ class OrderEdit extends Component
                             'short_code' => $measurement->short_code,
                             'value' => $index !== false ? $selected_values[$index] : '', // Assign value if title is in selected titles
                         ];
-                    });
+                });
                 return [
                     'product_id' => $item->product_id,
                     'searchproduct' => $item->product_name,
