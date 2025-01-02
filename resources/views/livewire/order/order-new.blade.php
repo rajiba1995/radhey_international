@@ -344,9 +344,45 @@
                                             @endif
                                         </div>
                                     </div>
+                                    <div class="col-12 col-md-6 mb-2 mb-md-0">
+                                        <h6 class="badge bg-danger custom_success_badge">Fabrics</h6>
+                                        <div class="row mx-2">
+                                            @if(isset($items[$index]['fabrics']) && count($items[$index]['fabrics']) > 0)
+                                                @foreach ($items[$index]['fabrics'] as $fabric)
+                                                    <div class="btn-group" style="display: contents !important">
+                                                        <input 
+                                                            type="radio" 
+                                                            class="btn-check" 
+                                                            name="fabric_{{ $index }}" 
+                                                            id="fabric_{{ $index }}_{{ $fabric->id }}" 
+                                                            wire:model="items.{{ $index }}.selected_fabric" 
+                                                            value="{{ $fabric->id }}" 
+                                                            autocomplete="off"
+                                                        />
+                                                        <label 
+                                                            class="btn btn-outline-success" 
+                                                            for="fabric_{{ $index }}_{{ $fabric->id }}" 
+                                                            data-mdb-ripple-init
+                                                        >
+                                                            {{ $fabric->title }}
+                                                        </label>
+                                                    </div>
+                                                @endforeach
+                                            @else
+                                                <p>No fabrics available for this item.</p>
+                                            @endif
+                                        
+                                    
+                                            @if (session()->has('fabrics_error.' . $index)) 
+                                                <div class="alert alert-danger">
+                                                    {{ session('fabrics_error.' . $index) }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                             @endif
-
                         
                         </div>
                     @endforeach
