@@ -78,6 +78,8 @@ class FabricIndex extends Component
         $fabric = Fabric::findOrFail($id);
         $this->fabricId = $fabric->id;
         $this->title = $fabric->title;
+        $this->threshold_price = $fabric->threshold_price;
+        
         $this->image = $fabric->image;
         $this->status = $fabric->status;
     }
