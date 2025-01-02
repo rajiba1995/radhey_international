@@ -35,7 +35,4 @@ class OrderIndex extends Component
         ]);
     }
 
-    public function invoice($id){
-        dd($id);
-    }
 }

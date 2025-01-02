@@ -18,7 +18,7 @@ class FabricIndex extends Component
     use WithFileUploads;
     use WithPagination;
     public $fabrics;
-    public  $image, $title, $status = 1, $fabricId,$product_id;
+    public  $image, $title, $status = 1, $fabricId,$product_id,$threshold_price;
     public $search = '';
 
     public function mount($product_id)
@@ -41,6 +41,11 @@ class FabricIndex extends Component
                 'mimes:jpg,png,jpeg,gif',
                 'unique:fabrics,image', 
             ],
+            'threshold_price' => [
+                'required',
+                'numeric',
+                'min:1',
+            ],
         ]);
         
         if($this->image){
@@ -52,6 +57,7 @@ class FabricIndex extends Component
         Fabric::create([
             'product_id' => $this->product_id,
             'title' => $this->title,
+            'threshold_price' => $this->threshold_price,
             'image' =>  $absolutePath,
             'status' => $this->status,
         ]);
@@ -90,6 +96,12 @@ class FabricIndex extends Component
                 'mimes:jpg,png,jpeg,gif',
                 Rule::unique('fabrics', 'image')->ignore($this->fabricId),
             ],
+            'threshold_price' => [
+                'required',
+                'numeric',
+                'min:1',
+            ],
+
         ]);
         
         $fabric = Fabric::findOrFail($this->fabricId);
@@ -102,6 +114,7 @@ class FabricIndex extends Component
         $fabric->update([
             'product_id' => $this->product_id,
             'title' => $this->title,
+            'threshold_price' => $this->threshold_price,
             'image' => $imagePath,
             'status' => $this->status,
         ]);

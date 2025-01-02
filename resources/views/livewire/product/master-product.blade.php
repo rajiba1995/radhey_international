@@ -71,7 +71,6 @@
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Action
                                             </th>
-                                            <th class="text-secondary opacity-7"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -116,7 +115,7 @@
                                                     @endif>
                                                 </div>
                                             </td>
-                                            <td class="align-middle action_tab">
+                                            <td class="align-middle action_tab text-center">
                                                 <a href="{{route('product.update',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Edit product">
                                                     <span class="material-icons">edit</span>
                                                 </a>
