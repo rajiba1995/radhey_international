@@ -657,20 +657,7 @@ class OrderEdit extends Component
                 session()->flash('error', 'Order not found.');
                 return redirect()->route('admin.order.index');
             }else{
-                // $order->update([
-                //     'customer_id' => $user->id,
-                //     'customer_name' => $name,
-                //     'customer_email' => $email,
-                //     'billing_address' => $billingadd . ', ' . $billingLandmark . ', ' . $billingCity . ', ' . $billingState . ', ' . $billingCountry . ' - ' . $billingPin,
-                //     'shipping_address' => $this->is_billing_shipping_same
-                //         ? $billingadd . ', ' . $billingLandmark . ', ' . $billingCity . ', ' . $billingState . ', ' . $billingCountry . ' - ' . $billingPin
-                //         : $shippingadd . ', ' . $shippingLandmark . ', ' . $shippingCity . ', ' . $shippingState . ', ' . $shippingCountry . ' - ' . $shippingPin,
-                //     'total_amount' => $total_amount,
-                //     'paid_amount' => $paid_amount,
-                //     'remaining_amount' => $remaining_amount,
-                //     'payment_mode' => $payment_mode,
-                //     'last_payment_date' => now(),
-                // ]);
+               
                 $order->customer_id = $user->id;
                 $order->customer_name = $this->name;
                 $order->customer_email = $this->email;

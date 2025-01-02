@@ -87,7 +87,7 @@ class OrderNew extends Component
                 if ($orders->count()) {
                     // If orders are found, show the customer name, phone, and email in search results
                     $this->orders = $orders;
-        // dd($orders);
+                // dd($orders);
                     // Prepend customer details from the first order into search results
                     $customerFromOrder = $orders->first()->customer;
                     // dd($customerFromOrder);
@@ -106,7 +106,7 @@ class OrderNew extends Component
             $this->searchResults = [];
             $this->orders = collect(); 
         }
-      }
+    }
 
     public function addItem()
     {
@@ -125,20 +125,20 @@ class OrderNew extends Component
         // $this->validate();
     }
 
-    // public function addMeasurement($index, $measurement)
-    // {
-    //     // Initialize measurements array if it's not already set for the specific item
-    //     if (!isset($this->items[$index]['measurements'])) {
-    //         $this->items[$index]['measurements'] = [];
-    //     }
+    public function addMeasurement($index, $measurement)
+    {
+        // Initialize measurements array if it's not already set for the specific item
+        if (!isset($this->items[$index]['measurements'])) {
+            $this->items[$index]['measurements'] = [];
+        }
     
-    //     // Add the measurement to the measurements array
-    //     $this->items[$index]['measurements'][$measurement->id] = [
-    //         'title' => $measurement->title,
-    //         'short_code' => $measurement->short_code,
-    //         'value' => '',  // Initialize the value as empty or with a default value
-    //     ];
-    // }
+        // Add the measurement to the measurements array
+        $this->items[$index]['measurements'][$measurement->id] = [
+            'title' => $measurement->title,
+            'short_code' => $measurement->short_code,
+            'value' => '',  // Initialize the value as empty or with a default value
+        ];
+    }
 
     
 
