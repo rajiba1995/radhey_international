@@ -12,13 +12,13 @@ class OrderItem extends Model
     protected $table = 'order_items';
 
     protected $fillable = [
-        'order_id  ',
-        'product_id   ',
-        'collection  ',
-        'fabrics ',
-        'category ',
-        'sub_category ',
-        'product_name ',
+        'order_id',
+        'product_id',
+        'collection',
+        'fabrics',
+        'category',
+        'sub_category',
+        'product_name',
         'price ',
     ];
 
@@ -26,26 +26,32 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Order::class);
     }
-    public function colection()
+    // public function colection()
+    // {
+    //     return $this->belongsTo(Collection::class);
+    // }
+    public function collection()
     {
-        return $this->belongsTo(Collection::class);
+        return $this->belongsTo(Collection::class, 'collection', 'id');
     }
-   
 
     public function measurements()
     {
         return $this->hasMany(OrderMeasurement::class);
     }
 
-    public function collection()
-{
-    return $this->belongsTo(Collection::class, 'collection');
-}
+//     public function collection()
+// {
+//     return $this->belongsTo(Collection::class, 'collection','id');
+// }
 
 public function category()
 {
-    return $this->belongsTo(Category::class, 'category');
+    return $this->belongsTo(Category::class, 'category','id');
 }
-
+public function fabric()
+    {
+        return $this->belongsTo(Fabric::class, 'fabrics','title');
+    }
 
 }
