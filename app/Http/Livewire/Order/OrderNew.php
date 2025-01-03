@@ -504,6 +504,15 @@ class OrderNew extends Component
             $order->last_payment_date = date('Y-m-d H:i:s');
             $order->save();
 
+               // Validate fabric prices before generating the order
+               foreach ($this->items as $item) {
+                   $fabric_data = Fabric::find($item['selected_fabric']);
+                   if ($fabric_data && isset($item['price']) && $item['price'] < $fabric_data->threshold_price) {
+                    session()->flash('error', '🚨 The price for fabric "' . $fabric_data->title . '" cannot be less than its threshold price of ' . $fabric_data->threshold_price . '.');
+                    return;
+                }
+               }
+
             // Save order items and measurements
             foreach ($this->items as $k => $item) {
                 $collection_data = Collection::find($item['collection']);
@@ -514,8 +523,8 @@ class OrderNew extends Component
                 $orderItem = new OrderItem();
                 $orderItem->order_id = $order->id;
                 $orderItem->product_id = $item['product_id'];
-                $orderItem->collection = $collection_data ? $collection_data->id : "";
-                $orderItem->category = $category_data ? $category_data->id : "";
+                $orderItem->collection = $collection_data ? $collection_data->title : "";
+                $orderItem->category = $category_data ? $category_data->title : "";
                 $orderItem->sub_category = $sub_category_data ? $sub_category_data->title : "";
                 $orderItem->product_name = $item['searchproduct'];
                 $orderItem->price = $item['price'];
