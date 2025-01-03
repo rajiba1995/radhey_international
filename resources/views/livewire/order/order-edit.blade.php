@@ -317,6 +317,13 @@
                                     wire:model="items.{{ $index }}.price"
                                     class="form-control form-control-sm border border-1 customer_input text-center @if(session()->has('errorPrice.' . $index)) border-danger @endif @error('items.' . $index . '.price') border-danger  @enderror"
                                     placeholder="Enter Price" value="{{ $item['price'] }}">
+                                    @if(session()->has('errorPrice.' . $index))
+                                        <div class="text-danger">{{ session('errorPrice.' . $index) }}</div>
+                                    @endif
+                                    
+                                    @error('items.' . $index . '.price') 
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror 
                             </div>
 
                             <!-- Delete Button -->

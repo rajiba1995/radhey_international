@@ -211,23 +211,53 @@ class OrderNew extends Component
     
     }
 
+    // public function checkproductPrice($value, $index)
+    // {
+    //     // Remove any non-numeric characters except for the decimal point
+    //     $formattedValue = preg_replace('/[^0-9.]/', '', $value);
+
+    //     // Check if the value is numeric
+    //     if (is_numeric($formattedValue)) {
+    //         // Format the value to two decimal places if it's a valid number
+    //         // $this->items[$index]['price'] = number_format((float)$formattedValue, 2, '.', '');
+    //         session()->forget('errorPrice.' . $index); // Clear any previous error message
+    //     } else {
+    //         // If the value is invalid, reset the price and show an error message
+    //         $this->items[$index]['price'] = 0;
+    //         session()->flash('errorPrice.' . $index, '🚨 Please enter a valid price.');
+    //     }
+    //     $this->updateBillingAmount();  // Update billing amount after checking price
+    // }
+
     public function checkproductPrice($value, $index)
     {
-        // Remove any non-numeric characters except for the decimal point
-        $formattedValue = preg_replace('/[^0-9.]/', '', $value);
+        $selectedFabricId = $this->items[$index]['selected_fabric'] ?? null;
 
-        // Check if the value is numeric
+        if ($selectedFabricId) {
+            $fabricData = Fabric::find($selectedFabricId);
+            if ($fabricData && floatval($value) < floatval($fabricData->threshold_price)) {
+                // Show an error message for threshold price violation
+                session()->flash('errorPrice.' . $index, 
+                    "🚨 The price for fabric '{$fabricData->title}' cannot be less than its threshold price of {$fabricData->threshold_price}.");
+                return;
+            }
+        }
+
+        // Sanitize and validate input value
+        $formattedValue = preg_replace('/[^0-9.]/', '', $value);
         if (is_numeric($formattedValue)) {
-            // Format the value to two decimal places if it's a valid number
-            // $this->items[$index]['price'] = number_format((float)$formattedValue, 2, '.', '');
-            session()->forget('errorPrice.' . $index); // Clear any previous error message
+            // If valid, format to two decimal places and update
+            $this->items[$index]['price'] = number_format((float)$formattedValue, 2, '.', '');
+            session()->forget('errorPrice.' . $index);
         } else {
-            // If the value is invalid, reset the price and show an error message
+            // Reset price and show error for invalid input
             $this->items[$index]['price'] = 0;
             session()->flash('errorPrice.' . $index, '🚨 Please enter a valid price.');
         }
-        $this->updateBillingAmount();  // Update billing amount after checking price
+
+        $this->updateBillingAmount(); // Update billing after validation
     }
+
     public function updateBillingAmount()
     {
         // Recalculate the total billing amount
@@ -505,13 +535,13 @@ class OrderNew extends Component
             $order->save();
 
                // Validate fabric prices before generating the order
-               foreach ($this->items as $item) {
-                   $fabric_data = Fabric::find($item['selected_fabric']);
-                   if ($fabric_data && isset($item['price']) && $item['price'] < $fabric_data->threshold_price) {
-                    session()->flash('error', '🚨 The price for fabric "' . $fabric_data->title . '" cannot be less than its threshold price of ' . $fabric_data->threshold_price . '.');
-                    return;
-                }
-               }
+            //    foreach ($this->items as $item) {
+            //        $fabric_data = Fabric::find($item['selected_fabric']);
+            //        if ($fabric_data && isset($item['price']) && $item['price'] < $fabric_data->threshold_price) {
+            //         session()->flash('error', '🚨 The price for fabric "' . $fabric_data->title . '" cannot be less than its threshold price of ' . $fabric_data->threshold_price . '.');
+            //         return;
+            //     }
+            //    }
 
             // Save order items and measurements
             foreach ($this->items as $k => $item) {

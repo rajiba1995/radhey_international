@@ -151,7 +151,7 @@ class OrderEdit extends Component
         $this->billing_amount =  $this->orders->total_amount;
         $this->remaining_amount =  $this->orders->remaining_amount;
         $this->payment_mode = $this->orders->payment_mode;
-        $this->addItem();
+        // $this->addItem();
     }
 
 
