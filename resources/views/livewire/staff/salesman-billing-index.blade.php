@@ -78,8 +78,8 @@
                                             <button wire:click="destroy({{ $billing->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm" title="Delete">
                                                 <span class="material-icons">delete</span>
                                             </button>
-                                            @if ($billing->no_of_used != $billing->total_count)
-                                                <button wire:click="assignToNewSalesman({{ $billing->id }})" class="btn btn-outline-info btn-sm custom-btn-sm" title="Delete">
+                                            @if ($billing->no_of_used != $billing->total_count )
+                                                <button wire:click="assignToNewSalesman({{ $billing->id }})" class="btn btn-outline-info btn-sm custom-btn-sm" title=" Assigned new Salesman">
                                                     Assigned new Salesman
                                                 </button>
                                             @endif

@@ -372,12 +372,14 @@
                                     @if(session()->has('errorPrice.' . $index)) border-danger @endif 
                                     @error('items.' . $index . '.price') border-danger @enderror"
                                     placeholder="Enter Price">
-                                @if(session()->has('errorPrice.' . $index))
-                                    <div class="text-danger">{{ session('errorPrice.' . $index) }}</div>
-                                @endif
-                                @error('items.' . $index . '.price') 
-                                    <div class="text-danger">{{ $message }}</div>
-                                @enderror
+
+                                    @if(session()->has('errorPrice.' . $index))
+                                        <div class="text-danger">{{ session('errorPrice.' . $index) }}</div>
+                                    @endif
+
+                                    @error('items.' . $index . '.price') 
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                             </div>
 
                             <!-- Delete Button -->

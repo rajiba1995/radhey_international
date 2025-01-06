@@ -20,7 +20,7 @@ class SalesmanBillingIndex extends Component
        $this->billing_id = $billingId;
        $existingBilling = SalesmanBilling::find($billingId);
        if ($existingBilling) {
-           $this->start_no = $existingBilling->total_count + $existingBilling->no_of_used; 
+           $this->start_no = abs(($existingBilling->total_count - $existingBilling->no_of_used)-$existingBilling->end_no); 
            $this->end_no = $existingBilling->end_no; 
            $this->salesman_id = $existingBilling->salesman_id;
        }  
@@ -36,9 +36,10 @@ class SalesmanBillingIndex extends Component
     
         $totalCount = (int)$this->end_no - (int)$this->start_no + 1;
     
-        // $usedCount = SalesmanBilling::where('start_no', '<=', $this->end_no)
-        //                                 ->where('end_no', '>=', $this->start_no)
-        //                                 ->sum('no_of_used');
+        // $usedCount = SalesmanBilling::whereBetween('start_no', [$this->start_no, $this->end_no])
+        //     ->orWhereBetween('end_no', [$this->start_no, $this->end_no])
+        //     ->where('no_of_used','>', 0)
+        //     ->count();
     
         SalesmanBilling::create([
             'salesman_id' => $this->salesman_id,
