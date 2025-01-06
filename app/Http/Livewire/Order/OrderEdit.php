@@ -534,41 +534,32 @@ class OrderEdit extends Component
     public function checkproductPrice($value, $index)
     {
         $selectedFabricId = $this->items[$index]['selected_fabric'] ?? null;
-
+    
         if ($selectedFabricId) {
-            // Fetch fabric data by ID
             $fabricData = Fabric::find($selectedFabricId);
-
-            // Check if fabric exists and validate price
-            if ($fabricData) {
-                if (floatval($value) < floatval($fabricData->threshold_price)) {
-                    // Show error if the price is less than the threshold
-                    session()->flash(
-                        'errorPrice.' . $index, 
-                        "🚨 The price for fabric '{$fabricData->title}' cannot be less than its threshold price of {$fabricData->threshold_price}."
-                    );
-                    return;
-                } else {
-                    // Clear error if price is valid
-                    session()->forget('errorPrice.' . $index);
-                }
+            if ($fabricData && floatval($value) < floatval($fabricData->threshold_price)) {
+                // Error message for threshold price violation
+                session()->flash('errorPrice.' . $index, 
+                    "🚨 The price for fabric '{$fabricData->title}' cannot be less than its threshold price of {$fabricData->threshold_price}.");
+                return;
             }
         }
-
-        // Sanitize and validate the input
+    
+        // Sanitize and validate input value
         $formattedValue = preg_replace('/[^0-9.]/', '', $value);
-
         if (is_numeric($formattedValue)) {
-            // Update the value if valid
-            $this->items[$index]['price'] = $formattedValue;
+            // If valid, format to two decimal places and update
+            $this->items[$index]['price'] =$formattedValue;
+            session()->forget('errorPrice.' . $index);
         } else {
-            // Reset price and show error if invalid
+            // Reset price and show error for invalid input
             $this->items[$index]['price'] = 0;
             session()->flash('errorPrice.' . $index, '🚨 Please enter a valid price.');
         }
-
+    
         $this->updateBillingAmount(); // Update billing after validation
     }
+    
 
 
     public function SameAsMobile(){

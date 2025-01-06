@@ -362,22 +362,23 @@
                             </div>
                             @endif
 
-                              <!-- Price -->
-                                <!-- Price -->
-                                <div class="mb-3 col-md-1">
-                                    <label class="form-label"><strong>Price</strong></label>
-                                    <input type="text" wire:keyup="checkproductPrice($event.target.value, {{ $index }})"
-                                        wire:model="items.{{ $index }}.price"
-                                        class="form-control form-control-sm border border-1 customer_input text-center @if(session()->has('errorPrice.' . $index)) border-danger @endif @error('items.' . $index . '.price') border-danger @enderror"
-                                        placeholder="Enter Price" value="{{ $item['price'] }}">
-                                    @if(session()->has('errorPrice.' . $index))
-                                        <div class="text-danger">{{ session('errorPrice.' . $index) }}</div>
-                                    @endif
-                                    @error('items.' . $index . '.price') 
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror 
-                                </div>
-
+                            <!-- Price -->
+                            <div class="mb-3 col-md-1">
+                                <label class="form-label"><strong>Price</strong></label>
+                                <input type="text"
+                                    wire:keyup="checkproductPrice($event.target.value, {{ $index }})"
+                                    wire:model="items.{{ $index }}.price"
+                                    class="form-control form-control-sm border border-1 customer_input text-center 
+                                    @if(session()->has('errorPrice.' . $index)) border-danger @endif 
+                                    @error('items.' . $index . '.price') border-danger @enderror"
+                                    placeholder="Enter Price">
+                                @if(session()->has('errorPrice.' . $index))
+                                    <div class="text-danger">{{ session('errorPrice.' . $index) }}</div>
+                                @endif
+                                @error('items.' . $index . '.price') 
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
 
                             <!-- Delete Button -->
                             <div class="mb-3 col-md-1" style="margin-top: 19px;">
@@ -386,6 +387,7 @@
                                     <span class="material-icons">delete</span>
                                 </button>
                             </div>
+
 
                         </div>
                     @endforeach
