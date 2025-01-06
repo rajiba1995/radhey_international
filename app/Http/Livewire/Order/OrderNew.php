@@ -247,7 +247,7 @@ class OrderNew extends Component
         $formattedValue = preg_replace('/[^0-9.]/', '', $value);
         if (is_numeric($formattedValue)) {
             // If valid, format to two decimal places and update
-            $this->items[$index]['price'] = number_format((float)$formattedValue, 2, '.', '');
+            $this->items[$index]['price'] =$formattedValue;
             session()->forget('errorPrice.' . $index);
         } else {
             // Reset price and show error for invalid input
@@ -553,8 +553,8 @@ class OrderNew extends Component
                 $orderItem = new OrderItem();
                 $orderItem->order_id = $order->id;
                 $orderItem->product_id = $item['product_id'];
-                $orderItem->collection = $collection_data ? $collection_data->title : "";
-                $orderItem->category = $category_data ? $category_data->title : "";
+                $orderItem->collection = $collection_data ? $collection_data->id : "";
+                $orderItem->category = $category_data ? $category_data->id : "";
                 $orderItem->sub_category = $sub_category_data ? $sub_category_data->title : "";
                 $orderItem->product_name = $item['searchproduct'];
                 $orderItem->price = $item['price'];

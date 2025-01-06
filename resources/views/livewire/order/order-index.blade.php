@@ -4,9 +4,14 @@
             <div class="row">
                 @if(session()->has('message'))
                     <div class="alert alert-success" id="flashMessage">
-                        {{ session('message') }}
+                        @if(is_array(session('message')))
+                            {!! implode('<br>', session('message')) !!}
+                        @else
+                            {{ session('message') }}
+                        @endif
                     </div>
                 @endif
+
                 @if (session('success'))
                     <div class="alert alert-success">
                         {{ session('success') }}

@@ -276,7 +276,7 @@
                                 <select wire:model="items.{{ $index }}.selected_category"
                                     class="form-select form-control-sm border border-1"
                                     wire:change="CategoryWiseProduct($event.target.value, {{ $index }})">
-                                    <option value="" selected hidden>Select Category</option>
+                                    <!-- <option value="" selected hidden>Select Category</option> -->
                                     @foreach ($item['categories'] as $category)
                                     <option value="{{ $category->id }}" {{$item['selected_category']==$category->id?"selected":""}}>{{ $category->title }}</option>
                                     @endforeach
@@ -310,30 +310,7 @@
                                 @endif
                             </div>
 
-                            <!-- Price -->
-                            <div class="mb-3 col-md-1">
-                                <label class="form-label"><strong>Price</strong></label>
-                                <input type="text" wire:keyup="checkproductPrice($event.target.value, {{ $index }})"
-                                    wire:model="items.{{ $index }}.price"
-                                    class="form-control form-control-sm border border-1 customer_input text-center @if(session()->has('errorPrice.' . $index)) border-danger @endif @error('items.' . $index . '.price') border-danger  @enderror"
-                                    placeholder="Enter Price" value="{{ $item['price'] }}">
-                                    @if(session()->has('errorPrice.' . $index))
-                                        <div class="text-danger">{{ session('errorPrice.' . $index) }}</div>
-                                    @endif
-                                    
-                                    @error('items.' . $index . '.price') 
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror 
-                            </div>
-
-                            <!-- Delete Button -->
-                            <div class="mb-3 col-md-1" style="margin-top: 19px;">
-                                <button type="button" class="btn btn-danger btn-sm mb-0"
-                                    wire:click="removeItem({{ $index }})">
-                                    <span class="material-icons">delete</span>
-                                </button>
-                            </div>
-
+                          
                             <!-- Measurements -->
                             @if(isset($item['product_id']))
                             <div class="row">
@@ -384,6 +361,32 @@
                                 </div>
                             </div>
                             @endif
+
+                              <!-- Price -->
+                                <!-- Price -->
+                                <div class="mb-3 col-md-1">
+                                    <label class="form-label"><strong>Price</strong></label>
+                                    <input type="text" wire:keyup="checkproductPrice($event.target.value, {{ $index }})"
+                                        wire:model="items.{{ $index }}.price"
+                                        class="form-control form-control-sm border border-1 customer_input text-center @if(session()->has('errorPrice.' . $index)) border-danger @endif @error('items.' . $index . '.price') border-danger @enderror"
+                                        placeholder="Enter Price" value="{{ $item['price'] }}">
+                                    @if(session()->has('errorPrice.' . $index))
+                                        <div class="text-danger">{{ session('errorPrice.' . $index) }}</div>
+                                    @endif
+                                    @error('items.' . $index . '.price') 
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror 
+                                </div>
+
+
+                            <!-- Delete Button -->
+                            <div class="mb-3 col-md-1" style="margin-top: 19px;">
+                                <button type="button" class="btn btn-danger btn-sm mb-0"
+                                    wire:click="removeItem({{ $index }})">
+                                    <span class="material-icons">delete</span>
+                                </button>
+                            </div>
+
                         </div>
                     @endforeach
 

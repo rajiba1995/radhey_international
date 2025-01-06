@@ -513,23 +513,63 @@ class OrderEdit extends Component
        
     }
 
+    // public function checkproductPrice($value, $index)
+    // {
+    //     // Remove any non-numeric characters except for the decimal point
+    //     $formattedValue = preg_replace('/[^0-9.]/', '', $value);
+
+    //     // Check if the value is numeric
+    //     if (is_numeric($formattedValue)) {
+    //         // Format the value to two decimal places if it's a valid number
+    //         // $this->items[$index]['price'] = number_format((float)$formattedValue, 2, '.', '');
+    //         session()->forget('errorPrice.' . $index); // Clear any previous error message
+    //     } else {
+    //         // If the value is invalid, reset the price and show an error message
+    //         $this->items[$index]['price'] = 0;
+    //         session()->flash('errorPrice.' . $index, '🚨 Please enter a valid price.');
+    //     }
+    //     $this->updateBillingAmount();  // Update billing amount after checking price
+    // }
+
     public function checkproductPrice($value, $index)
     {
-        // Remove any non-numeric characters except for the decimal point
+        $selectedFabricId = $this->items[$index]['selected_fabric'] ?? null;
+
+        if ($selectedFabricId) {
+            // Fetch fabric data by ID
+            $fabricData = Fabric::find($selectedFabricId);
+
+            // Check if fabric exists and validate price
+            if ($fabricData) {
+                if (floatval($value) < floatval($fabricData->threshold_price)) {
+                    // Show error if the price is less than the threshold
+                    session()->flash(
+                        'errorPrice.' . $index, 
+                        "🚨 The price for fabric '{$fabricData->title}' cannot be less than its threshold price of {$fabricData->threshold_price}."
+                    );
+                    return;
+                } else {
+                    // Clear error if price is valid
+                    session()->forget('errorPrice.' . $index);
+                }
+            }
+        }
+
+        // Sanitize and validate the input
         $formattedValue = preg_replace('/[^0-9.]/', '', $value);
 
-        // Check if the value is numeric
         if (is_numeric($formattedValue)) {
-            // Format the value to two decimal places if it's a valid number
-            // $this->items[$index]['price'] = number_format((float)$formattedValue, 2, '.', '');
-            session()->forget('errorPrice.' . $index); // Clear any previous error message
+            // Update the value if valid
+            $this->items[$index]['price'] = $formattedValue;
         } else {
-            // If the value is invalid, reset the price and show an error message
+            // Reset price and show error if invalid
             $this->items[$index]['price'] = 0;
             session()->flash('errorPrice.' . $index, '🚨 Please enter a valid price.');
         }
-        $this->updateBillingAmount();  // Update billing amount after checking price
+
+        $this->updateBillingAmount(); // Update billing after validation
     }
+
 
     public function SameAsMobile(){
         if($this->is_wa_same == 0){
