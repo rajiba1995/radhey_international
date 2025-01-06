@@ -9,10 +9,12 @@ class OrderMeasurement extends Model
 {
     use HasFactory;
 
+    protected $table = 'order_measurements';
+    
     protected $fillable = [
-        'order_item_id  ',
-        'measurement_name ',
-        'measurement_value ',
+        'order_item_id',
+        'measurement_name',
+        'measurement_value',
     ];
     public function orderItem()
     {
@@ -24,5 +26,11 @@ class OrderMeasurement extends Model
         return $this->hasMany(OrderMeasurement::class);
 
 
+    }
+
+    public function measurement()
+    {
+        // Ensure the foreign key and local key are correct
+        return $this->belongsTo(Measurement::class, 'measurement_name', 'title');
     }
 }

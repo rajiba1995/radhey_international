@@ -64,9 +64,9 @@ class OrderEdit extends Component
             $this->items = $this->orders->items->map(function ($item) {
                 $selected_titles = OrderMeasurement::where('order_item_id', $item->id)->pluck('measurement_name')->toArray();
                 $selected_values = OrderMeasurement::where('order_item_id', $item->id)->pluck('measurement_value')->toArray();
-
+               
                 // Map measurements with selected values
-                $measurements = Measurement::where('product_id', $item->product_id)
+                $measurements = Measurement::where('product_id', $item->product_id)->orderBy('position','ASC')
                     ->get()
                     ->map(function ($measurement) use ($selected_titles, $selected_values) {
                         $index = array_search($measurement->title, $selected_titles); // Check if title exists in selected titles
@@ -76,7 +76,7 @@ class OrderEdit extends Component
                             'short_code' => $measurement->short_code,
                             'value' => $index !== false ? $selected_values[$index] : '', // Assign value if title is in selected titles
                         ];
-                    });
+                });
                 return [
                     'product_id' => $item->product_id,
                     'searchproduct' => $item->product_name,
@@ -87,6 +87,7 @@ class OrderEdit extends Component
                     'categories' =>Category::orderBy('title', 'ASC')->where('collection_id', $item->collection)->get(),
                     'sub_category' => $item->sub_category,
                     'selected_fabric' => $item->fabrics,
+                    'fabrics' => Fabric::where('product_id', $item->product_id)->get(),
                     'selected_measurements_title' => $selected_titles,
                     'selected_measurements_value' => $selected_values,
                     'measurements' => $measurements,
@@ -150,7 +151,7 @@ class OrderEdit extends Component
         $this->billing_amount =  $this->orders->total_amount;
         $this->remaining_amount =  $this->orders->remaining_amount;
         $this->payment_mode = $this->orders->payment_mode;
-        $this->addItem();
+        // $this->addItem();
     }
 
 
@@ -512,23 +513,54 @@ class OrderEdit extends Component
        
     }
 
+    // public function checkproductPrice($value, $index)
+    // {
+    //     // Remove any non-numeric characters except for the decimal point
+    //     $formattedValue = preg_replace('/[^0-9.]/', '', $value);
+
+    //     // Check if the value is numeric
+    //     if (is_numeric($formattedValue)) {
+    //         // Format the value to two decimal places if it's a valid number
+    //         // $this->items[$index]['price'] = number_format((float)$formattedValue, 2, '.', '');
+    //         session()->forget('errorPrice.' . $index); // Clear any previous error message
+    //     } else {
+    //         // If the value is invalid, reset the price and show an error message
+    //         $this->items[$index]['price'] = 0;
+    //         session()->flash('errorPrice.' . $index, '🚨 Please enter a valid price.');
+    //     }
+    //     $this->updateBillingAmount();  // Update billing amount after checking price
+    // }
+
     public function checkproductPrice($value, $index)
     {
-        // Remove any non-numeric characters except for the decimal point
+        $selectedFabricId = $this->items[$index]['selected_fabric'] ?? null;
+    
+        if ($selectedFabricId) {
+            $fabricData = Fabric::find($selectedFabricId);
+            if ($fabricData && floatval($value) < floatval($fabricData->threshold_price)) {
+                // Error message for threshold price violation
+                session()->flash('errorPrice.' . $index, 
+                    "🚨 The price for fabric '{$fabricData->title}' cannot be less than its threshold price of {$fabricData->threshold_price}.");
+                return;
+            }
+        }
+    
+        // Sanitize and validate input value
         $formattedValue = preg_replace('/[^0-9.]/', '', $value);
-
-        // Check if the value is numeric
         if (is_numeric($formattedValue)) {
-            // Format the value to two decimal places if it's a valid number
-            // $this->items[$index]['price'] = number_format((float)$formattedValue, 2, '.', '');
-            session()->forget('errorPrice.' . $index); // Clear any previous error message
+            // If valid, format to two decimal places and update
+            $this->items[$index]['price'] =$formattedValue;
+            session()->forget('errorPrice.' . $index);
         } else {
-            // If the value is invalid, reset the price and show an error message
+            // Reset price and show error for invalid input
             $this->items[$index]['price'] = 0;
             session()->flash('errorPrice.' . $index, '🚨 Please enter a valid price.');
         }
-        $this->updateBillingAmount();  // Update billing amount after checking price
+    
+        $this->updateBillingAmount(); // Update billing after validation
     }
+    
+
 
     public function SameAsMobile(){
         if($this->is_wa_same == 0){
@@ -549,15 +581,6 @@ class OrderEdit extends Component
 
         try {
 
-                // 'customer_id' => $user->id,
-               
-
-
-
-            // Retrieve the existing order
-            // $order = Order::findOrFail($this->orders->id);
-
-            // Calculate the total amount
             $total_amount = array_sum(array_column($this->items, 'price'));
             if ($this->paid_amount > $total_amount) {
                 session()->flash('error', '🚨 The paid amount cannot exceed the total billing amount.');
@@ -677,41 +700,69 @@ class OrderEdit extends Component
             // dd($this->orders);
         // dd($order);
             // Update order items
-            $order = Order::with('items')->find($this->orders->id);
-        // dd($order);
-            // $existingItemIds = $order->items->pluck('id')->toArray();
-        // dd($existingItemIds);
-            // $newItemIds = array_column($this->items, 'id');
+            // $order = Order::with('items')->find($this->orders->id);
+          // Update or create the order items
 
-            // Delete removed items
-            // $itemsToDelete = array_diff($existingItemIds, $newItemIds);
-            // OrderItem::destroy($itemsToDelete);
+            foreach ($this->items as $item) {
+                // $orderItem = OrderItem::find($item['product_id']);
+                $orderItem = OrderItem::where('order_id', $order->id)->where('product_id', $item['product_id'])->first();
+                // dd($orderItem->id);
+                if ($orderItem) {
+                    // dd('test');
+                    $orderItem->product_id = $item['product_id'];
+                    $orderItem->price = $item['price'];
+                    $orderItem->collection = $item['selected_collection'];
+                    $orderItem->category = $item['selected_category'];
+                    // $orderItem->sub_category = $item['sub_category'];
+                    $orderItem->fabrics = $item['selected_fabric'];
+                    $orderItem->save();
+                    // dd($orderItem);
+                        // dd($orderItem);
+                    // Update or create measurements for the order item
+                    // dd($item['measurements']);
+                    // foreach ($item['measurements'] as $measurement) {
+                    //     // dd($orderItem->id);
+                    //     OrderMeasurement::updateOrCreate(
+                    //             ['order_item_id' => $orderItem->id, 'measurement_name' => $measurement['title']],
+                    //             ['measurement_value' => $measurement['value']]
+                    //         );
+                           
+                    //     }
+                       
+                    // }
 
-            // foreach ($this->items as $item) {
-            //     $orderItem = $order->items()->updateOrCreate(
-            //         ['id' => $item['id'] ?? null],
-            //         [
-            //             'product_id' => $item['product_id'],
-            //             'product_name' => $item['searchproduct'],
-            //             'price' => $item['price'],
-            //             'collection' => $item['collection'] ? Collection::find($item['collection'])->id : '',
-            //             'category' => $item['category'] ? Category::find($item['category'])->id : '',
-            //             'sub_category' => $item['sub_category'] ? SubCategory::find($item['sub_category'])->title : '',
-            //             'fabrics' => $item['selected_fabric'] ? Fabric::find($item['selected_fabric'])->title : '',
-            //         ]
-            //     );
+                    foreach ($item['measurements'] as $measurement) {
+                        // Manually check if the OrderMeasurement exists
+                        $orderMeasurement = OrderMeasurement::where('order_item_id', $orderItem->id)
+                                                            ->where('measurement_name', $measurement['title'])
+                                                            ->first();
+                        
+                        if ($orderMeasurement) {
+                            // If the OrderMeasurement exists, update it
+                            $orderMeasurement->measurement_value = $measurement['value'];
+                            $orderMeasurement->measurement_name = $measurement['title'];
+                            $orderMeasurement->save();
+                            // dd($orderMeasurement);
+                        } else {
+                            // If the OrderMeasurement doesn't exist, create a new one
+                           $data= OrderMeasurement::create([
+                                'order_item_id' => $orderItem->id,
+                                'measurement_name' => $measurement['title'],
+                                'measurement_value' => $measurement['value'],
+                            ]);
+                            // dd($data);
+                        }
+                    }
+                    $orderItem = OrderItem::where('order_id', $order->id)->where('product_id', $item['product_id'])->first();
 
-            //     // Update measurements
-            //     if (isset($item['get_measurements']) && count($item['get_measurements']) > 0) {
-            //         foreach ($item['get_measurements'] as $mindex => $measurement) {
-            //             $measurementData = Measurement::find($mindex);
-            //             $orderItem->measurements()->updateOrCreate(
-            //                 ['measurement_name' => $measurementData ? $measurementData->title : ''],
-            //                 ['measurement_value' => $measurement['value']]
-            //             );
-            //         }
-            //     }
-            // }
+                        // $orderItem->update([
+                        //     'selected_fabric' => $item['selected_fabric'], // Save selected fabric ID
+                        // ]);
+    
+                    
+                    // dd($data);
+                }
+            }
 
             DB::commit();
 
@@ -719,6 +770,7 @@ class OrderEdit extends Component
             return redirect()->route('admin.order.index');
         } catch (\Exception $e) {
             DB::rollBack();
+            dd( $e->getMessage());
             \Log::error('Error updating order: ' . $e->getMessage());
             session()->flash('error', '🚨 Something went wrong. The operation has been rolled back.');
         }

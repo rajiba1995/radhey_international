@@ -211,23 +211,53 @@ class OrderNew extends Component
     
     }
 
+    // public function checkproductPrice($value, $index)
+    // {
+    //     // Remove any non-numeric characters except for the decimal point
+    //     $formattedValue = preg_replace('/[^0-9.]/', '', $value);
+
+    //     // Check if the value is numeric
+    //     if (is_numeric($formattedValue)) {
+    //         // Format the value to two decimal places if it's a valid number
+    //         // $this->items[$index]['price'] = number_format((float)$formattedValue, 2, '.', '');
+    //         session()->forget('errorPrice.' . $index); // Clear any previous error message
+    //     } else {
+    //         // If the value is invalid, reset the price and show an error message
+    //         $this->items[$index]['price'] = 0;
+    //         session()->flash('errorPrice.' . $index, '🚨 Please enter a valid price.');
+    //     }
+    //     $this->updateBillingAmount();  // Update billing amount after checking price
+    // }
+
     public function checkproductPrice($value, $index)
     {
-        // Remove any non-numeric characters except for the decimal point
-        $formattedValue = preg_replace('/[^0-9.]/', '', $value);
+        $selectedFabricId = $this->items[$index]['selected_fabric'] ?? null;
 
-        // Check if the value is numeric
+        if ($selectedFabricId) {
+            $fabricData = Fabric::find($selectedFabricId);
+            if ($fabricData && floatval($value) < floatval($fabricData->threshold_price)) {
+                // Show an error message for threshold price violation
+                session()->flash('errorPrice.' . $index, 
+                    "🚨 The price for fabric '{$fabricData->title}' cannot be less than its threshold price of {$fabricData->threshold_price}.");
+                return;
+            }
+        }
+
+        // Sanitize and validate input value
+        $formattedValue = preg_replace('/[^0-9.]/', '', $value);
         if (is_numeric($formattedValue)) {
-            // Format the value to two decimal places if it's a valid number
-            // $this->items[$index]['price'] = number_format((float)$formattedValue, 2, '.', '');
-            session()->forget('errorPrice.' . $index); // Clear any previous error message
+            // If valid, format to two decimal places and update
+            $this->items[$index]['price'] =$formattedValue;
+            session()->forget('errorPrice.' . $index);
         } else {
-            // If the value is invalid, reset the price and show an error message
+            // Reset price and show error for invalid input
             $this->items[$index]['price'] = 0;
             session()->flash('errorPrice.' . $index, '🚨 Please enter a valid price.');
         }
-        $this->updateBillingAmount();  // Update billing amount after checking price
+
+        $this->updateBillingAmount(); // Update billing after validation
     }
+
     public function updateBillingAmount()
     {
         // Recalculate the total billing amount
@@ -268,18 +298,69 @@ class OrderNew extends Component
 
     
 
+    // public function selectProduct($index, $name, $id)
+    // {
+    //     $this->items[$index]['searchproduct'] = $name;
+    //     $this->items[$index]['product_id'] = $id;
+    //     $this->items[$index]['products'] = [];
+    //     $this->items[$index]['measurements'] = Measurement::where('product_id', $id)->where('status', 1)->orderBy('position','ASC')->get();
+    //     $this->items[$index]['fabrics'] = Fabric::where('product_id', $id)->where('status', 1)->get();
+        
+    //     session()->forget('measurements_error.' . $index);
+    //     if (count($this->items[$index]['measurements']) == 0) {
+    //         session()->flash('measurements_error.' . $index, '🚨 Oops! Measurement data not added for this product.');
+    //         return;
+    //     }
+    // }
+
     public function selectProduct($index, $name, $id)
     {
+        // Set the selected product details
         $this->items[$index]['searchproduct'] = $name;
         $this->items[$index]['product_id'] = $id;
         $this->items[$index]['products'] = [];
-        $this->items[$index]['measurements'] = Measurement::where('product_id', $id)->where('status', 1)->orderBy('position','ASC')->get();
-        $this->items[$index]['fabrics'] = Fabric::where('product_id', $id)->where('status', 1)->get();
         
+        // Get the measurements available for the selected product
+        $this->items[$index]['measurements'] = Measurement::where('product_id', $id)
+                                                            ->where('status', 1)
+                                                            ->orderBy('position','ASC')
+                                                            ->get();
+        // Get the fabrics available for the selected product
+        $this->items[$index]['fabrics'] = Fabric::where('product_id', $id)
+                                                  ->where('status', 1)
+                                                  ->get();
+        
+        // Clear any previous measurement error session
         session()->forget('measurements_error.' . $index);
+        
+        // Check if there are no measurements for the product
         if (count($this->items[$index]['measurements']) == 0) {
             session()->flash('measurements_error.' . $index, '🚨 Oops! Measurement data not added for this product.');
             return;
+        }
+    
+        // Auto-populate measurements if the user has ordered this product before
+        $this->populatePreviousOrderMeasurements($index, $id);
+        // dd( $this->populatePreviousOrderMeasurements($index, $id));
+    }
+    public function populatePreviousOrderMeasurements($index, $productId)
+    {
+        // Find previous order for this customer that includes the selected product
+        $previousOrder = OrderItem::where('product_id', $productId)
+                                  ->whereHas('order', function($query) {
+                                      $query->where('customer_id', $this->customer_id); // Ensure the same customer
+                                  })
+                                  ->latest()
+                                  ->first(); // Get the most recent order for the product
+        if ($previousOrder) {
+            // Get the measurements related to this previous order's product
+            $previousMeasurements = OrderMeasurement::where('order_item_id', $previousOrder->id)->get();
+            foreach ($previousMeasurements as $previousMeasurement) {
+                // $this->items[$index]['get_measurements'][$previousMeasurement->measurement_name]['value'] = $previousMeasurement->measurement_value;
+    
+                $measurement = $previousMeasurement->measurement; // This will return the related Measurement model
+                $this->items[$index]['get_measurements'][$measurement->id]['value'] = $previousMeasurement->measurement_value;
+            }
         }
     }
 
@@ -454,13 +535,13 @@ class OrderNew extends Component
             $order->save();
 
                // Validate fabric prices before generating the order
-               foreach ($this->items as $item) {
-                   $fabric_data = Fabric::find($item['selected_fabric']);
-                   if ($fabric_data && isset($item['price']) && $item['price'] < $fabric_data->threshold_price) {
-                    session()->flash('error', '🚨 The price for fabric "' . $fabric_data->title . '" cannot be less than its threshold price of ' . $fabric_data->threshold_price . '.');
-                    return;
-                }
-               }
+            //    foreach ($this->items as $item) {
+            //        $fabric_data = Fabric::find($item['selected_fabric']);
+            //        if ($fabric_data && isset($item['price']) && $item['price'] < $fabric_data->threshold_price) {
+            //         session()->flash('error', '🚨 The price for fabric "' . $fabric_data->title . '" cannot be less than its threshold price of ' . $fabric_data->threshold_price . '.');
+            //         return;
+            //     }
+            //    }
 
             // Save order items and measurements
             foreach ($this->items as $k => $item) {
@@ -472,8 +553,8 @@ class OrderNew extends Component
                 $orderItem = new OrderItem();
                 $orderItem->order_id = $order->id;
                 $orderItem->product_id = $item['product_id'];
-                $orderItem->collection = $collection_data ? $collection_data->title : "";
-                $orderItem->category = $category_data ? $category_data->title : "";
+                $orderItem->collection = $collection_data ? $collection_data->id : "";
+                $orderItem->category = $category_data ? $category_data->id : "";
                 $orderItem->sub_category = $sub_category_data ? $sub_category_data->title : "";
                 $orderItem->product_name = $item['searchproduct'];
                 $orderItem->price = $item['price'];

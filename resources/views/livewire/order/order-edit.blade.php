@@ -256,6 +256,7 @@
                                 <select wire:model="items.{{ $index }}.selected_collection"
                                     wire:change="GetCategory($event.target.value, {{ $index }})"
                                     class="form-control border border-2 p-2 form-control-sm">
+                                    <option value="" selected hidden>Select collection</option>
                                     @foreach($collections as $citems)
                                     <option value="{{ $citems->id }}" {{$item['selected_collection']==$citems->title?"selected":""}}>{{ ucwords($citems->title) }} 
                                         @if($citems->short_code)
@@ -275,6 +276,7 @@
                                 <select wire:model="items.{{ $index }}.selected_category"
                                     class="form-select form-control-sm border border-1"
                                     wire:change="CategoryWiseProduct($event.target.value, {{ $index }})">
+                                    <!-- <option value="" selected hidden>Select Category</option> -->
                                     @foreach ($item['categories'] as $category)
                                     <option value="{{ $category->id }}" {{$item['selected_category']==$category->id?"selected":""}}>{{ $category->title }}</option>
                                     @endforeach
@@ -308,13 +310,74 @@
                                 @endif
                             </div>
 
+                          
+                            <!-- Measurements -->
+                            @if(isset($item['product_id']))
+                            <div class="row">
+                                <div class="col-12 col-md-6 mb-2 mb-md-0 measurement_div">
+                                    <h6 class="badge bg-danger custom_success_badge">Measurements</h6>
+                                    <div class="row">
+                                        
+                                    @if(isset($items[$index]['measurements']) && count($items[$index]['measurements']) > 0)
+                                        @foreach ($items[$index]['measurements'] as $key => $measurement)
+                                            <div class="col-md-3">
+                                                <label>
+                                                    {{ $measurement['title'] }}
+                                                    <strong>[{{ $measurement['short_code'] }}]</strong>
+                                                </label>
+                                                <input 
+                                                    type="text" 
+                                                    class="form-control form-control-sm border border-1 customer_input text-center measurement_input"
+                                                    wire:model="items.{{ $index }}.measurements.{{ $key }}.value">
+                                                @error("items.{$index}.measurements.{$key}.value")
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        @endforeach
+                                    @endif
+
+                                    
+                                    </div>
+                                </div>
+                                <!-- Fabrics -->
+                                <div class="col-12 col-md-6 mb-2 mb-md-0">
+                                    <h6 class="badge bg-danger custom_success_badge">Fabrics</h6>
+                                    <div class="row mx-2">
+                                        @forelse ($item['fabrics'] ?? [] as $fabric)
+                                        <div class="btn-group" style="display: contents !important">
+                                            <input type="radio" class="btn-check" name="fabric_{{ $index }}"
+                                                id="fabric_{{ $index }}_{{ $fabric->id }}"
+                                                wire:model="items.{{ $index }}.selected_fabric" value="{{ $fabric->title }}"
+                                                @checked($item['selected_fabric'] == $fabric->title)>
+                                            <label class="btn btn-outline-success"
+                                                for="fabric_{{ $index }}_{{ $fabric->id }}" data-mdb-ripple-init>
+                                                {{ $fabric->title }}
+                                            </label>
+                                        </div>
+                                        @empty
+                                        <p>No fabrics available for this item.</p>
+                                        @endforelse
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+
                             <!-- Price -->
                             <div class="mb-3 col-md-1">
                                 <label class="form-label"><strong>Price</strong></label>
-                                <input type="text" wire:keyup="checkproductPrice($event.target.value, {{ $index }})"
+                                <input type="text"
+                                    wire:keyup="checkproductPrice($event.target.value, {{ $index }})"
                                     wire:model="items.{{ $index }}.price"
-                                    class="form-control form-control-sm border border-1 customer_input text-center @if(session()->has('errorPrice.' . $index)) border-danger @endif @error('items.' . $index . '.price') border-danger  @enderror"
-                                    placeholder="Enter Price" value="{{ $item['price'] }}">
+                                    class="form-control form-control-sm border border-1 customer_input text-center 
+                                    @if(session()->has('errorPrice.' . $index)) border-danger @endif 
+                                    @error('items.' . $index . '.price') border-danger @enderror"
+                                    placeholder="Enter Price">
+                                @if(session()->has('errorPrice.' . $index))
+                                    <div class="text-danger">{{ session('errorPrice.' . $index) }}</div>
+                                @endif
+                                @error('items.' . $index . '.price') 
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <!-- Delete Button -->
@@ -325,56 +388,7 @@
                                 </button>
                             </div>
 
-                            <!-- Measurements -->
-                            @if(isset($item['product_id']))
-                            <div class="row">
-                                <div class="col-12 col-md-6 mb-2 mb-md-0 measurement_div">
-                                    <h6 class="badge bg-danger custom_success_badge">Measurements</h6>
-                                    <div class="row">
-                                        @if(isset($items[$index]['measurements']) && count($items[$index]['measurements']) > 0)
-                                            @foreach ($items[0]['measurements'] as $measurement)
-                                                <div class="col-md-3">
-                                                    <label>{{ $measurement['title'] }}
-                                                        <strong>[{{ $measurement['short_code'] }}]</strong>
-                                                    </label>
-                                                    <input 
-                                                        type="text" 
-                                                        class="form-control form-control-sm border border-1 customer_input text-center measurement_input" 
-                                                        wire:model="items.0.measurements.{{ $measurement['id'] }}.value">
-                                                    @error("items.0.measurements.{$measurement['id']}.value")
-                                                        <div class="text-danger">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-                                            @endforeach
-                                        @endif
-                                    
-                                    </div>
-                                </div>
-                                <!-- Fabrics -->
-                                <div class="col-12 col-md-6 mb-2 mb-md-0">
-                                    <h6 class="badge bg-danger custom_success_badge">Fabrics</h6>
-                                    <div class="row mx-2">
-                                        @if(isset($item['fabrics']) && count($item['fabrics']) > 0)
-                                        @foreach ($item['fabrics'] as $fabric)
-                                        <div class="btn-group" style="display: contents !important">
-                                            <input type="radio" class="btn-check" name="fabric_{{ $index }}"
-                                                id="fabric_{{ $index }}_{{ $fabric->id }}"
-                                                wire:model="items.{{ $index }}.selected_fabric" value="{{ $fabric->id }}"
-                                                @if($item['selected_fabric']==$fabric->id) checked @endif
-                                            />
-                                            <label class="btn btn-outline-success"
-                                                for="fabric_{{ $index }}_{{ $fabric->id }}" data-mdb-ripple-init>
-                                                {{ $fabric->title }}
-                                            </label>
-                                        </div>
-                                        @endforeach
-                                        @else
-                                        <p>No fabrics available for this item.</p>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                            @endif
+
                         </div>
                     @endforeach
 
