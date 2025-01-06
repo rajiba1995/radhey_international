@@ -13,18 +13,70 @@ class SalesmanBillingIndex extends Component
     public $end_no;
     public $billing_id;
     public $numberLength;
+    public $assign_new_salesman = false;
+
+    public function assignToNewSalesman($billingId){
+       $this->assign_new_salesman = true;
+       $this->billing_id = $billingId;
+       $existingBilling = SalesmanBilling::find($billingId);
+       if ($existingBilling) {
+           $this->start_no = $existingBilling->total_count + $existingBilling->no_of_used; 
+           $this->end_no = $existingBilling->end_no; 
+           $this->salesman_id = $existingBilling->salesman_id;
+       }  
+    }
+    
+    public function SubmitNewSalesman() {
+        $this->validate([
+            'salesman_id' => 'required|exists:users,id',
+            'start_no' => 'required|numeric',
+            'end_no' => 'required|numeric|gt:start_no',
+        ]);
+        
+    
+        $totalCount = (int)$this->end_no - (int)$this->start_no + 1;
+    
+        // $usedCount = SalesmanBilling::where('start_no', '<=', $this->end_no)
+        //                                 ->where('end_no', '>=', $this->start_no)
+        //                                 ->sum('no_of_used');
+    
+        SalesmanBilling::create([
+            'salesman_id' => $this->salesman_id,
+            'start_no' => $this->start_no,
+            'end_no' => $this->end_no,
+            'total_count' => $totalCount,
+            'no_of_used' => 0,
+        ]);
+    
+       // Update the existing billing record
+        $existingBilling = SalesmanBilling::find($this->billing_id);
+        if ($existingBilling) {
+            $updatedEndNo = $this->start_no - 1;
+            $updatedTotalCount = $updatedEndNo - $existingBilling->start_no + 1;
+
+            $existingBilling->update([
+                'end_no' => $updatedEndNo,
+                'total_count' => $updatedTotalCount,
+            ]);
+        }
+    
+        // Reset fields and show success message
+        $this->reset(['salesman_id', 'start_no', 'end_no']);
+        session()->flash('message', 'Salesman billing number successfully assigned!');
+    }
+    
 
     public function submit(){
         $this->validate([
             'salesman_id' => [
                 'required',
                 'exists:users,id',
-                function ($attribute, $value, $fail) {
-                    $exists = SalesmanBilling::where('salesman_id', $value)->exists();
-                    if ($exists) {
-                        $fail('A billing range already exists for the selected salesman.');
-                    }
-                },
+                // function ($attribute, $value, $fail) {
+                //     $exists = SalesmanBilling::where('salesman_id', $value)->exists();
+                //     // if ($exists) {
+                //     //     $fail('A billing range already exists for the selected salesman.');
+                //     // }
+                // },
             ],
             'start_no' => [
                 'required',

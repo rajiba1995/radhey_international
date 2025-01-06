@@ -58,7 +58,7 @@ class StaffUpdate extends Component
         $this->validate([
             'designation' => 'required',
             'person_name' => 'required|string|max:255',
-            'email' => 'nullable|email',
+            'email' => 'nullable|email,' . Rule::unique('users', 'email')->ignore($this->staff->id),
             'mobile' => [
                 'required',
                 'regex:/^\d{' . env('VALIDATE_MOBILE', 8) . ',}$/',
@@ -67,7 +67,7 @@ class StaffUpdate extends Component
                 'required',
                 'regex:/^\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/',
             ],
-            'aadhaar_number' => 'required|numeric',
+            'aadhaar_number' => 'nullable|numeric',
             'image' => 'nullable|max:2048',
             'user_id_front' => 'nullable|max:2048',
             'user_id_back' => 'nullable|max:2048',
