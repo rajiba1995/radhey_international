@@ -9,10 +9,12 @@ class OrderMeasurement extends Model
 {
     use HasFactory;
 
+    protected $table = 'order_measurements';
+    
     protected $fillable = [
-        'order_item_id  ',
-        'measurement_name ',
-        'measurement_value ',
+        'order_item_id',
+        'measurement_name',
+        'measurement_value',
     ];
     public function orderItem()
     {

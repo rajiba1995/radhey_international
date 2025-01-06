@@ -317,6 +317,13 @@
                                     wire:model="items.{{ $index }}.price"
                                     class="form-control form-control-sm border border-1 customer_input text-center @if(session()->has('errorPrice.' . $index)) border-danger @endif @error('items.' . $index . '.price') border-danger  @enderror"
                                     placeholder="Enter Price" value="{{ $item['price'] }}">
+                                    @if(session()->has('errorPrice.' . $index))
+                                        <div class="text-danger">{{ session('errorPrice.' . $index) }}</div>
+                                    @endif
+                                    
+                                    @error('items.' . $index . '.price') 
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror 
                             </div>
 
                             <!-- Delete Button -->
@@ -359,23 +366,20 @@
                                 <div class="col-12 col-md-6 mb-2 mb-md-0">
                                     <h6 class="badge bg-danger custom_success_badge">Fabrics</h6>
                                     <div class="row mx-2">
-                                        @if(isset($item['fabrics']) && count($item['fabrics']) > 0)
-                                        @foreach ($item['fabrics'] as $fabric)
+                                        @forelse ($item['fabrics'] ?? [] as $fabric)
                                         <div class="btn-group" style="display: contents !important">
                                             <input type="radio" class="btn-check" name="fabric_{{ $index }}"
                                                 id="fabric_{{ $index }}_{{ $fabric->id }}"
-                                                wire:model="items.{{ $index }}.selected_fabric" value="{{ $fabric->id }}"
-                                                @if($item['selected_fabric']==$fabric->id) checked @endif
-                                            />
+                                                wire:model="items.{{ $index }}.selected_fabric" value="{{ $fabric->title }}"
+                                                @checked($item['selected_fabric'] == $fabric->title)>
                                             <label class="btn btn-outline-success"
                                                 for="fabric_{{ $index }}_{{ $fabric->id }}" data-mdb-ripple-init>
                                                 {{ $fabric->title }}
                                             </label>
                                         </div>
-                                        @endforeach
-                                        @else
+                                        @empty
                                         <p>No fabrics available for this item.</p>
-                                        @endif
+                                        @endforelse
                                     </div>
                                 </div>
                             </div>
