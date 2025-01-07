@@ -268,7 +268,7 @@ class OrderNew extends Component
     public function checkproductPrice($value, $index)
     {
         $selectedFabricId = $this->items[$index]['selected_fabric'] ?? null;
-
+// dd($selectedFabricId);
         if ($selectedFabricId) {
             $fabricData = Fabric::find($selectedFabricId);
             if ($fabricData && floatval($value) < floatval($fabricData->threshold_price)) {
@@ -594,7 +594,7 @@ class OrderNew extends Component
                 $orderItem->sub_category = $sub_category_data ? $sub_category_data->title : "";
                 $orderItem->product_name = $item['searchproduct'];
                 $orderItem->price = $item['price'];
-                $orderItem->fabrics = $fabric_data ? $fabric_data->title : "";
+                $orderItem->fabrics = $fabric_data ? $fabric_data->id : "";
                 $orderItem->save();
 
                 if (isset($item['get_measurements']) && count($item['get_measurements']) > 0) {

@@ -41,18 +41,18 @@ class OrderItem extends Model
     }
     
 
-//     public function collection()
-// {
-//     return $this->belongsTo(Collection::class, 'collection','id');
-// }
+    //     public function collection()
+    // {
+    //     return $this->belongsTo(Collection::class, 'collection','id');
+    // }
 
-public function category()
-{
-    return $this->belongsTo(Category::class, 'category','id');
-}
-public function fabric()
+    public function category()
     {
-        return $this->belongsTo(Fabric::class, 'fabrics','title');
+        return $this->belongsTo(Category::class, 'category','id');
+    }
+    public function fabric()
+    {
+        return $this->belongsTo(Fabric::class, 'fabrics','id');
     }
 
 }

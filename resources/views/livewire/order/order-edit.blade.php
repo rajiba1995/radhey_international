@@ -347,7 +347,7 @@
                                         <div class="btn-group" style="display: contents !important">
                                             <input type="radio" class="btn-check" name="fabric_{{ $index }}"
                                                 id="fabric_{{ $index }}_{{ $fabric->id }}"
-                                                wire:model="items.{{ $index }}.selected_fabric" value="{{ $fabric->title }}"
+                                                wire:model="items.{{ $index }}.selected_fabric" value="{{ $fabric->id }}"
                                                 @checked($item['selected_fabric'] == $fabric->title)>
                                             <label class="btn btn-outline-success"
                                                 for="fabric_{{ $index }}_{{ $fabric->id }}" data-mdb-ripple-init>

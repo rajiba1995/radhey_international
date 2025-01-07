@@ -2,16 +2,12 @@
     <div class="card my-4">
         <div class="card-header pb-0">
             <div class="row">
-                @if(session()->has('message'))
-                    <div class="alert alert-success" id="flashMessage">
-                        @if(is_array(session('message')))
-                            {!! implode('<br>', session('message')) !!}
-                        @else
-                            {{ session('message') }}
-                        @endif
+               
+                @if (session('message'))
+                    <div class="alert alert-success">
+                        {{ session('message') }}
                     </div>
                 @endif
-
                 @if (session('success'))
                     <div class="alert alert-success">
                         {{ session('success') }}
@@ -67,7 +63,7 @@
                                 <a href="{{route('admin.order.edit', $order->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Edit product">
                                     <span class="material-icons">edit</span>
                                 </a>
-                                <a href="#" class="btn btn-outline-info btn-sm custom-btn-sm">Payment History</a>
+                                <a href="{{route('admin.order.ledger.view', $order->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm">Ledger History</a>
                                 <a href="{{route('admin.order.invoice', $order->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm">Invoice</a>
                             </td>
                         </tr>
