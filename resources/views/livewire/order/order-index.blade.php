@@ -65,7 +65,7 @@
                                 <a href="{{route('admin.order.edit', $order->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Edit product">
                                     <span class="material-icons">edit</span>
                                 </a>
-                                <a href="#" class="btn btn-outline-info btn-sm custom-btn-sm">Payment History</a>
+                                <a href="{{route('admin.order.ledger.view', $order->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm">Ledger History</a>
                                 <a href="{{route('admin.order.invoice', $order->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm">Invoice</a>
                             </td>
                         </tr>

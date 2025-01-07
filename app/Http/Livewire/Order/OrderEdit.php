@@ -77,7 +77,7 @@ class OrderEdit extends Component
                             'value' => $index !== false ? $selected_values[$index] : '', // Assign value if title is in selected titles
                         ];
                 });
-                $fabrics = Fabric::where('product_id', $item->product_id)->get();
+                // $fabrics = Fabric::where('product_id', $item->product_id)->get();
                 return [
                     'product_id' => $item->product_id,
                     'searchproduct' => $item->product_name,
@@ -86,12 +86,12 @@ class OrderEdit extends Component
                     'collection' => Collection::orderBy('title', 'ASC')->get(),
                     'selected_category' => $item->category,
                     'categories' =>Category::orderBy('title', 'ASC')->where('collection_id', $item->collection)->get(),
-                    'sub_category' => $item->sub_category,
-                    // 'selected_fabric' => $item->fabrics,
-                    // 'fabrics' => Fabric::where('product_id', $item->product_id)->get(),
+                    // 'sub_category' => $item->sub_category,
+                    'selected_fabric' => $item->fabrics,
+                    'fabrics' => Fabric::where('product_id', $item->product_id)->get(),
 
-                    'selected_fabric' => $item->fabrics, // Use fabric_id for selection
-                    'fabrics' => $fabrics,
+                    // 'selected_fabric' => $item->fabrics, // Use fabric_id for selection
+                    // 'fabrics' => $fabrics,
                     'selected_measurements_title' => $selected_titles,
                     'selected_measurements_value' => $selected_values,
                     'measurements' => $measurements,
