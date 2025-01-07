@@ -87,17 +87,17 @@
         <div class="d-flex justify-content-end align-items-center m-4 p-1 mb-0 pb-0">
           <div class="order-calculations">
             <div class="d-flex justify-content-start gap-4 mb-2">
-              <span class="w-px-100 text-heading">Subtotal:</span>
-              <h6 class="mb-0">$5000.25</h6>
+              <span class="w-px-100 text-heading">Total Amount:</span>
+              <h6 class="mb-0">{{number_format($item['totalAmount'], 2)}}</h6>
             </div>
             <div class="d-flex justify-content-start gap-4 mb-2">
-              <span class="w-px-100 text-heading">Discount:</span>
-              <h6 class="mb-0">$00.00</h6>
+              <span class="w-px-100 text-heading">Remaining Amount:</span>
+              <h6 class="mb-0">{{number_format($item['remainingAmount'], 2)}}</h6>
             </div>
-            <div class="d-flex justify-content-start gap-4">
+            {{-- <div class="d-flex justify-content-start gap-4">
               <h6 class="w-px-100 mb-0">Total:</h6>
-              <h6 class="mb-0">$5100.25</h6>
-            </div>
+              <h6 class="mb-0">{{ number_format($order->total_amount - $order->remaining_amount, 2) }}</h6></h6>
+            </div> --}}
           </div>
         </div>
       </div>
