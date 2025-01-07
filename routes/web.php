@@ -19,7 +19,7 @@ use App\Http\Livewire\StaticSignUp;
 use App\Http\Livewire\Tables;
 use App\Http\Livewire\{VirtualReality,CustomerIndex};
 use GuzzleHttp\Middleware;
-use App\Http\Livewire\Order\{OrderIndex, OrderNew, OrderInvoice,OrderEdit,OrderView};
+use App\Http\Livewire\Order\{OrderIndex, OrderNew, OrderInvoice,OrderEdit,OrderView,LedgerView};
 use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory,FabricIndex,CollectionIndex,GalleryIndex};
 use App\Http\Livewire\Staff\{DesignationIndex,StaffIndex,StaffAdd,StaffUpdate,StaffView,StaffTask,StaffTaskAdd,StaffCities,SalesmanBillingIndex};
 use App\Http\Livewire\Expense\{ExpenseIndex};
@@ -151,5 +151,7 @@ Route::group(['prefix' => 'products'], function () {
         Route::get('/new', OrderNew::class)->name('admin.order.new');
         Route::get('/edit/{id}', OrderEdit::class)->name('admin.order.edit');
         Route::get('/view/{id}', OrderView::class)->name('admin.order.view');
+
+        Route::get('/ledger/{orderId}', LedgerView::class)->name('admin.order.ledger.view');
     });
 });
