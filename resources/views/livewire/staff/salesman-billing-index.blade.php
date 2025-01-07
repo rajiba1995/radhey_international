@@ -163,7 +163,7 @@
 
                     <div class="card-body px-0 pb-2 mx-4">
                         <div class="d-flex justify-content-between mb-3">
-                            <h5>{{$billing_id ? "Update Billing Range" : "Create Billing Range"}}</h5>  
+                            <h5>{{$billing_id ? "Update Bill Book" : "Create Bill Book"}}</h5>  
                         </div>
                         <form wire:submit.prevent="{{$billing_id ? "update" : "submit"}}">
                             <div class="row">
@@ -210,7 +210,7 @@
                                     <button type="submit" class="btn btn-primary btn-sm mt-1" 
                                             wire:loading.attr="disabled">
                                         <span> 
-                                            {{$billing_id ? "Update Billing Range" : "Create Billing Range"}}
+                                            {{$billing_id ? "Update Bill Book" : "Create Bill Book"}}
                                         </span>
                                     </button>
                                 </div>

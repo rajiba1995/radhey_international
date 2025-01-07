@@ -9,11 +9,21 @@ use App\Models\Order;
 class OrderIndex extends Component
 {
     use WithPagination;
+    public $customer_id;
     public $search = ''; // For search functionality
     public $status = ''; // For filtering by status
     protected $paginationTheme = 'bootstrap'; // Optional: For Bootstrap styling
+    protected $updatesQueryString = ['search'];
+    
     public function updatingSearch(){
         $this->resetPage();
+    }
+
+    public function mount(){
+        $customer_id = request()->query('customer_id');
+        if ($customer_id) {
+            $this->customer_id = $customer_id;
+        }
     }
     public function render()
     {
@@ -26,6 +36,9 @@ class OrderIndex extends Component
             ->when($this->status, function($query) {
                 $query->where('status', $this->status);
             })
+            ->when($this->customer_id, function($query) {
+                $query->where('customer_id', $this->customer_id);  // or use the relationship filter
+             })
             ->orderBy('created_at', 'desc') // You can customize the ordering as needed
             ->paginate(10); // Paginate the results, 10 orders per page
 

@@ -20,14 +20,12 @@
             </div>
             <div class="d-flex justify-content-between mb-3">
                 <!-- Search Box -->
-                <input type="text" class="form-control w-25" placeholder="Search Orders..." wire:model.debounce.300ms="search">
-                <!-- Status Filter -->
-                {{-- <select class="form-select w-25" wire:model="status">
-                    <option value="">All Statuses</option>
-                    <option value="pending">Pending</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                </select> --}}
+                <div class="d-flex align-items-center">
+                    <input type="text" wire:model.debounce.500ms="search" class="form-control border border-2 p-2 custom-input-sm" placeholder="Enter Title">
+                    <button type="button" wire:click="$refresh" class="btn btn-dark text-light mb-0 custom-input-sm">
+                        <span class="material-icons">search</span>
+                    </button>
+                </div>
                 <a href="{{route('admin.order.new')}}" class="btn btn-primary mb-3 btn-sm">
                     <i class="material-icons text-white" style="font-size: 15px;">add</i>Generate New Order
                 </a>
@@ -62,9 +60,9 @@
                                 <a href="#" class="badge bg-info btn-sm">{{$order->status==1?"Pending":""}}</a>
                             </td>
                             <td>
-                                <!-- <a href="#" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Edit product">
-                                    <span class="material-icons">edit</span>
-                                </a> -->
+                               <a href="{{route('admin.order.view',$order->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="View product">
+                                    <span class="material-icons">visibility</span>
+                                </a>
 
                                 <a href="{{route('admin.order.edit', $order->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm" data-toggle="tooltip" data-original-title="Edit product">
                                     <span class="material-icons">edit</span>

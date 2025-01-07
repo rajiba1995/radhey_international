@@ -20,7 +20,7 @@ class SalesmanBillingIndex extends Component
        $this->billing_id = $billingId;
        $existingBilling = SalesmanBilling::find($billingId);
        if ($existingBilling) {
-           $this->start_no = abs(($existingBilling->total_count - $existingBilling->no_of_used)-$existingBilling->end_no); 
+           $this->start_no = abs(($existingBilling->total_count - $existingBilling->no_of_used)-$existingBilling->end_no)+1; 
            $this->end_no = $existingBilling->end_no; 
            $this->salesman_id = $existingBilling->salesman_id;
        }  
@@ -34,7 +34,7 @@ class SalesmanBillingIndex extends Component
         ]);
         
     
-        $totalCount = (int)$this->end_no - (int)$this->start_no + 1;
+        $totalCount = (int)$this->end_no - (int)$this->start_no+1;
     
         // $usedCount = SalesmanBilling::whereBetween('start_no', [$this->start_no, $this->end_no])
         //     ->orWhereBetween('end_no', [$this->start_no, $this->end_no])
@@ -53,7 +53,7 @@ class SalesmanBillingIndex extends Component
         $existingBilling = SalesmanBilling::find($this->billing_id);
         if ($existingBilling) {
             $updatedEndNo = $this->start_no - 1;
-            $updatedTotalCount = $updatedEndNo - $existingBilling->start_no + 1;
+            $updatedTotalCount = $updatedEndNo - $existingBilling->start_no;
 
             $existingBilling->update([
                 'end_no' => $updatedEndNo,
@@ -112,7 +112,7 @@ class SalesmanBillingIndex extends Component
         $normalizedStartNo = str_pad($this->start_no, $this->numberLength, '0', STR_PAD_LEFT);
         $normalizedEndNo = str_pad($this->end_no, $this->numberLength, '0', STR_PAD_LEFT);
 
-        $totalCount = (int)$this->end_no - (int)$this->start_no + 1;
+        $totalCount = (int)$this->end_no - (int)$this->start_no;
         // Calculate no_of_used
         $usedCount = SalesmanBilling::whereBetween('start_no', [$this->start_no, $this->end_no])
                                         ->orWhereBetween('end_no', [$this->start_no, $this->end_no])
