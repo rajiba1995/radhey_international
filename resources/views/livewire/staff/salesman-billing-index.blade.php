@@ -13,7 +13,7 @@
                         </div>
                         <div class="row">
                             <div class="col-lg-6 col-7">
-                                <h6>Salesman Billing Number</h6>
+                                <h6>Salesman Bill Book</h6>
                             </div>
                             <div class="col-lg-6 col-5 my-auto text-end">
                                 <div class="ms-md-auto pe-md-3 d-flex align-items-center">
@@ -78,8 +78,8 @@
                                             <button wire:click="destroy({{ $billing->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm" title="Delete">
                                                 <span class="material-icons">delete</span>
                                             </button>
-                                            @if ($billing->no_of_used != $billing->total_count)
-                                                <button class="btn btn-outline-info btn-sm custom-btn-sm" title="Delete">
+                                            @if ($billing->no_of_used != $billing->total_count )
+                                                <button wire:click="assignToNewSalesman({{ $billing->id }})" class="btn btn-outline-info btn-sm custom-btn-sm" title=" Assigned new Salesman">
                                                     Assigned new Salesman
                                                 </button>
                                             @endif
@@ -106,21 +106,81 @@
         <div class="row">
             <div class="col-12">
                 <div class="card my-4">
+                    {{-- for new salesman --}}
+                    @if ($assign_new_salesman)
                     <div class="card-body px-0 pb-2 mx-4">
                         <div class="d-flex justify-content-between mb-3">
-                            <h5>{{$billing_id ? "Update Billing Range" : "Create Billing Range"}}</h5>  
+                            <h5>{{$assign_new_salesman ? "Assigned New Salesman" : ""}}</h5>  
+                        </div>
+                        <form wire:submit.prevent="SubmitNewSalesman">
+                            <div class="row">
+
+                                <label class="form-label mt-3">Salesman</label>
+                                <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
+                                   
+                                        <select wire:model="salesman_id" class="form-control border border-2 p-2">
+                                            <option value="" selected hidden>Select Salesman</option>
+                                            @foreach ($salesmans as $salesman)
+                                            @if ($salesman->id != $salesman_id)
+                                              <option value="{{$salesman->id}}">{{$salesman->name}}</option> 
+                                            @endif
+                                            @endforeach
+                                        </select>
+                                   
+                                </div>
+                                @error('salesman_id')
+                                    <p class='text-danger inputerror'>{{ $message }}</p>
+                                @enderror
+
+                                {{-- short code --}}
+                                <label class="form-label">Start Billing Number</label>
+                                <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
+                                    <input type="number" wire:model="start_no" class="form-control border border-2 p-2" placeholder="Enter Start Billing Number">
+                                </div>
+                                @error('start_no')
+                                    <p class='text-danger inputerror'>{{ $message }}</p>
+                                @enderror
+
+                                <label class="form-label">End Billing Number</label>
+                                <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
+                                    <input type="number" wire:model="end_no" class="form-control border border-2 p-2" placeholder="Enter End Billing Number">
+                                </div>
+                                @error('end_no')
+                                    <p class='text-danger inputerror'>{{ $message }}</p>
+                                @enderror
+
+                                <div class="mb-2 text-end mt-4">
+                                    <button type="submit" class="btn btn-primary btn-sm mt-1" wire:loading.attr="disabled">
+                                        <span>Assign New Salesman</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                    {{-- end new salesman --}}
+                    @else
+
+                    <div class="card-body px-0 pb-2 mx-4">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5>{{$billing_id ? "Update Bill Book" : "Create Bill Book"}}</h5>  
                         </div>
                         <form wire:submit.prevent="{{$billing_id ? "update" : "submit"}}">
                             <div class="row">
 
                                 <label class="form-label mt-3">Salesman</label>
                                 <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
-                                    <select wire:model="salesman_id" class="form-control border border-2 p-2">
-                                        <option value="" selected hidden>Select Salesman</option>
-                                        @foreach ($salesmans as $salesman)
-                                            <option value="{{$salesman->id}}">{{$salesman->name}}</option>
-                                        @endforeach
-                                    </select>
+                                    @if($assign_new_salesman && $salesman_id) 
+                                        <!-- Show the assigned salesman's name -->
+                                        <span class="form-control border border-2 p-2">{{ $salesmans->find($salesman_id)->name }}</span>
+                                    @else
+                                        <select wire:model="salesman_id" class="form-control border border-2 p-2">
+                                            <option value="" selected hidden>Select Salesman</option>
+                                            @foreach ($salesmans as $salesman)
+                                                <option value="{{$salesman->id}}">{{$salesman->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    @endif
                                 </div>
                                 @error('salesman_id')
                                     <p class='text-danger inputerror'>{{ $message }}</p>
@@ -150,14 +210,14 @@
                                     <button type="submit" class="btn btn-primary btn-sm mt-1" 
                                             wire:loading.attr="disabled">
                                         <span> 
-                                            {{ $billing_id ? "Update Billing Range" : "Create Billing Range"}}
+                                            {{$billing_id ? "Update Bill Book" : "Create Bill Book"}}
                                         </span>
                                     </button>
                                 </div>
                             </div>
                         </form>
-
                     </div>
+                    @endif
                 </div>
             </div>
         </div>

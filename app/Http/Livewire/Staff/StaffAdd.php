@@ -31,7 +31,7 @@ class StaffAdd extends Component
        $this->validate([
             'designation' => 'required',
             'person_name' => 'required|string|max:255',
-            'email' => 'nullable|email|unique:users,email',
+            'email' => 'nullable|email|unique:users,email,' . ($this->user_id ?? 'null'),
           'mobile' => [
                 'required',
                 'regex:/^\d{' . env('VALIDATE_MOBILE', 8) . ',}$/', // At least VALIDATE_MOBILE digits
@@ -41,7 +41,7 @@ class StaffAdd extends Component
                 'required',
                 'regex:/^\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/', // At least VALIDATE_WHATSAPP digits
             ],
-            'aadhaar_number' => 'required|numeric',
+            'aadhaar_number' => 'nullable|numeric',
             'image' => 'nullable|image|max:2048',
             'user_id_front' => 'nullable|image|max:2048',
             'user_id_back' => 'nullable|image|max:2048',

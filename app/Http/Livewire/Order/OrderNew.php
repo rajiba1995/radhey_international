@@ -46,6 +46,42 @@ class OrderNew extends Component
     public $payment_mode = null;
 
     public function mount(){
+        $user_id = request()->query('user_id');
+            if($user_id){
+                $customer = User::with(['billingAddress','shippingAddress'])->where('id', $user_id)->where('user_type', 1)->where('status', 1)->first();
+                if($customer){
+                    $this->customer_id = $customer->id;
+                    $this->name = $customer->name;
+                    $this->company_name = $customer->company_name;
+                    $this->employee_rank = $customer->employee_rank;
+                    $this->email = $customer->email;
+                    $this->dob = $customer->dob;
+                    $this->phone = $customer->phone;
+                    $this->whatsapp_no = $customer->whatsapp_no;
+                    
+                    // Billing Address
+                    if($customer->billingAddress){
+                        $this->billing_address = $customer->billingAddress->address;
+                        $this->billing_landmark = $customer->billingAddress->landmark;
+                        $this->billing_city = $customer->billingAddress->city;
+                        $this->billing_state = $customer->billingAddress->state;
+                        $this->billing_country = $customer->billingAddress->country;
+                        $this->billing_pin = $customer->billingAddress->zip_code;
+                    }
+
+                    // Shipping Address
+                    if($customer->shippingAddress){
+                        $this->shipping_address = $customer->shippingAddress->address;
+                        $this->shipping_landmark = $customer->shippingAddress->landmark;
+                        $this->shipping_city = $customer->shippingAddress->city;
+                        $this->shipping_state = $customer->shippingAddress->state;
+                        $this->shipping_country = $customer->shippingAddress->country;
+                        $this->shipping_pin = $customer->shippingAddress->zip_code;
+                    }
+                    
+                    $this->orders  =  Order::where('customer_id', $customer->id)->latest('created_at')->take(1)->get();
+                }
+            }
         $this->customers = User::where('user_type', 1)->where('status', 1)->orderBy('name', 'ASC')->get();
         $this->categories = Category::where('status', 1)->orderBy('title', 'ASC')->get();
         $this->collections = Collection::orderBy('title', 'ASC')->get();
@@ -247,7 +283,7 @@ class OrderNew extends Component
         $formattedValue = preg_replace('/[^0-9.]/', '', $value);
         if (is_numeric($formattedValue)) {
             // If valid, format to two decimal places and update
-            $this->items[$index]['price'] = number_format((float)$formattedValue, 2, '.', '');
+            $this->items[$index]['price'] =$formattedValue;
             session()->forget('errorPrice.' . $index);
         } else {
             // Reset price and show error for invalid input
@@ -553,8 +589,8 @@ class OrderNew extends Component
                 $orderItem = new OrderItem();
                 $orderItem->order_id = $order->id;
                 $orderItem->product_id = $item['product_id'];
-                $orderItem->collection = $collection_data ? $collection_data->title : "";
-                $orderItem->category = $category_data ? $category_data->title : "";
+                $orderItem->collection = $collection_data ? $collection_data->id : "";
+                $orderItem->category = $category_data ? $category_data->id : "";
                 $orderItem->sub_category = $sub_category_data ? $sub_category_data->title : "";
                 $orderItem->product_name = $item['searchproduct'];
                 $orderItem->price = $item['price'];

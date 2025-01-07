@@ -103,11 +103,11 @@
                                                         <i class="fas fa-edit"></i>
                                                     </a>
                                                     <button wire:click="deleteCustomer({{ $user->id }})" class="btn btn-outline-danger custom-btn-sm" title="Delete Customer"><i class="fas fa-trash"></i></button>
-                                                    <a href="" class="btn btn-outline-primary custom-btn-sm" data-toggle="tooltip" data-original-title="Place Order" title="Place Order">
+                                                    <a href="{{route('admin.order.new',['user_id' => $user->id])}}" class="btn btn-outline-primary custom-btn-sm" data-toggle="tooltip" data-original-title="Place Order" title="Place Order">
                                                         <i class="fas fa-shopping-cart"></i>
                                                     </a>
                                                       <!-- Purchase History (Ledger) Button -->
-                                                    <a href="" class="btn btn-outline-secondary custom-btn-sm" data-toggle="tooltip" data-original-title="Purchase History" title="Purchase History">
+                                                    <a href="{{route('admin.order.index',['customer_id' => $user->id])}}" class="btn btn-outline-secondary custom-btn-sm" data-toggle="tooltip" data-original-title="Purchase History" title="Purchase History">
                                                         <i class="fas fa-file-invoice"></i>
                                                     </a>
 

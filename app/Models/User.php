@@ -84,6 +84,17 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserAddress::class);
     }
+
+    public function billingAddress()
+    {
+        return $this->hasOne(UserAddress::class)->where('address_type', 1);
+    }
+
+    public function shippingAddress()
+    {
+        return $this->hasOne(UserAddress::class)->where('address_type', 2);
+    }
+
     protected static function boot()
 {
     parent::boot();

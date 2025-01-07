@@ -13,18 +13,71 @@ class SalesmanBillingIndex extends Component
     public $end_no;
     public $billing_id;
     public $numberLength;
+    public $assign_new_salesman = false;
+
+    public function assignToNewSalesman($billingId){
+       $this->assign_new_salesman = true;
+       $this->billing_id = $billingId;
+       $existingBilling = SalesmanBilling::find($billingId);
+       if ($existingBilling) {
+           $this->start_no = abs(($existingBilling->total_count - $existingBilling->no_of_used)-$existingBilling->end_no)+1; 
+           $this->end_no = $existingBilling->end_no; 
+           $this->salesman_id = $existingBilling->salesman_id;
+       }  
+    }
+    
+    public function SubmitNewSalesman() {
+        $this->validate([
+            'salesman_id' => 'required|exists:users,id',
+            'start_no' => 'required|numeric',
+            'end_no' => 'required|numeric|gt:start_no',
+        ]);
+        
+    
+        $totalCount = (int)$this->end_no - (int)$this->start_no+1;
+    
+        // $usedCount = SalesmanBilling::whereBetween('start_no', [$this->start_no, $this->end_no])
+        //     ->orWhereBetween('end_no', [$this->start_no, $this->end_no])
+        //     ->where('no_of_used','>', 0)
+        //     ->count();
+    
+        SalesmanBilling::create([
+            'salesman_id' => $this->salesman_id,
+            'start_no' => $this->start_no,
+            'end_no' => $this->end_no,
+            'total_count' => $totalCount,
+            'no_of_used' => 0,
+        ]);
+    
+       // Update the existing billing record
+        $existingBilling = SalesmanBilling::find($this->billing_id);
+        if ($existingBilling) {
+            $updatedEndNo = $this->start_no - 1;
+            $updatedTotalCount = $updatedEndNo - $existingBilling->start_no;
+
+            $existingBilling->update([
+                'end_no' => $updatedEndNo,
+                'total_count' => $updatedTotalCount,
+            ]);
+        }
+    
+        // Reset fields and show success message
+        $this->reset(['salesman_id', 'start_no', 'end_no']);
+        session()->flash('message', 'Salesman billing number successfully assigned!');
+    }
+    
 
     public function submit(){
         $this->validate([
             'salesman_id' => [
                 'required',
                 'exists:users,id',
-                function ($attribute, $value, $fail) {
-                    $exists = SalesmanBilling::where('salesman_id', $value)->exists();
-                    if ($exists) {
-                        $fail('A billing range already exists for the selected salesman.');
-                    }
-                },
+                // function ($attribute, $value, $fail) {
+                //     $exists = SalesmanBilling::where('salesman_id', $value)->exists();
+                //     // if ($exists) {
+                //     //     $fail('A billing range already exists for the selected salesman.');
+                //     // }
+                // },
             ],
             'start_no' => [
                 'required',
@@ -59,7 +112,7 @@ class SalesmanBillingIndex extends Component
         $normalizedStartNo = str_pad($this->start_no, $this->numberLength, '0', STR_PAD_LEFT);
         $normalizedEndNo = str_pad($this->end_no, $this->numberLength, '0', STR_PAD_LEFT);
 
-        $totalCount = (int)$this->end_no - (int)$this->start_no + 1;
+        $totalCount = (int)$this->end_no - (int)$this->start_no;
         // Calculate no_of_used
         $usedCount = SalesmanBilling::whereBetween('start_no', [$this->start_no, $this->end_no])
                                         ->orWhereBetween('end_no', [$this->start_no, $this->end_no])

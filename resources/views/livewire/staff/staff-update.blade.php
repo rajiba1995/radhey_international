@@ -59,7 +59,7 @@
                     </div>
 
                     <div class="mb-3 col-md-4">
-                        <label for="aadhaar_number" class="form-label">Aadhaar Number <span class="text-danger">*</span></label>
+                        <label for="aadhaar_number" class="form-label">Aadhaar Number </label>
                         <input type="text" wire:model="aadhaar_number" id="aadhaar_number" class="form-control border border-2 p-2" placeholder="Staff Aadhaar Number">
                         @error('aadhaar_number')
                             <div class="text-danger">{{ $message }}</div>
