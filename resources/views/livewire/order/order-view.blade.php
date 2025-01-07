@@ -47,7 +47,6 @@
                 </th>
                 <th class="w-50 sorting_disabled" rowspan="1" colspan="1" style="width: 328px;" aria-label="products">products</th>
                 <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 65px;" aria-label="price">price</th>
-                <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 65px;" aria-label="remaining_amount">Remaining Price</th>
                 <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 50px;" aria-label="qty">qty</th>
                 <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 80px;" aria-label="total">total</th>
             </tr>
