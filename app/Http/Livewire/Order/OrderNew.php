@@ -558,7 +558,7 @@ class OrderNew extends Component
                 $orderItem->sub_category = $sub_category_data ? $sub_category_data->title : "";
                 $orderItem->product_name = $item['searchproduct'];
                 $orderItem->price = $item['price'];
-                $orderItem->fabrics = $fabric_data ? $fabric_data->title : "";
+                $orderItem->fabrics = $fabric_data ? $fabric_data->id : "";
                 $orderItem->save();
 
                 if (isset($item['get_measurements']) && count($item['get_measurements']) > 0) {

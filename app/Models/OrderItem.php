@@ -51,7 +51,7 @@ public function category()
 }
 public function fabric()
     {
-        return $this->belongsTo(Fabric::class, 'fabrics','title');
+        return $this->belongsTo(Fabric::class, 'fabrics','id');
     }
 
 }
