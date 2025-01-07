@@ -10,6 +10,7 @@ use Livewire\Component;
 class LedgerView extends Component
 {
     public $orderId;
+    public $id;
     public $order;
     public $transactions = [];
     public $transaction_date, $transaction_type, $paid_amount, $remarks,$payment_method;
@@ -19,7 +20,8 @@ class LedgerView extends Component
 
     public function mount($id)
     {
-        $this->orderId = $id;
+        // dd($this->orderId);
+        // $this->orderId = $id;
         $this->order = Order::findOrFail($id);
         $this->loadTransactions();
     }
@@ -67,7 +69,10 @@ class LedgerView extends Component
             'paid_amount' => $this->paid_amount,
             'remarks' => $this->remarks,
         ]);
-
+        $this->order->increment('paid_amount', $this->paid_amount);
+        $this->order->remaining_amount = $this->order->total_amount - $this->order->paid_amount;
+        $this->order->last_payment_date = now();
+        $this->order->save();
         // Reset input fields and reload transactions
         $this->resetInput();
         $this->loadTransactions();

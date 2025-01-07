@@ -152,6 +152,6 @@ Route::group(['prefix' => 'products'], function () {
         Route::get('/edit/{id}', OrderEdit::class)->name('admin.order.edit');
         Route::get('/view/{id}', OrderView::class)->name('admin.order.view');
 
-        Route::get('/ledger/{orderId}', LedgerView::class)->name('admin.order.ledger.view');
+        Route::get('/ledger/{id}', LedgerView::class)->name('admin.order.ledger.view');
     });
 });
