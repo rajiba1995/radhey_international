@@ -448,10 +448,9 @@ class OrderEdit extends Component
                 $this->errorMessage['billing_country'] = null;
             }
     
-            if (empty($this->billing_pin)) {
-                $this->errorClass['billing_pin'] = 'border-danger';
-                $this->errorMessage['billing_pin'] = 'Please enter billing pin';
-            } elseif (strlen($this->billing_pin) != env('VALIDATE_PIN', 6)) {  // Assuming pin should be 6 digits
+          
+               
+             if (strlen($this->billing_pin) != env('VALIDATE_PIN', 6)) {  // Assuming pin should be 6 digits
                 $this->errorClass['billing_pin'] = 'border-danger';
                 $this->errorMessage['billing_pin'] = 'Billing pin must be '.env('VALIDATE_PIN', 6).' digits';
             } else {
@@ -492,10 +491,7 @@ class OrderEdit extends Component
                 $this->errorMessage['shipping_country'] = null;
             }
     
-            if (empty($this->shipping_pin)) {
-                $this->errorClass['shipping_pin'] = 'border-danger';
-                $this->errorMessage['shipping_pin'] = 'Please enter shipping pin';
-            } elseif (strlen($this->shipping_pin) != env('VALIDATE_PIN', 6)) {  // Assuming pin should be 6 digits
+            if (strlen($this->shipping_pin) != env('VALIDATE_PIN', 6)) {  // Assuming pin should be 6 digits
                 $this->errorClass['shipping_pin'] = 'border-danger';
                 $this->errorMessage['shipping_pin'] = 'Shipping pin must be '.env('VALIDATE_PIN', 6).' digits';
             } else {

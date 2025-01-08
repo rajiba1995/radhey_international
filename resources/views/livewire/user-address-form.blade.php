@@ -16,7 +16,7 @@
                 <form wire:submit.prevent="save">
                     <div class="row">
                         <!-- Customer Details -->
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-4">
                             <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
                             <input type="text" wire:model="name" id="name" class="form-control border border-2 p-2" placeholder="Enter Customer Name">
                             @error('name')
@@ -31,9 +31,9 @@
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="mb-3 col-md-2">
+                        <div class="mb-3 col-md-4">
                             <label for="employee_rank" class="form-label"> Rank</label>
-                            <input type="text" wire:model="employee_rank" class="form-control border border-2 p-2" placeholder="Enter rank">
+                            <input type="text" wire:model="employee_rank" class="form-control border border-2 p-2" placeholder="Enter Rank">
                             @error('employee_rank')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -57,7 +57,7 @@
                         </div>
 
                         <div class="mb-3 col-md-3">
-                            <label for="phone" class="form-label">Phone <span class="text-danger">*</span></label>
+                            <label for="phone" class="form-label">Phone Number<span class="text-danger">*</span></label>
                             <input type="text" wire:model="phone" id="phone" class="form-control border border-2 p-2" placeholder="Enter Phone Number">
                             
                             @error('phone')
@@ -99,42 +99,42 @@
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label for="billing_address" class="form-label">Billing Address</label>
-                            <input type="text" wire:model="billing_address" id="billing_address" class="form-control border border-2 p-2" placeholder="Enter billing address">
+                            <input type="text" wire:model="billing_address" id="billing_address" class="form-control border border-2 p-2" placeholder="Enter Billing Address">
                             @error('billing_address')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="billing_landmark" class="form-label">Billing Landmark</label>
-                            <input type="text" wire:model="billing_landmark" id="billing_landmark" class="form-control border border-2 p-2" placeholder="Enter landmark">
+                            <input type="text" wire:model="billing_landmark" id="billing_landmark" class="form-control border border-2 p-2" placeholder="Enter Landmark">
                             @error('billing_landmark')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="billing_city" class="form-label">Billing City</label>
-                            <input type="text" wire:model="billing_city" id="billing_city" class="form-control border border-2 p-2" placeholder="Enter city">
+                            <input type="text" wire:model="billing_city" id="billing_city" class="form-control border border-2 p-2" placeholder="Enter City">
                             @error('billing_city')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="billing_state" class="form-label">Billing State</label>
-                            <input type="text" wire:model="billing_state" id="billing_state" class="form-control border border-2 p-2" placeholder="Enter state">
+                            <input type="text" wire:model="billing_state" id="billing_state" class="form-control border border-2 p-2" placeholder="Enter State">
                             @error('billing_state')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="billing_country" class="form-label">Billing Country</label>
-                            <input type="text" wire:model="billing_country" id="billing_country" class="form-control border border-2 p-2" placeholder="Enter country">
+                            <input type="text" wire:model="billing_country" id="billing_country" class="form-control border border-2 p-2" placeholder="Enter Country">
                             @error('billing_country')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="billing_pin" class="form-label">Billing PIN</label>
-                            <input type="number" wire:model="billing_pin" id="billing_pin" class="form-control border border-2 p-2" placeholder="Enter PIN">
+                            <input type="number" wire:model="billing_pin" id="billing_pin" class="form-control border border-2 p-2" placeholder="Enter Pin">
                             @error('billing_pin')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -149,42 +149,42 @@
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label for="shipping_address" class="form-label">Shipping Address</label>
-                            <input type="text" wire:model="shipping_address" id="shipping_address" class="form-control border border-2 p-2" placeholder="Enter shipping address" @if($is_billing_shipping_same) disabled @endif>
+                            <input type="text" wire:model="shipping_address" id="shipping_address" class="form-control border border-2 p-2" placeholder="Enter Shipping Address" @if($is_billing_shipping_same) disabled @endif>
                             @error('shipping_address')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="shipping_landmark" class="form-label">Shipping Landmark</label>
-                            <input type="text" wire:model="shipping_landmark" id="shipping_landmark" class="form-control border border-2 p-2" placeholder="Enter landmark" @if($is_billing_shipping_same) disabled @endif>
+                            <input type="text" wire:model="shipping_landmark" id="shipping_landmark" class="form-control border border-2 p-2" placeholder="Enter Landmark" @if($is_billing_shipping_same) disabled @endif>
                             @error('shipping_landmark')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="shipping_city" class="form-label">Shipping City</label>
-                            <input type="text" wire:model="shipping_city" id="shipping_city" class="form-control border border-2 p-2" placeholder="Enter city" @if($is_billing_shipping_same) disabled @endif>
+                            <input type="text" wire:model="shipping_city" id="shipping_city" class="form-control border border-2 p-2" placeholder="Enter City" @if($is_billing_shipping_same) disabled @endif>
                             @error('shipping_city')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="shipping_state" class="form-label">Shipping State</label>
-                            <input type="text" wire:model="shipping_state" id="shipping_state" class="form-control border border-2 p-2" placeholder="Enter state" @if($is_billing_shipping_same) disabled @endif>
+                            <input type="text" wire:model="shipping_state" id="shipping_state" class="form-control border border-2 p-2" placeholder="Enter State" @if($is_billing_shipping_same) disabled @endif>
                             @error('shipping_state')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="shipping_country" class="form-label">Shipping Country</label>
-                            <input type="text" wire:model="shipping_country" id="shipping_country" class="form-control border border-2 p-2" placeholder="Enter country" @if($is_billing_shipping_same) disabled @endif>
+                            <input type="text" wire:model="shipping_country" id="shipping_country" class="form-control border border-2 p-2" placeholder="Enter Country" @if($is_billing_shipping_same) disabled @endif>
                             @error('shipping_country')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="shipping_pin" class="form-label">Shipping PIN</label>
-                            <input type="text" wire:model="shipping_pin" id="shipping_pin" class="form-control border border-2 p-2" placeholder="Enter PIN" @if($is_billing_shipping_same) disabled @endif>
+                            <input type="text" wire:model="shipping_pin" id="shipping_pin" class="form-control border border-2 p-2" placeholder="Enter Pin" @if($is_billing_shipping_same) disabled @endif>
                             @error('shipping_pin')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -195,7 +195,7 @@
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label for="gst_number" class="form-label">GST Number</label>
-                            <input type="text" wire:model="gst_number" id="gst_number" class="form-control border border-2 p-2" placeholder="Enter GST Number">
+                            <input type="text" wire:model="gst_number" id="gst_number" class="form-control border border-2 p-2" placeholder="Enter Gst Number">
                             @error('gst_number')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
