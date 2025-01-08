@@ -14,6 +14,7 @@ use App\Models\Fabric;
 use App\Models\Ledger;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\DB;
+use Auth;
 
 class OrderEdit extends Component
 {
@@ -697,8 +698,9 @@ class OrderEdit extends Component
                 $order->remaining_amount = $this->remaining_amount;
                 $order->payment_mode = $this->payment_mode;
                 $order->last_payment_date = now();
+                $order->created_by = auth()->id();
                 $order->save();
-                
+
                 if($order->paid_amount>$this->paid_amount){
                     $paid_amount=$order->paid_amount - $this->paid_amount;
                 }elseif($order->paid_amount>$this->paid_amount){

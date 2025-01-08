@@ -16,12 +16,41 @@
             </div>
             <div class="d-flex justify-content-between mb-3">
                 <!-- Search Box -->
-                <div class="d-flex align-items-center">
-                    <input type="text" wire:model.debounce.500ms="search" class="form-control border border-2 p-2 custom-input-sm" placeholder="Enter Title">
+                <!-- <div class="d-flex align-items-center">
+                    <input type="text" wire:model.debounce.500ms="search" class="form-control border border-2 p-2 custom-input-sm" placeholder="Search order">
                     <button type="button" wire:click="$refresh" class="btn btn-dark text-light mb-0 custom-input-sm">
                         <span class="material-icons">search</span>
                     </button>
+                </div> -->
+
+                <div class="d-flex align-items-center">
+                    <!-- Text Search -->
+                    <input 
+                        type="text" 
+                        wire:model.debounce.500ms="search" 
+                        class="form-control border border-2 p-2 custom-input-sm" 
+                        placeholder="Search order">
+
+                    <!-- Dropdown for Created By -->
+                    <select 
+                        wire:model="created_by" 
+                        wire:change="$refresh" 
+                        class="form-control border border-2 p-2 ms-2 custom-input-sm">
+                        <option value="">All Users</option>
+                        @foreach($usersWithOrders  as $user)
+                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                        @endforeach
+                    </select>
+
+                    <!-- Search Button -->
+                    <button 
+                        type="button" 
+                        wire:click="$refresh" 
+                        class="btn btn-dark text-light mb-0 custom-input-sm ms-2">
+                        <span class="material-icons">search</span>
+                    </button>
                 </div>
+
                 <a href="{{route('admin.order.new')}}" class="btn btn-primary mb-3 btn-sm">
                     <i class="material-icons text-white" style="font-size: 15px;">add</i>Generate New Order
                 </a>

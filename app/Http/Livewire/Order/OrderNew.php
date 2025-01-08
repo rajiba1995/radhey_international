@@ -16,6 +16,7 @@ use App\Models\OrderItem;
 use App\Models\Ledger;
 use App\Models\OrderMeasurement;
 use Illuminate\Support\Facades\DB;
+use Auth;
 
 class OrderNew extends Component
 {
@@ -569,6 +570,8 @@ class OrderNew extends Component
             $order->remaining_amount = $this->remaining_amount;
             $order->payment_mode = $this->payment_mode;
             $order->last_payment_date = date('Y-m-d H:i:s');
+            $order->created_by = auth()->id();
+
             $order->save();
 
             Ledger::create([

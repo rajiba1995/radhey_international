@@ -103,4 +103,9 @@ class User extends Authenticatable
         $user->address()->delete(); // Delete related UserAddress
     });
 }
+
+public function orders()
+{
+    return $this->hasMany(Order::class, 'created_by');
+}
 }
