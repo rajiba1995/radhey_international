@@ -173,7 +173,7 @@
                                     @endif
                                 </div>
                                 <div class="d-flex flex-column">
-                                    <a href="javascript:void(0)">
+                                    <a href="{{route('admin.customers.details',$order->customer_id)}}">
                                         <h6 class="mb-0">{{$order->customer_name}}</h6>
                                     </a>
                                 </div>
