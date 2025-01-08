@@ -25,14 +25,9 @@
 
                 <div class="d-flex align-items-center">
                     <!-- Text Search -->
-                    <input 
-                        type="text" 
-                        wire:model.debounce.500ms="search" 
-                        class="form-control border border-2 p-2 custom-input-sm" 
-                        placeholder="Search order">
 
-                    <!-- Dropdown for Created By -->
-                    <select 
+                      <!-- Dropdown for Created By -->
+                      <select 
                         wire:model="created_by" 
                         wire:change="$refresh" 
                         class="form-control border border-2 p-2 ms-2 custom-input-sm">
@@ -41,6 +36,13 @@
                             <option value="{{ $user->id }}">{{ $user->name }}</option>
                         @endforeach
                     </select>
+                    <input 
+                        type="text" 
+                        wire:model.debounce.500ms="search" 
+                        class="form-control border border-2 p-2 custom-input-sm" 
+                        placeholder="Search order">
+
+                  
 
                     <!-- Search Button -->
                     <button 
