@@ -3,7 +3,7 @@
     <div class="card my-4">
         <div class="card-header pb-0">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="m-0">Generate Order</h4>
+                <h4 class="m-0">Place Order</h4>
                 @if (session('error'))
                     <div class="alert alert-danger">
                         {{ session('error') }}

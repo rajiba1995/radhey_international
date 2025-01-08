@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->unsignedBigInteger('customer_id')->nullable()->after('order_number');
-            $table->foreign('customer_id')->references('id')->on('users')->onDelete('cascade');
-        });
+        // Schema::table('orders', function (Blueprint $table) {
+        //     $table->unsignedBigInteger('customer_id')->nullable()->after('order_number');
+        //     $table->foreign('customer_id')->references('id')->on('users')->onDelete('cascade');
+        // });
     }
 
     /**
@@ -22,9 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->dropForeign(['customer_id']); // Drop the foreign key
-            $table->dropColumn('customer_id');   // Drop the column
-        });
+        // Schema::table('orders', function (Blueprint $table) {
+        //     $table->dropForeign(['customer_id']); // Drop the foreign key
+        //     $table->dropColumn('customer_id');   // Drop the column
+        // });
     }
 };

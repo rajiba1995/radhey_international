@@ -3,7 +3,7 @@
     <div class="card my-4">
         <div class="card-header pb-0">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="m-0">Generate Order</h4>
+                <h4 class="m-0">Place Order</h4>
                 @if (session('error'))
                     <div class="alert alert-danger">
                         {{ session('error') }}
@@ -20,10 +20,9 @@
                 <div class="{{$activeTab==1?"d-block":"d-none"}}" id="tab1">
                     <div class="row d-flex justify-content-between align-items-center mb-3">
                         <!-- Customer Information Badge -->
-                        <div class="col-12 col-md-6 mb-2 mb-md-0">
+                        {{-- <div class="col-12 col-md-6 mb-2 mb-md-0">
                             <h6 class="badge bg-danger custom_danger_badge">Basic Information</h6>
-                        </div>
-            
+                        </div> --}}
                         <!-- Search Label and Select2 -->
                         <div class="col-12 col-md-6">
                             <div class="d-flex justify-content-between">
@@ -89,6 +88,9 @@
                         </table>
                     @endif
                     <!-- Customer Details -->
+                    <div class="col-12 col-md-6 mb-2 mb-md-0">
+                        <h6 class="badge bg-danger custom_danger_badge">Basic Information</h6>
+                    </div>
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <input type="hidden" name="customer_id" wire:model="customer_id">
@@ -467,7 +469,7 @@
                 <div class="d-flex justify-content-end align-items-center mb-3">
                     @if($activeTab>1)
                     <button type="button" class="btn btn-dark mx-2" wire:click="TabChange({{$activeTab-1}})"><i class="material-icons text-white">chevron_left</i>Previous</button>
-                    <button type="submit" class="btn btn-primary mx-2"><i class="material-icons text-white">add</i>Generate Order</button>
+                    <button type="submit" class="btn btn-primary mx-2"><i class="material-icons text-white">add</i>Place Order</button>
                     @endif
                     @if($activeTab==1)
                         <button type="button" class="btn btn-primary mx-2" wire:click="TabChange({{$activeTab+1}})">Next<i class="material-icons text-white">chevron_right</i></button>

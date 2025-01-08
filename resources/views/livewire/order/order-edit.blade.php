@@ -28,7 +28,7 @@
                     <div class="container">
                         <!-- Customer Details -->
                         <div class="row">
-                            <div class="mb-3 col-md-6">
+                            <div class="mb-3 col-md-4">
                                 <input type="hidden" name="customer_id" wire:model="customer_id">
                                 <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
                                 <input type="text" wire:model="name" id="name"
@@ -46,10 +46,10 @@
                                     placeholder="Enter Company Name">
                             </div>
 
-                            <div class="mb-3 col-md-2">
+                            <div class="mb-3 col-md-4">
                                 <label for="employee_rank" class="form-label"> Rank</label>
                                 <input type="text" wire:model="employee_rank" id="employee_rank"
-                                    class="form-control form-control-sm border border-1 p-2" placeholder="Enter rank">
+                                    class="form-control form-control-sm border border-1 p-2" placeholder="Enter Rank">
                             </div>
 
                             <div class="mb-3 col-md-3">
@@ -73,7 +73,7 @@
                             </div>
 
                             <div class="mb-3 col-md-3">
-                                <label for="phone" class="form-label">Phone <span class="text-danger">*</span></label>
+                                <label for="phone" class="form-label">Phone Number<span class="text-danger">*</span></label>
                                 <input type="number" wire:model="phone" id="phone"
                                     class="form-control form-control-sm border border-1 p-2 {{ $errorClass['phone'] ?? '' }}"
                                     placeholder="Enter Phone Number">

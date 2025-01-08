@@ -10,7 +10,8 @@ class OrderInvoice extends Component
 
     public function mount($id)
     {
-        $this->order = Order::findOrFail($id); // Fetch the order by ID
+        $this->order = Order::with('items.collection')->findOrFail($id);
+        // dd($this->order); // Fetch the order by ID
     }
 
     public function render()

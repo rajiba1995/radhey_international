@@ -168,7 +168,7 @@
                 <li class="nav-item">
                     <a class="nav-link text-white {{ Route::currentRouteName() == 'salesman.index' ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('salesman.index')}}">
-                        Salesman
+                        Staff Bill Book
                     </a>
                 </li>
             </ul>
@@ -213,6 +213,10 @@
                     <a class="nav-link text-white {{ Request::is('admin/orders') ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('admin.order.index')}}">
                          All Orders
+                    </a>
+                    <a class="nav-link text-white {{ Request::is('admin/orders/new') ? 'active bg-gradient-primary' : '' }}"
+                        href="{{route('admin.order.new')}}">
+                         Place Order
                     </a>
                 </li>
             </ul>

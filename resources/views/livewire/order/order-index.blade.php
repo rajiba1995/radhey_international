@@ -31,7 +31,7 @@
                         wire:model="created_by" 
                         wire:change="$refresh" 
                         class="form-control border border-2 p-2 ms-2 custom-input-sm">
-                        <option value="">All Users</option>
+                        <option value="" selected hidden>Salesman</option>
                         @foreach($usersWithOrders  as $user)
                             <option value="{{ $user->id }}">{{ $user->name }}</option>
                         @endforeach
@@ -45,16 +45,20 @@
                   
 
                     <!-- Search Button -->
+                    
                     <button 
                         type="button" 
                         wire:click="$refresh" 
                         class="btn btn-dark text-light mb-0 custom-input-sm ms-2">
                         <span class="material-icons">search</span>
                     </button>
+                    <a href=""  class="btn btn-dark text-light mb-0 custom-input-sm ms-2">
+                        <span class="material-icons">refresh</span>
+                   </a>
                 </div>
 
                 <a href="{{route('admin.order.new')}}" class="btn btn-primary mb-3 btn-sm">
-                    <i class="material-icons text-white" style="font-size: 15px;">add</i>Generate New Order
+                    <i class="material-icons text-white" style="font-size: 15px;">add</i>Place New Order
                 </a>
             </div>
             <div class="row">

@@ -26,10 +26,7 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Order::class);
     }
-    // public function colection()
-    // {
-    //     return $this->belongsTo(Collection::class);
-    // }
+   
     public function collection()
     {
         return $this->belongsTo(Collection::class, 'collection', 'id');
