@@ -309,7 +309,7 @@ class OrderNew extends Component
         // Ensure the values are numeric before performing subtraction
         $billingAmount = (float) $this->billing_amount;
         $paidAmount = (float) $paid_amount;
-        $paidAmount = ltrim($paidAmount, '0');
+        $paidAmount = $paidAmount;
         if ($billingAmount > 0) {
             if(empty($paid_amount)){
                 $this->paid_amount = 0;
@@ -795,17 +795,21 @@ class OrderNew extends Component
                 $this->errorClass['billing_country'] = null;
                 $this->errorMessage['billing_country'] = null;
             }
-    
-            if (empty($this->billing_pin)) {
-                $this->errorClass['billing_pin'] = 'border-danger';
-                $this->errorMessage['billing_pin'] = 'Please enter billing pin';
-            } elseif (strlen($this->billing_pin) != env('VALIDATE_PIN', 6)) {  // Assuming pin should be 6 digits
-                $this->errorClass['billing_pin'] = 'border-danger';
-                $this->errorMessage['billing_pin'] = 'Billing pin must be '.env('VALIDATE_PIN', 6).' digits';
-            } else {
+            
+            if(!empty($this->billing_pin)){
+                if (strlen($this->billing_pin) != env('VALIDATE_PIN', 6)) {  // Assuming pin should be 6 digits
+                    $this->errorClass['billing_pin'] = 'border-danger';
+                    $this->errorMessage['billing_pin'] = 'Billing pin must be '.env('VALIDATE_PIN', 6).' digits';
+                } else {
+                    $this->errorClass['billing_pin'] = null;
+                    $this->errorMessage['billing_pin'] = null;
+                }
+            }else {
+                // No error for an empty shipping_pin
                 $this->errorClass['billing_pin'] = null;
                 $this->errorMessage['billing_pin'] = null;
             }
+            
     
             // Validate Shipping Information
             if (empty($this->shipping_address)) {
@@ -840,16 +844,20 @@ class OrderNew extends Component
                 $this->errorMessage['shipping_country'] = null;
             }
     
-            if (empty($this->shipping_pin)) {
-                $this->errorClass['shipping_pin'] = 'border-danger';
-                $this->errorMessage['shipping_pin'] = 'Please enter shipping pin';
-            } elseif (strlen($this->shipping_pin) != env('VALIDATE_PIN', 6)) {  // Assuming pin should be 6 digits
-                $this->errorClass['shipping_pin'] = 'border-danger';
-                $this->errorMessage['shipping_pin'] = 'Shipping pin must be '.env('VALIDATE_PIN', 6).' digits';
+            if (!empty($this->shipping_pin)) { // Only validate if shipping_pin is not empty
+                if (strlen($this->shipping_pin) != env('VALIDATE_PIN', 6)) { // Validate length
+                    $this->errorClass['shipping_pin'] = 'border-danger';
+                    $this->errorMessage['shipping_pin'] = 'Shipping pin must be ' . env('VALIDATE_PIN', 6) . ' digits';
+                } else {
+                    $this->errorClass['shipping_pin'] = null;
+                    $this->errorMessage['shipping_pin'] = null;
+                }
             } else {
+                // No error for an empty shipping_pin
                 $this->errorClass['shipping_pin'] = null;
                 $this->errorMessage['shipping_pin'] = null;
             }
+            
     
            
             // Check if both errorClass and errorMessage arrays are empty
