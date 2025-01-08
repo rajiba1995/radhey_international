@@ -13,6 +13,7 @@ use App\Models\CollectionType;
 use App\Models\Measurement;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Ledger;
 use App\Models\OrderMeasurement;
 use Illuminate\Support\Facades\DB;
 
@@ -569,6 +570,17 @@ class OrderNew extends Component
             $order->payment_mode = $this->payment_mode;
             $order->last_payment_date = date('Y-m-d H:i:s');
             $order->save();
+
+            Ledger::create([
+                'order_id' => $order->id,
+                'user_id' => $user->id,
+                'transaction_date' => now(),
+                'transaction_type' => 'Debit', // or 'Credit' depending on your business logic
+                'payment_method' => $this->payment_mode,
+                'paid_amount' => $this->paid_amount,
+                // 'remaining_amount' => $this->remaining_amount,
+                'remarks' => 'Initial Payment for Order #' . $order->order_number,
+            ]);
 
                // Validate fabric prices before generating the order
             //    foreach ($this->items as $item) {

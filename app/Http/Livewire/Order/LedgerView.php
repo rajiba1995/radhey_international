@@ -6,6 +6,8 @@ use App\Models\Ledger;
 use App\Models\Order;
 use Carbon\Carbon;
 use Livewire\Component;
+use Illuminate\Support\Facades\DB; // Add this line
+
 
 class LedgerView extends Component
 {
@@ -23,13 +25,14 @@ class LedgerView extends Component
         // dd($this->orderId);
         // $this->orderId = $id;
         $this->order = Order::findOrFail($id);
+        // dd($this->order);
         $this->loadTransactions();
     }
 
     // Load all transactions for the given order
     public function loadTransactions()
     {
-        $this->transactions = Ledger::where('order_id', $this->orderId)
+        $this->transactions = Ledger::where('order_id', $this->order->id)
             ->orderBy('transaction_date', 'DESC')
             ->get();
 
@@ -60,19 +63,40 @@ class LedgerView extends Component
         }
 
         // Create the ledger entry
-        Ledger::create([
-            'user_id' => $this->order->customer_id,
-            'order_id' => $this->orderId,
-            'transaction_date' => now()->format('Y-m-d'),
-            'transaction_type' => "Debit",
-            'payment_method' => $this->payment_method,
-            'paid_amount' => $this->paid_amount,
-            'remarks' => $this->remarks,
-        ]);
-        $this->order->increment('paid_amount', $this->paid_amount);
-        $this->order->remaining_amount = $this->order->total_amount - $this->order->paid_amount;
-        $this->order->last_payment_date = now();
-        $this->order->save();
+        // Ledger::create([
+        //     'user_id' => $this->order->customer_id,
+        //     'order_id' =>$this->order->id,
+        //     'transaction_date' => now()->format('Y-m-d'),
+        //     'transaction_type' => "Debit",
+        //     'payment_method' => $this->payment_method,
+        //     'paid_amount' => $this->paid_amount,
+        //     'remarks' => $this->remarks,
+        // ]);
+        // // $this->order->increment('paid_amount', $this->paid_amount);
+        // $this->order->paid_amount = $this->paid_amount;
+        // $this->order->remaining_amount = $this->order->total_amount - $this->order->paid_amount;
+        // $this->order->last_payment_date = now();
+        // $this->order->save();
+
+        DB::transaction(function () {
+            Ledger::create([
+                'user_id' => $this->order->customer_id,
+                'order_id' => $this->order->id,
+                'transaction_date' => now()->format('Y-m-d'),
+                'transaction_type' => "Debit",
+                'payment_method' => $this->payment_method,
+                'paid_amount' => $this->paid_amount,
+                'remarks' => $this->remarks,
+            ]);
+        
+            $order = $this->order;
+            $order->paid_amount += $this->paid_amount;
+            $order->remaining_amount = max(0, $order->total_amount - $order->paid_amount);
+            $order->last_payment_date = now()->format('Y-m-d');
+            $order->payment_mode = $this->payment_method;
+            $order->save();
+        });
+        
         // Reset input fields and reload transactions
         $this->resetInput();
         $this->loadTransactions();

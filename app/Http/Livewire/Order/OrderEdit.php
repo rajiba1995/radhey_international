@@ -11,6 +11,7 @@ use App\Models\Product;
 use App\Models\Measurement;
 use App\Models\OrderMeasurement;
 use App\Models\Fabric;
+use App\Models\Ledger;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\DB;
 
@@ -697,6 +698,27 @@ class OrderEdit extends Component
                 $order->payment_mode = $this->payment_mode;
                 $order->last_payment_date = now();
                 $order->save();
+                
+                if($order->paid_amount>$this->paid_amount){
+                    $paid_amount=$order->paid_amount - $this->paid_amount;
+                }elseif($order->paid_amount>$this->paid_amount){
+                    $paid_amount=$this->paid_amount - $order->paid_amount;
+                }elseif($order->paid_amount=$this->paid_amount){
+                    $paid_amount= '';
+                }
+
+                if($order->paid_amount>$this->paid_amount||$order->paid_amount<$this->paid_amount){
+                    Ledger::create([
+                        'order_id' => $order->id,
+                        'user_id' => $user->id,
+                        'transaction_date' => now(),
+                        'transaction_type' => 'Debit', // or 'Credit' depending on your business logic
+                        'payment_method' => $this->payment_mode,
+                        'paid_amount' => $this->paid_amount,
+                        // 'remaining_amount' => $this->remaining_amount,
+                        'remarks' => 'Initial Payment for Order #' . $order->order_number,
+                    ]);
+                }
             }
            
 
