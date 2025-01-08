@@ -94,6 +94,16 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserAddress::class)->where('address_type', 2);
     }
+    
+    public function billingAddressLatest()
+    {
+        return $this->hasOne(UserAddress::class)->where('address_type', 1) ->latest('created_at');
+    }
+
+    public function shippingAddressLatest()
+    {
+        return $this->hasOne(UserAddress::class)->where('address_type', 2) ->latest('created_at');
+    }
 
     protected static function boot()
 {
