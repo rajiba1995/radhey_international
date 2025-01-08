@@ -21,6 +21,10 @@ button[disabled] {
     cursor: not-allowed;
     opacity: 0.5;
 }
+a{
+    color: #e91e63;
+    text-decoration: none;
+}
 .custom-btn-sm{
     padding: 0.10rem 0.8rem !important;
 }
@@ -78,8 +82,17 @@ button[disabled] {
    font-size: 10px;
 
 }
-
-
+.shopping-cart{
+    background-color: #DFF6DD;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+}
+      
 
 /**
  * Multiple Select2

@@ -180,7 +180,7 @@
                             @endif
                         </div>
                         <div class="mb-3 col-md-4">
-                            <label for="billing_pin" class="form-label">Zip Code <span class="text-danger">*</span></label>
+                            <label for="billing_pin" class="form-label">Zip Code </label>
                             <input type="number" wire:model="billing_pin" id="billing_pin" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['billing_pin'] ?? '' }}" placeholder="Enter PIN">
                             @if(isset($errorMessage['billing_pin']))
                                 <div class="text-danger">{{ $errorMessage['billing_pin'] }}</div>
@@ -230,7 +230,7 @@
                             @endif
                         </div>
                         <div class="mb-3 col-md-4">
-                            <label for="shipping_pin" class="form-label">Zip Code <span class="text-danger">*</span></label>
+                            <label for="shipping_pin" class="form-label">Zip Code </label>
                             <input type="number" wire:model="shipping_pin" id="shipping_pin" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['shipping_pin'] ?? '' }}" placeholder="Enter PIN">
                             @if(isset($errorMessage['shipping_pin']))
                                 <div class="text-danger">{{ $errorMessage['shipping_pin'] }}</div>
