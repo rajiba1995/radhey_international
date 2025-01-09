@@ -62,7 +62,9 @@
                     <div class="card mb-4">
                         <div class="card-body p-3">
                         <h5 class="card-title">Billing Address</h5>
-                            <p> {{ $supplier->billing_address }} , {{ $supplier->billing_landmark }} , {{ $supplier->billing_city }} ,  {{ $supplier->billing_state }} , {{ $supplier->billing_country }}  -{{ $supplier->billing_pin }} </p>
+                            <p> {{ collect([$supplier->billing_address, $supplier->billing_landmark, $supplier->billing_city, $supplier->billing_state, $supplier->billing_country, $supplier->billing_pin])
+                             ->filter() // Remove null or empty values
+                            ->implode(', ') }} </p>
                         </div>
                     </div>
                     <div class="card">
