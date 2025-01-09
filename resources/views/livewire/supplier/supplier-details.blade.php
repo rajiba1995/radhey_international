@@ -30,7 +30,7 @@
                     <div class="card mb-4" style="height: 400px;">
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
-                                <h5 class="mb-1">Supplier details</h5>
+                                <h5 class="mb-1">Supplier Details</h5>
                                 <h6 class="mb-1">
                                   <a href="{{ route('suppliers.edit', $supplier->id) }}" class="btn btn-outline-info custom-btn-sm">Edit</a>
                                 </h6>
@@ -62,7 +62,7 @@
                 <div class="col-12 col-lg-4">
                     <div class="card mb-4">
                         <div class="card-body p-3">
-                        <h5 class="card-title">Billing address</h5>
+                        <h5 class="card-title">Billing Address</h5>
                             <p> {{ $supplier->billing_address }} , {{ $supplier->billing_landmark }} , {{ $supplier->billing_city }} ,  {{ $supplier->billing_state }} , {{ $supplier->billing_country }}  -{{ $supplier->billing_pin }} </p>
                         </div>
                     </div>
