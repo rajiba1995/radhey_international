@@ -25,15 +25,10 @@
                         Back</a>
                 </div>
             </div>
-
-            <!-- Order Details Table -->
-
             <div class="row">
-
                 <div class="col-12 col-lg-8">
                     <div class="card mb-4" style="height: 400px;">
                         <div class="card-body">
-                            <!-- <h5 class="card-title mb-4">supplier details</h5> -->
                             <div class="d-flex justify-content-between">
                                 <h5 class="mb-1">Supplier details</h5>
                                 <h6 class="mb-1">
@@ -48,7 +43,6 @@
                                     </a>
                                 </div>
                             </div>
-                           
                             <div class="d-flex justify-content-between">
                                 <h6 class="mb-1">Contact info</h6>
                             </div>
@@ -66,25 +60,18 @@
                     </div>
                 </div>
                 <div class="col-12 col-lg-4">
-                    
-
                     <div class="card mb-4">
-                        
                         <div class="card-body p-3">
                         <h5 class="card-title">Billing address</h5>
-
-                            
                             <p> {{ $supplier->billing_address }} , {{ $supplier->billing_landmark }} , {{ $supplier->billing_city }} ,  {{ $supplier->billing_state }} , {{ $supplier->billing_country }}  -{{ $supplier->billing_pin }} </p>
-                           
                         </div>
-
                     </div>
                     <div class="card">
                         <div class="card-body">
-                        <h5 class="card-title">Account Information</h5>
-                         <!-- GST Certificate -->
-                         @if($supplier->gst_number !=""||$supplier->credit_limit !=""||$supplier->credit_days !="")
-                         @if ($supplier->gst_file)
+                            <h5 class="card-title">Account Information</h5>
+                            <!-- GST Certificate -->
+                            @if($supplier->gst_number !=""||$supplier->credit_limit !=""||$supplier->credit_days !="")
+                            @if ($supplier->gst_file)
                             <h6>GST Certificate:</h6>
                                 <img src="{{ asset($this->existingGstFile) }}" alt="GST Certificate" class="img-thumbnail" width="200">
                             @else
@@ -107,27 +94,16 @@
                             @endif 
 
                             @else
-                        <div class="card-body">
-                            <p class="mb-1 text-muted">
-                                <i class="fas fa-info-circle" style="font-size: 14px; color: #6c757d;"></i>
-                                No information found.
-                            </p>
+                            <div class="card-body">
+                                <p class="mb-1 text-muted">
+                                    <i class="fas fa-info-circle" style="font-size: 14px; color: #6c757d;"></i>
+                                    No information found.
+                                </p>
+                            </div>
+                            @endif
                         </div>
-                        @endif
-                        
-                       
-                        </div>
-                     
-                        
                     </div>
-                  
                 </div>
-
-
-
-              
-
-               
             </div>
         </div>
     </div>
