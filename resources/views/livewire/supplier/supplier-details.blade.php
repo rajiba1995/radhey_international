@@ -4,8 +4,7 @@
         <!-- Content -->
         <div class="container-xxl flex-grow-1 container-p-y">
 
-            <div
-                class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
                 <div class="d-flex flex-column justify-content-center">
                     <div class="d-flex align-items-center mb-1">
                         <!-- Paid Status -->
