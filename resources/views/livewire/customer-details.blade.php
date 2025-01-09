@@ -28,7 +28,7 @@
             <div class="row">
 
                 <div class="col-12 col-lg-8">
-                    <div class="card mb-4" style="height: 521px;">
+                    <div class="card mb-4" style="height: 526px;">
                         <div class="card-body">
                             <!-- <h5 class="card-title mb-4">Customer details</h5> -->
                             <div class="d-flex justify-content-between">
@@ -80,19 +80,11 @@
                             
                         </div>
                     </div>
-
-                    
-                   
                 </div>
-
-
                 <div class="col-12 col-lg-4">
-                   
-
                     <div class="card mb-4">
                         <div class="card-body  p-3">
                         <h5 class="card-title mb-0">Shipping address</h5>
-
                             @if($customer->shippingAddressLatest)
                                 <p>{{ $customer->shippingAddressLatest->address }},{{ $customer->shippingAddressLatest->landmark }},{{ $customer->shippingAddressLatest->city }}, {{ $customer->shippingAddressLatest->state }},{{ $customer->shippingAddressLatest->country }} - {{ $customer->shippingAddressLatest->zip_code }}</p>
                             @else
