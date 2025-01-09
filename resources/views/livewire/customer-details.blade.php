@@ -182,7 +182,7 @@
                                                     {{ $latestOrder->updated_at }}
                                                 </span>
                                                 <br>
-                                                <a href="{{ route('admin.order.view', $latestOrder->id) }}" class="text-primary text-decoration-underline">
+                                                <a href="{{ route('admin.order.view', $latestOrder->id) }}" class="text-primary">
                                                     {{ $latestOrder->order_number }}
                                                 </a>
                                             </td>
