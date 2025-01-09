@@ -16,7 +16,7 @@ return new class extends Migration
         $table->unsignedBigInteger('order_id');
         $table->unsignedBigInteger('user_id');
         $table->date('transaction_date');
-        $table->date('payment_method');
+        $table->string('payment_method');
         $table->string('transaction_type');
         $table->decimal('paid_amount', 10, 2);
         $table->decimal('remaining_amount', 10, 2)->nullable();

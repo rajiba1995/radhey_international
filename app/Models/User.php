@@ -106,16 +106,20 @@ class User extends Authenticatable
     }
 
     protected static function boot()
-{
-    parent::boot();
+    {
+        parent::boot();
 
-    static::deleting(function ($user) {
-        $user->address()->delete(); // Delete related UserAddress
-    });
-}
+        static::deleting(function ($user) {
+            $user->address()->delete(); // Delete related UserAddress
+        });
+    }
 
-public function orders()
-{
-    return $this->hasMany(Order::class, 'created_by');
-}
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'created_by');
+    }
+    public function ordersAsCustomer()
+    {
+        return $this->hasMany(Order::class, 'customer_id'); // 'customer_id' is the foreign key in the orders table
+    }
 }

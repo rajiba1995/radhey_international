@@ -8,14 +8,17 @@ use App\Models\User;
 class CustomerDetails extends Component
 {
     public $customerId; 
-    public $customer;   
+    public $customer;  
+    public $latestOrders; 
 
     public function mount($id)
     {
         $this->customerId = $id;
         // $this->customer = User::with('address')->findOrFail($this->customerId);
 
-        $this->customer = User::with(['billingAddressLatest', 'shippingAddressLatest'])->findOrFail($this->customerId);
+        $this->customer = User::with(['billingAddressLatest', 'shippingAddressLatest','ordersAsCustomer'])->findOrFail($this->customerId);
+        $this->latestOrders = $this->customer->ordersAsCustomer()->orderBy('created_at', 'desc')->take(10)->get();
+
         // dd($this->customer);
     }
 

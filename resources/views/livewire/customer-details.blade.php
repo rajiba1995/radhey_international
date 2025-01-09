@@ -17,7 +17,7 @@
                     </p>
                 </div>
                 <div class="d-flex align-content-center flex-wrap gap-2">
-                    <a href="" class="btn btn-dark btn-sm mt-3"><i
+                    <a href="{{ route('customers.index') }}" class="btn btn-dark btn-sm mt-3"><i
                             class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
                         Back</a>
                 </div>
@@ -26,48 +26,17 @@
             <!-- Order Details Table -->
 
             <div class="row">
+
                 <div class="col-12 col-lg-8">
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h5 class="card-title m-0">Latest 5 Orders</h5>
-                        </div>
-                        <div class="card-body ">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Order #</th>
-                                        <th>Customer Name</th>
-                                        <th>Billing Amount</th>
-                                        <th>Remaining Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {{-- @foreach($latestOrders as $latestOrder) --}}
-                                    <tr>
-                                        <td>
-                                            <span class="badge bg-danger custom_danger_badge">
-                                               62626f</span>
-                                            <br>
-                                           <a href="">411155f</a>
-                                        </td>
-                                        <td>Souvik</td>
-
-                                        <td>10000</td>
-                                        <td class="">
-                                           200
-                                        </td>
-                                    </tr>
-                                    {{-- @endforeach --}}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-lg-4">
-                    <div class="card mb-4">
+                    <div class="card mb-4" style="height: 521px;">
                         <div class="card-body">
-                            <h5 class="card-title mb-4">Customer details</h5>
-
+                            <!-- <h5 class="card-title mb-4">Customer details</h5> -->
+                            <div class="d-flex justify-content-between">
+                                <h5 class="mb-1">Customer details</h5>
+                                <h6 class="mb-1">
+                                  <a href="{{ route('admin.customers.edit', ['id' => $customer->id]) }}" class="btn btn-outline-info custom-btn-sm">Edit</a>
+                                </h6>
+                            </div>
                             <div class="d-flex justify-content-start align-items-center mb-4">
                                 <div class="avatar me-3">
                                     @if ($customer && $customer->profile_image)
@@ -85,13 +54,10 @@
                                 <div class="shopping-cart">
                                     <i class="ri-shopping-cart-line" style="font-size: 24px; color: green;"></i>
                                 </div>
-                                <h6 class="text-nowrap mb-0">1 Orders</h6>
+                                <h6 class="text-nowrap mb-0">{{$customer->ordersAsCustomer->count()}} Orders</h6>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <h6 class="mb-1">Contact info</h6>
-                                <h6 class="mb-1">
-                                  <a href="{{ route('admin.customers.edit', ['id' => $customer->id]) }}" class="btn btn-outline-info custom-btn-sm">Edit</a>
-                                </h6>
                             </div>
                             <p class="mb-1"><i class="fas fa-envelope" style="font-size: 14px; color: #6c757d;"></i>
                                 {{$customer->email}}
@@ -115,26 +81,31 @@
                         </div>
                     </div>
 
-                    <div class="card mb-4">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="card-title mb-1">Shipping address</h5>
-                            {{-- <h6 class="m-0"><a href="{{route('admin.order.edit',$order->id)}}">Edit</a></h6> --}}
-                        </div>
-                        <div class="card-body">
-                        @if($customer->shippingAddressLatest)
-                            <p>{{ $customer->shippingAddressLatest->address }},{{ $customer->shippingAddressLatest->landmark }},{{ $customer->shippingAddressLatest->city }}, {{ $customer->shippingAddressLatest->state }},{{ $customer->shippingAddressLatest->country }} - {{ $customer->shippingAddressLatest->zip_code }}</p>
-                        @else
-                            <p>No shipping address available.</p>
-                        @endif
-                        </div>
+                    
+                   
+                </div>
 
-                    </div>
-                    <div class="card mb-6">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="card-title">Billing address</h5>
-                            {{-- <h6 class="m-0"><a href="{{route('admin.order.edit',$order->id)}}">Edit</a></h6> --}}
+
+                <div class="col-12 col-lg-4">
+                   
+
+                    <div class="card mb-4">
+                        <div class="card-body  p-3">
+                        <h5 class="card-title mb-0">Shipping address</h5>
+
+                            @if($customer->shippingAddressLatest)
+                                <p>{{ $customer->shippingAddressLatest->address }},{{ $customer->shippingAddressLatest->landmark }},{{ $customer->shippingAddressLatest->city }}, {{ $customer->shippingAddressLatest->state }},{{ $customer->shippingAddressLatest->country }} - {{ $customer->shippingAddressLatest->zip_code }}</p>
+                            @else
+                                <p>No shipping address available.</p>
+                            @endif
                         </div>
-                        <div class="card-body">
+                    </div>
+
+                    <div class="card mb-4">
+                        
+                        <div class="card-body p-3">
+                        <h5 class="card-title">Billing address</h5>
+
                             @if($customer->billingAddressLatest)
                             <p>{{ $customer->billingAddressLatest->address }},{{ $customer->billingAddressLatest->landmark }},{{ $customer->billingAddressLatest->city }}, {{ $customer->billingAddressLatest->state }},{{ $customer->billingAddressLatest->country }} - {{ $customer->billingAddressLatest->zip_code }}</p>
                             @else
@@ -143,35 +114,93 @@
                         </div>
 
                     </div>
-                    <div class="card mb-6">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="card-title">Account Information</h5>
-                            {{-- <h6 class="m-0"><a href="{{route('admin.order.edit',$order->id)}}">Edit</a></h6> --}}
-                        </div>
+                    <div class="card">
                         <div class="card-body">
-                        {{-- @if($customer->gst_number)--}}
+                        <h5 class="card-title">Account Information</h5>
+                         @if($customer->gst_certificate_image !=""||$customer->gst_number !=""||$customer->credit_limit !=""||$customer->credit_days !="")
                             <div class="avatar me-3">
                                 @if ($customer->gst_certificate_image)
                                 <img src="{{asset($customer->gst_certificate_image)}}" alt="Avatar"
                                     class="rounded-circle">
                                 @endif
                             </div>
+                                @if($customer->gst_number)
                             <p class="mb-1"><i class="fas fa-id-card" style="font-size: 14px; color: #6c757d;"></i>
                                 {{$customer->gst_number}}
                             </p>
-                            {{--  @endif--}}
-                           
+                                @endif 
+                                @if($customer->credit_limit)
                             <p class="mb-1"><i class="fas fa-credit-card" style="font-size: 14px; color: #6c757d;"></i>
                                 {{$customer->credit_limit}}
                             </p>
+                            @endif 
+                            @if($customer->credit_days)
                             <p class="mb-1"><i class="fas fa-calendar-day" style="font-size: 14px; color: #6c757d;"></i>
                                 {{$customer->credit_days}}
                             </p>
-                           
-                        </div>
+                            @endif 
 
+                            @else
+                        <div class="card-body">
+                            <p class="mb-1 text-muted">
+                                <i class="fas fa-info-circle" style="font-size: 14px; color: #6c757d;"></i>
+                                No information found.
+                            </p>
+                        </div>
+                        @endif
+                        </div>
+                     
+                        
+                    </div>
+                  
+                </div>
+
+
+
+                <div class="col-12 col-lg-12">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title m-0">Latest 10 Orders</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Add table-responsive for responsiveness -->
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Order #</th>
+                                            <th>Customer Name</th>
+                                            <th>Billing Amount</th>
+                                            <th>Remaining Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($latestOrders as $latestOrder)
+                                        <tr>
+                                            <td>
+                                                <span class="badge bg-danger custom_danger_badge">
+                                                    {{ $latestOrder->updated_at }}
+                                                </span>
+                                                <br>
+                                                <a href="{{ route('admin.order.view', $latestOrder->id) }}" class="text-primary text-decoration-underline">
+                                                    {{ $latestOrder->order_number }}
+                                                </a>
+                                            </td>
+                                            <td>{{ $latestOrder->customer->name }}</td>
+                                            <td>{{ number_format($latestOrder->total_amount, 2) }}</td>
+                                            <td class="{{ $latestOrder->remaining_amount > 0 ? 'text-danger' : 'text-success' }}">
+                                                {{ number_format($latestOrder->remaining_amount, 2) }}
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+               
             </div>
         </div>
     </div>
