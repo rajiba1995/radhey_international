@@ -232,7 +232,7 @@
                             @enderror
                         </div>
                     </div>
-                <button type="submit" class="btn bg-gradient-dark mt-4">Save</button>
+                <button type="submit" class="btn btn-dark mt-4">Save</button>
             </form>
         </div>
     </div>

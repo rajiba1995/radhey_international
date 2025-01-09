@@ -203,22 +203,22 @@
                     </div>
 
                     <div class="card mb-4">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="card-title mb-1">Shipping address</h5>
-                            {{-- <h6 class="m-0"><a href="{{route('admin.order.edit',$order->id)}}">Edit</a></h6> --}}
-                        </div>
+                        {{-- <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title">Shipping address</h5>
+                        </div> --}}
                         <div class="card-body">
+                            <h5 class="card-title">Shipping address</h5>
                             <p class="mb-0">{{$order->shipping_address}}</p>
                         </div>
 
                     </div>
                     <div class="card mb-6">
-                        <div class="card-header d-flex justify-content-between align-items-center">
+                        {{-- <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="card-title">Billing address</h5>
-                            {{-- <h6 class="m-0"><a href="{{route('admin.order.edit',$order->id)}}">Edit</a></h6> --}}
-                        </div>
+                        </div> --}}
                         <div class="card-body">
-                            <p class="mb-4">{{$order->billing_address}}</p>
+                            <h5 class="card-title">Billing address</h5>
+                            <p class="mb-0">{{$order->billing_address}}</p>
                         </div>
 
                     </div>

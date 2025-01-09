@@ -18,7 +18,7 @@
         <div class="card-body" id="sales_order_data">
             <form wire:submit.prevent="save">
                 <div class="{{$activeTab==1?"d-block":"d-none"}}" id="tab1">
-                    <div class="row d-flex justify-content-between align-items-center mb-3">
+                    <div class="row d-flex justify-content-end align-items-center mb-3">
                         <!-- Customer Information Badge -->
                         {{-- <div class="col-12 col-md-6 mb-2 mb-md-0">
                             <h6 class="badge bg-danger custom_danger_badge">Basic Information</h6>

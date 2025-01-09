@@ -37,7 +37,7 @@
                     <div class="row">               
                         <div class="mb-3 col-md-2">
                             <label class="form-label">Collection <span class="text-danger">*</span></label>
-                            <select wire:model="collection" wire:change="GetCollection($event.target.value)" class="form-control border border-2 p-2">
+                            <select wire:model="collection" wire:change="GetCollection($event.target.value)" class="form-control form-control-sm border border-1 p-2">
                                 <option value="" selected hidden>Select collection</option>
                                     @foreach($Collections as $items)
                                         <option value="{{ $items->id }}">{{ ucwords($items->title) }}@if($items->short_code)({{$items->short_code}})@endif</option>
@@ -50,7 +50,7 @@
                         <!-- Category Dropdown -->
                         <div class="mb-3 col-md-3">
                             <label class="form-label">Category <span class="text-danger">*</span></label>
-                            <select wire:model="category_id"  class="form-control border border-2 p-2">
+                            <select wire:model="category_id"  class="form-control form-control-sm border border-1 p-2">
                                 <option value="" selected hidden>Select Category</option>
                                 @if($categories && count($categories))
                                     @foreach($categories as $category)
@@ -66,7 +66,7 @@
                         <!-- Sub-Category Dropdown (depends on selected Category) -->
                         {{-- <div class="mb-3 col-md-4"> --}}
                             {{-- <label class="form-label">Sub Category</label>
-                            <select wire:model="sub_category_id" class="form-control border border-2 p-2">
+                            <select wire:model="sub_category_id" class="form-control form-control-sm border border-1 p-2">
                                 <option value="" selected hidden>Select Sub Category</option>
                                 @if($subCategories && count($subCategories))
                                     @foreach($subCategories as $subCategory)
@@ -82,7 +82,7 @@
                         <!-- Product Name -->
                         <div class="mb-3 col-md-5">
                             <label class="form-label">Product Name <span class="text-danger">*</span></label>
-                            <input wire:model="name" type="text" class="form-control border border-2 p-2" placeholder="Product Name" >
+                            <input wire:model="name" type="text" class="form-control form-control-sm border border-1 p-2" placeholder="Product Name" >
                             @error('name')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                             @enderror
@@ -91,7 +91,7 @@
                         <!-- HSN Code -->
                         <div class="mb-3 col-md-2">
                             <label class="form-label">Product Code <span class="text-danger">*</span></label>
-                            <input wire:model="product_code" type="text" class="form-control border border-2 p-2" placeholder="Product Code">
+                            <input wire:model="product_code" type="text" class="form-control form-control-sm border border-1 p-2" placeholder="Product Code">
                             @error('product_code')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                             @enderror
@@ -100,7 +100,7 @@
                         <!-- Short Description -->
                         <div class="mb-3 col-md-12">
                             <label class="form-label">Short Description</label>
-                            <textarea wire:model="short_description" id="short_description" class="form-control border border-2 p-2"></textarea>
+                            <textarea wire:model="short_description" id="short_description" class="form-control form-control-sm border border-1 p-2"></textarea>
                             @error('short_description')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                             @enderror
@@ -109,7 +109,7 @@
                         <!-- Description -->
                         <div class="mb-3 col-md-12">
                             <label class="form-label">Description</label>
-                            <textarea wire:model="description" id="description" class="form-control border border-2 p-2"></textarea>
+                            <textarea wire:model="description" id="description" class="form-control form-control-sm border border-1 p-2"></textarea>
                             @error('description')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                             @enderror
@@ -118,7 +118,7 @@
                         <!-- GST Details -->
                         <div class="mb-3 col-md-6">
                             <label class="form-label">GST Details (%)</label>
-                            <input wire:model="gst_details" type="text" class="form-control border border-2 p-2" placeholder="GST Percentage" >
+                            <input wire:model="gst_details" type="text" class="form-control form-control-sm border border-1 p-2" placeholder="GST Percentage" >
                             @error('gst_details')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                             @enderror
@@ -127,14 +127,14 @@
                         <!-- Product Image -->
                         <div class="mb-3 col-md-6">
                             <label class="form-label">Product Image</label>
-                            <input wire:model="product_image" type="file" class="form-control border border-2 p-2">
+                            <input wire:model="product_image" type="file" class="form-control form-control-sm border border-1 p-2">
                             @error('product_image')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                             @enderror
                         </div>
                 
                         <div class="col-12">
-                            <button type="submit" class="btn bg-gradient-dark">Submit</button>
+                            <button type="submit" class="btn btn-dark">Submit</button>
                         </div>
                     </div>
                 </form>
