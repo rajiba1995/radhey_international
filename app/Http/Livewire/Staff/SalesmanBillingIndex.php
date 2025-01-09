@@ -14,6 +14,14 @@ class SalesmanBillingIndex extends Component
     public $billing_id;
     public $numberLength;
     public $assign_new_salesman = false;
+    public $staff_id;
+
+    public function mount(){
+        $staff_id = request()->query('staff_id');
+        if($staff_id){
+            $this->staff_id = $staff_id;
+        }
+    }
 
     public function assignToNewSalesman($billingId){
        $this->assign_new_salesman = true;
@@ -223,7 +231,12 @@ class SalesmanBillingIndex extends Component
     public function render()
     {
         $salesman = User::where('designation',2)->get();
-        $billings = SalesmanBilling::with('salesman')->get();
+        $billings = SalesmanBilling::with('salesman')
+                    ->when($this->staff_id, function($query){
+                        $query->where('salesman_id',$this->staff_id);
+                    })
+                    ->get();
+
         return view('livewire.staff.salesman-billing-index',['salesmans'=>$salesman, 'billings' => $billings,]);
     }
 }

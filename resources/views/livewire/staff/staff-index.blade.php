@@ -93,6 +93,12 @@
                                                         <span class="material-icons">place</span>
                                                     </a>
                                                 @endif
+                                                @if ($member->designationDetails && $member->designationDetails->id == 2)
+                                                    <a href="{{route('salesman.index',['staff_id'=>$member->id])}}" class="btn btn-outline-info btn-sm custom-btn-sm">
+                                                        Bill
+                                                    </a>
+                                                @endif
+                                               
                                                
                                                {{-- <button wire:click="deleteProduct({{ $member->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm">Delete</button> --}}
                                             </td>

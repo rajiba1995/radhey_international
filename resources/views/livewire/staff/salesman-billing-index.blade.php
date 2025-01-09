@@ -35,6 +35,9 @@
                             <thead>
                                 <tr>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
+                                        Date & Time
+                                    </th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
                                         Salesman
                                     </th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
@@ -60,6 +63,10 @@
                                 @if ($billings->count()>0)
                                       @foreach($billings as  $billing)
                                     <tr>
+                                        <td>Created At:- 
+                                            {{date('d M Y',strtotime($billing->created_at))}}<br>
+                                            {{date('H:i A',strtotime($billing->created_at))}}
+                                        </td>
                                         <td class="align-middle text-center">{{ $billing->salesman? $billing->salesman->name : ""}}</td>
                                         <td class="align-middle text-center">{{ $billing->start_no}}</td>
                                         <td class="align-middle text-center">

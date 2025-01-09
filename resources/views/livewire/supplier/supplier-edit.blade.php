@@ -1,10 +1,12 @@
 <div class="container-fluid px-2 px-md-4">
     <div class="card card-body">
+        <h4 class="m-0">Update Supplier </h4>
         <div class="card card-plain h-100">
             <div class="card-header pb-0 p-3">
-                <div class="row">
-                    <div class="col-md-8 d-flex align-items-center">
-                        <h5 class="mb-3">Supplier Information</h5>
+                <div class="row mt-2">
+                     {{-- Supplier Information --}}
+                     <div class="col-md-8 d-flex align-items-center">
+                        <h6 class="badge bg-danger custom_danger_badge">Basic Information</h6>
                     </div>
                     <div class="col-md-4 text-end">
                         <a href="{{ route('suppliers.index') }}" class="btn btn-dark btn-sm">
@@ -17,10 +19,10 @@
             
             <div class="card-body p-3">
                 <form wire:submit.prevent="updateSupplier">
-                    <div class="row">
+                    <div class="row mb-2">
                         <!-- Supplier Details -->
                         <div class="mb-3 col-md-6">
-                            <label for="name" class="form-label">Supplier Name</label>
+                            <label for="name" class="form-label">Supplier Name <span class="text-danger">*</span></label>
                             <input type="text" wire:model="name" id="name" class="form-control border border-2 p-2" placeholder="Enter supplier name">
                             @error('name')
                                 <div class="text-danger">{{ $message }}</div>
@@ -36,14 +38,14 @@
                         </div>
                         <div class="row">
                             <div class="mb-3 col-md-6">
-                                <label for="mobile" class="form-label">Mobile</label>
+                                <label for="mobile" class="form-label">Phone Number <span class="text-danger">*</span></label>
                                 <input type="number" id="mobile" wire:model="mobile" class="form-control border border-2 p-2" placeholder="Enter mobile number">
                                 @error('mobile')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="mb-3 col-md-6">
-                                <label for="is_wa_same" class="form-label">WhatsApp number </label>
+                                <label for="is_wa_same" class="form-label">WhatsApp number <span class="text-danger">*</span></label>
                                     <div class="d-flex align-items-center">
                                     <input type="number" wire:model="whatsapp_no" id="whatsapp_no" class="form-control border border-2 p-2 me-2" placeholder="Enter WhatsApp number" @if ($is_wa_same) disabled @endif>
 
@@ -59,10 +61,12 @@
                     </div>
 
                     <!-- Billing Address -->
-                    <h5 class="mt-4"> Address Information</h5>
-                    <div class="row">
+                    <div class="col-md-8 mb-2 d-flex align-items-center">
+                        <h6 class="badge bg-danger custom_danger_badge">Address Information</h6>
+                    </div>
+                    <div class="row mb-3">
                         <div class="mb-3 col-md-6">
-                            <label for="billing_address" class="form-label">Address</label>
+                            <label for="billing_address" class="form-label">Address <span class="text-danger">*</span></label>
                             <input type="text" wire:model="billing_address" id="billing_address" class="form-control border border-2 p-2" placeholder="Enter billing address">
                             @error('billing_address')
                                 <div class="text-danger">{{ $message }}</div>
@@ -76,35 +80,38 @@
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="billing_city" class="form-label">City</label>
+                            <label for="billing_city" class="form-label">City <span class="text-danger">*</span></label>
                             <input type="text" wire:model="billing_city" id="billing_city" class="form-control border border-2 p-2" placeholder="Enter city">
                             @error('billing_city')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="billing_state" class="form-label">State</label>
+                            <label for="billing_state" class="form-label">State <span class="text-danger">*</span></label>
                             <input type="text" wire:model="billing_state" id="billing_state" class="form-control border border-2 p-2" placeholder="Enter state">
                             @error('billing_state')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="billing_country" class="form-label">Country</label>
+                            <label for="billing_country" class="form-label">Country <span class="text-danger">*</span></label>
                             <input type="text" wire:model="billing_country" id="billing_country" class="form-control border border-2 p-2" placeholder="Enter country">
                             @error('billing_country')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="billing_pin" class="form-label">Pin Code</label>
+                            <label for="billing_pin" class="form-label">Zip Code</label>
                             <input type="text" wire:model="billing_pin" id="billing_pin" class="form-control border border-2 p-2" placeholder="Enter PIN">
                             @error('billing_pin')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
-                    <h5 class="mt-4">Account Information</h5>
+                    {{-- Account Information --}}
+                    <div class="col-md-8 mb-2 d-flex align-items-center">
+                        <h6 class="badge bg-danger custom_danger_badge">Account Information</h6>
+                    </div>
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label for="gst_number" class="form-label">GST Number</label>
@@ -143,7 +150,7 @@
                             @enderror
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-success mt-4">Save</button>
+                    <button type="submit" class="btn btn-dark mt-4">Save</button>
                 </form>
             </div>
         </div>

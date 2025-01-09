@@ -632,6 +632,7 @@ class OrderNew extends Component
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::error('Error saving order: ' . $e->getMessage());
+            dd($e->getMessage());
             session()->flash('error', '🚨 Something went wrong. The operation has been rolled back.');
         }
     }

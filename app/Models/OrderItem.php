@@ -32,6 +32,11 @@ class OrderItem extends Model
         return $this->belongsTo(Collection::class, 'collection', 'id');
     }
 
+    public function collectionType()
+    {
+        return $this->belongsTo(Collection::class, 'collection', 'id');
+    }
+
     public function measurements()
     {
         return $this->hasMany(OrderMeasurement::class);

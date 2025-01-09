@@ -25,7 +25,10 @@
 
                 <div class="d-flex align-items-center">
                     <!-- Text Search -->
-
+                    <label for="start_date" class="ms-2">Start Date</label>
+                    <input type="date" name="start_date" wire:model="start_date" class="form-control border border-1 ms-2" id="start_date">
+                    <label for="end_date" class="ms-2">End Date</label>
+                    <input type="date" name="end_date" wire:model="end_date" id="end_date" class="form-control border border-1 ms-2">
                       <!-- Dropdown for Created By -->
                       <select 
                         wire:model="created_by" 

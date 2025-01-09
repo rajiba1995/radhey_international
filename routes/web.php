@@ -151,7 +151,6 @@ Route::group(['prefix' => 'products'], function () {
         Route::get('/new', OrderNew::class)->name('admin.order.new');
         Route::get('/edit/{id}', OrderEdit::class)->name('admin.order.edit');
         Route::get('/view/{id}', OrderView::class)->name('admin.order.view');
-
         Route::get('/ledger/{id}', LedgerView::class)->name('admin.order.ledger.view');
     });
 });

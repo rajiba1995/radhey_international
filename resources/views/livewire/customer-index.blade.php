@@ -69,7 +69,11 @@
                                         @if($user->email != 'admin@gmail.com') 
                                             <tr>
                                                 <td>
-                                                    <img src="{{asset($user->profile_image)}}" alt="profile-image" width="85px">
+                                                    @if ($user->profile_image)
+                                                        <img src="{{asset($user->profile_image)}}" alt="profile-image" width="85px">
+                                                    @else
+                                                        <img src="{{asset("assets/img/profile_image.png")}}" alt="profile-image" width="85px">
+                                                    @endif
                                                 </td>
                                                 <td>
                                                     <div class="d-flex px-2 py-1">

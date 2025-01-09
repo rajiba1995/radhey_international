@@ -83,7 +83,7 @@
                                             
                                                 @forelse($order->items as $key => $item)
                                                     <tr>
-                                                        <td>{{ $item->collection && is_object($item->collection) ? $item->collection->title : 'N/A' }}</td> <!-- Display the product code or 'N/A' if not available -->
+                                                        <td>{{ $item->collectionType && is_object($item->collectionType) ? $item->collectionType->title : 'N/A' }}</td> <!-- Display the product code or 'N/A' if not available -->
                                                         <td>{{ $item->fabrics?$item->fabrics: 'N/A' }}</td> <!-- Display the product code or 'N/A' if not available -->
                                                         <td>{{ $item->product_name?$item->product_name: 'N/A' }}</td> <!-- Display the product code or 'N/A' if not available -->
                                                         <td class="text-end">{{ number_format($item->price, 2) }}</td> <!-- Calculate total price -->
