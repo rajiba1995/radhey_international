@@ -59,7 +59,18 @@ class StaffAdd extends Component
             'city' => 'nullable|string|max:255',
             'pincode' => 'nullable|string|max:10',
             'country' => 'nullable|string|max:255',
-       ]);
+
+       ],
+        [
+       
+            'mobile.required' => 'The mobile number is required.',
+            'mobile.regex' => 'The mobile number must have at least ' . env('VALIDATE_MOBILE', 8) . ' digits.',
+            'mobile.unique' => 'The mobile number has already been taken.',
+            'whatsapp_no.required' => 'The WhatsApp number is required.',
+            'whatsapp_no.regex' => 'The WhatsApp number must have at least ' . env('VALIDATE_WHATSAPP', 8) . ' digits.',
+        ]
+    );
+       
        DB::beginTransaction();
 
        try {
