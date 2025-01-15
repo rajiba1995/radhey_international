@@ -106,7 +106,7 @@
             </li>
         
             <!-- Submenu -->
-            <ul id="productManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['product.view', 'product.gallery', 'product.add', 'product.update', 'admin.categories', 'admin.subcategories', 'measurements.index', 'product.fabrics','admin.collections.index']) ? 'show' : '' }}">  
+            <ul id="productManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['product.view', 'product.gallery', 'product.add', 'product.update', 'admin.categories', 'admin.subcategories', 'measurements.index', 'product.fabrics','admin.collections.index','admin.fabrics.index']) ? 'show' : '' }}">  
                 <li class="nav-item">
                     <a class="nav-link text-white {{ Request::is('admin/products/collections') ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('admin.collections.index')}}">
@@ -120,26 +120,17 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'admin.fabrics.index' ? 'active bg-gradient-primary' : '' }}"
+                        href="{{route('admin.fabrics.index')}}">
+                         Fabrics
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link text-white {{ Route::currentRouteName() == 'product.view' ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('product.view')}}">
                          Products
                     </a>
                 </li>
-                
-               
-                {{-- <li class="nav-item">
-                    <a class="nav-link text-white {{ Route::currentRouteName() == 'admin.subcategories' || Route::currentRouteName() == 'measurements.index' ? 'active bg-gradient-primary' : '' }}"
-                        href="{{ route('admin.subcategories') }}">
-                        Sub Categories
-                    </a>
-                </li> --}}
-                {{-- <li class="nav-item">
-                    <a class="nav-link text-white {{ Route::currentRouteName() == 'admin.fabrics.index' ? 'active bg-gradient-primary' : '' }}"
-                        href="{{route('admin.fabrics.index')}}">
-                        Fabrics
-                    </a>
-                </li> --}}
-                
             </ul>
             <li class="nav-item">
                 <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add','salesman.index']) ? 'active bg-gradient-primary' : '' }}"

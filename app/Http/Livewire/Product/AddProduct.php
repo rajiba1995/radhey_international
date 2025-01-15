@@ -7,7 +7,8 @@ use App\Models\Category;
 use App\Models\SubCategory;
 use App\Models\Product;
 use App\Models\Collection;
-use App\Models\CollectionType;
+// use App\Models\CollectionType;
+use App\Models\Fabric;
 use Livewire\WithFileUploads;
 
 class AddProduct extends Component
@@ -17,12 +18,15 @@ class AddProduct extends Component
     public $Collections = [];
     // public $subCategories = [];
     public $collection,$category_id,$sub_category_id,$name,$product_code,$short_description,$description,$gst_details,$product_image;
-   
+    public $selectedFabrics = [];
+    public $fabrics = [];
+
     public function mount()
     {
         // Load categories when the component is mounted
         // $this->categories = Category::where('status', 1)->orderBy('title','ASC')->get() ?? collect();
         // $this->subCategories = []; 
+        $this->fabrics = Fabric::all();
         $this->Collections = Collection::orderBy('title', 'ASC')->get() ?? collect();
       
     }
@@ -39,6 +43,7 @@ class AddProduct extends Component
             'category_id' => 'required',
             // 'sub_category_id' => 'nullable',
             'name' => 'required|string|max:255',
+            'selectedFabrics' => 'required|array',
             'product_code' => 'required|string|max:10',
             'short_description' => 'nullable|string|max:255',
             'description' => 'nullable|string',
@@ -52,7 +57,7 @@ class AddProduct extends Component
         }
 
         // Create the product record in the database
-        Product::create([
+        $product = Product::create([
             'collection_id' => $this->collection,
             'category_id' => $this->category_id,
             // 'sub_category_id' => $this->sub_category_id,
@@ -63,16 +68,13 @@ class AddProduct extends Component
             'gst_details' => $this->gst_details,
             'product_image' => $imagePath ?? null, // Image path is nullable if no image is uploaded
         ]);
-
+        
+        $product->fabrics()->attach($this->selectedFabrics);
         session()->flash('message', 'Product created successfully!');
         return redirect()->route('product.view');
     }
 
-    // public function GetSubcat($category_id){
-    //     $this->subCategories = SubCategory::where('category_id', $category_id)->where('status', 1)  // Ensure only active sub-categories
-    //     ->get() ?? collect();
-    //     $this->sub_category_id = null; // Reset sub-category when category changes
-    // }
+    
 
     public function render()
     {

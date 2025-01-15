@@ -48,7 +48,7 @@
                             @enderror
                         </div>
                         <!-- Category Dropdown -->
-                        <div class="mb-3 col-md-3">
+                        <div class="mb-3 col-md-4">
                             <label class="form-label">Category <span class="text-danger">*</span></label>
                             <select wire:model="category_id"  class="form-control form-control-sm border border-1 p-2">
                                 <option value="" selected hidden>Select Category</option>
@@ -62,38 +62,39 @@
                                  <p class='text-danger inputerror'>{{ $message }} </p>
                             @enderror
                         </div>
-                
-                        <!-- Sub-Category Dropdown (depends on selected Category) -->
-                        {{-- <div class="mb-3 col-md-4"> --}}
-                            {{-- <label class="form-label">Sub Category</label>
-                            <select wire:model="sub_category_id" class="form-control form-control-sm border border-1 p-2">
-                                <option value="" selected hidden>Select Sub Category</option>
-                                @if($subCategories && count($subCategories))
-                                    @foreach($subCategories as $subCategory)
-                                        <option value="{{ $subCategory->id }}">{{ $subCategory->title }}</option>
-                                    @endforeach
-                                @endif
-                            </select> --}}
-                            {{-- @error('sub_category_id')
-                                <p class='text-danger inputerror'>{{ $message }} </p>
-                            @enderror --}}
-                        {{-- </div> --}}
-                
+                        
+                       
+                        
+
                         <!-- Product Name -->
-                        <div class="mb-3 col-md-5">
+                        <div class="mb-3 col-md-4">
                             <label class="form-label">Product Name <span class="text-danger">*</span></label>
                             <input wire:model="name" type="text" class="form-control form-control-sm border border-1 p-2" placeholder="Product Name" >
                             @error('name')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                             @enderror
                         </div>
-                
+
                         <!-- HSN Code -->
                         <div class="mb-3 col-md-2">
                             <label class="form-label">Product Code <span class="text-danger">*</span></label>
                             <input wire:model="product_code" type="text" class="form-control form-control-sm border border-1 p-2" placeholder="Product Code">
                             @error('product_code')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
+                            @enderror
+                        </div>
+                        <div class="mb-3 col-md-2">
+                            <label class="form-label">Fabrics <span class="text-danger">*</span></label>
+                            <div class="form-check d-flex flex-wrap">
+                                @foreach($fabrics as $fabric)
+                                    <input wire:model="selectedFabrics" type="checkbox" value="{{ $fabric->id }}" class="form-check-input" id="fabric-{{ $fabric->id }}">
+                                    <label class="form-check-label" for="fabric-{{ $fabric->id }}">
+                                        {{ $fabric->title }}
+                                    </label><br>
+                                @endforeach
+                            </div>
+                            @error('selectedFabrics')
+                                <p class="text-danger inputerror">{{ $message }}</p>
                             @enderror
                         </div>
                 

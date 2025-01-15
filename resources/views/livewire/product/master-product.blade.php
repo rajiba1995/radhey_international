@@ -85,12 +85,7 @@
                                                     @endif
                                                 </span>
                                             </td>
-                                            {{-- <td>
-                                                <span class="badge bg-danger custom_danger_badge">{{ $product->collection?$product->collection->type->title:""}}</span>
-                                                <p class="text-secondary text-xs font-weight-bold">
-                                                    {{ $product->collection?$product->collection->title:""}}
-                                                </p>
-                                            </td> --}}
+                                            
                                             <td>
          
                                                 <p class="text-xs font-weight-bold mb-0">
@@ -121,7 +116,7 @@
                                                 </a>
                                                 <button wire:click="deleteProduct({{ $product->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm"><span class="material-icons">delete</span></button>
                                                 <a href="{{route('product.gallery',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm">Gallery </a>
-                                                <a href="{{route('product.fabrics',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm">Fabrics <span class="count">18</span></a>
+                                                {{-- <a href="{{route('product.fabrics',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm">Fabrics <span class="count">18</span></a> --}}
                                                 <a href="{{ route('measurements.index',$product->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm" title="">Measurement
                                                     <span class="count">18</span></a>
                                             </td>

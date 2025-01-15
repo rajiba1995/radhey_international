@@ -40,7 +40,11 @@
                                   
                                         <tr data-id="{{ $fabric->id }}" class="handle">
                                             <td class="align-middle text-center">
-                                                <img src="{{ asset($fabric->image) }}" alt="Fabric Image" width="100">
+                                             @if ($fabric->image)
+                                                 <img src="{{ asset($fabric->image) }}" alt="Fabric Image" width="70" style="border-radius: 10px;">
+                                             @else
+                                                 <img src="{{ asset('assets/img/fabric.webp') }}" alt="Fabric Image" width="70" style="border-radius: 10px;">
+                                             @endif
                                             </td>
                                             <td class="align-middle text-center">{{ ucwords($fabric->title) }}</td>
                                             <td class="align-middle text-center">
@@ -97,7 +101,7 @@
                             <div class="form-group mb-3">
                                 <label for="threshold_price">Threshold Price</label>
                                 <input 
-                                    type="text" 
+                                    type="number" 
                                     id="threshold_price" 
                                     wire:model="threshold_price" 
                                     class="form-control border border-2 p-2" 
