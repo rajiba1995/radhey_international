@@ -53,12 +53,12 @@ class AdminLogin extends Component
             }
 
             session()->regenerate();
-            return redirect()->route('admin.dashboard'); // Redirect to admin dashboard
-
-        } elseif ($user->user_type == 0) { // Staff login (assuming user_type 0 means staff)
-            // Use the default auth guard for staff
+            return redirect()->route('dashboard'); // Redirect to admin dashboard
+            
+        } elseif ($user->user_type == 0) { // Salesman login (assuming user_type 0 means salesman)
+            // Use the default auth guard for salesman
             $creds = ['email' => $this->email, 'password' => $this->password];
-
+            
             if (! Auth::attempt($creds)) {
                 throw ValidationException::withMessages([
                     'email' => 'Your provided credentials could not be verified.',
@@ -66,7 +66,7 @@ class AdminLogin extends Component
             }
 
             session()->regenerate();
-            return redirect()->route('product.view'); // Redirect to staff dashboard
+            return redirect()->route('dashboard'); // Redirect to staff dashboard
 
         }else {
             throw ValidationException::withMessages([

@@ -9,6 +9,7 @@ use App\Models\Product;
 use Livewire\WithFileUploads;
 use App\Models\Collection;
 use App\Models\CollectionType;
+use App\Models\Fabric;
 use Illuminate\Support\Facades\Log;
 
 
@@ -31,6 +32,8 @@ class UpdateProduct extends Component
     public $subCategories = []; // For subcategories dropdown
     public $existing_image;
     public $Collections = [];
+    public $selectedFabrics = [];
+    public $fabrics = [];
 
     public function mount($product_id)
     {
@@ -50,20 +53,18 @@ class UpdateProduct extends Component
                                     ->where('status', 1) 
                                     ->orderBy('title', 'ASC')
                                     ->get();
-        // $this->subCategories = SubCategory::where('category_id', $this->category_id)->get(); // Load subcategories
+       
         $this->existing_image = $product->product_image; // Store existing image path
         $this->Collections = Collection::orderBy('title', 'ASC')->get();
+        $this->fabrics = Fabric::all();
+        $this->selectedFabrics = $product->fabrics->pluck('id')->toArray();
     }
     // Collection wise category
     public function GetCollection($id){
         $this->categories = Category::where('collection_id', $id)->where('status', 1)->orderBy('title','ASC')->get() ?? collect();
     }
     
-    // public function GetSubcat($categoryId)
-    // {
-    //     $this->subCategories = SubCategory::where('category_id', $categoryId)->get();
-    // }
-
+    
   
     public function update()
     {
@@ -73,6 +74,7 @@ class UpdateProduct extends Component
             'collection' => 'required',
             'category_id' => 'required',
             // 'sub_category_id' => 'required',
+            'selectedFabrics' => 'nullable|array',
             'name' => 'required|string|max:255',
             'product_code' => 'required|string|max:50',
             'short_description' => 'nullable|string|max:500',
@@ -107,7 +109,7 @@ class UpdateProduct extends Component
                 ? $this->product_image->store('products', 'public') 
                 : $product->product_image, // Keep existing image if not changed
         ]);
-
+        $product->fabrics()->sync($this->selectedFabrics);
         session()->flash('message', 'Product updated successfully!');
         return redirect()->route('product.view');
     }

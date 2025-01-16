@@ -17,19 +17,19 @@
                             </div>
                         </div>
                     </div>
-                        <div class="card-body px-0 pb-2">
-                            <div class="d-flex flex-wrap">
-                                @foreach($galleries as $gallery)
-                                    <div class="image-box position-relative mb-4" style="width: 15%; padding-right: 10px;">
-                                        <img src="{{ asset($gallery->image) }}" alt="no-img" class="img-fluid">
-                                        <!-- Cross button (delete) -->
-                                        <button wire:click="destroy({{ $gallery->id }})" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle p-1 btn-cross">
-                                            <span class="material-icons">close</span>
-                                        </button>
-                                    </div>
-                                @endforeach
-                            </div>
+                    <div class="card-body px-0 pb-2">
+                        <div class="d-flex flex-wrap">
+                            @foreach($galleries as $gallery)
+                                <div class="image-box position-relative mb-4" style="width: 15%; padding-right: 10px;">
+                                    <img src="{{ asset($gallery->image) }}" alt="no-img" class="img-fluid">
+                                    <!-- Cross button (delete) -->
+                                    <button wire:click="destroy({{ $gallery->id }})" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle p-1 btn-cross">
+                                        <span class="material-icons">close</span>
+                                    </button>
+                                </div>
+                            @endforeach
                         </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -83,7 +83,7 @@
                             <td>
                                 <span class="badge bg-danger custom_danger_badge"> {{ $order->created_at->format('Y-m-d H:i') }}</span>
                                 <br>
-                                {{ $order->order_number }}
+                                {{ env('ORDER_PREFIX').$order->order_number }}
                             </td>
                             <td>{{ $order->customer_name }}</td>
                             {{-- <td>{{ $order->billing_address }}</td>

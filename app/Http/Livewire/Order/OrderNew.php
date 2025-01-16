@@ -17,6 +17,7 @@ use App\Models\Ledger;
 use App\Models\OrderMeasurement;
 use Illuminate\Support\Facades\DB;
 use Auth;
+use App\Helpers\Helper;
 
 class OrderNew extends Component
 {
@@ -46,6 +47,8 @@ class OrderNew extends Component
     public $billing_amount = 0;
     public $remaining_amount = 0;
     public $payment_mode = null;
+    public $order_number;
+    public $bill_book = [];
 
     public function mount(){
         $user_id = request()->query('user_id');
@@ -87,6 +90,8 @@ class OrderNew extends Component
         $this->customers = User::where('user_type', 1)->where('status', 1)->orderBy('name', 'ASC')->get();
         $this->categories = Category::where('status', 1)->orderBy('title', 'ASC')->get();
         $this->collections = Collection::orderBy('title', 'ASC')->get();
+        $this->bill_book = Helper::generateInvoiceBill();
+        $this->order_number = $this->bill_book['number'];
         $this->addItem();
     }
 
@@ -98,6 +103,7 @@ class OrderNew extends Component
         'paid_amount' => 'required|numeric|min:1',   // Ensuring that price is a valid number (and greater than or equal to 0).
         'payment_mode' => 'required|string',  // Ensuring that price is a valid number (and greater than or equal to 0).
         'items.*.measurements.*' => 'nullable|string',
+        'order_number' => 'required|numeric|unique:orders,order_number|min:1',
     ];
     public function FindCustomer($term)
     {
@@ -363,10 +369,11 @@ class OrderNew extends Component
                                                             ->where('status', 1)
                                                             ->orderBy('position','ASC')
                                                             ->get();
-        // Get the fabrics available for the selected product
-        $this->items[$index]['fabrics'] = Fabric::where('product_id', $id)
-                                                  ->where('status', 1)
-                                                  ->get();
+       // Get the fabrics available for the selected product via ProductFabrics
+    $this->items[$index]['fabrics'] = Fabric::join('product_fabrics', 'fabrics.id', '=', 'product_fabrics.fabric_id')
+                                        ->where('product_fabrics.product_id', $id)
+                                        ->where('fabrics.status', 1)
+                                        ->get(['fabrics.*']);
         
         // Clear any previous measurement error session
         session()->forget('measurements_error.' . $index);
@@ -405,6 +412,7 @@ class OrderNew extends Component
     public function save()
     {
         $this->validate();
+        
 
         DB::beginTransaction(); // Begin transaction
 
@@ -550,10 +558,18 @@ class OrderNew extends Component
                     }
                 }
             }
+            
+            
+            if (!empty($this->order_number)) {
+                $order_number = $this->order_number;
+            } else {
+                $invoiceData = Helper::generateInvoiceBill();
+                $order_number =  $invoiceData['number'];
+            }
 
             // Create the order
             $order = new Order();
-            $order->order_number = 'ORD-' . strtoupper(uniqid());
+            $order->order_number = $order_number;
             $order->customer_id = $user->id;
             $order->customer_name = $this->name;
             $order->customer_email = $this->email;
@@ -624,6 +640,9 @@ class OrderNew extends Component
                     }
                 }
             }
+
+            // Update Bill Number
+
 
             DB::commit();
 

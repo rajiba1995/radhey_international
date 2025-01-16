@@ -86,7 +86,7 @@
                             <!-- Measurement Title -->
                             <div class="form-group mb-3">
                                 <input type="hidden" wire:model="product_id" id="product_id">
-                                <label for="title">Fabric Title</label>
+                                <label for="title">Fabric Title <span class="text-danger">*</span></label>
                                 <input 
                                     type="text" 
                                     id="title" 
@@ -99,13 +99,13 @@
                                 @enderror
                             </div>
                             <div class="form-group mb-3">
-                                <label for="threshold_price">Threshold Price</label>
+                                <label for="threshold_price">Threshold Price <span class="text-danger">*</span></label>
                                 <input 
                                     type="number" 
                                     id="threshold_price" 
                                     wire:model="threshold_price" 
                                     class="form-control border border-2 p-2" 
-                                    placeholder="Enter Theresh Hold Price" 
+                                    placeholder="Enter Thereshold Price" 
                                     aria-describedby="thresholdpriceHelp">
                                 @error('threshold_price') 
                                     <small id="thresholdpriceHelp" class="text-danger">{{ $message }}</small> 

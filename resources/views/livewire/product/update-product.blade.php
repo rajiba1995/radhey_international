@@ -72,7 +72,7 @@
                             @enderror
                         </div>
                 
-                        <!-- HSN Code -->
+                        <!-- Product Code -->
                         <div class="mb-3 col-md-2">
                             <label class="form-label">Product Code <span class="text-danger">*</span></label>
                             <input wire:model="product_code" type="text" class="form-control form-control-sm border border-1 p-2" placeholder="Product Code">
@@ -80,7 +80,7 @@
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                             @enderror
                         </div>
-                
+
                         <!-- Short Description -->
                         <div class="mb-3 col-md-12">
                             <label class="form-label">Short Description</label>
@@ -100,7 +100,7 @@
                         </div>
                 
                         <!-- GST Details -->
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-2">
                             <label class="form-label">GST Details (%)</label>
                             <input wire:model="gst_details" type="text" class="form-control form-control-sm border border-1 p-2" placeholder="GST Percentage">
                             @error('gst_details')
@@ -109,7 +109,7 @@
                         </div>
                 
                         <!-- Product Image -->
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-4">
                             <label class="form-label">Product Image</label>
                             <input wire:model="product_image" type="file" class="form-control form-control-sm border border-1 p-2">
                              <!-- Show Existing Image -->
@@ -118,6 +118,22 @@
                            @endif
                             @error('product_image')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
+                            @enderror
+                        </div>
+
+                         {{-- Fabrics --}}
+                         <div class="mb-3 col-md-6">
+                            <label class="form-label">Fabrics </label>
+                            <div class="form-check d-flex flex-wrap">
+                                @foreach($fabrics as $fabric)
+                                    <input wire:model="selectedFabrics" type="checkbox" value="{{ $fabric->id }}" class="form-check-input" id="fabric-{{ $fabric->id }}"  {{in_array($fabric->id,$selectedFabrics) ? "checked" : ""}}>
+                                    <label class="form-check-label" for="fabric-{{ $fabric->id }}">
+                                        {{ $fabric->title }}
+                                    </label><br>
+                                @endforeach
+                            </div>
+                            @error('selectedFabrics')
+                                <p class="text-danger inputerror">{{ $message }}</p>
                             @enderror
                         </div>
                 
@@ -133,7 +149,7 @@
     </div>
 
 </div>
-{{-- <script src="https://cdn.ckeditor.com/ckeditor5/38.1.0/classic/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/38.1.0/classic/ckeditor.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     ClassicEditor
@@ -148,4 +164,4 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 });
 
-</script> --}}
+</script>

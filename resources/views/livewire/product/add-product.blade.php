@@ -63,9 +63,6 @@
                             @enderror
                         </div>
                         
-                       
-                        
-
                         <!-- Product Name -->
                         <div class="mb-3 col-md-4">
                             <label class="form-label">Product Name <span class="text-danger">*</span></label>
@@ -75,7 +72,7 @@
                             @enderror
                         </div>
 
-                        <!-- HSN Code -->
+                        <!-- Product Code -->
                         <div class="mb-3 col-md-2">
                             <label class="form-label">Product Code <span class="text-danger">*</span></label>
                             <input wire:model="product_code" type="text" class="form-control form-control-sm border border-1 p-2" placeholder="Product Code">
@@ -83,20 +80,7 @@
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                             @enderror
                         </div>
-                        <div class="mb-3 col-md-2">
-                            <label class="form-label">Fabrics <span class="text-danger">*</span></label>
-                            <div class="form-check d-flex flex-wrap">
-                                @foreach($fabrics as $fabric)
-                                    <input wire:model="selectedFabrics" type="checkbox" value="{{ $fabric->id }}" class="form-check-input" id="fabric-{{ $fabric->id }}">
-                                    <label class="form-check-label" for="fabric-{{ $fabric->id }}">
-                                        {{ $fabric->title }}
-                                    </label><br>
-                                @endforeach
-                            </div>
-                            @error('selectedFabrics')
-                                <p class="text-danger inputerror">{{ $message }}</p>
-                            @enderror
-                        </div>
+                        
                 
                         <!-- Short Description -->
                         <div class="mb-3 col-md-12">
@@ -117,7 +101,7 @@
                         </div>
                 
                         <!-- GST Details -->
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-2">
                             <label class="form-label">GST Details (%)</label>
                             <input wire:model="gst_details" type="text" class="form-control form-control-sm border border-1 p-2" placeholder="GST Percentage" >
                             @error('gst_details')
@@ -126,11 +110,27 @@
                         </div>
                 
                         <!-- Product Image -->
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-4">
                             <label class="form-label">Product Image</label>
                             <input wire:model="product_image" type="file" class="form-control form-control-sm border border-1 p-2">
                             @error('product_image')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
+                            @enderror
+                        </div>
+
+                        {{-- Fabrics --}}
+                        <div class="mb-3 col-md-6">
+                            <label class="form-label">Fabrics <span class="text-danger">*</span></label>
+                            <div class="form-check d-flex flex-wrap">
+                                @foreach($fabrics as $fabric)
+                                    <input wire:model="selectedFabrics" type="checkbox" value="{{ $fabric->id }}" class="form-check-input" id="fabric-{{ $fabric->id }}">
+                                    <label class="form-check-label" for="fabric-{{ $fabric->id }}">
+                                        {{ $fabric->title }}
+                                    </label><br>
+                                @endforeach
+                            </div>
+                            @error('selectedFabrics')
+                                <p class="text-danger inputerror">{{ $message }}</p>
                             @enderror
                         </div>
                 

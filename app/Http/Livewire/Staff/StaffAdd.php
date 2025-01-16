@@ -94,7 +94,7 @@ class StaffAdd extends Component
                 'image' =>  $imagePath ?? "",
                 'user_id_front' =>  $userIdFrontPath ?? "",
                 'user_id_back' => $userIdBackPath ?? "",
-                'password'=>Hash::make('1234')
+                'password'=>Hash::make('secret')
             ]);
 
             // 2. Save the data into the user_banks table

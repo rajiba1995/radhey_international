@@ -459,6 +459,23 @@
                                          </select>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td class="w-70"><label class="form-label"><strong>Order Number</strong></label></td>
+                                    <td>
+                                        <!-- Remaining Amount -->
+                                        <input type="text" class="form-control form-control-sm text-center border border-1" wire:model="order_number" {{$bill_book['status']==1?"disabled":""}} value="{{$order_number}}">
+                                        @if($order_number === '0000')
+                                            <span class="text-danger mt-2">⚠️ Please assign a salesman first, then you can place the order.</span>
+                                        @endif
+                                    </td>
+                                </tr> 
+                                @error('order_number') 
+                                <tr>
+                                    <td colspan="2">
+                                        <div class="text-danger">{{ $message }}</div>
+                                    </td>    
+                                </tr>  
+                                @enderror 
                             </table>
                            
                         </div>
