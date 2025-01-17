@@ -44,6 +44,7 @@ class AddProduct extends Component
             // 'sub_category_id' => 'nullable',
             'name' => 'required|string|max:255',
             'selectedFabrics' => 'required|array',
+            'selectedFabrics.*' => 'exists:fabrics,id',
             'product_code' => 'required|string|max:10',
             'short_description' => 'nullable|string|max:255',
             'description' => 'nullable|string',

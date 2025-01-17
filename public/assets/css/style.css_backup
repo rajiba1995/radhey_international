@@ -21,6 +21,10 @@ button[disabled] {
     cursor: not-allowed;
     opacity: 0.5;
 }
+a{
+    color: #e91e63;
+    text-decoration: none;
+}
 .custom-btn-sm{
     padding: 0.10rem 0.8rem !important;
 }
@@ -78,6 +82,19 @@ button[disabled] {
    font-size: 10px;
 
 }
+.shopping-cart{
+    background-color: #DFF6DD;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+}
+
+
+      
 
 /**
  * Multiple Select2
@@ -457,130 +474,4 @@ button[disabled] {
     font-weight: 500;
 }
 
-/* 14-01-2025 */
-.btn-cta {
-    font-size: 12px;
-    font-weight: 400;
-    color: #fff;
-    line-height: 15px;
-    background-image: linear-gradient(135deg, #2C3E50, #2980B9);
-    padding: 10px 15px;
-}
-.btn-cta:hover {
-    font-size: 12px;
-    font-weight: 400;
-    color: #fff;
-    line-height: 15px;
-    background-image: linear-gradient(135deg, #000000, #000000);
-}
-.btn-cta i {
-    margin-right: 2px;
-}
-.data-card .btn-cta {
-    padding: 6px 10px;
-    margin: 0 !important;
-}
-#sidenav-collapse-main li.nav-item + ul {
-    margin-left: 30px !important;
-}
-.block-heading {
-    color: #000000;
-}
-.search-input-group input[type="text"].form-control {
-    padding: 0.5rem;
-}
-.search-input-group input[type="text"],
-.search-input-group input[type="text"].border {
-    border-color: #000000 !important;
-}
-.search-input-group button[type="button"],
-.search-input-group button[type="button"].btn-outline-primary {
-    color: #fff;
-    border-color: #000;
-    background: #000;
-}
-table th {
-    padding: 0.5rem 0.5rem !important;
-}
-table th.text-secondary {
-    color: #000 !important;
-}
-table .form-check.form-switch {
-    padding-left: 0;
-}
-table td h6.text-sm {
-    font-size: 0.75rem !important;
-}
-.form-check:not(.form-switch) .form-check-input[type="checkbox"]:checked {
-    background: #000000;
-}
-.form-check:not(.form-switch) .form-check-input[type="checkbox"]:checked, 
-.form-check:not(.form-switch) .form-check-input[type="radio"]:checked {
-    border-color: #000000;
-}
-.form-control[disabled] {
-    line-height: 1.5rem !important;
-}
-.pagination-nav {
-    margin-top: 20px;
-}
-.pagination-nav div:first-child > nav div:first-child {
-    display: flex;
-    justify-content: space-between;
-}
-.pagination-nav div:first-child > nav div:first-child span > span,
-.pagination-nav div:first-child > nav div:first-child span > button {
-    font-size: 12px;
-    font-weight: 400;
-    color: #fff;
-    line-height: 15px;
-    border-radius: 0.5rem;
-    padding: 10px 15px;
-}
-.pagination-nav div:first-child > nav div:first-child span > span {
-    background-image: linear-gradient(135deg, #000000, #000000);
-    opacity: 0.5;
-}
-.pagination-nav div:first-child > nav div:first-child span > button {
-    background-image: linear-gradient(135deg, #000000, #000000);
-}
-.pagination-nav div:first-child > nav div:first-child span > button:hover {
-    background-image: linear-gradient(135deg, #000000, #000000);
-}
-.pagination-nav div:first-child > nav div:last-child {
-    display: flex;
-    justify-content: center;
-    margin-top: 10px;
-}
-.pagination-nav div:first-child > nav div:last-child div:first-child p {
-    font-weight: 700;
-    margin: 0;
-}
-.pagination-nav div:first-child > nav div:last-child div:last-child {
-    display: none;
-}
-.measurement_div {
-    background: #f2f2f2;
-}
-.measurement_div h6.custom_success_badge {
-    color: #fff !important;
-    background: #000 !important;
-}
-.dark-badge {
-    color: #fff !important;
-    background: #000 !important;
-}
-.btn-black {
-    color: #fff !important;
-    background: #000 !important;
-}
-.btn-check-custom + .btn-outline-success {
-    color: #000 !important;
-    border-color: #000 !important;
-    outline: none !important;
-}
-.btn-check-custom:checked + .btn-outline-success {
-    color: #fff !important;
-    border-color: #000 !important;
-    background: #000 !important;
-}
+
