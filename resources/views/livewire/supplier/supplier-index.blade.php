@@ -1,18 +1,18 @@
     <div class="container-fluid py-4">
-        <div class="d-flex justify-content-between align-items-center mb-1">
-            <h4 class="m-0">Supplier List</h4> 
-            <div class="d-flex align-items-center">
-                <a href="{{ route('suppliers.add') }}" class="btn btn-primary mb-3 btn-sm me-2">
-                    <i class="material-icons text-white" style="font-size:15px;">add</i>
-                    Add Supplier
-                </a>
-                <div class="input-group custom-input-group">
-                    <input type="text" wire:model.debounce.500ms="search" class="form-control border border-2 p-2 custom-input-sm" placeholder="Search here...">
-                    <button type="button" wire:click="$refresh" class="btn btn-dark text-light mb-0 custom-input-sm">
-                        <span class="material-icons">search</span>
-                    </button>
-                </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="block-heading m-0">Supplier List</h4> 
+               
+            <div class="input-group w-50 search-input-group">
+                <input type="text" wire:model.debounce.500ms="search" class="form-control border" placeholder="Search here...">
+                <button type="button" wire:click="$refresh" class="btn btn-outline-primary mb-0">
+                    <span class="material-icons">search</span>
+                </button>
             </div>
+                
+            <a href="{{ route('suppliers.add') }}" class="btn btn-cta btn-sm mb-0">
+                <i class="material-icons text-white" style="font-size:15px;">add</i>
+                Add Supplier
+            </a>
         </div>
         <div class="row">
             <div class="col-12">
@@ -57,7 +57,7 @@
                                     @foreach($suppliers as $supplier)
                                             <tr>
                                                 <td>
-                                                    <div class="d-flex px-2 py-1">
+                                                    <div class="d-flex py-1">
                                                         <div class="d-flex flex-column justify-content-center">
                                                             <h6 class="mb-0 text-sm">{{ $supplier->name }}</h6>
                                                         </div>
@@ -79,13 +79,13 @@
                                                     </div>
                                                 </td>
                                                 <td class="align-middle">
-                                                <a href="{{ route('suppliers.details', $supplier->id) }}" class="btn btn-outline-dark custom-btn-sm" data-toggle="tooltip" data-original-title="View Details" title="View Details">
+                                                <a href="{{ route('suppliers.details', $supplier->id) }}" class="btn btn-outline-dark custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="View Details" title="View Details">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a href="{{ route('suppliers.edit', $supplier->id) }}"  class="btn btn-outline-info custom-btn-sm" data-toggle="tooltip" data-original-title="Edit supplier" title="Edit Supplier">
+                                                <a href="{{ route('suppliers.edit', $supplier->id) }}"  class="btn btn-outline-info custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="Edit supplier" title="Edit Supplier">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <button wire:click="deleteSupplier({{ $supplier->id }})" class="btn btn-outline-danger custom-btn-sm" data-toggle="tooltip" data-original-title="Delete supplier" title="Delete Supplier">
+                                                <button wire:click="deleteSupplier({{ $supplier->id }})" class="btn btn-outline-danger custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="Delete supplier" title="Delete Supplier">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                                 </td>

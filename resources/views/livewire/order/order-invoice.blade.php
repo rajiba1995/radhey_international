@@ -72,7 +72,7 @@
                                         <table class="table table-condensed">
                                             <thead>
                                                 <tr>
-                                                    <td><strong>Colection</strong></td>
+                                                    <td><strong>Type</strong></td>
                                                     <td><strong>Fabric</strong></td>
                                                     <td><strong>Product</strong></td>
                                                     <td class="text-end"><strong>Totals</strong></td>

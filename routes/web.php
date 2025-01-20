@@ -117,12 +117,11 @@ Route::group(['prefix' => 'products'], function () {
         Route::get('cities/add/{salesman_id}',StaffCities::class)->name('cities.add');
     });
     
-    // Salesman
+     // Salesman
     Route::prefix('salesman')->name('salesman.')->group(function() {
         Route::get('/',SalesmanBillingIndex::class)->name('index');
     });
-
-
+    
     Route::group(['prefix' => 'customers'], function () {
         Route::get('/', CustomerIndex::class)->name('customers.index');
         Route::get('/add', UserAddressForm::class)->name('admin.user-address-form');
@@ -152,5 +151,6 @@ Route::group(['prefix' => 'products'], function () {
         Route::get('/edit/{id}', OrderEdit::class)->name('admin.order.edit');
         Route::get('/view/{id}', OrderView::class)->name('admin.order.view');
         Route::get('/ledger/{id}', LedgerView::class)->name('admin.order.ledger.view');
+
     });
 });

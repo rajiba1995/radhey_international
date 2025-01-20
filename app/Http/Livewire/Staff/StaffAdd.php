@@ -31,7 +31,7 @@ class StaffAdd extends Component
        $this->validate([
             'designation' => 'required',
             'person_name' => 'required|string|max:255',
-            'email' => 'nullable|email|unique:users,email,' . ($this->user_id ?? 'null'),
+            'email' => 'nullable|email|unique:users,email',
           'mobile' => [
                 'required',
                 'regex:/^\d{' . env('VALIDATE_MOBILE', 8) . ',}$/', // At least VALIDATE_MOBILE digits
@@ -59,18 +59,7 @@ class StaffAdd extends Component
             'city' => 'nullable|string|max:255',
             'pincode' => 'nullable|string|max:10',
             'country' => 'nullable|string|max:255',
-
-       ],
-        [
-       
-            'mobile.required' => 'The mobile number is required.',
-            'mobile.regex' => 'The mobile number must have at least ' . env('VALIDATE_MOBILE', 8) . ' digits.',
-            'mobile.unique' => 'The mobile number has already been taken.',
-            'whatsapp_no.required' => 'The WhatsApp number is required.',
-            'whatsapp_no.regex' => 'The WhatsApp number must have at least ' . env('VALIDATE_WHATSAPP', 8) . ' digits.',
-        ]
-    );
-       
+       ]);
        DB::beginTransaction();
 
        try {
@@ -94,7 +83,7 @@ class StaffAdd extends Component
                 'image' =>  $imagePath ?? "",
                 'user_id_front' =>  $userIdFrontPath ?? "",
                 'user_id_back' => $userIdBackPath ?? "",
-                'password'=>Hash::make('secret')
+                'password'=>Hash::make('1234')
             ]);
 
             // 2. Save the data into the user_banks table

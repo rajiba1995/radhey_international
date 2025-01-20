@@ -8,7 +8,7 @@
                     <h6 class="badge bg-danger custom_danger_badge">Basic Information</h6>
                   </div>
                 <div class="col-md-4 text-end">
-                    <a href="{{ route('staff.index') }}" class="btn btn-dark btn-sm">
+                    <a href="{{ route('staff.index') }}" class="btn btn-cta btn-sm">
                         <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i> Back
                     </a>
                 </div>
@@ -239,7 +239,7 @@
                                 @enderror
                             </div>
                         </div>
-                    <button type="submit" class="btn btn-dark mt-4">Save</button>
+                    <button type="submit" class="btn btn-cta mt-4">Save</button>
                 </div>
             </form>
         </div>

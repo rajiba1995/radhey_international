@@ -19,7 +19,7 @@
                     </p>
                 </div>
                 <div class="d-flex align-content-center flex-wrap gap-2">
-                    <a href="{{ route('suppliers.index') }}" class="btn btn-dark btn-sm mt-3"><i
+                    <a href="{{ route('suppliers.index') }}" class="btn btn-cta mt-3"><i
                             class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
                         Back</a>
                 </div>

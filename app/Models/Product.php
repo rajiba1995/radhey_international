@@ -34,13 +34,12 @@ class Product extends Model
     {
         return $this->belongsTo(Collection::class,'collection_id');
     }
-
+    
     public function fabrics()
     {
         return $this->belongsToMany(Fabric::class, 'product_fabrics', 'product_id', 'fabric_id');
     }
     
-
     
     
 }

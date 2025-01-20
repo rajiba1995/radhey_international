@@ -6,8 +6,6 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-use App\Models\SalesmanBilling;
-use App\Models\Order;
 
 class Helper
 {
@@ -42,8 +40,8 @@ class Helper
         // Return the relative path of the uploaded file
         return 'uploads/' . $folderName . '/' . $filename;
     }
-
-    public static function generateInvoiceBill()
+    
+     public static function generateInvoiceBill()
     {
         $user = Auth::user();
 
@@ -79,6 +77,4 @@ class Helper
             return $data;
         }
     }
-
 }
-        

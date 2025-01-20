@@ -128,7 +128,10 @@
                             <select wire:model="selectedFabrics" id="multiple" class="form-control form-control-sm border border-1 p-2" multiple>
                                 <option value="" hidden>Select Fabrics</option>
                                 @foreach($fabrics as $fabric)
-                                    <option value="{{ $fabric->id }}">{{ $fabric->title }}</option>
+                                    <option value="{{ $fabric->id }}" 
+                                            @if(in_array($fabric->id, $selectedFabrics)) selected @endif>
+                                        {{ $fabric->title }}
+                                    </option>
                                 @endforeach
                             </select>
                             @error('selectedFabrics')
@@ -168,13 +171,26 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error(error);
         });
         
-        
+       $('#multiple').select2({
+        placeholder: "Select Fabrics",
+        allowClear: true,
+    });
+
+    // Sync Select2 values with Livewire property on change
+    $('#multiple').on('change', function () {
+        @this.set('selectedFabrics', $(this).val());
+    });
+
+    // Set initial values in Select2 based on Livewire's selectedFabrics
+    Livewire.on('reinitializeSelect2', () => {
+        $('#multiple').val(@this.get('selectedFabrics')).trigger('change');
+    });  
 });
 
-$("#multiple").select2({
-          placeholder: "Select a fabric",
-          allowClear: true
-      });
+// $("#multiple").select2({
+//           placeholder: "Select a fabric",
+//           allowClear: true
+//       });
 
 </script>
 </div>

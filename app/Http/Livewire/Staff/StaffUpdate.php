@@ -58,11 +58,7 @@ class StaffUpdate extends Component
         $this->validate([
             'designation' => 'required',
             'person_name' => 'required|string|max:255',
-            'email' => [
-                'nullable',
-                'email',
-                Rule::unique('users', 'email')->ignore($this->staff->id),
-            ],
+            'email' => 'nullable|email',
             'mobile' => [
                 'required',
                 'regex:/^\d{' . env('VALIDATE_MOBILE', 8) . ',}$/',

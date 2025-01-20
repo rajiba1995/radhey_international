@@ -10,7 +10,7 @@
                     </div>
                 @endif
                 @if($activeTab==1)
-                <a href="{{route('admin.order.index')}}" class="btn btn-dark"> <i class="material-icons text-white">chevron_left</i> 
+                <a href="{{route('admin.order.index')}}" class="btn btn-cta"> <i class="material-icons text-white">chevron_left</i> 
                     Back </a>
                 @endif
             </div>
@@ -19,10 +19,6 @@
             <form wire:submit.prevent="save">
                 <div class="{{$activeTab==1?"d-block":"d-none"}}" id="tab1">
                     <div class="row d-flex justify-content-end align-items-center mb-3">
-                        <!-- Customer Information Badge -->
-                        {{-- <div class="col-12 col-md-6 mb-2 mb-md-0">
-                            <h6 class="badge bg-danger custom_danger_badge">Basic Information</h6>
-                        </div> --}}
                         <!-- Search Label and Select2 -->
                         <div class="col-12 col-md-6">
                             <div class="d-flex justify-content-between">
@@ -48,7 +44,8 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Order Customer Fields... -->
+                        
+                     <!-- Order Customer Fields... -->
                     @if(session()->has('orders-found') && $orders->count() > 0)
                         <div class="alert alert-success mt-3">
                             {{ session('orders-found') }}
@@ -87,15 +84,16 @@
                             </tbody>
                         </table>
                     @endif
+                        
                     <!-- Customer Details -->
                     <div class="col-12 col-md-6 mb-2 mb-md-0">
                         <h6 class="badge bg-danger custom_danger_badge">Basic Information</h6>
                     </div>
+                    <!-- Customer Details -->
                     <div class="row">
                         <div class="mb-3 col-md-6">
-                            <input type="hidden" name="customer_id" wire:model="customer_id">
                             <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
-                            <input type="text" wire:model="name" id="name" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['name'] ?? '' }}" placeholder="Enter Customer Name">
+                            <input type="text" wire:model="name" id="name" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['name'] ?? '' }}" placeholder="Enter customer name">
                             @if(isset($errorMessage['name']))
                                 <div class="text-danger">{{ $errorMessage['name'] }}</div>
                             @endif
@@ -103,7 +101,7 @@
     
                         <div class="mb-3 col-md-4">
                             <label for="company_name" class="form-label">Company Name</label>
-                            <input type="text" wire:model="company_name" id="company_name" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Company Name">
+                            <input type="text" wire:model="company_name" id="company_name" class="form-control form-control-sm border border-1 p-2" placeholder="Enter company name">
                         </div>
                         <div class="mb-3 col-md-2">
                             <label for="employee_rank" class="form-label"> Rank</label>
@@ -112,7 +110,7 @@
     
                         <div class="mb-3 col-md-3">
                             <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-                            <input type="email" wire:model="email" id="email" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['email'] ?? '' }}" placeholder="Enter Email">
+                            <input type="email" wire:model="email" id="email" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['email'] ?? '' }}" placeholder="Enter email">
                             @if(isset($errorMessage['email']))
                                 <div class="text-danger">{{ $errorMessage['email'] }}</div>
                             @endif
@@ -127,7 +125,7 @@
                         </div>
                         <div class="mb-3 col-md-3">
                             <label for="phone" class="form-label">Phone <span class="text-danger">*</span></label>
-                            <input type="number" wire:model="phone" id="phone" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['phone'] ?? '' }}" placeholder="Enter Phone Number">
+                            <input type="number" wire:model="phone" id="phone" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['phone'] ?? '' }}" placeholder="Enter phone number">
                             @if(isset($errorMessage['phone']))
                                 <div class="text-danger">{{ $errorMessage['phone'] }}</div>
                             @endif
@@ -135,12 +133,15 @@
     
                         <div class="mb-3 col-md-3">
                             <label for="whatsapp_no" class="form-label">WhatsApp Number <span class="text-danger">*</span></label>
-                            <input type="number" wire:model="whatsapp_no" id="whatsapp_no" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['whatsapp_no'] ?? '' }}" placeholder="Enter Whatsapp Number"  @if($whatsapp_no)disabled @endif>
+                            <input type="number" wire:model="whatsapp_no" id="whatsapp_no" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['whatsapp_no'] ?? '' }}" placeholder="Enter whatsapp number"  @if($whatsapp_no)disabled @endif>
                             @if(isset($errorMessage['whatsapp_no']))
                                 <div class="text-danger">{{ $errorMessage['whatsapp_no'] }}</div>
                             @endif
-                            <input type="checkbox" id="is_wa_same" wire:change="SameAsMobile" value="0" @if($is_wa_same) checked @endif>
-                            <label for="is_wa_same" class="form-check-label ms-2">Same as Phone Number</label>
+                            <div class="form-check ps-0">
+                                <input type="checkbox" id="is_wa_same" wire:change="SameAsMobile" class="form-check-input" value="0" @if($is_wa_same) checked @endif>
+                                <label for="is_wa_same" class="form-check-label ms-2">Same as Phone Number</label>
+                            </div>
+                            
                         </div>
                     </div>
                     
@@ -189,13 +190,14 @@
                             @endif
                         </div>
                     </div>
-                    <div class="d-flex justify-content-between mt-4">
+                   <div class="d-flex justify-content-between mt-4">
                         <h6 class="badge bg-danger custom_danger_badge">Shipping Address</h6>
                         <div class="form-check">
                             <input type="checkbox"  wire:change="toggleShippingAddress" wire:model="is_billing_shipping_same" id="isBillingShippingSame" class="form-check-input" @if ($is_billing_shipping_same) checked @endif>
                             <label for="isBillingShippingSame" class="form-check-label"><span class="badge bg-secondary">Shipping address same as billing</span></label>
                         </div>
                     </div>
+                    
                     
                     {{-- Shipping Address Panel --}}
                     <div class="row">
@@ -250,8 +252,8 @@
                     <!-- Loop through items -->
                     {{-- {{dd($items)}} --}}
                     @foreach($items as $index => $item)
-                        <div class="row align-items-center my-5">
-                            <!-- Collection  -->
+                        <div class="row align-items-center mt-3 mb-5">
+                            <!-- Collection Type -->
                             <div class="mb-3 col-md-2">
                                
                                 <label class="form-label"><strong>Collection </strong><span class="text-danger">*</span></label>
@@ -301,10 +303,29 @@
                                     </div>
                                 @endif
                             </div>
-                           
+                            <div class="mb-3 col-md-2">
+                                <label class="form-label"><strong>Price</strong></label>
+                                <input type="text" wire:keyup="checkproductPrice($event.target.value, {{ $index }})" wire:model="items.{{ $index }}.price" class="form-control form-control-sm border border-1 customer_input text-center @if(session()->has('errorPrice.' . $index)) border-danger @endif @error('items.' . $index . '.price') border-danger  @enderror" placeholder="Enter Price">
+                                 @if(session()->has('errorPrice.' . $index))
+                                        <div class="text-danger">{{ session('errorPrice.' . $index) }}</div>
+                                @endif
+                                    
+                                @error('items.' . $index . '.price') 
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror 
+                               
+                            </div>
+
+
+                            <!-- Delete Button -->
+                            <div class="col-md-1" style="margin-top: 19px;">
+                                <button type="button" class="btn btn-danger btn-sm mb-0" wire:click="removeItem({{ $index }})">
+                                    <span class="material-icons">delete</span>
+                                </button>
+                            </div>
                             {{-- Append Measurements data --}}
                             {{-- {{dd($items[$index]['searchproduct'])}} --}}
-                            @if(isset($this->items[$index]['product_id'])) 
+                            {{-- @if(isset($this->items[$index]['product_id']) && $items[$index]['collection_type'] == 1) --}}
                                 <div class="row">
                                     <div class="col-12 col-md-6 mb-2 mb-md-0 measurement_div">
                                         <h6 class="badge bg-danger custom_success_badge">Measurements</h6>
@@ -312,8 +333,9 @@
                                             @if(isset($items[$index]['measurements']) && count($items[$index]['measurements']) > 0)
                                                 @foreach ($items[$index]['measurements'] as $measurement)
                                                     <div class="col-md-3">
+                                                        {{-- {{dd($measurement)}} --}}
                                                         <label>{{ $measurement['title'] }} <strong>[{{$measurement['short_code']}}]</strong></label>
-                                                        <input type="hidden" wire:model="items.{{ $index }}.get_measurements.{{ $measurement['id'] }}.title" value="{{ $measurement['title'] }}">
+                                                        <input type="hidden"  wire:model="items.{{ $index }}.get_measurements.{{ $measurement['id'] }}.title" value="{{ $measurement['title'] }}">
                                                         <input 
                                                             type="text" 
                                                             class="form-control form-control-sm border border-1 customer_input text-center measurement_input"
@@ -332,14 +354,15 @@
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6 mb-2 mb-md-0">
-                                        <h6 class="badge bg-danger custom_success_badge">Fabrics</h6>
+                                        <h6 class="badge bg-danger custom_success_badge dark-badge">Fabrics</h6>
                                         <div class="row mx-2">
                                             @if(isset($items[$index]['fabrics']) && count($items[$index]['fabrics']) > 0)
                                                 @foreach ($items[$index]['fabrics'] as $fabric)
+                                                <div class="col-lg-3 col-sm-6 col-12">
                                                     <div class="btn-group" style="display: contents !important">
                                                         <input 
                                                             type="radio" 
-                                                            class="btn-check" 
+                                                            class="btn-check btn-check-custom" 
                                                             name="fabric_{{ $index }}" 
                                                             id="fabric_{{ $index }}_{{ $fabric->id }}" 
                                                             wire:model="items.{{ $index }}.selected_fabric" 
@@ -354,6 +377,7 @@
                                                             {{ $fabric->title }}
                                                         </label>
                                                     </div>
+                                                </div>
                                                 @endforeach
                                             @else
                                                 <p>No fabrics available for this item.</p>
@@ -369,62 +393,41 @@
                                     </div>
                                     
                                 </div>
-                            @endif
-                            <!-- <div class="mb-3 col-md-1">
-                                <label class="form-label"><strong>Price</strong></label>
-                                <input type="text" wire:keyup="checkproductPrice($event.target.value, {{ $index }})" wire:model="items.{{ $index }}.price" class="form-control form-control-sm border border-1 customer_input text-center @if(session()->has('errorPrice.' . $index)) border-danger @endif @error('items.' . $index . '.price') border-danger  @enderror" placeholder="Enter Price">
-
-                                {{-- @error('items.' . $index . '.price') 
-                                    <div class="text-danger">{{ $message }}</div>
-                                @enderror --}}
-                            </div> -->
-
-                            <div class="mb-3 col-md-1">
-                                <label class="form-label"><strong>Price</strong></label>
-                                <input 
-                                    type="text" 
-                                    wire:keyup="checkproductPrice($event.target.value, {{ $index }})" 
-                                    wire:model="items.{{ $index }}.price" 
-                                    class="form-control form-control-sm border border-1 customer_input text-center 
-                                    @if(session()->has('errorPrice.' . $index)) border-danger @endif 
-                                    @error('items.' . $index . '.price') border-danger  @enderror" 
-                                    placeholder="Enter Price">
-                                
-                                    @if(session()->has('errorPrice.' . $index))
-                                        <div class="text-danger">{{ session('errorPrice.' . $index) }}</div>
-                                    @endif
-                                    
-                                    @error('items.' . $index . '.price') 
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror 
-                            </div>
-
-                            <!-- Delete Button -->
-                            <div class="mb-3 col-md-1" style="margin-top: 19px;">
-                                <button type="button" class="btn btn-danger btn-sm mb-0" wire:click="removeItem({{ $index }})">
-                                    <span class="material-icons">delete</span>
-                                </button>
-                            </div>
+                            {{-- @endif --}}
+                        
                         </div>
                     @endforeach
 
                 
                     <!-- Add Item Button -->
 
-                    <div class="row align-items-end mb-4" style="justify-content: end;">
-
-                        <div class="col-md-3" style="text-align: -webkit-center;">
+                    <div class="row align-items-end mb-4">
+                        <div class="col-md-4 col-12"></div>
+                        <div class="col-md-4 col-12">
                             <table>
                                 <tr>
-                                    <td>
-                                        @if (session()->has('errorAmount')) 
-                                            <div class="alert alert-danger">
-                                                {{ session('errorAmount') }}
-                                            </div>
-                                        @endif
-                                    </td>
-                                    <td style="text-align: end;">
-                                        <button type="button" class="btn btn-success btn-sm" wire:click="addItem">Add Item</button>
+                                    <td colspan="2">
+                                        <table style="width:100%;">
+                                            <tbody>
+                                                <tr>
+                                                    <td style="text-align: center;">
+                                                        @if (session()->has('errorAmount')) 
+                                                            <div class="alert alert-danger">
+                                                                {{ session('errorAmount') }}
+                                                            </div>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="text-align: center;">
+                                                        <button type="button" class="btn btn-cta btn-sm" wire:click="addItem">
+                                                            <i class="material-icons text-white" style="font-size: 15px;">add</i>
+                                                            Add Item
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </td>
                                 </tr>
                                 <tr>
@@ -459,7 +462,7 @@
                                          </select>
                                     </td>
                                 </tr>
-                                <tr>
+                                 <tr>
                                     <td class="w-70"><label class="form-label"><strong>Order Number</strong></label></td>
                                     <td>
                                         <!-- Remaining Amount -->
@@ -479,17 +482,18 @@
                             </table>
                            
                         </div>
+                        <div class="col-md-4 col-12"></div>
                     </div>
                 </div>
                 
                 
                 <div class="d-flex justify-content-end align-items-center mb-3">
                     @if($activeTab>1)
-                    <button type="button" class="btn btn-dark mx-2" wire:click="TabChange({{$activeTab-1}})"><i class="material-icons text-white">chevron_left</i>Previous</button>
-                    <button type="submit" class="btn btn-primary mx-2"><i class="material-icons text-white">add</i>Place Order</button>
+                    <button type="button" class="btn btn-black mx-2" wire:click="TabChange({{$activeTab-1}})"><i class="material-icons text-white">chevron_left</i>Previous</button>
+                    <button type="submit" class="btn btn-cta mx-2"><i class="material-icons text-white">add</i>Generate Order</button>
                     @endif
                     @if($activeTab==1)
-                        <button type="button" class="btn btn-primary mx-2" wire:click="TabChange({{$activeTab+1}})">Next<i class="material-icons text-white">chevron_right</i></button>
+                        <button type="button" class="btn btn-cta mx-2" wire:click="TabChange({{$activeTab+1}})">Next<i class="material-icons text-white">chevron_right</i></button>
                     @endif
                    
                 </div>

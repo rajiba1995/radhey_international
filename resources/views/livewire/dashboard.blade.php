@@ -4,11 +4,11 @@
       <div class="container-fluid py-4">
           <div class="row">
               <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                  <div class="card">
+                  <div class="card data-card">
                       <div class="card-header p-3 pt-2">
                           <div
                               class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
-                              <i class="material-icons opacity-10">weekend</i>
+                              <i class="material-icons opacity-10">insights</i>
                           </div>
                           <div class="text-end pt-1">
                               <p class="text-sm mb-0 text-capitalize">Today's Sales</p>
@@ -23,11 +23,11 @@
                   </div>
               </div>
               <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                  <div class="card">
+                  <div class="card data-card">
                       <div class="card-header p-3 pt-2">
                           <div
                               class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
-                              <i class="material-icons opacity-10">person</i>
+                              <i class="material-icons opacity-10">group</i>
                           </div>
                           <div class="text-end pt-1">
                               <p class="text-sm mb-0 text-capitalize">Total Client</p>
@@ -42,11 +42,11 @@
                   </div>
               </div>
               <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                  <div class="card">
+                  <div class="card data-card">
                       <div class="card-header p-3 pt-2">
                           <div
                               class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
-                              <i class="material-icons opacity-10">person</i>
+                              <i class="material-icons opacity-10">group</i>
                           </div>
                           <div class="text-end pt-1">
                               <p class="text-sm mb-0 text-capitalize">Today's New Users</p>
@@ -57,18 +57,18 @@
                         <div class="card-footer p-3 d-flex justify-content-between align-items-center">
                           <p class="mb-0"><span class="text-danger text-sm font-weight-bolder">-2%</span> than
                               yesterday</p>
-                              <a href="{{route('admin.user-address-form')}}" class="btn btn-primary mt-2">
+                              <a href="{{route('admin.user-address-form')}}" class="btn btn-cta mt-2">
                               Add Customer
                             </a>
                         </div>
                   </div>
               </div>
               <div class="col-xl-3 col-sm-6">
-                  <div class="card">
+                  <div class="card data-card">
                       <div class="card-header p-3 pt-2">
                           <div
                               class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
-                              <i class="material-icons opacity-10">weekend</i>
+                              <i class="material-icons opacity-10">insights</i>
                           </div>
                           <div class="text-end pt-1">
                               <p class="text-sm mb-0 text-capitalize">Monthly Sales</p>

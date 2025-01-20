@@ -4,18 +4,18 @@
     <div class="container-fluid py-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <!-- Customer List Title -->
-            <h4 class="m-0">Customer List</h4> 
+            <h4 class="block-heading m-0">Customer List</h4> 
     
             <!-- Search Bar -->
-            <div class="input-group w-50">
+            <div class="input-group w-50 search-input-group">
                 <input type="text" wire:model.debounce.500ms="search" class="form-control border" placeholder=" Search Customers" aria-label="Search" aria-describedby="button-search" style="height: fit-content">
-                <button wire:click="$refresh" class="btn btn-outline-primary" type="button" id="button-search">
+                <button wire:click="$refresh" class="btn btn-outline-primary mb-0" type="button" id="button-search">
                     <i class="fas fa-search"></i>
                 </button>
             </div>
     
             <!-- Add Customer Button -->
-            <a href="{{ route('admin.user-address-form') }}" class="btn btn-primary btn-sm">
+            <a href="{{ route('admin.user-address-form') }}" class="btn btn-cta btn-sm mb-0">
                 <i class="material-icons text-white" style="font-size: 15px;">add</i>
                 Add Customer
             </a>
@@ -40,35 +40,35 @@
 
                                 <thead>
                                     <tr>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">
                                            Profile Image
                                         </th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">
                                             Name
                                         </th>
-                                        {{-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        {{-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">
                                             Email
                                         </th> --}}
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">
                                             Phone
                                         </th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">
                                            Company Name
                                         </th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">
                                           Status
                                         </th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">
                                            Action
                                         </th>
-                                        <th class="text-secondary opacity-7"></th>
+                                        <th class="text-secondary opacity-10"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($users as $user)
                                         @if($user->email != 'admin@gmail.com') 
                                             <tr>
-                                                <td>
+                                               <td>
                                                     @if ($user->profile_image)
                                                         <img src="{{asset($user->profile_image)}}" alt="profile-image" width="85px">
                                                     @else
@@ -76,14 +76,14 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <div class="d-flex px-2 py-1">
+                                                    <!--<div class="d-flex py-1">-->
                                                         <!-- <div>
                                                             <img src="{{ asset('assets/img/team-2.jpg') }}" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
                                                         </div> -->
-                                                        <div class="d-flex flex-column justify-content-center">
+                                                        <!--<div class="d-flex flex-column justify-content-center">-->
                                                             <h6 class="mb-0 text-sm">{{ $user->name }}</h6>
-                                                        </div>
-                                                    </div>
+                                                        <!--</div>-->
+                                                    <!--</div>-->
                                                 </td>
                                                 <td>
                                                     <p class="text-xs font-weight-bold mb-0">{{ $user->phone }}</p>
@@ -100,23 +100,23 @@
                                                     </div>
                                                 </td>
                                                 <td class="align-middle">
-                                                    <a href="{{ route('admin.customers.details', ['id' => $user->id]) }}" class="btn btn-outline-dark custom-btn-sm" data-toggle="tooltip" data-original-title="View Details" title="View Details">
+                                                    <a href="{{ route('admin.customers.details', ['id' => $user->id]) }}" class="btn btn-outline-dark custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="View Details" title="View Details">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
-                                                    <a href="{{ route('admin.customers.edit', ['id' => $user->id]) }}" class="btn btn-outline-info custom-btn-sm" data-toggle="tooltip" data-original-title="Edit user" title="Edit Customer">
+                                                    <a href="{{ route('admin.customers.edit', ['id' => $user->id]) }}" class="btn btn-outline-info custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="Edit user" title="Edit Customer">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
-                                                    <button wire:click="deleteCustomer({{ $user->id }})" class="btn btn-outline-danger custom-btn-sm" title="Delete Customer"><i class="fas fa-trash"></i></button>
-                                                    <a href="{{route('admin.order.new',['user_id' => $user->id])}}" class="btn btn-outline-primary custom-btn-sm" data-toggle="tooltip" data-original-title="Place Order" title="Place Order">
+                                                    <button wire:click="deleteCustomer({{ $user->id }})" class="btn btn-outline-danger custom-btn-sm mb-0" title="Delete Customer"><i class="fas fa-trash"></i></button>
+                                                    <a href="{{route('admin.order.new',['user_id' => $user->id])}}" class="btn btn-outline-primary custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="Place Order" title="Place Order">
                                                         <i class="fas fa-shopping-cart"></i>
                                                     </a>
                                                       <!-- Purchase History (Ledger) Button -->
-                                                    <a href="{{route('admin.order.index',['customer_id' => $user->id])}}" class="btn btn-outline-secondary custom-btn-sm" data-toggle="tooltip" data-original-title="Purchase History" title="Purchase History">
+                                                    <a href="{{route('admin.order.index',['customer_id' => $user->id])}}" class="btn btn-outline-secondary custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="Purchase History" title="Purchase History">
                                                         <i class="fas fa-file-invoice"></i>
                                                     </a>
 
                                                     <!-- Add Payment Button -->
-                                                    <a href="" class="btn btn-outline-success custom-btn-sm" data-toggle="tooltip" data-original-title="Add Payment" title="Add Payment">
+                                                    <a href="" class="btn btn-outline-success custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="Add Payment" title="Add Payment">
                                                         <i class="fas fa-credit-card"></i>
                                                     </a>
                                                 </td>

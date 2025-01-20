@@ -7,7 +7,7 @@
                     <h6 class="badge bg-danger custom_danger_badge">Basic Information</h6>
                   </div>
                 <div class="col-md-4 text-end">
-                    <a href="{{ route('staff.index') }}" class="btn btn-dark">
+                    <a href="{{ route('staff.index') }}" class="btn btn-cta">
                         <i class="material-icons text-white" style="font-size:15px;">chevron_left</i> Back
                     </a>
                 </div>
@@ -62,9 +62,7 @@
                     <div class="mb-3 col-md-4">
                         <label for="aadhaar_number" class="form-label">Aadhaar Number </label>
                         <input type="text" wire:model="aadhaar_number" id="aadhaar_number" class="form-control form-control-sm border border-1 p-2" placeholder="Staff Aadhaar Number">
-                        @error('aadhaar_number')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
+                        
                     </div>
 
                     <div class="mb-3 col-md-4">
@@ -232,7 +230,7 @@
                             @enderror
                         </div>
                     </div>
-                <button type="submit" class="btn btn-dark mt-4">Save</button>
+                <button type="submit" class="btn btn-cta mt-4">Save</button>
             </form>
         </div>
     </div>
