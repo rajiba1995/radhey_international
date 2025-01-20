@@ -31,6 +31,7 @@ use App\Http\Livewire\Supplier\SupplierAdd;
 use App\Http\Livewire\Supplier\SupplierEdit;
 use App\Http\Livewire\Supplier\SupplierDetails;
 use App\Http\Livewire\Measurement\MeasurementIndex;
+use App\Http\Livewire\PurchaseOrder\PurchaseOrderIndex;
 
 /*
 |--------------------------------------------------------------------------
@@ -104,6 +105,12 @@ Route::group(['prefix' => 'products'], function () {
         Route::get('/gallery/{product_id}', GalleryIndex::class)->name('product.gallery');
         Route::get('/fabrics/{product_id}', FabricIndex::class)->name('product.fabrics');
     });
+
+    // Purchase Order
+    Route::group(['prefix' => 'purchase-order'], function () {
+       Route::get('/',PurchaseOrderIndex::class)->name('purchase_order.index');
+    });
+
     Route::get('/designation',DesignationIndex::class)->name('staff.designation');
     
     // Staff
@@ -151,6 +158,5 @@ Route::group(['prefix' => 'products'], function () {
         Route::get('/edit/{id}', OrderEdit::class)->name('admin.order.edit');
         Route::get('/view/{id}', OrderView::class)->name('admin.order.view');
         Route::get('/ledger/{id}', LedgerView::class)->name('admin.order.ledger.view');
-
     });
 });

@@ -42,9 +42,6 @@
                                                     <button wire:click="edit({{ $collection->id }})" class="btn btn-outline-info custom-btn-sm mb-0">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
-                                                    <button wire:click="destroy({{ $collection->id }})" class="btn btn-outline-danger custom-btn-sm mb-0">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
                                                 </td>
                                             </tr>
                                         @endforeach

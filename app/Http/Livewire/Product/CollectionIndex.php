@@ -72,12 +72,6 @@ class CollectionIndex extends Component
         session()->flash('message', 'Collection updated successfully!');
     }
 
-    public function destroy($id)
-    {
-        Collection::findOrFail($id)->delete();
-        session()->flash('message', 'Collection deleted successfully!');
-    }
-
     public function toggleStatus($id)
     {
         $collection = Collection::findOrFail($id);

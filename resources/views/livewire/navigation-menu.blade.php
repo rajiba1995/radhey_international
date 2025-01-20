@@ -95,6 +95,18 @@
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Master Modules</h6>
             </li>
+            {{-- Purchase Order --}}
+            <li class="nav-item">
+                <a class="nav-link text-white {{ Request::is('admin/purchase-order*') || in_array(Route::currentRouteName(), ['purchase_order.index']) ? 'active bg-gradient-primary' : '' }}"
+                    href="#productManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['purchase_order.index']) ? 'true' : 'false' }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">receipt</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Purchase Order</span>
+                </a>
+            </li>
+
+            {{-- Product Management --}}
             <li class="nav-item">
                 <a class="nav-link text-white {{ Request::is('admin/products*') || in_array(Route::currentRouteName(), ['product.view', 'product.gallery', 'product.add', 'product.update', 'admin.categories', 'admin.subcategories', 'measurements.index', 'product.fabrics','admin.collections.index']) ? 'active bg-gradient-primary' : '' }}"
                     href="#productManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['product.view','product.gallery','product.add','product.update','admin.categories','admin.subcategories','measurements.index','product.gallery','product.fabrics','admin.collections.index']) ? 'true' : 'false' }}">
