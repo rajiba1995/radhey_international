@@ -99,9 +99,9 @@
                                                     <span class="material-icons">edit</span>
                                                 </a>
                                                 <button wire:click="deleteProduct({{ $product->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm mb-0"><span class="material-icons">delete</span></button>
-                                                <a href="{{route('product.gallery',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">Gallery </a>
+                                                <!-- <a href="{{route('product.gallery',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">Gallery </a> -->
                                                 <a href="{{ route('measurements.index',$product->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" title="">Measurement
-                                                    <span class="count">18</span></a>
+                                                    <span class="count">{{ $product->measurements->count() }}</span></a>
                                             </td>
                                         </tr>
                                         @empty

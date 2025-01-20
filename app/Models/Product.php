@@ -44,5 +44,11 @@ class Product extends Model
     {
         return $this->hasMany(ProductImage::class);
     }
+
+    public function measurements()
+    {
+        return $this->hasMany(Measurement::class);
+    }
+
     
 }
