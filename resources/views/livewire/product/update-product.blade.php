@@ -1,3 +1,4 @@
+<div>
 <div class="container-fluid px-2 px-md-4">
     <div class="card card-body">
         <div class="row gx-4 mb-2">
@@ -123,15 +124,13 @@
 
                          {{-- Fabrics --}}
                          <div class="mb-3 col-md-6">
-                            <label class="form-label">Fabrics </label>
-                            <div class="form-check d-flex flex-wrap">
+                            <label class="form-label">Fabrics <span class="text-danger">*</span></label>
+                            <select wire:model="selectedFabrics" id="multiple" class="form-control form-control-sm border border-1 p-2" multiple>
+                                <option value="" hidden>Select Fabrics</option>
                                 @foreach($fabrics as $fabric)
-                                    <input wire:model="selectedFabrics" type="checkbox" value="{{ $fabric->id }}" class="form-check-input" id="fabric-{{ $fabric->id }}"  {{in_array($fabric->id,$selectedFabrics) ? "checked" : ""}}>
-                                    <label class="form-check-label" for="fabric-{{ $fabric->id }}">
-                                        {{ $fabric->title }}
-                                    </label><br>
+                                    <option value="{{ $fabric->id }}">{{ $fabric->title }}</option>
                                 @endforeach
-                            </div>
+                            </select>
                             @error('selectedFabrics')
                                 <p class="text-danger inputerror">{{ $message }}</p>
                             @enderror
@@ -150,6 +149,12 @@
 
 </div>
 <script src="https://cdn.ckeditor.com/ckeditor5/38.1.0/classic/ckeditor.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- Select2 CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Select2 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     ClassicEditor
@@ -162,6 +167,14 @@ document.addEventListener('DOMContentLoaded', function () {
         .catch(error => {
             console.error(error);
         });
+        
+        
 });
 
+$("#multiple").select2({
+          placeholder: "Select a fabric",
+          allowClear: true
+      });
+
 </script>
+</div>

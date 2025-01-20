@@ -16,7 +16,7 @@ use App\Models\OrderItem;
 use App\Models\Ledger;
 use App\Models\OrderMeasurement;
 use Illuminate\Support\Facades\DB;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use App\Helpers\Helper;
 
 class OrderNew extends Component

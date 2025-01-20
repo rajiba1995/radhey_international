@@ -15,14 +15,6 @@
                 @endif
             </div>
             <div class="d-flex justify-content-between mb-3">
-                <!-- Search Box -->
-                <!-- <div class="d-flex align-items-center">
-                    <input type="text" wire:model.debounce.500ms="search" class="form-control border border-2 p-2 custom-input-sm" placeholder="Search order">
-                    <button type="button" wire:click="$refresh" class="btn btn-dark text-light mb-0 custom-input-sm">
-                        <span class="material-icons">search</span>
-                    </button>
-                </div> -->
-
                 <div class="d-flex align-items-center">
                     <!-- Text Search -->
                     <label for="start_date" class="ms-2">Start Date</label>
@@ -44,9 +36,6 @@
                         wire:model.debounce.500ms="search" 
                         class="form-control border border-2 p-2 custom-input-sm" 
                         placeholder="Search order">
-
-                  
-
                     <!-- Search Button -->
                     
                     <button 
