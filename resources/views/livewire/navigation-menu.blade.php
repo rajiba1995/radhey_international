@@ -97,14 +97,22 @@
             </li>
             {{-- Purchase Order --}}
             <li class="nav-item">
-                <a class="nav-link text-white {{ Request::is('admin/purchase-order*') || in_array(Route::currentRouteName(), ['purchase_order.index']) ? 'active bg-gradient-primary' : '' }}"
-                    href="#productManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['purchase_order.index']) ? 'true' : 'false' }}">
+                <a class="nav-link text-white {{ Request::is('admin/purchase-order*') || in_array(Route::currentRouteName(), ['purchase_order.index','purchase_order.create']) ? 'active bg-gradient-primary' : '' }}"
+                    href="#purchaseOrderSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['purchase_order.index','purchase_order.create']) ? 'true' : 'false' }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">receipt</i>
                     </div>
                     <span class="nav-link-text ms-1">Purchase Order</span>
                 </a>
             </li>
+            <ul id="purchaseOrderSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['purchase_order.index','purchase_order.create']) ? 'show' : '' }}">
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'purchase_order.index' ? 'active bg-gradient-primary' : '' }}"
+                        href="{{route('purchase_order.index')}}">
+                        PO
+                    </a>
+                </li>
+            </ul>
 
             {{-- Product Management --}}
             <li class="nav-item">
