@@ -50,6 +50,7 @@ class FabricIndex extends Component
         
 
         Fabric::create([
+            'collection_id' => 1,
             'title' => $this->title,
             'threshold_price' => $this->threshold_price,
             'image' =>  $absolutePath,
@@ -88,7 +89,6 @@ class FabricIndex extends Component
             'image' => [
                 'nullable',
                 'mimes:jpg,png,jpeg,gif',
-                Rule::unique('fabrics', 'image')->ignore($this->fabricId),
             ],
             'threshold_price' => [
                 'required',

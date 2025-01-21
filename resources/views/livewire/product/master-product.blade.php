@@ -53,7 +53,7 @@
                                     <thead>
                                         <tr>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Image</th>
-                                            {{-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Collection</th> --}}
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Collection</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Name</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Category</th>
                                             {{-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">SubCategory</th> --}}
@@ -73,12 +73,11 @@
                                                     @endif
                                                 </span>
                                             </td>
-                                            {{-- <td>
-                                                <span class="badge bg-danger custom_danger_badge">{{ $product->collection?$product->collection->type->title:""}}</span>
+                                            <td>
                                                 <p class="text-secondary text-xs font-weight-bold">
                                                     {{ $product->collection?$product->collection->title:""}}
                                                 </p>
-                                            </td> --}}
+                                            </td> 
                                             <td><h6 class="mb-0 text-sm">{{ ucwords($product->name) }}</h6></td>
                                             <td><p class="text-xs font-weight-bold mb-0">{{ ucwords($product->category->title ?? 'N/A') }}</p></td>
                                             {{-- <td>
