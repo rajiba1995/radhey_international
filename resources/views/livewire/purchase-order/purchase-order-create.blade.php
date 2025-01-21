@@ -71,7 +71,7 @@
                                                 @endforeach
                                             @endif
                                         </select>
-                                        @error('collection')
+                                        @error('rows.'.$index.'.collections')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
@@ -84,7 +84,7 @@
                                                     <option value="{{ $fabric['id'] }}">{{ $fabric['title'] }}</option>
                                                 @endforeach
                                             </select>
-                                            @error('fabric')
+                                            @error('rows.'.$index.'.fabric')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
@@ -101,24 +101,27 @@
                                                    <option value="" disabled>No products available</option>
                                                 @endif
                                             </select>
-                                            @error('product')
+                                            @error('rows.'.$index.'product')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     @endif
                                     <div class="col-md-1">
                                         @if($isFabricSelected[$index] ?? false)
-                                            <label for="pcs_per_mtr_{{$index}}" class="form-label">Pcs per Mtr</label>
+                                            <label for="pcs_per_mtr_{{$index}}" class="form-label">Pcs per Mtr </label>
                                             <input type="number" wire:model="rows.{{$index}}.pcs_per_mtr" id="pcs_per_mtr_{{$index}}" class="form-control form-control-sm border border-1 p-2" value="1">
                                         @else
-                                            <label for="pcs_per_qty_{{$index}}" class="form-label">Pcs per Qty</label>
+                                            <label for="pcs_per_qty_{{$index}}" class="form-label">Pcs per Qty </label>
                                             <input type="number" wire:model="rows.{{$index}}.pcs_per_qty" id="pcs_per_qty_{{$index}}" class="form-control form-control-sm border border-1 p-2" value="1">
                                         @endif
                                     </div>
                                     
                                     <div class="col-md-2">
-                                        <label for="price_per_pc_{{$index}}" class="form-label">Price/Pc (Inc. Tax)</label>
+                                        <label for="price_per_pc_{{$index}}" class="form-label">Price/Pc (Inc. Tax) <span class="text-danger">*</span></label>
                                         <input type="text" wire:model="rows.{{$index}}.price_per_pc" id="price_per_pc_{{$index}}" class="form-control form-control-sm border border-1 p-2" placeholder="Product Cost Price">
+                                        @error('rows.'.$index.'.price_per_pc')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                     <div class="col-md-2">
                                         <label for="total_amount_{{$index}}" class="form-label">Total Amount</label>

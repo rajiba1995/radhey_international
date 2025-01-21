@@ -33,6 +33,30 @@ class PurchaseOrderCreate extends Component
         $this->isFabricSelected = false;
     }
 
+    // PurchaseOrder Create
+    public function savePurchaseOrder()
+    {
+        $this->validate([
+            'selectedSupplier' => 'required',
+            'rows.*.collections' => 'required',
+            'rows.*.fabric' => 'required_if:rows.*.product,null',
+            'rows.*.product' => 'required_if:rows.*.fabric,null',
+            'rows.*.pcs_per_mtr' => 'nullable|numeric|min:1',
+            'rows.*.pcs_per_qty' => 'nullable|numeric|min:1',
+            'rows.*.price_per_pc' => 'required|numeric|min:0',
+            'rows.*.total_amount' => 'required|numeric|min:0',
+        ], [
+            'rows.*.collections.required' => 'The collection field is required.',
+            'rows.*.fabric.required_if' => 'The fabric field is required if no product is selected.',
+            'rows.*.product.required_if' => 'The product field is required if no fabric is selected.',
+            'rows.*.price_per_pc.required' => 'The price per piece is required.',
+            'rows.*.total_amount.required' => 'The total amount is required.',
+        ]);
+    
+        // Your saving logic here
+    }
+    
+
     public function SelectedCollection($index, $collectionId)
     {
         $this->rows[$index]['collection'] = $collectionId;
