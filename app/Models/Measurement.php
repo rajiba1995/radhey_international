@@ -12,9 +12,4 @@ class Measurement extends Model
     {
         return $this->belongsTo(Subcategory::class);
     }
-    public function orderMeasurements()
-    {
-        return $this->hasMany(OrderMeasurement::class, 'measurement_name', 'title'); // Assuming measurement_name in OrderMeasurement references 'title'
-    }
-   
 }

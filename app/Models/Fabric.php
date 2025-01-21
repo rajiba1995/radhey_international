@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Fabric extends Model
 {
     protected $table = "fabrics";
-    protected $fillable = ['title', 'image','product_id','threshold_price' ,'status'];
+    protected $fillable = ['title', 'image','threshold_price' ,'status'];
 
-    public function products()
+    public function products()  
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsToMany(Product::class, 'product_fabrics', 'fabric_id', 'product_id');
     }
+    
 }

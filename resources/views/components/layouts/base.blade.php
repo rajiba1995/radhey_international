@@ -26,8 +26,6 @@
     <!-- CSS Files -->
     <link id="pagestyle" href="{{ asset('assets') }}/css/material-dashboard.css?v=3.0.0" rel="stylesheet" />
     <link id="pagestyle" href="{{ asset('assets') }}/css/style.css?v=3.0.0" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
-
     @livewireStyles
 </head>
 

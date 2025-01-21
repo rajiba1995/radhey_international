@@ -9,7 +9,7 @@
                         <h6 class="badge bg-danger custom_danger_badge">Basic Information</h6>
                     </div>
                     <div class="col-md-4 text-end">
-                        <a href="{{ route('suppliers.index') }}" class="btn btn-dark btn-sm">
+                        <a href="{{ route('suppliers.index') }}" class="btn btn-cta">
                             <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i> 
                             Back
                         </a>
@@ -149,7 +149,7 @@
                         </div>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-dark mt-4">Save</button>
+                <button type="submit" class="btn btn-cta mt-4">Save</button>
             </form>
         </div>
     </div>

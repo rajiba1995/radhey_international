@@ -16,7 +16,7 @@
                     <h6 class="mt-1 mb-3">Staff Details</h6>
                 </div>
                 <div class="d-flex align-content-center flex-wrap gap-2">
-                    <a href="{{ route('staff.index') }}" class="btn btn-dark btn-sm mt-3">
+                    <a href="{{ route('staff.index') }}" class="btn btn-cta">
                         <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i> Back
                     </a>
                 </div>

@@ -114,7 +114,7 @@ class CustomerEdit extends Component
                 'regex:/^\d{' . env('VALIDATE_MOBILE', 8) . ',}$/'
             ],
             'whatsapp_no' => [
-                'required', 
+                'required',
                 'regex:/^\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/'
             ],
             'gst_number' => 'nullable|string|max:15',
@@ -145,30 +145,39 @@ class CustomerEdit extends Component
     public function update()
     {
         // dd($this->all());
+         // Prepare data for dd and avoid showing existing image/verified_video
         $dataToLog = $this->all();
 
+        // Check if 'image' exists already and unset it from the log data
         if (isset($this->image) && !empty($this->image)) {
             // Don't log image data if it already exists
             unset($dataToLog['image']);
         }
 
+        // Check if 'verified_video' exists already and unset it from the log data
         if (isset($this->verified_video) && !empty($this->verified_video)) {
+            // Don't log verified_video data if it already exists
             unset($dataToLog['verified_video']);
         }
 
+        // Log data without the image and verified_video if they exist
+        // dd($dataToLog);
         $this->validate();
       
         $user = User::find($this->id);
         $user->fill($this->prepareUserData());
         
+        // Handle image upload only if a new image is provided
         if ($this->image && $this->image instanceof \Illuminate\Http\UploadedFile) {
             $user->profile_image = $this->uploadImage();
         }
 
+        // Handle video upload only if a new video is provided
         if ($this->verified_video && $this->verified_video instanceof \Illuminate\Http\UploadedFile) {
             $user->verified_video = $this->uploadVideo();
         }
 
+        // Handle GST certificate upload only if a new certificate is provided
         if ($this->gst_certificate_image && $this->gst_certificate_image instanceof \Illuminate\Http\UploadedFile) {
             $user->gst_certificate_image = $this->uploadGSTCertificate();
         }

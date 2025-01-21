@@ -17,15 +17,9 @@ class FabricIndex extends Component
 {
     use WithFileUploads;
     use WithPagination;
-    public $fabrics;
-    public  $image, $title, $status = 1, $fabricId,$product_id,$threshold_price;
+    public  $image, $title, $status = 1, $fabricId,$threshold_price;
     public $search = '';
 
-    public function mount($product_id)
-    {
-        $this->product_id = $product_id;
-        $this->fabrics = Fabric::orderBy('id', 'desc')->where('product_id', $this->product_id)->get();
-    }
 
     public function store()
     {
@@ -37,9 +31,8 @@ class FabricIndex extends Component
                 'unique:fabrics,title', 
             ],
             'image' => [
-                'required',
+                'nullable',
                 'mimes:jpg,png,jpeg,gif',
-                'unique:fabrics,image', 
             ],
             'threshold_price' => [
                 'required',
@@ -47,6 +40,8 @@ class FabricIndex extends Component
                 'min:1',
             ],
         ]);
+
+        $absolutePath = null;
         
         if($this->image){
             $imagePath = $this->image->store("fabrics",'public');
@@ -55,7 +50,6 @@ class FabricIndex extends Component
         
 
         Fabric::create([
-            'product_id' => $this->product_id,
             'title' => $this->title,
             'threshold_price' => $this->threshold_price,
             'image' =>  $absolutePath,
@@ -64,12 +58,10 @@ class FabricIndex extends Component
         
         $this->title = null;
         $this->image = null;
-        
+        $this->threshold_price = null;
         // Refresh the fabrics list for the current product
-       $this->fabrics = Fabric::orderBy('id', 'desc')->where('product_id', $this->product_id)->get();
         session()->flash('message', 'Fabric created successfully!');
-        // $this->fabrics = Fabric::orderBy('id', 'desc')->get();
-        
+        $this->resetPage(); // Refresh the list
     }
 
     // Edit Fabric
@@ -94,7 +86,7 @@ class FabricIndex extends Component
                 Rule::unique('fabrics', 'title')->ignore($this->fabricId), 
             ],
             'image' => [
-                'required',
+                'nullable',
                 'mimes:jpg,png,jpeg,gif',
                 Rule::unique('fabrics', 'image')->ignore($this->fabricId),
             ],
@@ -114,7 +106,6 @@ class FabricIndex extends Component
             $imagePath = "storage/" . $newImagePath;
         }
         $fabric->update([
-            'product_id' => $this->product_id,
             'title' => $this->title,
             'threshold_price' => $this->threshold_price,
             'image' => $imagePath,
@@ -123,12 +114,10 @@ class FabricIndex extends Component
         
         $this->title = null;
         $this->image = null;
-
-        // Refresh the fabrics list for the current product
-         $this->fabrics = Fabric::orderBy('id', 'desc')->where('product_id', $this->product_id)->get();  
+        $this->threshold_price = null;
+        
         session()->flash('message', 'Fabric updated successfully!');
        
-        // return redirect()->route('admin.fabrics.index');
     }
 
     // Delete Fabric

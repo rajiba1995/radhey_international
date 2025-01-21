@@ -19,7 +19,7 @@
                     </p>
                 </div>
                 <div class="d-flex align-content-center flex-wrap gap-2">
-                    <a href="{{ route('suppliers.index') }}" class="btn btn-dark btn-sm mt-3"><i
+                    <a href="{{ route('suppliers.index') }}" class="btn btn-cta mt-3"><i
                             class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
                         Back</a>
                 </div>
@@ -62,7 +62,9 @@
                     <div class="card mb-4">
                         <div class="card-body p-3">
                         <h5 class="card-title">Billing Address</h5>
-                            <p> {{ $supplier->billing_address }} , {{ $supplier->billing_landmark }} , {{ $supplier->billing_city }} ,  {{ $supplier->billing_state }} , {{ $supplier->billing_country }}  -{{ $supplier->billing_pin }} </p>
+                            <p> {{ collect([$supplier->billing_address, $supplier->billing_landmark, $supplier->billing_city, $supplier->billing_state, $supplier->billing_country, $supplier->billing_pin])
+                             ->filter() // Remove null or empty values
+                            ->implode(', ') }} </p>
                         </div>
                     </div>
                     <div class="card">

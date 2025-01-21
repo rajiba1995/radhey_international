@@ -9,7 +9,7 @@
                         <h6 class="badge bg-danger custom_danger_badge">Basic Information</h6>
                     </div>
                     <div class="col-md-4 text-end">
-                        <a href="{{ route('customers.index') }}" class="btn btn-dark btn-sm"> <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i> Back</a>
+                        <a href="{{ route('customers.index') }}" class="btn btn-cta"> <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i> Back</a>
                     </div>
                 </div>
             </div>
@@ -78,7 +78,7 @@
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="image" class="form-label">Profile Image <span class="text-danger">*</span></label>
+                            <label for="image" class="form-label">Profile Image </label>
                             <input type="file" wire:model="image" id="image" class="form-control form-control-sm border border-1 p-2">
                             @if($tempImageUrl)
                                <img src="{{ $tempImageUrl }}" class="img-thumbnail mt-2" width="100">
@@ -231,7 +231,7 @@
                             @enderror
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-dark mt-3">Save</button>
+                    <button type="submit" class="btn btn-cta mt-3">Save</button>
                 </form>
             </div>
         </div>

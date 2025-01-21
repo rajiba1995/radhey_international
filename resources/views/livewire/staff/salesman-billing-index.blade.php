@@ -211,10 +211,10 @@
                                 @enderror
 
                                 <div class="mb-2 text-end mt-4">
-                                    <a href="" class="btn btn-dark btn-sm mt-1">
+                                    <a href="" class="btn btn-cta btn-sm mt-1">
                                     <i class="material-icons text-white" style="font-size: 15px;">refresh</i> 
                                         Refresh</a>
-                                    <button type="submit" class="btn btn-primary btn-sm mt-1" 
+                                    <button type="submit" class="btn btn-cta btn-sm mt-1" 
                                             wire:loading.attr="disabled">
                                         <span> 
                                             {{$billing_id ? "Update Bill Book" : "Create Bill Book"}}

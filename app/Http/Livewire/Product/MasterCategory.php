@@ -16,7 +16,16 @@ class MasterCategory extends Component
 
     public $collection_id;
     public $title, $status = 1, $categoryId, $image, $search = '',$short_code;
-   
+    // public $existingImage;
+    // protected $rules = [
+    //     'short_code' => 'required|max:255',
+    //     'collection_id' => 'required',
+    //     'title' => 'required|string|max:255',
+    //     'short_code' => 'required|max:255',
+    //     'image' => 'nullable|image|mimes:jpg,jpeg,png,svg,gif|max:2048',
+    // ];
+
+
     public function store()
     {
         // dd($this->all());

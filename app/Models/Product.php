@@ -34,9 +34,21 @@ class Product extends Model
     {
         return $this->belongsTo(Collection::class,'collection_id');
     }
-
     
-
+    public function fabrics()
+    {
+        return $this->belongsToMany(Fabric::class, 'product_fabrics', 'product_id', 'fabric_id');
+    }
     
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class);
+    }
+
+    public function measurements()
+    {
+        return $this->hasMany(Measurement::class);
+    }
+
     
 }

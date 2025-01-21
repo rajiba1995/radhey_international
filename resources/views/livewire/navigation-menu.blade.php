@@ -95,6 +95,18 @@
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Master Modules</h6>
             </li>
+            {{-- Purchase Order --}}
+            <li class="nav-item">
+                <a class="nav-link text-white {{ Request::is('admin/purchase-order*') || in_array(Route::currentRouteName(), ['purchase_order.index']) ? 'active bg-gradient-primary' : '' }}"
+                    href="#productManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['purchase_order.index']) ? 'true' : 'false' }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">receipt</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Purchase Order</span>
+                </a>
+            </li>
+
+            {{-- Product Management --}}
             <li class="nav-item">
                 <a class="nav-link text-white {{ Request::is('admin/products*') || in_array(Route::currentRouteName(), ['product.view', 'product.gallery', 'product.add', 'product.update', 'admin.categories', 'admin.subcategories', 'measurements.index', 'product.fabrics','admin.collections.index']) ? 'active bg-gradient-primary' : '' }}"
                     href="#productManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['product.view','product.gallery','product.add','product.update','admin.categories','admin.subcategories','measurements.index','product.gallery','product.fabrics','admin.collections.index']) ? 'true' : 'false' }}">
@@ -106,7 +118,7 @@
             </li>
         
             <!-- Submenu -->
-            <ul id="productManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['product.view', 'product.gallery', 'product.add', 'product.update', 'admin.categories', 'admin.subcategories', 'measurements.index', 'product.fabrics','admin.collections.index']) ? 'show' : '' }}">  
+            <ul id="productManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['product.view', 'product.gallery', 'product.add', 'product.update', 'admin.categories', 'admin.subcategories', 'measurements.index', 'product.fabrics','admin.collections.index','admin.fabrics.index']) ? 'show' : '' }}">  
                 <li class="nav-item">
                     <a class="nav-link text-white {{ Request::is('admin/products/collections') ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('admin.collections.index')}}">
@@ -117,6 +129,12 @@
                     <a class="nav-link text-white {{ Request::is('admin/products/categories*') ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('admin.categories')}}">
                         Categories
+                    </a>
+                </li>
+                 <li class="nav-item">
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'admin.fabrics.index' ? 'active bg-gradient-primary' : '' }}"
+                        href="{{route('admin.fabrics.index')}}">
+                        Fabrics
                     </a>
                 </li>
                 <li class="nav-item">
@@ -142,8 +160,8 @@
                 
             </ul>
             <li class="nav-item">
-                <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add','salesman.index']) ? 'active bg-gradient-primary' : '' }}"
-                    href="#StaffManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add','salesman.index']) ? 'true' : 'false' }}">
+                <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add']) ? 'active bg-gradient-primary' : '' }}"
+                    href="#StaffManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add']) ? 'true' : 'false' }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">assignment_ind</i>
                     </div>
@@ -165,7 +183,7 @@
                         Staff
                     </a>
                 </li>
-                <li class="nav-item">
+                 <li class="nav-item">
                     <a class="nav-link text-white {{ Route::currentRouteName() == 'salesman.index' ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('salesman.index')}}">
                         Staff Bill Book
@@ -214,11 +232,11 @@
                         href="{{route('admin.order.index')}}">
                          All Orders
                     </a>
-                    <a class="nav-link text-white {{ Request::is('admin/orders/new') ? 'active bg-gradient-primary' : '' }}"
+                </li>
+                <a class="nav-link text-white {{ Request::is('admin/orders/new') ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('admin.order.new')}}">
                          Place Order
-                    </a>
-                </li>
+                </a>
             </ul>
            
         </ul>

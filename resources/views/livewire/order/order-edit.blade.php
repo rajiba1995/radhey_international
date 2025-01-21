@@ -2,7 +2,7 @@
     <div class="card my-4">
         <div class="card-header pb-0">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="m-0">Update Order <span class="badge bg-success custom_success_badge">{{$order_number}}</span></h4>
+                <h4 class="m-0">Update Order <span class="badge bg-success custom_success_badge">{{env('ORDER_PREFIX') . $order_number}}</span></h4>
                 @if (session('error'))
                 <div class="alert alert-danger">
                     {{ session('error') }}
