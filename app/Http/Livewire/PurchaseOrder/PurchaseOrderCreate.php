@@ -12,7 +12,7 @@ class PurchaseOrderCreate extends Component
 {
     public $suppliers,$collections,$fabrics = [];
     public $selectedCollection = null,$product = null;
-    public $isFabricSelected = false;
+    public $isFabricSelected =  [];
     public $rows = []; 
     public $selectedSupplier = null;
 
@@ -44,20 +44,20 @@ class PurchaseOrderCreate extends Component
                 $this->rows[$index]['products'] = [];
                 $this->rows[$index]['fabric'] = null;
                 $this->rows[$index]['product'] = null;
-                $this->isFabricSelected = true;
+                $this->isFabricSelected[$index] = true;
             } elseif (in_array($collection->id, [2, 4])) { // GARMENT ITEMS
                 $this->rows[$index]['products'] = Product::where('collection_id', $collection->id)->get()->toArray();
                 $this->rows[$index]['fabrics'] = [];
-                $this->isFabricSelected = false;
+                $this->isFabricSelected[$index] = false;
             } else {
                 $this->rows[$index]['fabrics'] = [];
                 $this->rows[$index]['products'] = [];
-                $this->isFabricSelected = false;
+                $this->isFabricSelected[$index] = false;
             }
         } else {
             $this->rows[$index]['fabrics'] = [];
             $this->rows[$index]['products'] = [];
-            $this->isFabricSelected = false;
+            $this->isFabricSelected[$index] = false;
         }
 
         $this->rows[$index]['fabric'] = null;
@@ -72,7 +72,9 @@ class PurchaseOrderCreate extends Component
 
     public function removeRow($index){
         unset($this->rows[$index]);
+        unset($this->isFabricSelected[$index]);
         $this->rows = array_values($this->rows);
+        $this->isFabricSelected = array_values($this->isFabricSelected);
     }
 
     
