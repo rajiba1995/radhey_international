@@ -71,14 +71,7 @@
                                                     <p class ="text-danger"><span>Pending</span></p>
                                                 @endif
                                             </td>
-                                            <td>
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input ms-auto" type="checkbox" wire:click="toggleStatus({{ $purchaseOrder->id }})" 
-                                                    @if ($purchaseOrder->status)
-                                                        checked
-                                                    @endif>
-                                                </div>
-                                            </td>
+                                            
                                             <td class="align-middle action_tab">
                                                 <a href="{{route('purchase_order.edit',$purchaseOrder->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="Edit product">
                                                     <span class="material-icons">edit</span>
