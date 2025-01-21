@@ -103,7 +103,8 @@
                                                 <a href="{{ route('measurements.index',$product->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" title="">Measurement
                                                     <span class="count">{{ $product->measurements->count() }}</span></a>
                                                 <a href="{{ route('product_fabrics.index',$product->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" title="">Fabric
-                                                </a>
+                                                <span class="count">{{ $product->fabrics->count() }}</span></a>
+                                            </a>
                                             </td>
                                         </tr>
                                         @empty
