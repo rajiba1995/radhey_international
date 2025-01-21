@@ -101,7 +101,7 @@
                                                    <option value="" disabled>No products available</option>
                                                 @endif
                                             </select>
-                                            @error('rows.'.$index.'product')
+                                            @error('rows.'.$index.'.product')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
@@ -109,16 +109,17 @@
                                     <div class="col-md-1">
                                         @if($isFabricSelected[$index] ?? false)
                                             <label for="pcs_per_mtr_{{$index}}" class="form-label">Pcs per Mtr </label>
-                                            <input type="number" wire:model="rows.{{$index}}.pcs_per_mtr" id="pcs_per_mtr_{{$index}}" class="form-control form-control-sm border border-1 p-2" value="1">
+                                            <input type="number" wire:model="rows.{{$index}}.pcs_per_mtr"  wire:keyup="updateRowAmount({{ $index }})" id="pcs_per_mtr_{{$index}}" class="form-control form-control-sm border border-1 p-2">
                                         @else
                                             <label for="pcs_per_qty_{{$index}}" class="form-label">Pcs per Qty </label>
-                                            <input type="number" wire:model="rows.{{$index}}.pcs_per_qty" id="pcs_per_qty_{{$index}}" class="form-control form-control-sm border border-1 p-2" value="1">
+                                            <input type="number" wire:model="rows.{{$index}}.pcs_per_qty"  wire:keyup="updateRowAmount({{ $index }})" id="pcs_per_qty_{{$index}}" class="form-control form-control-sm border border-1 p-2" >
                                         @endif
                                     </div>
                                     
                                     <div class="col-md-2">
                                         <label for="price_per_pc_{{$index}}" class="form-label">Price/Pc (Inc. Tax) <span class="text-danger">*</span></label>
-                                        <input type="text" wire:model="rows.{{$index}}.price_per_pc" id="price_per_pc_{{$index}}" class="form-control form-control-sm border border-1 p-2" placeholder="Product Cost Price">
+                                        <input type="text" wire:model="rows.{{$index}}.price_per_pc"
+                                            wire:keyup="updateRowAmount({{ $index }})"  id="price_per_pc_{{$index}}" class="form-control form-control-sm border border-1 p-2" placeholder="Product Cost Price">
                                         @error('rows.'.$index.'.price_per_pc')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -144,15 +145,18 @@
                     <!-- Total Amount -->
                     <div class="row mb-3">
                         <div class="col-md-12 text-end">
-                            <h6>Total Amount (Inc. Tax): <span>Rs 1000</span></h6>
+                            @php
+                                $totalAmount = array_sum(array_column($rows, 'total_amount'));
+                            @endphp
+                            <h6>Total Amount (Inc. Tax): <span>Rs.  {{ number_format($totalAmount, 2) }} </span></h6>
                         </div>
                     </div>
 
                     <!-- Actions -->
                     <div class="row">
                         <div class="col-md-12 text-end">
-                            <button type="reset" class="btn btn-warning">Reset Form</button>
-                            <button type="reset" class="btn btn-danger">Reset Items</button>
+                            {{-- <button type="reset" class="btn btn-warning" wire:click="resetForm">Reset Form</button>
+                            <button type="reset" class="btn btn-danger" wire:click="resetItems">Reset Items</button> --}}
                             <button type="submit" class="btn btn-cta">Add</button>
                         </div>
                     </div>
