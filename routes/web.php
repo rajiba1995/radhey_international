@@ -31,6 +31,7 @@ use App\Http\Livewire\Supplier\SupplierAdd;
 use App\Http\Livewire\Supplier\SupplierEdit;
 use App\Http\Livewire\Supplier\SupplierDetails;
 use App\Http\Livewire\Measurement\MeasurementIndex;
+use App\Http\Livewire\Fabric\FabricsIndex;
 use App\Http\Livewire\PurchaseOrder\PurchaseOrderIndex;
 
 /*
@@ -98,12 +99,13 @@ Route::group(['prefix' => 'products'], function () {
         Route::get('/categories', MasterCategory::class)->name('admin.categories');
         Route::get('/subcategories', MasterSubCategory::class)->name('admin.subcategories');
         Route::get('/measurements/{product_id}', MeasurementIndex::class)->name('measurements.index');
+        Route::get('/fabrics/{product_id}', FabricsIndex::class)->name('product_fabrics.index');
         Route::post('/measurements/update-positions', [MeasurementIndex::class, 'updatePositions'])->name('measurements.updatePositions');
         Route::get('/fabrics', FabricIndex::class)->name('admin.fabrics.index');
 
         Route::get('/collections', CollectionIndex::class)->name('admin.collections.index');
         Route::get('/gallery/{product_id}', GalleryIndex::class)->name('product.gallery');
-        Route::get('/fabrics/{product_id}', FabricIndex::class)->name('product.fabrics');
+        // Route::get('/fabrics/{product_id}', FabricIndex::class)->name('product.fabrics');
     });
 
     // Purchase Order

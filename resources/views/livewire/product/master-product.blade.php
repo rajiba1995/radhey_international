@@ -102,6 +102,8 @@
                                                 <!-- <a href="{{route('product.gallery',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">Gallery </a> -->
                                                 <a href="{{ route('measurements.index',$product->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" title="">Measurement
                                                     <span class="count">{{ $product->measurements->count() }}</span></a>
+                                                <a href="{{ route('product_fabrics.index',$product->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" title="">Fabric
+                                                </a>
                                             </td>
                                         </tr>
                                         @empty
