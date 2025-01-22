@@ -32,7 +32,7 @@ use App\Http\Livewire\Supplier\SupplierEdit;
 use App\Http\Livewire\Supplier\SupplierDetails;
 use App\Http\Livewire\Measurement\MeasurementIndex;
 use App\Http\Livewire\Fabric\FabricsIndex;
-use App\Http\Livewire\PurchaseOrder\{PurchaseOrderIndex,PurchaseOrderCreate,PurchaseOrderEdit};
+use App\Http\Livewire\PurchaseOrder\{PurchaseOrderIndex,PurchaseOrderCreate,PurchaseOrderEdit,GenerateGrn};
 
 /*
 |--------------------------------------------------------------------------
@@ -113,6 +113,7 @@ Route::group(['prefix' => 'products'], function () {
        Route::get('/',PurchaseOrderIndex::class)->name('purchase_order.index');
        Route::get('/create',PurchaseOrderCreate::class)->name('purchase_order.create');
        Route::get('/edit/{purchase_order_id}',PurchaseOrderEdit::class)->name('purchase_order.edit');
+       Route::get('/generate-grn/{purchase_order_id}',GenerateGrn::class)->name('purchase_order.generate_grn');
     });
 
     Route::get('/designation',DesignationIndex::class)->name('staff.designation');

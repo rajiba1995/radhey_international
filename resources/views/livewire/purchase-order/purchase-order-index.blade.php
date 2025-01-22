@@ -42,7 +42,7 @@
                                     <thead>
                                         <tr>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Ordered At</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Products</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">ID</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Net Amount</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Supplier</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Status</th>
@@ -52,14 +52,13 @@
                                     <tbody>
                                         @forelse ($purchaseOrders as $purchaseOrder)
                                         <tr>
-                                            <td><p class="text-xs font-weight-bold mb-0">{{ $purchaseOrder->created_at?->format('d-m-Y') ?? 'N/A' }}
-                                            </p></td>
                                             <td>
-                                                @foreach ($purchaseOrder->orderproducts() as $product)
-                                                    <p>{{ $product->name }}</p>
-                                                @endforeach
+                                                <p class="text-xs font-weight-bold mb-0">{{ $purchaseOrder->created_at?->format('d-m-Y') ?? 'N/A' }}
+                                                </p>
                                             </td>
-
+                                            <td>
+                                                <div class="badge bg-success text-xs font-weight-bold mb-2">{{ $purchaseOrder->unique_id }}</div>
+                                            </td>
                                             <td>
                                                 <p>{{ $purchaseOrder->total_price }}</p>
                                             </td>
@@ -74,9 +73,12 @@
                                             
                                             <td class="align-middle action_tab">
                                                 <a href="{{route('purchase_order.edit',$purchaseOrder->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="Edit product">
-                                                    <span class="material-icons">edit</span>
+                                                    Edit 
                                                 </a>
-                                                <button wire:click="deleteProduct({{ $purchaseOrder->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm mb-0"><span class="material-icons">delete</span></button>
+                                                <button wire:click="deleteProduct({{ $purchaseOrder->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm mb-0">Delete</button>
+                                                <a href="{{route('purchase_order.generate_grn',['purchase_order_id'=>$purchaseOrder->id])}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">
+                                                    Generate GRN
+                                                </a>
                                             </td>
                                         </tr>
                                         @empty

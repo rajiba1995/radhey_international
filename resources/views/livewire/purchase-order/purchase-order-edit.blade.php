@@ -21,7 +21,7 @@
                                 <option value="" selected hidden>-- Select Supplier --</option>
                                 @if (!empty($suppliers) && count($suppliers)>0)
                                     @foreach ($suppliers as $supplier)
-                                        <option value="{{$supplier->id}}">{{$supplier->name}}</option>
+                                        <option value="{{$supplier->id}}" {{ $supplier->id == $selectedSupplier}}>{{$supplier->name}}</option>
                                     @endforeach
                                 @endif
                             </select>
@@ -30,15 +30,12 @@
                             @enderror
                         </div>
                     </div>
-                    @if ($selectedSupplier)
                     <!-- Address Information -->
                     <div class="card mb-3 p-3" style="background-color:rgb(249, 252, 252)">
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-md-6">
                                 <h6>Supplier Billing Address</h6>
-                                @php
-                                    $supplier = $suppliers->firstWhere('id',$selectedSupplier);// Get the selected supplier
-                                @endphp
+                               
                                 @if ($supplier)
                                 <p>
                                     <strong>Address</strong>: {{$supplier->billing_address}}<br>
@@ -50,10 +47,10 @@
                                 </p>
                                 @endif
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     <!-- Item Details -->
-                    <div class="row mb-3">
+                    {{-- <div class="row mb-3">
                         <div class="col-md-5">
                             <h6 class="badge bg-danger custom_danger_badge">Item Details</h6>
                         </div>
@@ -139,7 +136,7 @@
                                 @endforeach
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <!-- Total Amount -->
                     <div class="row mb-3">
@@ -156,7 +153,6 @@
                             <button type="submit" class="btn btn-cta">Add</button>
                         </div>
                     </div>
-                    @endif
                 </form>
             </div>
         </div>

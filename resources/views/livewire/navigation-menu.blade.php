@@ -105,11 +105,17 @@
                     <span class="nav-link-text ms-1">Purchase Order</span>
                 </a>
             </li>
-            <ul id="purchaseOrderSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['purchase_order.index','purchase_order.create']) ? 'show' : '' }}">
+            <ul id="purchaseOrderSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['purchase_order.index','purchase_order.create','purchase_order.generate_grn']) ? 'show' : '' }}">
                 <li class="nav-item">
                     <a class="nav-link text-white {{ Route::currentRouteName() == 'purchase_order.index' ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('purchase_order.index')}}">
                         PO
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'purchase_order.generate_grn' ? 'active bg-gradient-primary' : '' }}"
+                        href="{{route('purchase_order.index')}}">
+                        GRN
                     </a>
                 </li>
             </ul>
