@@ -16,13 +16,31 @@
                     <span class="ms-1">Import</span>
                 </a> --}}
                 
-                <div class="input-group w-50 search-input-group">
+                <div class="input-group w-20">
+                    <select wire:model="searchFilter" class="form-select">
+                        <option value="">Search By</option>
+                        <option value="name">Product Name</option>
+                        <option value="category">Category</option>
+                        <option value="code">Product Code</option>
+                    </select>
+                </div>
+                <div class="input-group w-20">
+                    <select wire:model="searchFilter" class="form-select">
+                        <option value="">Search By</option>
+                        <option value="name">Product Name</option>
+                        <option value="category">Category</option>
+                        <option value="code">Product Code</option>
+                    </select>
+                </div>
+
+                <!-- Search Input -->
+                <div class="input-group w-20">
                     <input type="text" wire:model.debounce.500ms="search" class="form-control border" placeholder="Search here...">
                     <button type="button" wire:click="$refresh" class="btn btn-outline-primary mb-0">
                         <span class="material-icons">search</span>
                     </button>
                 </div>
-                
+                        
             {{-- </div> --}}
             <a class="btn btn-cta btn-sm mb-0" href="{{route('product.add')}}" role="button" >
                 <i class="material-icons text-white" style="font-size: 15px;">add</i>
@@ -103,7 +121,7 @@
                                                     <span class="count">{{ $product->measurements->count() }}</span></a>
                                                 <a href="{{ route('product_fabrics.index',$product->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" title="">Fabric
                                                 <span class="count">{{ $product->fabrics->count() }}</span></a>
-                                            </a>
+                                                </a>
                                             </td>
                                         </tr>
                                         @empty
