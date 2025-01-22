@@ -40,6 +40,19 @@ class Product extends Model
         return $this->belongsToMany(Fabric::class, 'product_fabrics', 'product_id', 'fabric_id');
     }
     
-    
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class);
+    }
+
+    public function measurements()
+    {
+        return $this->hasMany(Measurement::class);
+    }
+    public function suppliers()
+    {
+        return $this->belongsToMany(Supplier::class, 'supplier_products', 'product_id', 'supplier_id');
+    }
+  
     
 }

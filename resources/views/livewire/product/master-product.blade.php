@@ -16,13 +16,31 @@
                     <span class="ms-1">Import</span>
                 </a> --}}
                 
-                <div class="input-group w-50 search-input-group">
+                <div class="input-group w-20">
+                    <select wire:model="searchFilter" class="form-select">
+                        <option value="">Search By</option>
+                        <option value="name">Product Name</option>
+                        <option value="category">Category</option>
+                        <option value="code">Product Code</option>
+                    </select>
+                </div>
+                <div class="input-group w-20">
+                    <select wire:model="searchFilter" class="form-select">
+                        <option value="">Search By</option>
+                        <option value="name">Product Name</option>
+                        <option value="category">Category</option>
+                        <option value="code">Product Code</option>
+                    </select>
+                </div>
+
+                <!-- Search Input -->
+                <div class="input-group w-20">
                     <input type="text" wire:model.debounce.500ms="search" class="form-control border" placeholder="Search here...">
                     <button type="button" wire:click="$refresh" class="btn btn-outline-primary mb-0">
                         <span class="material-icons">search</span>
                     </button>
                 </div>
-                
+                        
             {{-- </div> --}}
             <a class="btn btn-cta btn-sm mb-0" href="{{route('product.add')}}" role="button" >
                 <i class="material-icons text-white" style="font-size: 15px;">add</i>
@@ -53,7 +71,7 @@
                                     <thead>
                                         <tr>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Image</th>
-                                            {{-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Collection</th> --}}
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Collection</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Name</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Category</th>
                                             {{-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">SubCategory</th> --}}
@@ -73,12 +91,11 @@
                                                     @endif
                                                 </span>
                                             </td>
-                                            {{-- <td>
-                                                <span class="badge bg-danger custom_danger_badge">{{ $product->collection?$product->collection->type->title:""}}</span>
+                                            <td>
                                                 <p class="text-secondary text-xs font-weight-bold">
                                                     {{ $product->collection?$product->collection->title:""}}
                                                 </p>
-                                            </td> --}}
+                                            </td> 
                                             <td><h6 class="mb-0 text-sm">{{ ucwords($product->name) }}</h6></td>
                                             <td><p class="text-xs font-weight-bold mb-0">{{ ucwords($product->category->title ?? 'N/A') }}</p></td>
                                             {{-- <td>
@@ -99,9 +116,12 @@
                                                     <span class="material-icons">edit</span>
                                                 </a>
                                                 <button wire:click="deleteProduct({{ $product->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm mb-0"><span class="material-icons">delete</span></button>
-                                                <a href="{{route('product.gallery',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">Gallery </a>
+                                                <!-- <a href="{{route('product.gallery',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">Gallery </a> -->
                                                 <a href="{{ route('measurements.index',$product->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" title="">Measurement
-                                                    <span class="count">18</span></a>
+                                                    <span class="count">{{ $product->measurements->count() }}</span></a>
+                                                <a href="{{ route('product_fabrics.index',$product->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" title="">Fabric
+                                                <span class="count">{{ $product->fabrics->count() }}</span></a>
+                                                </a>
                                             </td>
                                         </tr>
                                         @empty

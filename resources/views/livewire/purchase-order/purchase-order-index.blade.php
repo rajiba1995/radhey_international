@@ -50,37 +50,33 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {{-- @forelse ($products as $product)
+                                        @forelse ($purchaseOrders as $purchaseOrder)
                                         <tr>
+                                            <td><p class="text-xs font-weight-bold mb-0">{{ $purchaseOrder->created_at?->format('d-m-Y') ?? 'N/A' }}
+                                            </p></td>
                                             <td>
-                                                <span class="text-secondary text-xs font-weight-bold">
-                                                    @if ($product->product_image)
-                                                        <img src="{{ asset('storage/'.$product->product_image) }}" alt="" style="width: 50px; height: 50px;">
-                                                    @else
-                                                        <img src="{{asset('assets/img/cubes.png')}}" alt="no-img" style="width: 50px; height: 50px;">    
-                                                    @endif
-                                                </span>
-                                            </td> --}}
-                                          
-                                            {{-- <td><h6 class="mb-0 text-sm">{{ ucwords($product->name) }}</h6></td>
-                                            <td><p class="text-xs font-weight-bold mb-0">{{ ucwords($product->category->title ?? 'N/A') }}</p></td>
-                                           
-                                            <td>
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input ms-auto" type="checkbox" wire:click="toggleStatus({{ $product->id }})" 
-                                                    @if ($product->status)
-                                                        checked
-                                                    @endif>
-                                                </div>
+                                                @foreach ($purchaseOrder->orderproducts() as $product)
+                                                    <p>{{ $product->name }}</p>
+                                                @endforeach
                                             </td>
+
+                                            <td>
+                                                <p>{{ $purchaseOrder->total_price }}</p>
+                                            </td>
+                                            <td>
+                                                <p>{{ $purchaseOrder->supplier->name }}</p>
+                                            </td>
+                                            <td>
+                                                @if ($purchaseOrder->status == 0)
+                                                    <p class ="text-danger"><span>Pending</span></p>
+                                                @endif
+                                            </td>
+                                            
                                             <td class="align-middle action_tab">
-                                                <a href="{{route('product.update',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="Edit product">
+                                                <a href="{{route('purchase_order.edit',$purchaseOrder->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="Edit product">
                                                     <span class="material-icons">edit</span>
                                                 </a>
-                                                <button wire:click="deleteProduct({{ $product->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm mb-0"><span class="material-icons">delete</span></button>
-                                                <a href="{{route('product.gallery',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">Gallery </a>
-                                                <a href="{{ route('measurements.index',$product->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" title="">Measurement
-                                                    <span class="count">18</span></a>
+                                                <button wire:click="deleteProduct({{ $purchaseOrder->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm mb-0"><span class="material-icons">delete</span></button>
                                             </td>
                                         </tr>
                                         @empty
@@ -89,7 +85,7 @@
                                                 <p class="text-xs text-secondary mb-0">No products found.</p>
                                             </td>
                                         </tr>
-                                        @endforelse --}}
+                                        @endforelse 
                                     </tbody>
                                 </table>
                                 
