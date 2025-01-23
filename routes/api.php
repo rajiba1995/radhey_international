@@ -18,15 +18,16 @@ use App\Http\Controllers\Api\UserController;
 Route::post('/generate-otp', [AuthController::class, 'generateOtp']);
 Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
 Route::put('/forget-password', [AuthController::class, 'sendResetLink']);
+Route::post('/npin-login', [AuthController::class, 'loginWithNpin']);
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
     
 
 // });
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum', 'token.expiry')->group(function () {
     // Route for creating a product
-    Route::get('/', [UserController::class, 'index']);
+    Route::get('/user', [UserController::class, 'index']);
     // More routes related to products can be added here
     // Route::get('/products', [ProductController::class, 'index']);
     // Route::put('/products/{id}', [ProductController::class, 'update']);

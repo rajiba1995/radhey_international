@@ -12,24 +12,17 @@ class UserController extends Controller
     public function index(Request $request)
     {
        
-        $user = User::first();
+        $user = User::find(auth()->id());
         if (!$user) {
-            return response()->json(['status' => false,'message' => 'Invalid phone or password']);
+            return response()->json(['status' => false,'message' => 'No data found']);
         }
     
-        // Generate OTP
-       
     
-        // Store OTP in the database
-        
-    
-        // Simulate sending OTP (replace with an actual SMS API)
-        // SendOtpService::send($request->phone, $otp);
     
         return response()->json([
             'status' => true,
-            'message' => 'OTP generated successfully',
-            'otp' => $user, // Include this for testing purposes only
+            'message' => 'User details',
+            'data' => $user, // Include this for testing purposes only
         ]);
     }
 }
