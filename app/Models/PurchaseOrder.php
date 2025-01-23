@@ -47,4 +47,10 @@ class PurchaseOrder extends Model
     {
         return $this->hasMany(PurchaseOrderProduct::class, 'purchase_order_id');
     }
+
+    public function stocks()
+    {
+        return $this->hasMany(Stock::class);
+    }
+
 }

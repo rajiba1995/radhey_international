@@ -77,4 +77,8 @@ class Helper
             return $data;
         }
     }
+
+    public static function generateUniqueNumber(){
+        return now()->format('YmdHis') . rand(1000, 9999);
+    }
 }
