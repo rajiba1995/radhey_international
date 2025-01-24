@@ -14,7 +14,7 @@ class AuthController extends Controller
     public function generateOtp(Request $request)
     {
         $request->validate([
-            'phone' => 'nullable|digits:8|required_without:email',
+            'phone' => 'nullable|required_without:email',
             'email' => 'nullable|email|required_without:phone',
             'password' => 'required',
         ]);
@@ -104,7 +104,7 @@ class AuthController extends Controller
         $request->validate([
             'otp' => 'required|digits:6',
             'email' => 'nullable|email|exists:users,email|required_without:phone',
-            'phone' => 'nullable|digits:8|exists:users,phone|required_without:email',
+            'phone' => 'nullable|exists:users,phone|required_without:email',
         ]);
    
 
@@ -182,7 +182,7 @@ class AuthController extends Controller
         // Validate that either email or phone is provided
         $request->validate([
             'email' => 'nullable|email|exists:users,email|required_without:phone',
-            'phone' => 'nullable|digits:8|exists:users,phone|required_without:email',
+            'phone' => 'nullable|exists:users,phone|required_without:email',
         ]);
        
         $password = Str::random(6);; // Generate a random 6-digit password
@@ -231,7 +231,7 @@ class AuthController extends Controller
         $request->validate([
             'npin' => 'required|numeric',
             'email' => 'nullable|email|exists:users,email|required_without:phone',
-            'phone' => 'nullable|digits:8|exists:users,phone|required_without:email',
+            'phone' => 'nullable|exists:users,phone|required_without:email',
         ]);
     
         // Get the IP address of the user
