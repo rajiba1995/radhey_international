@@ -163,12 +163,20 @@ class UserController extends Controller
     {
         $users = User::with(['billingAddress','shippingAddress'])  
             ->paginate(10);
-
-        return response()->json([
-            'status' => true,
-            'message' => 'User list fetched successfully!',
-            'data' => $users,
-        ]);
+        if($users){
+            return response()->json([
+                'status' => true,
+                'message' => 'User list fetched successfully!',
+                'data' => $users,
+            ]);
+        }else{
+            return response()->json([
+                'status' => false,
+                'message' => 'No any user list fetched!',
+                'data' => $users,
+            ]);
+        }
+       
     }
  
     public function search(Request $request)
@@ -202,11 +210,20 @@ class UserController extends Controller
         $users = $query->paginate(10);
 
         // Return the response
-        return response()->json([
-            'status' => true,
-            'message' => 'Search results fetched successfully!',
-            'data' => $users,
-        ]);
+        if($users){
+            return response()->json([
+                'status' => true,
+                'message' => 'Search results fetched successfully!',
+                'data' => $users,
+            ]);
+        }else{
+            return response()->json([
+                'status' => false,
+                'message' => 'Sorry, We can not found any result!',
+                'data' => $users,
+            ]); 
+        }
+        
     }
 
 
