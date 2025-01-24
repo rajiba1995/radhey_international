@@ -4,6 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\CollectionController;
+use App\Http\Controllers\Api\FabricController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +34,14 @@ Route::middleware('auth:sanctum', 'token.expiry')->group(function () {
     Route::post('/user/store', [UserController::class, 'store']);
     Route::get('/user/list', [UserController::class, 'list']);
     Route::get('/user/search', [UserController::class, 'search']);
+    Route::get('/user/show/{id}', [UserController::class, 'show']);
+
+
+
+
+    Route::get('/category', [CategoryController::class, 'index']);
+    Route::get('/collection', [CollectionController::class, 'index']);
+    Route::get('/fabric', [FabricController::class, 'index']);
     
     // More routes related to products can be added here
     // Route::get('/products', [ProductController::class, 'index']);

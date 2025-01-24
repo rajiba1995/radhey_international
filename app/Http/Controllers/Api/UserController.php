@@ -225,6 +225,25 @@ class UserController extends Controller
         }
         
     }
-
+    public function show($id)
+    {
+        try {
+            // Retrieve the user with related addresses
+            $user = User::with(['billingAddress','shippingAddress'])->findOrFail($id);
+            
+                return response()->json([
+                    'status' => true,
+                    'message' => 'User details fetched successfully!',
+                    'data' => $user,
+                ]);
+           
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'User not found.',
+            ]);
+        }
+    }
 
 }

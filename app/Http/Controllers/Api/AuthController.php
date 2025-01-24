@@ -202,8 +202,8 @@ class AuthController extends Controller
         }
     
         // Update the user's password
-        // $user->update(['password' => Hash::make($request->new_password)]);
-        $user->update(['password' => $request->new_password]);
+        $user->update(['password' => Hash::make($request->new_password)]);
+        // $user->update(['password' => $request->new_password]);
 
     
         // Simulate sending the new password (replace with actual email/SMS service)
