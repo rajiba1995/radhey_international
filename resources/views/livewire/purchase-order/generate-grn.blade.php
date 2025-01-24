@@ -10,6 +10,17 @@
                 <h6 class="mb-4 text-muted">PO: <span class="text-dark">{{ $purchaseOrder->unique_id }}</span></h6>
                  <a href="{{route('purchase_order.index')}}" class="btn btn-cta" ><i class="material-icons text-white" style="font-size: 15px;">chevron_left</i>Back</a>
             </div>
+            @if(Session::has('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ Session::get('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @elseif(Session::has('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ Session::get('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>  
+            @endif
             <form wire:submit.prevent="generateGrn">
                   {{-- Card for Fabrics --}}
                 @if($purchaseOrder->orderproducts->where('collection_id', 1)->isNotEmpty())

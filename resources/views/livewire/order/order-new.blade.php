@@ -325,7 +325,7 @@
                             </div>
                             {{-- Append Measurements data --}}
                             {{-- {{dd($items[$index]['searchproduct'])}} --}}
-                            {{-- @if(isset($this->items[$index]['product_id']) && $items[$index]['collection_type'] == 1) --}}
+                            @if(isset($this->items[$index]['product_id']) && $items[$index]['collection'] == 1)
                                 <div class="row">
                                     <div class="col-12 col-md-6 mb-2 mb-md-0 measurement_div">
                                         <h6 class="badge bg-danger custom_success_badge">Measurements</h6>
@@ -393,8 +393,8 @@
                                     </div>
                                     
                                 </div>
-                            {{-- @endif --}}
-                        
+                            @endif
+
                         </div>
                     @endforeach
 

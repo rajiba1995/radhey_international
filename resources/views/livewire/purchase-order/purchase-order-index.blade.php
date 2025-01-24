@@ -18,6 +18,17 @@
                 <span class="ms-1">Add New PO</span>
             </a>
         </div>
+         @if(Session::has('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ Session::get('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @elseif(Session::has('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ Session::get('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>  
+            @endif
         <div class="row">
             <div class="col-12">
                     <div class="card my-4">
@@ -67,7 +78,9 @@
                                             </td>
                                             <td>
                                                 @if ($purchaseOrder->status == 0)
-                                                    <p class ="text-danger"><span>Pending</span></p>
+                                                    <p class ="badge bg-danger"><span>Pending</span></p>
+                                                @elseif ($purchaseOrder->status == 1)
+                                                    <p class ="badge bg-success"><span>Received</span></p>    
                                                 @endif
                                             </td>
                                             
@@ -76,9 +89,11 @@
                                                     Edit 
                                                 </a>
                                                 <button wire:click="deleteProduct({{ $purchaseOrder->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm mb-0">Delete</button>
-                                                <a href="{{route('purchase_order.generate_grn',['purchase_order_id'=>$purchaseOrder->id])}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">
-                                                    Generate GRN
-                                                </a>
+                                                @if($purchaseOrder->status == 0)
+                                                    <a href="{{route('purchase_order.generate_grn',['purchase_order_id'=>$purchaseOrder->id])}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">
+                                                        Generate GRN
+                                                    </a>
+                                                @endif
                                             </td>
                                         </tr>
                                         @empty
