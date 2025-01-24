@@ -158,69 +158,69 @@ class UserAddressForm extends Component
         // dd($this->all());
         $this->validate();
     // Start the transaction
-    DB::beginTransaction();
+        DB::beginTransaction();
 
-    try {
-        // Check if a user already exists and delete the old image if necessary
-        if ($this->id) { 
-            $existingUser = User::find($this->id);
-            if ($existingUser && $existingUser->profile_image) {
-                // Delete the old image from storage
-                \Storage::disk('public')->delete($existingUser->profile_image);
+        try {
+            // Check if a user already exists and delete the old image if necessary
+            if ($this->id) { 
+                $existingUser = User::find($this->id);
+                if ($existingUser && $existingUser->profile_image) {
+                    // Delete the old image from storage
+                    \Storage::disk('public')->delete($existingUser->profile_image);
+                }
             }
-        }
 
-        // Store user data
-        $imagePath = $this->uploadImage(); 
-        $videoPath = $this->verified_video ? $this->uploadVideo() : null;
-       
-        $userData = [
-            'name' => $this->name,
-            'profile_image' => $imagePath,
-            'verified_video' =>  $videoPath,
-            'company_name' => $this->company_name,
-            'employee_rank' => $this->employee_rank,
-            'email' => $this->email,
-            'dob'=>$this->dob,
-            'phone' => $this->phone,
-            'whatsapp_no' => $this->whatsapp_no,
-            'gst_number' => $this->gst_number,
-            'credit_limit' => $this->credit_limit === '' ? 0 : $this->credit_limit,
-            'credit_days' => $this->credit_days === '' ? 0 : $this->credit_days,
-            'gst_certificate_image' => $this->gst_certificate_image ? $this->uploadGSTCertificate() : null, // Handle file upload
-        ];
-       
+            // Store user data
+            $imagePath = $this->uploadImage(); 
+            $videoPath = $this->verified_video ? $this->uploadVideo() : null;
         
-        $user = User::create($userData);
-         // Store billing address
-         $this->storeAddress($user->id, 1, $this->billing_address, $this->billing_landmark, $this->billing_city, $this->billing_state, $this->billing_country, $this->billing_pin);
+            $userData = [
+                'name' => $this->name,
+                'profile_image' => $imagePath,
+                'verified_video' =>  $videoPath,
+                'company_name' => $this->company_name,
+                'employee_rank' => $this->employee_rank,
+                'email' => $this->email,
+                'dob'=>$this->dob,
+                'phone' => $this->phone,
+                'whatsapp_no' => $this->whatsapp_no,
+                'gst_number' => $this->gst_number,
+                'credit_limit' => $this->credit_limit === '' ? 0 : $this->credit_limit,
+                'credit_days' => $this->credit_days === '' ? 0 : $this->credit_days,
+                'gst_certificate_image' => $this->gst_certificate_image ? $this->uploadGSTCertificate() : null, // Handle file upload
+            ];
+        
+            
+            $user = User::create($userData);
+            // Store billing address
+            $this->storeAddress($user->id, 1, $this->billing_address, $this->billing_landmark, $this->billing_city, $this->billing_state, $this->billing_country, $this->billing_pin);
 
-         // Check if shipping address is the same as billing address
-        if(!$this->is_billing_shipping_same){
-             // Store shipping address separately
-            $this->storeAddress($user->id, 2, $this->shipping_address, $this->shipping_landmark, $this->shipping_city, $this->shipping_state, $this->shipping_country, $this->shipping_pin);
-        }else{
-            // Store shipping address as the same as billing
-            $this->storeAddress($user->id, 2, $this->billing_address, $this->billing_landmark, $this->billing_city, $this->billing_state, $this->billing_country, $this->billing_pin);
+            // Check if shipping address is the same as billing address
+            if(!$this->is_billing_shipping_same){
+                // Store shipping address separately
+                $this->storeAddress($user->id, 2, $this->shipping_address, $this->shipping_landmark, $this->shipping_city, $this->shipping_state, $this->shipping_country, $this->shipping_pin);
+            }else{
+                // Store shipping address as the same as billing
+                $this->storeAddress($user->id, 2, $this->billing_address, $this->billing_landmark, $this->billing_city, $this->billing_state, $this->billing_country, $this->billing_pin);
+            }
+
+            // Commit the transaction
+            DB::commit();
+            session()->flash('success', 'Customer information saved successfully!');
+            return redirect()->route('customers.index');
+        } catch (\Exception $e) {
+            // In case of an error, rollback the transaction
+            DB::rollBack();
+
+            // Log the exception
+            \Log::error('Error saving customer information: ' . $e->getMessage());
+        
+            // Flash error message
+            session()->flash('error', 'An error occurred while saving the customer information. Please try again.');
+
+            // Return to the previous page with error message
+            return back();
         }
-
-        // Commit the transaction
-        DB::commit();
-        session()->flash('success', 'Customer information saved successfully!');
-        return redirect()->route('customers.index');
-    } catch (\Exception $e) {
-        // In case of an error, rollback the transaction
-        DB::rollBack();
-
-        // Log the exception
-        \Log::error('Error saving customer information: ' . $e->getMessage());
-       
-        // Flash error message
-        session()->flash('error', 'An error occurred while saving the customer information. Please try again.');
-
-        // Return to the previous page with error message
-        return back();
-    }
 
     }
 

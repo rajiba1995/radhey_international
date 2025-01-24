@@ -21,7 +21,12 @@ class Kernel extends ConsoleKernel
         if (env('IS_DEMO')){
             $schedule->command('migrate:fresh --seed')->cron($scheduledInterval);
         }
+        $schedule->call(function () {
+            \Laravel\Sanctum\PersonalAccessToken::where('expires_at', '<', now())->delete();
+        })->everyMinute();
     }
+
+
 
     /**
      * Register the commands for the application.
