@@ -16,7 +16,7 @@ class AuthController extends Controller
         $request->validate([
             'phone' => 'nullable|digits:8|required_without:email',
             'email' => 'nullable|email|required_without:phone',
-            'new_password' => 'required',
+            'password' => 'required',
         ]);
     
         $user = null;
@@ -32,7 +32,7 @@ class AuthController extends Controller
                 'message' => 'User not found with provided email or phone',
             ]);
         }
-        if (!Hash::check($request->new_password , $user->password)) {
+        if (!Hash::check($request->password , $user->password)) {
             return response()->json([
                 'status' => false,
                 'message' => 'Invalid password',
@@ -202,7 +202,9 @@ class AuthController extends Controller
         }
     
         // Update the user's password
-        $user->update(['password' => Hash::make('secret')]);
+        // $user->update(['password' => Hash::make($request->new_password)]);
+        $user->update(['password' => $request->new_password]);
+
     
         // Simulate sending the new password (replace with actual email/SMS service)
         if ($request->email) {
@@ -274,7 +276,9 @@ class AuthController extends Controller
     
         // Set token expiration to 20 seconds
         $user->tokens()->latest('created_at')->first()->update([
-            'expires_at' => now()->addSeconds(20),
+            // 'expires_at' => now()->addSeconds(20),
+            'expires_at' => now()->addHours(8),
+            
         ]);
     
         // Return response with token
