@@ -89,7 +89,7 @@ class OrderNew extends Component
             }
         $this->customers = User::where('user_type', 1)->where('status', 1)->orderBy('name', 'ASC')->get();
         $this->categories = Category::where('status', 1)->orderBy('title', 'ASC')->get();
-        $this->collections = Collection::orderBy('title', 'ASC')->get();
+        $this->collections = Collection::whereIn('id',[1,2])->orderBy('title', 'ASC')->get();
         $this->bill_book = Helper::generateInvoiceBill();
         $this->order_number = $this->bill_book['number'];
         $this->addItem();

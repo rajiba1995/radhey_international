@@ -15,4 +15,8 @@ class StockProduct extends Model
         'piece_price',
         'total_price',
     ];
+
+    public function product(){
+        return $this->belongsTo(Product::class,'product_id');
+    }
 }

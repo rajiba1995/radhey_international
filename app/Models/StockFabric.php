@@ -14,4 +14,9 @@ class StockFabric extends Model
         'piece_price',
         'total_price',
     ];
+
+    public function fabric()
+    {
+        return $this->belongsTo(Fabric::class, 'fabric_id');
+    }
 }

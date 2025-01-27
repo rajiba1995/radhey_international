@@ -165,6 +165,7 @@ class AddProduct extends Component
 
     public function render()
     {
+        $this->dispatch('ck_editor_load');
         return view('livewire.product.add-product');
     }
 

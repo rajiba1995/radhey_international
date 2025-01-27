@@ -17,19 +17,11 @@
                 </a> --}}
                 
                 <div class="input-group w-20">
-                    <select wire:model="searchFilter" class="form-select">
-                        <option value="">Search By</option>
-                        <option value="name">Product Name</option>
-                        <option value="category">Category</option>
-                        <option value="code">Product Code</option>
-                    </select>
-                </div>
-                <div class="input-group w-20">
-                    <select wire:model="searchFilter" class="form-select">
-                        <option value="">Search By</option>
-                        <option value="name">Product Name</option>
-                        <option value="category">Category</option>
-                        <option value="code">Product Code</option>
+                    <select wire:model="searchFilter" class="form-select" wire:change="$refresh">
+                        <option value="" selected hidden>Search By</option>
+                        @foreach($collection as $item)
+                            <option value="{{$item->id}}">{{ucwords($item->title)}}</option>
+                        @endforeach
                     </select>
                 </div>
 
@@ -118,9 +110,13 @@
                                                 <button wire:click="deleteProduct({{ $product->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm mb-0"><span class="material-icons">delete</span></button>
                                                 <!-- <a href="{{route('product.gallery',$product->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">Gallery </a> -->
                                                 <a href="{{ route('measurements.index',$product->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" title="">Measurement
+                                                 @if(count($product->measurements)>0)
                                                     <span class="count">{{ $product->measurements->count() }}</span></a>
+                                                 @endif
                                                 <a href="{{ route('product_fabrics.index',$product->id) }}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" title="">Fabric
-                                                <span class="count">{{ $product->fabrics->count() }}</span></a>
+                                                @if(count($product->fabrics)>0)
+                                                    <span class="count">{{ $product->fabrics->count() }}</span></a>
+                                                @endif
                                                 </a>
                                             </td>
                                         </tr>

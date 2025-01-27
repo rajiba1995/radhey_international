@@ -14,7 +14,7 @@
                     <div class="row">
                         <div class="col-md-3">
                             <p class="text-xs font-weight-bold mb-1">Order ID:</p>
-                            <p>{{$purchaseOrder->unique_id}}</p>
+                            <p><strong>{{$purchaseOrder->unique_id}}</strong></p>
                         </div>
                         <div class="col-md-3">
                             <p class="text-xs font-weight-bold mb-1">Supplier:</p>
@@ -32,81 +32,117 @@
                 </div>
             </div>
         </div>
-        <!-- Fabric Table -->
-        <div class="col-md-6 mb-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Fabric Details</h5>
-                    <div class="table-responsive">
-                        <table class="table align-items-center">
-                            <thead>
-                                <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder">#</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Fabric Name</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Quantity (meters)</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Unit Price</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Total Price</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{-- @foreach($purchaseOrder->fabrics as $index => $fabric)
+        <div class="d-flex justify-start gap-4 mb-4">
+            <button
+                class="btn btn-sm px-4 py-2 {{ $activeTab === 'product' ? 'btn-primary' : 'btn-outline-secondary' }}"
+                wire:click="setActiveTab('product')"
+            >
+                Product Details
+            </button>
+            <button
+                class="btn btn-sm px-4 py-2 {{ $activeTab === 'fabric' ? 'btn-primary' : 'btn-outline-secondary' }}"
+                wire:click="setActiveTab('fabric')"
+            >
+                Fabric Details
+            </button>
+        </div>
+        @if($activeTab === 'product')
+            <!-- Product Table -->
+            <div class="col-md-12 ">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Products Details</h5>
+                        <div class="table-responsive">
+                            <table class="table align-items-center">
+                                <thead>
                                     <tr>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>{{ $fabric->fabric_name }}</td>
-                                        <td>{{ $fabric->qty_in_meter }}</td>
-                                        <td>Rs. {{ number_format($fabric->unit_price, 2) }}</td>
-                                        <td>Rs. {{ number_format($fabric->total_price, 2) }}</td>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder">#</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Product</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Quantity(Pieces)</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Piece Price</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Total Amount</th>
                                     </tr>
-                                @endforeach --}}
-                                <tr>
-                                    <td colspan="4" class="text-right font-weight-bold">Total Fabric Price</td>
-                                    {{-- <td>Rs. {{ number_format($purchaseOrder->total_fabric_price, 2) }}</td> --}}
-                                </tr>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                @php
+                                    $totalProductPrice = 0;
+                                @endphp
+                                @if($purchaseOrder->orderproducts->where('stock_type', 'product')->count() > 0)
+                                @foreach ($purchaseOrder->orderproducts as $index => $item)
+                                {{-- @dd($item) --}}
+                                    @if($item->stock_type === 'product')
+                                        <tr>
+                                            <td>{{$index}}</td>
+                                            <td>{{ ucwords($item->product_name) }}</td>
+                                            <td>{{$item->qty_in_pieces }}</td>
+                                            <td>Rs. {{ number_format($item->piece_price, 2) }}</td>
+                                            <td>Rs. {{ number_format($item->total_price, 2) }}</td>
+                                        </tr>
+                                        @php
+                                            $totalProductPrice += $item->total_price;
+                                        @endphp
+                                    @endif
+                                @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="5">No products found</td>
+                                    </tr>
+                                @endif
+                                    <tr>
+                                        <td colspan="4" class="text-right font-weight-bold">Total PO Price</td>
+                                        <td>Rs. <strong>{{ number_format($totalProductPrice, 2) }}</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Product Table -->
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="text-uppercase text-secondary text-xxs font-weight-bolder">Products</h5>
-                    <div class="table-responsive">
-                        <table class="table align-items-center">
-                            <thead>
-                                <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder">#</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Product</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Pieces Per Qty</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Piece Price</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Total Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            @forelse ($purchaseOrder->products as $index => $product)
-                                <tr>
-                                    <td>{{$index+1}}</td>
-                                    <td>{{}}</td>
-                                    <td>12</td>
-                                    <td>Rs. 20.00</td>
-                                    <td>Rs. 240.00</td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="text-center">No Products Found</td>
-                                </tr>
-                            @endforelse
-                                <tr>
-                                    <td colspan="4" class="text-right font-weight-bold">Total PO Price</td>
-                                    <td>Rs. 240.00</td>
-                                </tr>
-                            </tbody>
-                        </table>
+        @elseif($activeTab === 'fabric')
+             <!-- Fabric Table -->
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Fabric Details</h5>
+                        <div class="table-responsive">
+                            <table class="table align-items-center">
+                                <thead>
+                                    <tr>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder">#</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Fabric Name</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Quantity (meters)</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Unit Price</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Total Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $totalFabricPrice = 0;
+                                    @endphp
+                                    @foreach($purchaseOrder->orderproducts as $index => $item)
+                                    @if($item->stock_type === 'fabric')
+                                        <tr>
+                                            <td>{{ $index + 1 }}</td>
+                                            <td>{{ $item->fabric_name }}</td>
+                                            <td>{{ $item->qty_in_meter }}</td>
+                                            <td>Rs. {{ number_format($item->piece_price, 2) }}</td>
+                                            <td>Rs. {{ number_format($item->total_price, 2) }}</td>
+                                        </tr>
+                                        @php
+                                            $totalFabricPrice += $item->total_price;
+                                        @endphp
+                                    @endif
+                                    @endforeach
+                                    <tr>
+                                        <td colspan="4" class="text-right font-weight-bold">Total Fabric Price</td>
+                                        <td>Rs. <strong>{{ number_format($totalFabricPrice, 2) }}</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        @endif
     </div>
 </div>

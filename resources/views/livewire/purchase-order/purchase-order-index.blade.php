@@ -94,11 +94,11 @@
                                                     <a href="{{route('purchase_order.generate_grn',['purchase_order_id'=>$purchaseOrder->id])}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">
                                                         Generate GRN
                                                     </a>
-                                               @else
+                                               
+                                                @endif
                                                     <a href="{{route('purchase_order.details',['purchase_order_id'=>$purchaseOrder->id])}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">
                                                         Details
                                                     </a>
-                                                @endif
                                             </td>
                                         </tr>
                                         @empty
