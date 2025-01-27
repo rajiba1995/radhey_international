@@ -13,5 +13,8 @@ class Fabric extends Model
     {
         return $this->belongsToMany(Product::class, 'product_fabrics', 'fabric_id', 'product_id');
     }
-  
+    public function collection()
+    {
+        return $this->belongsTo(Collection::class, 'collection_id', 'id');
+    }
 }

@@ -10,7 +10,7 @@ class FabricController extends Controller
 {
     public function index(Request $request)
     {
-        $data = Fabric::get();
+        $data = Fabric::where('collection_id',1)->with('collection')->get();
         if($data){
             return response()->json([
                 'status' => true,

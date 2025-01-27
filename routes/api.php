@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CollectionController;
 use App\Http\Controllers\Api\FabricController;
+use App\Http\Controllers\Api\BusinessTypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,6 +43,8 @@ Route::middleware('auth:sanctum', 'token.expiry')->group(function () {
     Route::get('/category', [CategoryController::class, 'index']);
     Route::get('/collection', [CollectionController::class, 'index']);
     Route::get('/fabric', [FabricController::class, 'index']);
+    Route::get('/business-type', [BusinessTypeController::class, 'index']);
+    Route::get('/category-collection-wise/{categoryid}', [CategoryController::class, 'getCategoriesByCollection']);
     
     // More routes related to products can be added here
     // Route::get('/products', [ProductController::class, 'index']);

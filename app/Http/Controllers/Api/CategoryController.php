@@ -25,4 +25,35 @@ class CategoryController extends Controller
         }
        
     }
+
+    public function getCategoriesByCollection($collectionId)
+    {
+        try {
+            // Fetch categories based on the collection_id
+            $categories = Category::where('collection_id', $collectionId)->with('collection')
+                ->where('status', 1) // Optional: Only active categories
+                // ->select('id', 'short_code', 'title', 'image', 'status')
+                ->get();
+
+            if ($categories->isEmpty()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No categories found for the given collection ID.',
+                ]);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Categories retrieved successfully.',
+                'data' => $categories,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'An error occurred while fetching categories.',
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
 }

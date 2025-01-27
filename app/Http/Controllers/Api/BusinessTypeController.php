@@ -10,7 +10,7 @@ class BusinessTypeController extends Controller
 {
     public function index(Request $request)
     {
-        $data = BusinessType::where('status',1)->get();
+        $data = BusinessType::get();
         if($data){
             return response()->json([
                 'status' => true,

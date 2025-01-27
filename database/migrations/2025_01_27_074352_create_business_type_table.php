@@ -13,7 +13,7 @@ class CreateBusinessTypeTable extends Migration
      */
     public function up()
     {
-        Schema::create('business_type', function (Blueprint $table) {
+        Schema::create('business_types', function (Blueprint $table) {
             $table->id(); // Auto-incrementing primary key
             $table->string('title', 255);
             $table->timestamps(); // Automatically creates 'created_at' and 'updated_at'
@@ -27,6 +27,6 @@ class CreateBusinessTypeTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('business_type');
+        Schema::dropIfExists('business_types');
     }
 }
