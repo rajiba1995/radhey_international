@@ -11,10 +11,10 @@ class PurchaseOrderIndex extends Component
     public $purchaseOrders = '';
 
     public function mount(){
-        
-        $this->purchaseOrders = PurchaseOrder::get();
-        // dd($this->purchaseOrders);
+        // Eager load the relationships for purchase orders
+        $this->purchaseOrders = PurchaseOrder::with('orderproducts.product', 'orderproducts.fabric', 'orderproducts.collection')->get();
     }
+    
     public function render()
     {
         return view('livewire.purchase-order.purchase-order-index');

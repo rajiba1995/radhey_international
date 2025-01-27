@@ -7,6 +7,9 @@ use App\Models\Supplier;
 use App\Models\Collection;
 use App\Models\Fabric;
 use App\Models\Product;
+use App\Models\PurchaseOrder;
+use App\Models\PurchaseOrderProduct;
+use Illuminate\Support\Facades\DB;
 
 class PurchaseOrderCreate extends Component
 {
@@ -33,6 +36,39 @@ class PurchaseOrderCreate extends Component
         $this->isFabricSelected = false;
     }
 
+    // Total Amount Calculated
+    public function updateRowAmount($index)
+    {
+        // Check if the row exists
+        if (!isset($this->rows[$index])) {
+            return;
+        }
+    
+        // Fetch row values
+        $row = $this->rows[$index];
+        $pcsPerMtr = $row['pcs_per_mtr'] ?? 0; 
+        $pcsPerQty = $row['pcs_per_qty'] ?? 0; 
+        $pricePerPc = $row['price_per_pc'] ?? 0; 
+    
+        // Calculate total amount based on input values
+        if($this->isFabricSelected[$index]){
+            // Calculate total amount based on pcs_per_mtr and price_per_pc for Garments
+            if($pcsPerMtr > 0 && $pricePerPc > 0){
+                $this->rows[$index]['total_amount'] = $pcsPerMtr * $pricePerPc;
+            } else {
+                $this->rows[$index]['total_amount'] = null; // Reset if invalid inputs
+            }
+        } else {
+            // Calculate total amount based on pcs_per_qty and price_per_pc for Garment Items
+            if($pcsPerQty > 0 && $pricePerPc > 0){
+                $this->rows[$index]['total_amount'] = $pcsPerQty * $pricePerPc;
+            } else {
+                $this->rows[$index]['total_amount'] = null; // Reset if invalid inputs
+            }
+        }
+    }
+    
+
     // PurchaseOrder Create
     public function savePurchaseOrder()
     {
@@ -47,13 +83,86 @@ class PurchaseOrderCreate extends Component
             'rows.*.total_amount' => 'required|numeric|min:0',
         ], [
             'rows.*.collections.required' => 'The collection field is required.',
-            'rows.*.fabric.required_if' => 'The fabric field is required if no product is selected.',
-            'rows.*.product.required_if' => 'The product field is required if no fabric is selected.',
+            'rows.*.fabric.required_if' => 'The fabric field is required.',
+            'rows.*.product.required_if' => 'The product field is required.',
             'rows.*.price_per_pc.required' => 'The price per piece is required.',
             'rows.*.total_amount.required' => 'The total amount is required.',
         ]);
+        
+        try {
+            // Begin database transaction
+            DB::beginTransaction();
+            $supplier = Supplier::find($this->selectedSupplier);
+            
+            // Insert the purchase order
+            $purchaseOrder = new PurchaseOrder();
+            $purchaseOrder->supplier_id = $this->selectedSupplier;
+            $purchaseOrder->unique_id = 'PO' . time();
+            $purchaseOrder->address = $supplier->billing_address;
+            $purchaseOrder->city = $supplier->billing_city;
+            $purchaseOrder->pin = $supplier->billing_pin;
+            $purchaseOrder->state = $supplier->billing_state;
+            $purchaseOrder->country = $supplier->billing_country;
+            $purchaseOrder->landmark = $supplier->billing_landmark;
+            $purchaseOrder->goods_in_type = "bulk";
+            $purchaseOrder->total_price = array_sum(array_column($this->rows, 'total_amount'));
+            $productIds = [];
+            $fabricIds = [];
+            $purchaseOrder->save();
+
+            // Insert related purchase order products
+            foreach ($this->rows as $row) {
+                $purchaseOrderProduct = new PurchaseOrderProduct();
+                $purchaseOrderProduct->purchase_order_id = $purchaseOrder->id;
+                $purchaseOrderProduct->collection_id = $row['collections'];
+                // Check if fabric is selected and fetch fabric_name
+                if ($row['fabric']) {
+                    $fabric = Fabric::find($row['fabric']);
+                    $purchaseOrderProduct->fabric_name = $fabric ? $fabric->title : null;
+                    $purchaseOrderProduct->stock_type = 'fabric';
+                    $fabricIds[] = $row['fabric'];
+                    $purchaseOrderProduct->qty_in_meter = $row['pcs_per_mtr'] ?? null;
+                } else {
+                    $purchaseOrderProduct->fabric_name = null;
+                    $purchaseOrderProduct->qty_in_meter = null;
+                }
+                $purchaseOrderProduct->piece_price = $row['price_per_pc'];
+                $purchaseOrderProduct->total_price = $row['total_amount'];
+                $purchaseOrderProduct->fabric_id = $row['fabric'] ?? null;
+                // $purchaseOrderProduct->qty_in_meter = $row['pcs_per_mtr'] ?? null;
+                $purchaseOrderProduct->product_id = $row['product'] ?? null;
+                // Check if product is selected and fetch product name
+                if ($row['product']) {
+                    $product = Product::find($row['product']);
+                    $purchaseOrderProduct->product_name = $product ? $product->name : null;
+                    $purchaseOrderProduct->stock_type = 'product';
+                    $productIds[] = $row['product'];
+                    $purchaseOrderProduct->qty_in_pieces = $row['pcs_per_qty'] ?? null;
+                } else {
+                    $purchaseOrderProduct->product_name = null;
+                    $purchaseOrderProduct->qty_in_pieces = null;
+                }
+                // $purchaseOrderProduct->qty_in_pieces = $row['pcs_per_qty'] ?? null;
+                $purchaseOrderProduct->save();
+            }
+
+              // Save product_ids and fabric_ids as comma-separated strings in purchase_order table
+            $purchaseOrder->product_ids = implode(',', $productIds);
+            $purchaseOrder->fabric_ids = implode(',', $fabricIds);
+            $purchaseOrder->save();
     
-        // Your saving logic here
+            // Commit transaction
+            DB::commit();
+    
+            session()->flash('success', 'Purchase order created successfully!');
+            return redirect()->route('purchase_order.index');
+        } catch (\Exception $e) {
+            // Rollback transaction in case of error
+            DB::rollBack();
+            session()->flash('error', 'Something went wrong: ' . $e->getMessage());
+            dd($e->getMessage());
+        }
+        
     }
     
 
@@ -100,6 +209,31 @@ class PurchaseOrderCreate extends Component
         $this->rows = array_values($this->rows);
         $this->isFabricSelected = array_values($this->isFabricSelected);
     }
+
+    public function resetForm()
+    {
+        // Reset all form data
+        $this->selectedSupplier = null;
+        $this->rows = [
+            ['collection' => null, 'fabric' => [], 'product' => [], 'pcs_per_mtr' => 1, 'pcs_per_qty' => 1, 'price_per_pc' => null, 'total_amount' => null],
+        ];
+        $this->isFabricSelected = [];
+        $this->selectedCollection = null;
+        $this->fabrics = [];
+        $this->product = [];
+        $this->collections = Collection::all()->toArray(); // Optionally re-fetch collections or data that should be reset
+    }
+
+    public function resetItems()
+    {
+        // Reset only the rows (items) data
+        $this->rows = [
+            ['collection' => null, 'fabric' => [], 'product' => [], 'pcs_per_mtr' => 1, 'pcs_per_qty' => 1, 'price_per_pc' => null, 'total_amount' => null],
+        ];
+        $this->isFabricSelected = [];
+    }
+
+
 
     
     public function render()

@@ -33,20 +33,24 @@ class PurchaseOrder extends Model
          return $this->belongsTo(Supplier::class, 'supplier_id');
      }
  
-     // Relationship with Product (assuming product_ids are stored as JSON)
      public function products()
      {
          return $this->belongsToMany(Product::class, 'purchase_order_products', 'purchase_order_id', 'product_id');
      }
  
-     // Relationship with Fabric (assuming fabric_ids are stored as JSON)
-     public function fabrics()
-     {
-         return $this->belongsToMany(Fabric::class, 'purchase_order_fabrics', 'purchase_order_id', 'fabric_id');
-     }
-     public function orderproducts()
+    //  // Relationship with Fabric (assuming fabric_ids are stored as JSON)
+    //  public function fabrics()
+    //  {
+    //      return $this->belongsToMany(Fabric::class, 'purchase_order_fabrics', 'purchase_order_id', 'fabric_id');
+    //  }
+    public function orderproducts()
     {
-        // Get products based on comma-separated product_ids
-        return Product::whereIn('id', explode(',', $this->product_ids))->get();
+        return $this->hasMany(PurchaseOrderProduct::class, 'purchase_order_id');
     }
+
+    public function stocks()
+    {
+        return $this->hasMany(Stock::class);
+    }
+
 }

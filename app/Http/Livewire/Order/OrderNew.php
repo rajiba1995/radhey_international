@@ -370,10 +370,15 @@ class OrderNew extends Component
                                                             ->orderBy('position','ASC')
                                                             ->get();
        // Get the fabrics available for the selected product via ProductFabrics
-    $this->items[$index]['fabrics'] = Fabric::join('product_fabrics', 'fabrics.id', '=', 'product_fabrics.fabric_id')
-                                        ->where('product_fabrics.product_id', $id)
-                                        ->where('fabrics.status', 1)
-                                        ->get(['fabrics.*']);
+        $this->items[$index]['fabrics'] = Fabric::join('product_fabrics', 'fabrics.id', '=', 'product_fabrics.fabric_id')
+                                            ->where('product_fabrics.product_id', $id)
+                                            ->where('fabrics.status', 1)
+                                            ->get(['fabrics.*']);
+        
+        $product = Product::find($id);
+        if (empty($this->items[$index]['collection'])) {
+            $this->items[$index]['collection'] = $product ? $product->collection->id : null; // Use the collection ID
+        }
         
         // Clear any previous measurement error session
         session()->forget('measurements_error.' . $index);
@@ -404,8 +409,13 @@ class OrderNew extends Component
                 // $this->items[$index]['get_measurements'][$previousMeasurement->measurement_name]['value'] = $previousMeasurement->measurement_value;
     
                 $measurement = $previousMeasurement->measurement; // This will return the related Measurement model
-                $this->items[$index]['get_measurements'][$measurement->id]['value'] = $previousMeasurement->measurement_value;
+                if($measurement){
+                    $this->items[$index]['get_measurements'][$measurement->id]['value'] = $previousMeasurement->measurement_value;
+                }
             }
+        }else {
+            // Handle case when no previous order exists
+            $this->items[$index]['get_measurements'] = [];
         }
     }
 
