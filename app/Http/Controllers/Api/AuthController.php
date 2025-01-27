@@ -202,8 +202,7 @@ class AuthController extends Controller
         }
     
         // Update the user's password
-        $user->update(['password' => Hash::make($request->new_password)]);
-        // $user->update(['password' => $request->new_password]);
+        $user->update(['password' => $password]);
 
     
         // Simulate sending the new password (replace with actual email/SMS service)
@@ -218,8 +217,8 @@ class AuthController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Password reset successfully. Check your email or phone for the new password.',
-            'password' => $user->password, // For testing purposes only, remove in production
-            'user'=> $user
+            'password' => $password, // For testing purposes only, remove in production
+            // 'user'=> $user
         ]);
     }
 
