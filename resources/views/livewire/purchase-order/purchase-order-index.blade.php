@@ -85,15 +85,20 @@
                                             </td>
                                             
                                             <td class="align-middle action_tab">
-                                                <a href="{{route('purchase_order.edit',$purchaseOrder->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="Edit product">
-                                                    Edit 
-                                                </a>
-                                                <button wire:click="deleteProduct({{ $purchaseOrder->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm mb-0">Delete</button>
                                                 @if($purchaseOrder->status == 0)
+                                                    <a href="{{route('purchase_order.edit',$purchaseOrder->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="Edit product">
+                                                        Edit 
+                                                    </a>
+                                                    <button wire:click="deleteProduct({{ $purchaseOrder->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm mb-0">Delete</button>
+                                                
                                                     <a href="{{route('purchase_order.generate_grn',['purchase_order_id'=>$purchaseOrder->id])}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">
                                                         Generate GRN
                                                     </a>
+                                               
                                                 @endif
+                                                    <a href="{{route('purchase_order.details',['purchase_order_id'=>$purchaseOrder->id])}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">
+                                                        Details
+                                                    </a>
                                             </td>
                                         </tr>
                                         @empty

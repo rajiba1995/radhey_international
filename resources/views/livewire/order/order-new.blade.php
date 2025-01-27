@@ -253,7 +253,7 @@
                     {{-- {{dd($items)}} --}}
                     @foreach($items as $index => $item)
                         <div class="row align-items-center mt-3 mb-5">
-                            <!-- Collection Type -->
+                            <!-- Collection  -->
                             <div class="mb-3 col-md-2">
                                
                                 <label class="form-label"><strong>Collection </strong><span class="text-danger">*</span></label>

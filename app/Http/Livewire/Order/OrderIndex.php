@@ -10,6 +10,7 @@ use App\Models\User;
 class OrderIndex extends Component
 {
     use WithPagination;
+    
     public $customer_id;
     public $created_by; 
 
