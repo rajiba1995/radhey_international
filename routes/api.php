@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CollectionController;
 use App\Http\Controllers\Api\FabricController;
 use App\Http\Controllers\Api\BusinessTypeController;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,8 +46,11 @@ Route::middleware('auth:sanctum', 'token.expiry')->group(function () {
     Route::get('/collection', [CollectionController::class, 'index']);
     Route::get('/fabric', [FabricController::class, 'index']);
     Route::get('/business-type', [BusinessTypeController::class, 'index']);
-    Route::get('/category-collection-wise/{categoryid}', [CategoryController::class, 'getCategoriesByCollection']);
+    Route::get('/category/category-collection-wise/{categoryid}', [CategoryController::class, 'getCategoriesByCollection']);
+    Route::get('/product/products-category-collection-wise', [ProductController::class, 'getProductsByCategoryAndCollection']);
+    Route::get('/product/products-collection-wise', [ProductController::class, 'getProductsByCollection']);
     
+    Route::post('/order/store', [OrderController::class, 'createOrder']);
     // More routes related to products can be added here
     // Route::get('/products', [ProductController::class, 'index']);
     // Route::put('/products/{id}', [ProductController::class, 'update']);
