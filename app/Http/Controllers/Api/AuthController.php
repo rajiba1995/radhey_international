@@ -13,52 +13,76 @@ class AuthController extends Controller
 {
     public function generateOtp(Request $request)
     {
-        $request->validate([
-            'phone' => 'nullable|required_without:email',
-            'email' => 'nullable|email|required_without:phone',
-            'password' => 'required',
-        ]);
+        try {
+            // Validate the incoming request
+            $request->validate([
+                'phone' => 'nullable|required_without:email',
+                'email' => 'nullable|email|required_without:phone',
+                'password' => 'required',
+            ]);
     
-        $user = null;
-        if ($request->email) {
-            $user = User::where('email', $request->email)->first();
-        } elseif ($request->phone) {
-            $user = User::where('phone', $request->phone)->first();
-        }
+            $user = null;
     
-        if (!$user) {
+            // Find the user based on email or phone
+            if ($request->email) {
+                $user = User::where('email', $request->email)->first();
+            } elseif ($request->phone) {
+                $user = User::where('phone', $request->phone)->first();
+            }
+    
+            // If no user is found, return an error response
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User not found with provided email or phone',
+                ]);
+            }
+    
+            // Check if the provided password is correct
+            if (!Hash::check($request->password, $user->password)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Invalid password',
+                ]);
+            }
+    
+            // Generate OTP and expiration time
+            $otp = rand(100000, 999999);
+            $expiresAt = now()->addMinutes(5);
+    
+            // Store the OTP in the database
+            Otp::updateOrCreate(
+                [
+                    'phone' => $request->phone ?? $user->phone,
+                    'email' => $request->email ?? $user->email,
+                ],
+                [
+                    'otp' => $otp,
+                    'expires_at' => $expiresAt,
+                ]
+            );
+    
+            // Set OTP verification flag for the user
+            $user->otp_verification = 1;  // OTP not verified
+            $user->save();
+    
+            // Return success response with OTP
+            return response()->json([
+                'status' => true,
+                'message' => 'OTP generated successfully',
+                'otp' => $otp, 
+            ]);
+    
+        } catch (\Exception $e) {
+            // Log the exception message for debugging purposes
+            Log::error('OTP generation error: ' . $e->getMessage());
+    
+            // Return an error response
             return response()->json([
                 'status' => false,
-                'message' => 'User not found with provided email or phone',
+                'message' => 'An error occurred while generating the OTP',
             ]);
         }
-        if (!Hash::check($request->password , $user->password)) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Invalid password',
-            ]);
-        }
-    
-        $otp = rand(100000, 999999);
-        $expiresAt = now()->addMinutes(5);
-        Otp::updateOrCreate(
-            [
-                'phone' => $request->phone ?? $user->phone,
-                'email' => $request->email ?? $user->email,
-            ],
-            [
-                'otp' => $otp,
-                'expires_at' => $expiresAt,
-            ]
-        );
-        $user->otp_verification = 1;  // OTP not verified
-        $user->save();
-
-        return response()->json([
-            'status' => true,
-            'message' => 'OTP generated successfully',
-            'otp' => $otp, 
-        ]);
     }
     
     
@@ -101,51 +125,68 @@ class AuthController extends Controller
 
     public function verifyOtp(Request $request)
     {
-        $request->validate([
-            'otp' => 'required|digits:6',
-            'email' => 'nullable|email|exists:users,email|required_without:phone',
-            'phone' => 'nullable|exists:users,phone|required_without:email',
-        ]);
-   
-
-    $otpRecord = Otp::where(function ($query) use ($request) {
-        if ($request->email) {
-            $query->where('email', $request->email);
-        }
-        if ($request->phone) {
-            $query->orWhere('phone', $request->phone);
-        }
-    })->where('otp', $request->otp)
-            ->where('expires_at', '>=', now())
-            ->first();
+        try {
+            // Validate the incoming request
+            $request->validate([
+                'otp' => 'required|digits:6',
+                'email' => 'nullable|email|exists:users,email|required_without:phone',
+                'phone' => 'nullable|exists:users,phone|required_without:email',
+            ]);
     
-        // Check if OTP is valid
-        if (!$otpRecord) {
-            return response()->json(['status' => false, 'message' => 'Invalid or expired OTP']);
-        }
-
-        $user = null;
-        if ($otpRecord->email) {
-            $user = User::where('email', $otpRecord->email)->first();
-            // dd( $user);
-        } elseif ($request->phone) {
-            $user = User::where('phone', $otpRecord->phone)->first();
-        }
-        $user->otp_verification = 2;  // OTP not verified
-        $user->ip_address = request()->userAgent();
-        $user->save();
-        // Delete the OTP after successful verification
-        $otpRecord->delete();
+            // Retrieve the OTP record from the database
+            $otpRecord = Otp::where(function ($query) use ($request) {
+                if ($request->email) {
+                    $query->where('email', $request->email);
+                }
+                if ($request->phone) {
+                    $query->orWhere('phone', $request->phone);
+                }
+            })->where('otp', $request->otp)
+              ->where('expires_at', '>=', now())
+              ->first();
     
-        // Generate Sanctum token
-        // $token = $user->createToken('auth_token')->plainTextToken;
+            // Check if OTP is valid
+            if (!$otpRecord) {
+                return response()->json(['status' => false, 'message' => 'Invalid or expired OTP']);
+            }
     
-        return response()->json([
-            'status' => true,
-            'message' => 'OTP verified successfully',
-            'user' => $user,
-        ]);
+            // Retrieve the user based on email or phone from OTP record
+            $user = null;
+            if ($otpRecord->email) {
+                $user = User::where('email', $otpRecord->email)->first();
+            } elseif ($request->phone) {
+                $user = User::where('phone', $otpRecord->phone)->first();
+            }
+    
+            // Update OTP verification status and save IP address
+            $user->otp_verification = 2;  // OTP verified
+            $user->ip_address = request()->userAgent();
+            $user->save();
+    
+            // Delete the OTP record after successful verification
+            $otpRecord->delete();
+    
+            // Optionally generate a Sanctum token for authentication
+            // $token = $user->createToken('auth_token')->plainTextToken;
+    
+            return response()->json([
+                'status' => true,
+                'message' => 'OTP verified successfully',
+                'user' => $user,
+            ]);
+    
+        } catch (\Exception $e) {
+            // Log the exception message for debugging purposes
+            Log::error('OTP verification error: ' . $e->getMessage());
+    
+            // Return a generic error response
+            return response()->json([
+                'status' => false,
+                'message' => 'An error occurred during OTP verification',
+            ]);
+        }
     }
+    
 
     // public function sendResetLink(Request $request)
     // {
@@ -179,56 +220,69 @@ class AuthController extends Controller
 
     public function sendResetLink(Request $request)
     {
-        // Validate that either email or phone is provided
-        $request->validate([
-            'email' => 'nullable|email|exists:users,email|required_without:phone',
-            'phone' => 'nullable|exists:users,phone|required_without:email',
-        ]);
-       
-        $password = Str::random(6);; // Generate a random 6-digit password
-    
-        $user = User::where(function ($query) use ($request) {
-            if ($request->email) {
-                $query->where('email', $request->email);
-            }
-            if ($request->phone) {
-                $query->orWhere('phone', $request->phone);
-            }
-        })->first();
-    
-        // Check if the user exists
-        if (!$user) {
-            return response()->json(['status' => false, 'message' => 'User not found'], 404);
-        }
-    
-        // Update the user's password
-        $user->update(['password' => $password]);
+        try {
+            // Validate that either email or phone is provided
+            $request->validate([
+                'email' => 'nullable|email|exists:users,email|required_without:phone',
+                'phone' => 'nullable|exists:users,phone|required_without:email',
+            ]);
 
-    
-        // Simulate sending the new password (replace with actual email/SMS service)
-        if ($request->email) {
-            // Replace with your email sending logic
-            // Mail::to($user->email)->send(new ResetPasswordMail($password));
-        } elseif ($request->phone) {
-            // Replace with your SMS sending logic
-            // SendOtpService::send($user->phone, "Your new password is: $password");
+            // Generate a random 6-digit password
+            $password = Str::random(6);
+
+            // Retrieve the user based on email or phone
+            $user = User::where(function ($query) use ($request) {
+                if ($request->email) {
+                    $query->where('email', $request->email);
+                }
+                if ($request->phone) {
+                    $query->orWhere('phone', $request->phone);
+                }
+            })->first();
+
+            // Check if the user exists
+            if (!$user) {
+                return response()->json(['status' => false, 'message' => 'User not found'], 404);
+            }
+
+            // Update the user's password
+            $user->update(['password' => Hash::make($password)]); // Ensure password is hashed
+
+            // Simulate sending the new password (replace with actual email/SMS service)
+            if ($request->email) {
+                // Replace with your email sending logic
+                // Mail::to($user->email)->send(new ResetPasswordMail($password));
+            } elseif ($request->phone) {
+                // Replace with your SMS sending logic
+                // SendOtpService::send($user->phone, "Your new password is: $password");
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Password reset successfully. Check your email or phone for the new password.',
+                'password' => $password, // For testing purposes only, remove in production
+            ]);
+        
+        } catch (\Exception $e) {
+            // Log the exception for debugging purposes
+            Log::error('Password reset error: ' . $e->getMessage());
+
+            // Return a generic error response
+            return response()->json([
+                'status' => false,
+                'message' => 'An error occurred while resetting the password. Please try again later.',
+            ], 500);
         }
-    
-        return response()->json([
-            'status' => true,
-            'message' => 'Password reset successfully. Check your email or phone for the new password.',
-            'password' => $password, // For testing purposes only, remove in production
-            // 'user'=> $user
-        ]);
     }
 
 
 
-    // public function loginWithNpin(Request $request)
+
+    // public function loginWithMpin(Request $request)
     // {
-    //     // Validate NPIN
+    //     // Validate MPIN
     //     $request->validate([
-    //         'npin' => 'required|numeric',
+    //         'mpin' => 'required|numeric',
     //         'email' => 'nullable|email|exists:users,email|required_without:phone',
     //         'phone' => 'nullable|exists:users,phone|required_without:email',
     //     ]);
@@ -254,24 +308,24 @@ class AuthController extends Controller
     //         ]);
     //     }
     
-    //     // Check if NPIN exists; if not, save the provided NPIN
-    //     if (!$user->npin) {
-    //         $user->npin = $request->npin;
+    //     // Check if MPIN exists; if not, save the provided MPIN
+    //     if (!$user->mpin) {
+    //         $user->mpin = $request->mpin;
     //         $user->save();
     //     } else {
-    //         // Validate the NPIN
-    //         $user = User::where('npin', $request->npin)->where('ip_address', $ip_address)->first();
+    //         // Validate the MPIN
+    //         $user = User::where('mpin', $request->mpin)->where('ip_address', $ip_address)->first();
     
     //         if (!$user) {
     //             return response()->json([
     //                 'status' => false,
-    //                 'message' => 'Invalid NPIN',
+    //                 'message' => 'Invalid MPIN',
     //             ]);
     //         }
     //     }
     
     //     // Generate Sanctum token
-    //     $token = $user->createToken('NPIN-Login')->plainTextToken;
+    //     $token = $user->createToken('MPIN-Login')->plainTextToken;
     
     //     // Set token expiration to 20 seconds
     //     $user->tokens()->latest('created_at')->first()->update([
@@ -288,60 +342,71 @@ class AuthController extends Controller
     //     ]);
     // }
     
-    public function loginWithNpin(Request $request)
+    public function loginWithMpin(Request $request)
     {
-        // Validate input
-        $request->validate([
-            'npin' => 'required|numeric',
-            'email' => 'nullable|email|exists:users,email|required_without:phone',
-            'phone' => 'nullable|exists:users,phone|required_without:email',
-        ]);
-    
-        // Retrieve user's IP address
-        // $ip_address = $request->ip();
-        $ip_address = request()->userAgent();
+        try {
+            // Validate input
+            $request->validate([
+                'mpin' => 'required|numeric',
+                'email' => 'nullable|email|exists:users,email|required_without:phone',
+                'phone' => 'nullable|exists:users,phone|required_without:email',
+            ]);
         
-        // Find user by email/phone and IP address
-        $user = User::where('ip_address', $ip_address)
-            ->when($request->email, fn($query) => $query->where('email', $request->email))
-            ->when($request->phone, fn($query) => $query->where('phone', $request->phone))
-            ->first();
-    
-        // If user not found, return error
-        if (!$user) {
+            // Retrieve user's IP address
+            $ip_address = request()->userAgent();
+            
+            // Find user by email/phone and IP address
+            $user = User::where('ip_address', $ip_address)
+                ->when($request->email, fn($query) => $query->where('email', $request->email))
+                ->when($request->phone, fn($query) => $query->where('phone', $request->phone))
+                ->first();
+        
+            // If user not found, return error
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User not found with the provided details and IP address',
+                ]);
+            }
+        
+            // Handle MPIN logic
+            if (!$user->mpin) {
+                $user->mpin = $request->mpin;
+                $user->save();
+            } elseif ($user->mpin !== $request->mpin) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Invalid MPIN',
+                ]);
+            }
+        
+            // Generate Sanctum token
+            $token = $user->createToken('MPIN-Login')->plainTextToken;
+        
+            // Update token expiration (requires `expires_at` column in `personal_access_tokens`)
+            $user->tokens()->latest('created_at')->first()->update([
+                'expires_at' => now()->addHours(8),
+            ]);
+        
+            // Return success response
+            return response()->json([
+                'status' => true,
+                'message' => 'Logged in successfully',
+                'token' => $token,
+            ]);
+        
+        } catch (\Exception $e) {
+            // Log the exception for debugging purposes
+            Log::error('Login with MPIN error: ' . $e->getMessage());
+
+            // Return a generic error response
             return response()->json([
                 'status' => false,
-                'message' => 'User not found with the provided details and IP address',
-            ]);
+                'message' => 'An error occurred during login. Please try again later.',
+            ], 500);
         }
-    
-        // Handle NPIN logic
-        if (!$user->npin) {
-            $user->npin = $request->npin;
-            $user->save();
-        } elseif ($user->npin !== $request->npin) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Invalid NPIN',
-            ]);
-        }
-    
-        // Generate Sanctum token
-        $token = $user->createToken('NPIN-Login')->plainTextToken;
-    
-        // Update token expiration (requires `expires_at` column in `personal_access_tokens`)
-        $user->tokens()->latest('created_at')->first()->update([
-            'expires_at' => now()->addHours(8),
-            // 'expires_at' => now()->addSeconds(20), // Adjust expiration as needed
-        ]);
-    
-        // Return success response
-        return response()->json([
-            'status' => true,
-            'message' => 'Logged in successfully',
-            'token' => $token,
-        ]);
     }
+
     
     
 

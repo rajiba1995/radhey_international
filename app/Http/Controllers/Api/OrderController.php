@@ -17,6 +17,26 @@ use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
+
+    public function index(){
+       $data=Order::where('created_by',auth()->id())->get();
+
+     
+        if($data){
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Order list fetch successfully.',
+                'data' => $data,
+            ]);
+        }else{
+            return response()->json([
+                'status' => false,
+                'message' => 'No data found!'
+            ]);
+        }
+       
+
+    }
     // public function createOrder(Request $request)
     // {
     //     // Validation rules
@@ -445,7 +465,7 @@ class OrderController extends Controller
 
             // Return success response
             return response()->json([
-                'status' => 'success',
+                'status' => 'true',
                 'message' => 'Order has been created successfully.',
                 'user' => $user,
                 'order_data' => $order,
@@ -456,10 +476,10 @@ class OrderController extends Controller
             // dd($e);
             Log::error('Error creating order: ' . $e->getMessage());
             return response()->json([
-                'status' => 'error',
+                'status' => 'false',
                 'message' => 'An error occurred while creating the order.',
             ]);
         }
     }
-
+   
 }

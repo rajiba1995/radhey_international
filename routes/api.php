@@ -24,7 +24,7 @@ use App\Http\Controllers\Api\OrderController;
 Route::post('/generate-otp', [AuthController::class, 'generateOtp']);
 Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
 Route::post('/password-recover', [AuthController::class, 'sendResetLink']);
-Route::post('/npin-login', [AuthController::class, 'loginWithNpin']);
+Route::post('/mpin-login', [AuthController::class, 'loginWithMpin']);
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
@@ -52,6 +52,7 @@ Route::middleware('auth:sanctum', 'token.session')->group(function () {
     Route::get('/product/products-collection-wise', [ProductController::class, 'getProductsByCollection']);
     
     Route::post('/order/store', [OrderController::class, 'createOrder']);
+    Route::get('/order/list', [OrderController::class, 'index']);
     // More routes related to products can be added here
     // Route::get('/products', [ProductController::class, 'index']);
     // Route::put('/products/{id}', [ProductController::class, 'update']);
