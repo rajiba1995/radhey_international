@@ -7,6 +7,7 @@ use App\Models\Designation;
 use App\Models\UserBank;
 use App\Models\User;
 use App\Models\UserAddress;
+use App\Models\Country;
 use App\Helpers\Helper;
 use Livewire\WithFileUploads;
 use Illuminate\Validation\Rule;
@@ -18,16 +19,28 @@ class StaffAdd extends Component
 {
     use WithFileUploads;
     public $designation, $person_name, $email, $mobile, $aadhaar_number, $whatsapp_no,$is_wa_same,$user_id;
-    public $image, $user_id_front, $user_id_back;
+    public $image, $passport_id_front, $passport_id_back, $passport_expiry_date;
     public $account_holder_name, $bank_name, $branch_name, $account_no, $ifsc, $monthly_salary, $daily_salary, $travel_allowance;
     public $address, $landmark, $state, $city, $pincode, $country;
     public $designations = [];
+    public $Selectcountry;
+    public $selectedCountryId;
+    public $showAadhaarStar = false;
 
     public function mount(){
         $this->designations = Designation::where('status',1)->orderBy('name', 'ASC')->where('id', '!=', 1)->get();
+        $this->Selectcountry = Country::all();
+        $this->selectedCountryId = null;
+    }
+
+    public function SelectedCountry()
+    {
+        $this->showAadhaarStar = $this->selectedCountryId == 1;
     }
 
     public function save(){
+        // dd($this->all());
+        $aadhaarValidationRule = $this->selectedCountryId == 1 ? 'required|numeric' : 'nullable|numeric';
        $this->validate([
             'designation' => 'required',
             'person_name' => 'required|string|max:255',
@@ -41,10 +54,11 @@ class StaffAdd extends Component
                 'required',
                 'regex:/^\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/', // At least VALIDATE_WHATSAPP digits
             ],
-            'aadhaar_number' => 'nullable|numeric',
+            'aadhaar_number' => $aadhaarValidationRule,
             'image' => 'nullable|image|max:2048',
-            'user_id_front' => 'nullable|image|max:2048',
-            'user_id_back' => 'nullable|image|max:2048',
+            'passport_id_front' => 'nullable|image|max:2048',
+            'passport_id_back' => 'nullable|image|max:2048',
+            'passport_expiry_date' => 'nullable',
             'account_holder_name' => 'nullable|string|max:255',
             'bank_name' => 'nullable|string|max:255',
             'branch_name' => 'nullable|string|max:255',
@@ -65,14 +79,15 @@ class StaffAdd extends Component
        try {
         // Check and upload the images only if they are provided
             $imagePath = $this->image ? Helper::uploadImage($this->image, 'staff2') : null;
-            $userIdFrontPath = $this->user_id_front ? Helper::uploadImage($this->user_id_front, 'staff') : null;
-            $userIdBackPath = $this->user_id_back ? Helper::uploadImage($this->user_id_back, 'staff') : null;
+            $passportIdFrontPath = $this->passport_id_front ? Helper::uploadImage($this->passport_id_front, 'staff') : null;
+            $passportIdBackPath = $this->passport_id_back ? Helper::uploadImage($this->passport_id_back, 'staff') : null;
 
             // Now, you can handle these paths accordingly (e.g., store them in the database)
 
 
             // 1. Save the data into the users table
             $user = User::create([
+                'country_id'=> $this->selectedCountryId,
                 'user_type' => 0, //for Staff
                 'designation' => $this->designation ?? "",
                 'name' => ucwords($this->person_name) ?? "",
@@ -81,9 +96,10 @@ class StaffAdd extends Component
                 'aadhar_name' => $this->aadhaar_number ?? "",
                 'whatsapp_no' => $this->whatsapp_no ?? "",
                 'image' =>  $imagePath ?? "",
-                'user_id_front' =>  $userIdFrontPath ?? "",
-                'user_id_back' => $userIdBackPath ?? "",
-                'password'=>Hash::make('1234')
+                'passport_id_front' =>  $passportIdFrontPath ?? "",
+                'passport_id_back' => $passportIdBackPath ?? "",
+                'passport_expiry_date' => $this->passport_expiry_date ?? "",
+                'password'=>Hash::make('secret')
             ]);
 
             // 2. Save the data into the user_banks table

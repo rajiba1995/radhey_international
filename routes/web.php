@@ -20,7 +20,7 @@ use App\Http\Livewire\Tables;
 use App\Http\Livewire\{VirtualReality,CustomerIndex};
 use GuzzleHttp\Middleware;
 use App\Http\Livewire\Order\{OrderIndex, OrderNew, OrderInvoice,OrderEdit,OrderView,LedgerView};
-use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory,FabricIndex,CollectionIndex,GalleryIndex};
+use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory,FabricIndex,CollectionIndex,GalleryIndex,MasterCatalogue};
 use App\Http\Livewire\Staff\{DesignationIndex,StaffIndex,StaffAdd,StaffUpdate,StaffView,StaffTask,StaffTaskAdd,StaffCities,SalesmanBillingIndex};
 use App\Http\Livewire\Expense\{ExpenseIndex};
 use App\Http\Livewire\UserAddressForm; 
@@ -106,7 +106,8 @@ Route::group(['prefix' => 'products'], function () {
 
         Route::get('/collections', CollectionIndex::class)->name('admin.collections.index');
         Route::get('/gallery/{product_id}', GalleryIndex::class)->name('product.gallery');
-        // Route::get('/fabrics/{product_id}', FabricIndex::class)->name('product.fabrics');
+        Route::get('/catalog', MasterCatalogue::class)->name('product.catalogue');
+
     });
 
     // Purchase Order

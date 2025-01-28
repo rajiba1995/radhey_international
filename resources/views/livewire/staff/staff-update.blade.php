@@ -6,11 +6,20 @@
                 <div class="col-md-8 d-flex align-items-center">
                     <h6 class="badge bg-danger custom_danger_badge">Basic Information</h6>
                   </div>
-                <div class="col-md-4 text-end">
-                    <a href="{{ route('staff.index') }}" class="btn btn-cta">
-                        <i class="material-icons text-white" style="font-size:15px;">chevron_left</i> Back
-                    </a>
-                </div>
+                <div class="col-md-4 d-flex justify-content-end align-items-center">
+                    <div class="d-flex">
+                        <select wire:change="SelectedCountry"  wire:model="selectedCountryId"   class="form-select me-2" aria-label="Default select example">
+                            <option selected hidden>Select Country</option>
+                           @foreach($Selectcountry as $countries)
+                            <option value="{{$countries->id}}">{{$countries->title}}</option>
+                           @endforeach
+                        </select>
+                       
+                        <a href="{{ route('staff.index') }}" class="btn btn-cta btn-sm">
+                            <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i> Back
+                        </a>
+                    </div>
+                 </div>
             </div>
         </div>
 
@@ -60,7 +69,11 @@
                     </div>
 
                     <div class="mb-3 col-md-4">
-                        <label for="aadhaar_number" class="form-label">Aadhaar Number </label>
+                        <label for="aadhaar_number" class="form-label">Aadhaar Number 
+                        @if($showAadhaarStar)
+                           <span class="text-danger">*</span>   
+                         @endif
+                        </label>
                         <input type="text" wire:model="aadhaar_number" id="aadhaar_number" class="form-control form-control-sm border border-1 p-2" placeholder="Staff Aadhaar Number">
                         
                     </div>
@@ -80,7 +93,7 @@
 
                 <div class="row">
                     <!-- Image Upload Section -->
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label for="image" class="form-label">Image</label>
                         <input type="file" wire:model="image" id="image" class="form-control form-control-sm border border-1 p-2">
                         @if($staff && $staff->image)
@@ -90,25 +103,32 @@
                            <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-md-4">
-                        <label for="user_id_front" class="form-label">User ID Front</label>
-                        <input type="file" wire:model="user_id_front" id="user_id_front" class="form-control form-control-sm border border-1 p-2">
-                        @if($staff && $staff->user_id_front)
-                            <img src="{{ asset('storage/' . $staff->user_id_front) }}" alt="Stored User ID Front" class="mt-2" width="100">
+                    <div class="col-md-3">
+                        <label for="passport_id_front" class="form-label">Passport ID Front</label>
+                        <input type="file" wire:model="passport_id_front" id="passport_id_front" class="form-control form-control-sm border border-1 p-2">
+                        @if($staff && $staff->passport_id_front)
+                            <img src="{{ asset('storage/' . $staff->passport_id_front) }}" alt="Stored User ID Front" class="mt-2" width="100">
                         @endif
-
-                        @error('user_id_front')
+    
+                        @error('passport_id_front')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-md-4">
-                        <label for="user_id_back" class="form-label">User ID Back</label>
-                        <input type="file" wire:model="user_id_back" id="user_id_back" class="form-control form-control-sm border border-1 p-2">
-                        @if($staff && $staff->user_id_back)
-                            <img src="{{ asset('storage/' . $staff->user_id_back) }}" alt="Stored User ID Back" class="mt-2" width="100">
+                    <div class="col-md-3">
+                        <label for="passport_id_back" class="form-label">Passport ID Back</label>
+                        <input type="file" wire:model="passport_id_back" id="passport_id_back" class="form-control form-control-sm border border-1 p-2">
+                        @if($staff && $staff->passport_id_back)
+                            <img src="{{ asset('storage/' . $staff->passport_id_back) }}" alt="Stored User ID Back" class="mt-2" width="100">
                         @endif
 
-                        @error('user_id_back')
+                        @error('passport_id_back')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                     <div class="col-md-3">
+                        <label for="passport_expiry_date" class="form-label">Passport Expiry Date</label>
+                        <input type="date" wire:model="passport_expiry_date" id="passport_expiry_date" class="form-control form-control-sm border border-1 p-2">
+                        @error('passport_expiry_date')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>

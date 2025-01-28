@@ -18,6 +18,7 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
+        'country_id',
         'name',
         'dob',
         'user_type',
@@ -34,8 +35,9 @@ class User extends Authenticatable
         'credit_limit',
         'credit_days',
         'image',
-        'user_id_front',
-        'user_id_back',
+        'passport_id_front',
+        'passport_id_back',
+        'passport_expiry_date',
         'profile_image',
         'verified_video'
     ];
