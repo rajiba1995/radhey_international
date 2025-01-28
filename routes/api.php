@@ -31,7 +31,8 @@ Route::post('/npin-login', [AuthController::class, 'loginWithNpin']);
     
 
 // });
-Route::middleware('auth:sanctum', 'token.expiry')->group(function () {
+// Route::middleware('auth:sanctum', 'token.expiry')->group(function () {
+Route::middleware('auth:sanctum', 'token.session')->group(function () {
     // Route for creating a product
     Route::get('/user', [UserController::class, 'index']);
     Route::post('/user/store', [UserController::class, 'store']);

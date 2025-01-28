@@ -224,29 +224,90 @@ class AuthController extends Controller
 
 
 
+    // public function loginWithNpin(Request $request)
+    // {
+    //     // Validate NPIN
+    //     $request->validate([
+    //         'npin' => 'required|numeric',
+    //         'email' => 'nullable|email|exists:users,email|required_without:phone',
+    //         'phone' => 'nullable|exists:users,phone|required_without:email',
+    //     ]);
+    
+    //     // Get the IP address of the user
+    //     $ip_address = request()->userAgent();
+    
+    //     // Find user by email or phone and IP address
+    //     $user = User::where(function ($query) use ($request, $ip_address) {
+    //         if ($request->email) {
+    //             $query->where('email', $request->email)->where('ip_address', $ip_address);
+    //         }
+    //         if ($request->phone) {
+    //             $query->where('phone', $request->phone)->where('ip_address', $ip_address);
+    //         }
+    //     })->first();
+    
+    //     // If user not found, return error response
+    //     if (!$user) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'User not found with the provided details and IP address',
+    //         ]);
+    //     }
+    
+    //     // Check if NPIN exists; if not, save the provided NPIN
+    //     if (!$user->npin) {
+    //         $user->npin = $request->npin;
+    //         $user->save();
+    //     } else {
+    //         // Validate the NPIN
+    //         $user = User::where('npin', $request->npin)->where('ip_address', $ip_address)->first();
+    
+    //         if (!$user) {
+    //             return response()->json([
+    //                 'status' => false,
+    //                 'message' => 'Invalid NPIN',
+    //             ]);
+    //         }
+    //     }
+    
+    //     // Generate Sanctum token
+    //     $token = $user->createToken('NPIN-Login')->plainTextToken;
+    
+    //     // Set token expiration to 20 seconds
+    //     $user->tokens()->latest('created_at')->first()->update([
+    //         // 'expires_at' => now()->addSeconds(20),
+    //         'expires_at' => now()->addHours(8),
+            
+    //     ]);
+    
+    //     // Return response with token
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Logged in successfully',
+    //         'token' => $token,
+    //     ]);
+    // }
+    
     public function loginWithNpin(Request $request)
     {
-        // Validate NPIN
+        // Validate input
         $request->validate([
             'npin' => 'required|numeric',
             'email' => 'nullable|email|exists:users,email|required_without:phone',
             'phone' => 'nullable|exists:users,phone|required_without:email',
         ]);
     
-        // Get the IP address of the user
+        // Retrieve user's IP address
+        // $ip_address = $request->ip();
         $ip_address = request()->userAgent();
+        
+        // Find user by email/phone and IP address
+        $user = User::where('ip_address', $ip_address)
+            ->when($request->email, fn($query) => $query->where('email', $request->email))
+            ->when($request->phone, fn($query) => $query->where('phone', $request->phone))
+            ->first();
     
-        // Find user by email or phone and IP address
-        $user = User::where(function ($query) use ($request, $ip_address) {
-            if ($request->email) {
-                $query->where('email', $request->email)->where('ip_address', $ip_address);
-            }
-            if ($request->phone) {
-                $query->where('phone', $request->phone)->where('ip_address', $ip_address);
-            }
-        })->first();
-    
-        // If user not found, return error response
+        // If user not found, return error
         if (!$user) {
             return response()->json([
                 'status' => false,
@@ -254,33 +315,27 @@ class AuthController extends Controller
             ]);
         }
     
-        // Check if NPIN exists; if not, save the provided NPIN
+        // Handle NPIN logic
         if (!$user->npin) {
             $user->npin = $request->npin;
             $user->save();
-        } else {
-            // Validate the NPIN
-            $user = User::where('npin', $request->npin)->where('ip_address', $ip_address)->first();
-    
-            if (!$user) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Invalid NPIN',
-                ]);
-            }
+        } elseif ($user->npin !== $request->npin) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Invalid NPIN',
+            ]);
         }
     
         // Generate Sanctum token
         $token = $user->createToken('NPIN-Login')->plainTextToken;
     
-        // Set token expiration to 20 seconds
+        // Update token expiration (requires `expires_at` column in `personal_access_tokens`)
         $user->tokens()->latest('created_at')->first()->update([
-            // 'expires_at' => now()->addSeconds(20),
             'expires_at' => now()->addHours(8),
-            
+            // 'expires_at' => now()->addSeconds(20), // Adjust expiration as needed
         ]);
     
-        // Return response with token
+        // Return success response
         return response()->json([
             'status' => true,
             'message' => 'Logged in successfully',
@@ -288,7 +343,6 @@ class AuthController extends Controller
         ]);
     }
     
-
     
 
 }
