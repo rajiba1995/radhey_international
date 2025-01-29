@@ -14,6 +14,7 @@ use App\Models\Measurement;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Ledger;
+use App\Models\Catalogue;
 use App\Models\OrderMeasurement;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -27,7 +28,7 @@ class OrderNew extends Component
     // public $collectionsType = [];
     public $collections = [];
     public $errorMessage = [];
-    public $activeTab = 1;
+    public $activeTab = 2;
     public $items = [];
     public $FetchProduct = 1;
 
@@ -49,6 +50,13 @@ class OrderNew extends Component
     public $payment_mode = null;
     public $order_number;
     public $bill_book = [];
+
+    // For Catalogue
+    public $selectedCatalogue = [];
+    public $selectedPage = [];
+    public $cataloguePages = [];
+    public $catalogues = [];
+    public $selectedImage = [];
 
     public function mount(){
         $user_id = request()->query('user_id');
@@ -204,6 +212,21 @@ class OrderNew extends Component
             $this->items[$index]['categories'] = Category::orderBy('title', 'ASC')->where('collection_id', $value)->get();
             $this->items[$index]['products'] = Product::orderBy('name', 'ASC')->where('collection_id', $value)->get();
        
+        if($value == 1){
+            $this->catalogues[$index] = Catalogue::with('catalogueTitle')->distinct('catalogue_title_id')->get()->pluck('catalogueTitle.title','catalogue_title_id');
+        }else{
+            $this->catalogues[$index] = [];
+        }
+    }
+
+    public function SelectedCatalogue($value , $index){
+        $this->cataloguePages[$index] = Catalogue::where('catalogue_title_id', $value)->pluck('page_number');
+    }
+
+    public function SelectedPage($value , $index){
+        $this->selectedImage[$index] = Catalogue::where('catalogue_title_id',$this->selectedCatalogue[$index])
+                                                ->where('page_number',$value)
+                                                ->value('image');
     }
     
 

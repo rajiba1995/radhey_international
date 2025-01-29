@@ -287,9 +287,9 @@
                             </div>
 
                             <!-- Product -->
-                            <div class="mb-3 col-md-4">
+                            <div class="mb-3 col-md-2">
                                 <label class="form-label"><strong>Product</strong></label>
-                                <input type="text" wire:keyup="FindProduct($event.target.value, {{ $index }}" wire:model="items.{{ $index }}.searchproduct" class="form-control form-control-sm border border-1 customer_input" placeholder="Enter product name">
+                                <input type="text" wire:keyup="FindProduct($event.target.value, {{ $index }})" wire:model="items.{{ $index }}.searchproduct" class="form-control form-control-sm border border-1 customer_input" placeholder="Enter product name">
                                 @if (session()->has('errorProduct.' . $index)) 
                                     <p class="text-danger">{{ session('errorProduct.' . $index) }}</p>
                                 @endif
@@ -303,6 +303,44 @@
                                     </div>
                                 @endif
                             </div>
+                            <!-- Catalogue -->
+                            @if(isset($items[$index]['collection']) && $items[$index]['collection'] == 1)
+                            <div class="col-md-3">
+                                <label class="form-label"><strong>Catalogue</strong></label>
+                                <select wire:model="selectedCatalogue.{{ $index }}" class="form-control form-control-sm border border-1" wire:change="SelectedCatalogue($event.target.value, {{ $index }})">
+                                    <option value="" selected hidden>Select Catalogue</option>
+                                    @foreach($catalogues[$index] ?? [] as $id => $title)
+                                        <option value="{{ $id }}">{{ $title }}</option>
+                                    @endforeach
+                                </select>
+                                @error("selectedCatalogue.{ $index }") 
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror 
+                            </div>
+                        
+                            <!-- Page Number Dropdown -->
+                            <div class="col-md-3">
+                                <label class="form-label"><strong>Page Number</strong></label>
+                                <select wire:model="selectedPage.{{ $index }}" class="form-control form-control-sm border border-1" wire:change="SelectedPage($event.target.value, {{ $index }})">
+                                    <option value="" selected hidden>Select Page</option>
+                                    @foreach($cataloguePages[$index] ?? [] as $page)
+                                        <option value="{{ $page }}">{{ $page }}</option>
+                                    @endforeach
+                                </select>
+                                @error("selectedCatalogue.{ $index }") 
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror 
+                            </div>
+                        
+                            <!-- Image Display -->
+                            @if(!empty($selectedImage[$index]))
+                                <div class="col-md-3 mt-3">
+                                    <img src="{{ asset('storage/'.$selectedImage[$index]) }}" class="img-thumbnail" alt="Catalogue Image">
+                                </div>
+                            @endif
+                            @endif
+                            <!-- Catalogue end -->
+                            
                             <div class="mb-3 col-md-2">
                                 <label class="form-label"><strong>Price</strong></label>
                                 <input type="text" wire:keyup="checkproductPrice($event.target.value, {{ $index }})" wire:model="items.{{ $index }}.price" class="form-control form-control-sm border border-1 customer_input text-center @if(session()->has('errorPrice.' . $index)) border-danger @endif @error('items.' . $index . '.price') border-danger  @enderror" placeholder="Enter Price">
@@ -459,6 +497,16 @@
                                             <option value="" selected hidden>Choose one..</option>
                                             <option value="Cash">Cash</option>
                                             <option value="Online">Online</option>
+                                         </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label class="form-label"><strong>Salesman</strong></label></td>
+                                    <td>
+                                         <select class="form-control border border-2 p-2 form-control-sm @error('salesman') border-danger  @enderror" wire:model="payment_mode">
+                                            <option value="" selected hidden>Choose one..</option>
+                                            <option value="souvik">souvik</option>
+                                            
                                          </select>
                                     </td>
                                 </tr>

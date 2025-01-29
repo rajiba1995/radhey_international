@@ -26,7 +26,7 @@ class StaffAdd extends Component
     public $Selectcountry;
     public $selectedCountryId;
     public $showAadhaarStar = false;
-
+    public $emergency_contact_person,$emergency_mobile,$emergency_whatsapp,$emergency_address,$same_as_contact;
     public function mount(){
         $this->designations = Designation::where('status',1)->orderBy('name', 'ASC')->where('id', '!=', 1)->get();
         $this->Selectcountry = Country::all();
@@ -98,8 +98,12 @@ class StaffAdd extends Component
                 'image' =>  $imagePath ?? "",
                 'passport_id_front' =>  $passportIdFrontPath ?? "",
                 'passport_id_back' => $passportIdBackPath ?? "",
-                'passport_expiry_date' => $this->passport_expiry_date ?? "",
-                'password'=>Hash::make('secret')
+                'passport_expiry_date' => $this->passport_expiry_date ? $this->passport_expiry_date : null,
+                'password'=>Hash::make('secret'),
+                'emergency_contact_person' => $this->emergency_contact_person ?? "",
+                'emergency_mobile' => $this->emergency_mobile ?? "",
+                'emergency_whatsapp' => $this->emergency_whatsapp ?? "",
+                'emergency_address' => $this->emergency_address ?? "",
             ]);
 
             // 2. Save the data into the user_banks table
@@ -138,6 +142,7 @@ class StaffAdd extends Component
 
             // Handle the exception (e.g., log the error and show an error message)
             session()->flash('error', 'An error occurred while saving staff information: ' . $e->getMessage());
+            dd($e->getMessage());
             return back()->withInput();
         }
     }
@@ -150,6 +155,17 @@ class StaffAdd extends Component
             $this->whatsapp_no = '';
             $this->is_wa_same = 0;
         }
+    }
+
+    public function SameAsContact(){
+        if($this->same_as_contact == 0){
+            $this->emergency_whatsapp = $this->emergency_mobile;
+            $this->same_as_contact = 1;
+        }else{
+            $this->emergency_whatsapp = '';
+            $this->same_as_contact = 0;
+        }
+
     }
 
 

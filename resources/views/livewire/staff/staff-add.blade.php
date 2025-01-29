@@ -146,9 +146,49 @@
                         <h6 class="badge bg-danger custom_danger_badge">Emergency Contact Information</h6>
                     </div>
                         <div class="row mt-4">
-                            <!-- Banking Information -->
                             <div class="col-md-4">
-                               
+                                <label class="form-label">Contact Name</label>
+                                <input type="text" wire:model="emergency_contact_person" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Emergency Contact Name">
+                                @error('emergency_contact_person')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Contact Number -->
+                            <div class="col-md-4">
+                                <label class="form-label">Contact Number</label>
+                                <input type="number" wire:model="emergency_mobile" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Emergency Mobile Number">
+                                @error('emergency_mobile')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Checkbox to Copy Contact Number to WhatsApp Number -->
+                            <div class="col-md-4 d-flex align-items-center mt-4">
+                                
+                            </div>
+
+                            <!-- WhatsApp Number -->
+                            <div class="col-md-4">
+                                <label class="form-label">WhatsApp Number</label>
+                                <div class="d-flex align-items-center">
+                                    <input type="number" wire:model="emergency_whatsapp" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Emergency WhatsApp Number" @if($same_as_contact)
+                                        disabled
+                                    @endif>
+                                    <input type="checkbox" wire:change="SameAsContact" id="same_as_contact" class="me-2" value="0" @if($same_as_contact)
+                                        checked
+                                    @endif>
+                                    <label for="same_as_contact" class="form-label">Same as Contact Number</label>
+                                </div>
+                            </div>
+
+                            <!-- Contact Address -->
+                            <div class="col-md-4">
+                                <label class="form-label">Contact Address</label>
+                                <textarea wire:model="emergency_address" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Emergency Contact Address"></textarea>
+                                @error('emergency_address')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                           
                         </div>
@@ -263,7 +303,7 @@
                             <div class="col-md-4">
                                 <label class="form-label">Country</label>
                                 <input type="text" wire:model="country" class="form-control form-control-sm border border-1 p-2" placeholder="Country">
-                                <input type="hidden" wire:model="password" value="yourPasswordHere">
+                                {{-- <input type="hidden" wire:model="password" value="yourPasswordHere"> --}}
                                 @error('country')
                                     <div class="text-danger">{{$message}}</div>
                                 @enderror

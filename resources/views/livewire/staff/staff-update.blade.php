@@ -134,6 +134,35 @@
                     </div>
                 </div>
 
+                {{-- Emergency Contact Information --}}
+                    <div class="col-md-8 mt-4 d-flex align-items-center">
+                    <h6 class="badge bg-danger custom_danger_badge">Emergency Contact Information</h6>
+                </div>
+                    <div class="row mt-4">
+                        <!-- Banking Information -->
+                        <div class="col-md-4">
+                            <label class="form-label"> Contact Name</label>
+                            <input type="text" wire:model="emergency_contact_person" id="emergency_contact_person" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Contact Name">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Contact Number</label>
+                            <input type="number" wire:model="emergency_mobile" id="emergency_mobile" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Mobile Number">
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <label class="form-label">WhatsApp Number</label>
+                            <div class="d-flex align-items-center">
+                            <input type="number" wire:model="emergency_whatsapp" id="emergency_whatsapp" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Whatsapp Number">
+                                <input type="checkbox" wire:model="same_as_contact" id="same_as_contact" class="me-2">
+                            <label for="same_as_contact" class="form-label">Same as Contact Number</label>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <label class="form-label">Address</label>
+                            <textarea type="text" wire:model="emergency_contact_person" id="emergency_contact_person" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Contact Address"></textarea>
+                        </div>
+                    </div>
                 <!-- Other Details -->
                 <div class="col-md-8 mt-4 mb-2 d-flex align-items-center">
                     <h6 class="badge bg-danger custom_danger_badge">Account Information</h6>

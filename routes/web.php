@@ -34,6 +34,7 @@ use App\Http\Livewire\Measurement\MeasurementIndex;
 use App\Http\Livewire\Fabric\FabricsIndex;
 use App\Http\Livewire\PurchaseOrder\{PurchaseOrderIndex,PurchaseOrderCreate,PurchaseOrderEdit,GenerateGrn,PurchaseOrderDetails};
 use App\Http\Livewire\Stock\{StockIndex,UserLedger};
+use App\Http\Livewire\BusinessType\BusinessTypeIndex;
 
 /*
 |--------------------------------------------------------------------------
@@ -117,6 +118,11 @@ Route::group(['prefix' => 'products'], function () {
        Route::get('/edit/{purchase_order_id}',PurchaseOrderEdit::class)->name('purchase_order.edit');
        Route::get('/details/{purchase_order_id}',PurchaseOrderDetails::class)->name('purchase_order.details');
        Route::get('/generate-grn/{purchase_order_id}',GenerateGrn::class)->name('purchase_order.generate_grn');
+    });
+
+    // Business Type
+    Route::group(['prefix'=> 'business-type'], function (){
+       Route::get('/',BusinessTypeIndex::class)->name('business_type.index');
     });
 
     // Stock Report

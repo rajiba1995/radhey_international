@@ -11,6 +11,10 @@
                                     <div class="alert alert-success" id="flashMessage">
                                         {{ session('message') }}
                                     </div>
+                                @elseif(session()->has('error'))
+                                    <div class="alert alert-danger" id="flashMessage">
+                                        {{ session('error') }}
+                                    </div>
                                 @endif
                             </div>
                             <div class="row">
@@ -40,28 +44,28 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {{-- @foreach($catalogs as $index => $catalog)
+                                        @foreach($catalogues as $index => $catalogue)
                                             <tr>
                                                 <td><h6 class="mb-0 text-sm">{{ $index + 1 }}</h6></td>
                                                 <td class="align-middle">
-                                                    @if($catalog->image)
-                                                        <img src="{{ asset($catalog->image) }}" class="img-thumbnail" width="50">
+                                                    @if($catalogue->image)
+                                                        <img src="{{ asset('storage/'.$catalogue->image) }}" class="img-thumbnail" width="50">
                                                     @else
                                                         <span class="text-xs font-weight-bold mb-0">No Image</span>
                                                     @endif
                                                 </td>
-                                                <td><p class="text-xs font-weight-bold mb-0">{{ $catalog->title }}</p></td>
-                                                <td><p class="text-xs font-weight-bold mb-0">{{ $catalog->page_number }}</p></td>
-                                                <td class="align-middle text-end px-4">
-                                                    <button wire:click="edit({{ $catalog->id }})" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" title="Edit">
+                                                <td><p class="text-xs font-weight-bold mb-0">{{ $catalogue->catalogueTitle ? $catalogue->catalogueTitle->title : "" }}</p></td>
+                                                <td><p class="text-xs font-weight-bold mb-0">{{ $catalogue->page_number }}</p></td>
+                                                <td class="align-middle">
+                                                    <button wire:click="edit({{ $catalogue->id }})" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" title="Edit">
                                                         <span class="material-icons">edit</span>
                                                     </button>
-                                                    <button wire:click="destroy({{ $catalog->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm mb-0" title="Delete">
+                                                    <button wire:click="destroy({{ $catalogue->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm mb-0" title="Delete">
                                                         <span class="material-icons">delete</span>
                                                     </button>
                                                 </td>
                                             </tr>
-                                        @endforeach --}}
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -116,8 +120,8 @@
                                     <div>
                                         @if (is_object($image))
                                             <img src="{{ $image->temporaryUrl() }}" class="img-thumbnail" width="50%">
-                                        @elseif ($catalogueId)
-                                            <img src="{{ asset($catalogues->where('id', $catalogueId)->first()->image ?? '') }}" class="img-thumbnail" width="50%">    
+                                        @elseif ($image && !is_object($image))
+                                            <img src="{{ asset('storage/'.$image) }}" class="img-thumbnail" width="50%">    
                                         @endif
                                     </div>
                                     @error('image')

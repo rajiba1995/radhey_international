@@ -18,6 +18,10 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
+        'emergency_contact_person',
+        'emergency_mobile',
+        'emergency_whatsapp',
+        'emergency_address',
         'country_id',
         'name',
         'dob',
@@ -39,7 +43,8 @@ class User extends Authenticatable
         'passport_id_back',
         'passport_expiry_date',
         'profile_image',
-        'verified_video'
+        'verified_video',
+        
     ];
     
     /**

@@ -95,12 +95,30 @@
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Master Modules</h6>
             </li>
+            {{-- Business Type --}}
+            <li class="nav-item">
+                <a class="nav-link text-white {{ Request::is('admin/business-type*') || in_array(Route::currentRouteName(), ['business_type.index']) ? 'active bg-gradient-primary' : '' }}"
+                    href="#businessTypeSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['business_type.index']) ? 'true' : 'false' }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">receipt</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Master Management</span>
+                </a>
+            </li>
+            <ul id="businessTypeSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['business_type.index']) ? 'show' : '' }}">
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'business_type.index' ? 'active bg-gradient-primary' : '' }}"
+                        href="{{route('business_type.index')}}">
+                        Business Type
+                    </a>
+                </li>
+            </ul>
             {{-- Purchase Order --}}
             <li class="nav-item">
                 <a class="nav-link text-white {{ Request::is('admin/purchase-order*') || in_array(Route::currentRouteName(), ['purchase_order.index','purchase_order.create']) ? 'active bg-gradient-primary' : '' }}"
                     href="#purchaseOrderSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['purchase_order.index','purchase_order.create']) ? 'true' : 'false' }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">receipt</i>
+                        <i class="material-icons opacity-10">receipt_long</i>
                     </div>
                     <span class="nav-link-text ms-1">Purchase Order</span>
                 </a>
