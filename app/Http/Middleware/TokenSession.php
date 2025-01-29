@@ -17,7 +17,7 @@ class TokenSession
             return response()->json([
                 'status' => false,
                 'message' => 'Session expired. Please log in again.',
-            ], 419); // HTTP 419: Session Expired
+            ]);
         }
 
         // Check if the token is expired
@@ -28,7 +28,7 @@ class TokenSession
             return response()->json([
                 'status' => false,
                 'message' => 'Session expired. Please log in again.',
-            ], 419); // HTTP 419: Session Expired
+            ]);
         }
 
         // If token is valid, proceed with the request

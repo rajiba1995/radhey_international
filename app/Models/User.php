@@ -123,4 +123,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class, 'customer_id'); // 'customer_id' is the foreign key in the orders table
     }
+
+    public function businessType()
+    {
+        return $this->belongsTo(BusinessType::class, 'business_type');
+    }
 }

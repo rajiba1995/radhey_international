@@ -332,7 +332,7 @@ class UserController extends Controller
             $query->where('company_name', 'LIKE', '%' . $request->company_name . '%');
         }
 
-        // Search by phone
+        // Search by phone  
         if ($request->filled('phone')) {
             $query->where('phone', 'LIKE', '%' . $request->phone . '%');
         }

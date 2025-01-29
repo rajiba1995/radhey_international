@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Validation\ValidationException;
-
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -66,13 +66,24 @@ class ProductController extends Controller
     {
         try {
             // Validate the query parameters
-            $validated = $request->validate([
+            $rules = [
                 'collection_id' => 'required|exists:collections,id',
-            ], [
+            ];
+            
+            $messages = [
                 'collection_id.required' => 'The collection ID is required.',
                 'collection_id.exists' => 'The selected collection does not exist.',
-            ]);
-    
+            ];
+            
+            $validator = Validator::make($request->all(), $rules, $messages);
+            
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors(),
+                ]);
+            }
             // Fetch products by category and collection
             $products = Product::where('collection_id', $validated['collection_id'])
                 ->get();
