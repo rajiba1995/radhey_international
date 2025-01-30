@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use App\Models\SalesmanBilling;
 
 class Helper
 {
@@ -41,13 +42,12 @@ class Helper
         return 'uploads/' . $folderName . '/' . $filename;
     }
     
-     public static function generateInvoiceBill()
+     public static function generateInvoiceBill($salesManId)
     {
-        $user = Auth::user();
+        
 
         // Check for salesman type user
-        if ($user->user_type == 0 && $user->designation == 2) {
-            $salesmanBillBook = SalesmanBilling::where('salesman_id', $user->id)
+            $salesmanBillBook = SalesmanBilling::where('salesman_id',$salesManId)
                 ->whereColumn('total_count', '>', 'no_of_used')
                 ->first();
 
@@ -66,16 +66,16 @@ class Helper
                 ];
                 return $data;
             }
-        }
+        
 
         // Check for other user type (e.g., managers)
-        if ($user->user_type == 0 && $user->designation == 1) {
-            $data = [
-                'number' => 0,
-                'status' => 0,
-            ];
-            return $data;
-        }
+        // if ($user->user_type == 0 && $user->designation == 1) {
+        //     $data = [
+        //         'number' => 0,
+        //         'status' => 0,
+        //     ];
+        //     return $data;
+        // }
     }
 
     public static function generateUniqueNumber(){

@@ -22,6 +22,7 @@ class User extends Authenticatable
         'emergency_mobile',
         'emergency_whatsapp',
         'emergency_address',
+        'branch_id',
         'country_id',
         'name',
         'dob',

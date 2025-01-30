@@ -27,7 +27,19 @@
         <div class="card-body p-3">
             <form wire:submit.prevent="save">
                 <div class="row">
-                    <div class="mb-3 col-md-4">
+                    <div class="mb-3 col-md-3">
+                        <label for="branch_id" class="form-label">Branch Name <span class="text-danger">*</span></label>
+                        <select wire:model="branch_id" id="branch_id" class="form-control form-control-sm border border-1 p-2">
+                            <option value="" selected hidden>Select Branch</option>
+                            @foreach ($branchNames as $branchName)
+                              <option value="{{$branchName->id}}">{{ucwords($branchName->name)}}</option>   
+                            @endforeach 
+                        </select>
+                        @error('branch_id')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="mb-3 col-md-3">
                         <label for="designation" class="form-label">Designation <span class="text-danger">*</span></label>
                         <select wire:model="designation" id="designation" class="form-control form-control-sm border border-1 p-2">
                             <option value="" selected hidden>Select Designation</option>
@@ -50,7 +62,7 @@
                         @enderror
                     </div>
                 
-                    <div class="mb-3 col-md-4">
+                    <div class="mb-3 col-md-2">
                         <label for="email" class="form-label">Email</label>
                         <input type="email" wire:model="email" id="email" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Email">
                         @error('email')
@@ -63,7 +75,7 @@
                 <div class="row">
                     <div class="mb-3 col-md-4">
                         <label for="mobile" class="form-label">Mobile <span class="text-danger">*</span></label>
-                        <input type="number" wire:model="mobile" id="mobile" class="form-control form-control-sm border border-1 p-2" placeholder="Staff mobile">
+                        <input type="number" wire:model="mobile" id="mobile" class="form-control form-control-sm border border-1 p-2" placeholder="Staff Mobile No">
                         @error('mobile')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror

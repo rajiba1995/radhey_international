@@ -8,6 +8,7 @@ use App\Models\UserBank;
 use App\Models\User;
 use App\Models\UserAddress;
 use App\Models\Country;
+use App\Models\Branch;
 use App\Helpers\Helper;
 use Livewire\WithFileUploads;
 use Illuminate\Validation\Rule;
@@ -18,17 +19,19 @@ use Illuminate\Support\Facades\Hash;
 class StaffAdd extends Component
 {
     use WithFileUploads;
-    public $designation, $person_name, $email, $mobile, $aadhaar_number, $whatsapp_no,$is_wa_same,$user_id;
+    public $branch_id,$designation, $person_name, $email, $mobile, $aadhaar_number, $whatsapp_no,$is_wa_same,$user_id;
     public $image, $passport_id_front, $passport_id_back, $passport_expiry_date;
     public $account_holder_name, $bank_name, $branch_name, $account_no, $ifsc, $monthly_salary, $daily_salary, $travel_allowance;
     public $address, $landmark, $state, $city, $pincode, $country;
     public $designations = [];
+    public $branchNames = [];
     public $Selectcountry;
     public $selectedCountryId;
     public $showAadhaarStar = false;
     public $emergency_contact_person,$emergency_mobile,$emergency_whatsapp,$emergency_address,$same_as_contact;
     public function mount(){
         $this->designations = Designation::where('status',1)->orderBy('name', 'ASC')->where('id', '!=', 1)->get();
+        $this->branchNames  = Branch::all();
         $this->Selectcountry = Country::all();
         $this->selectedCountryId = null;
     }
@@ -42,6 +45,7 @@ class StaffAdd extends Component
         // dd($this->all());
         $aadhaarValidationRule = $this->selectedCountryId == 1 ? 'required|numeric' : 'nullable|numeric';
        $this->validate([
+            'branch_id'   => 'required',
             'designation' => 'required',
             'person_name' => 'required|string|max:255',
             'email' => 'nullable|email|unique:users,email',
@@ -73,6 +77,8 @@ class StaffAdd extends Component
             'city' => 'nullable|string|max:255',
             'pincode' => 'nullable|string|max:10',
             'country' => 'nullable|string|max:255',
+       ],[
+            'branch_id.required' => 'Please select branch',
        ]);
        DB::beginTransaction();
 
@@ -87,6 +93,7 @@ class StaffAdd extends Component
 
             // 1. Save the data into the users table
             $user = User::create([
+                'branch_id' => $this->branch_id,
                 'country_id'=> $this->selectedCountryId,
                 'user_type' => 0, //for Staff
                 'designation' => $this->designation ?? "",

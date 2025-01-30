@@ -218,17 +218,23 @@
                 
             </ul>
             <li class="nav-item">
-                <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add']) ? 'active bg-gradient-primary' : '' }}"
-                    href="#StaffManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add']) ? 'true' : 'false' }}">
+                <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add','branch.index','salesman.index']) ? 'active bg-gradient-primary' : '' }}"
+                    href="#StaffManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add','branch.index','salesman.index']) ? 'true' : 'false' }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">assignment_ind</i>
                     </div>
-                    <span class="nav-link-text ms-1">Staff Management</span>
+                    <span class="nav-link-text ms-1">Branch Management</span>
                 </a>
             </li>
         
             <!-- Submenu -->
-            <ul id="StaffManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add','staff.update','staff.view','staff.task','staff.task.add','staff.cities.add','salesman.index']) ? 'show' : '' }}">
+            <ul id="StaffManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add','staff.update','staff.view','staff.task','staff.task.add','staff.cities.add','salesman.index','branch.index']) ? 'show' : '' }}">
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'branch.index' ? 'active bg-gradient-primary' : '' }}"
+                        href="{{route('branch.index')}}">
+                        Branch
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link text-white {{ Route::currentRouteName() == 'staff.designation' ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('staff.designation')}}">

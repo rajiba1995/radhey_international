@@ -50,7 +50,7 @@ class BusinessTypeIndex extends Component
         $business_type->update([
             'title' => $this->title,
         ]);
-
+        
         session()->flash('message','Business Type Updated Successfully');
         $this->resetFields();
         $this->reloadBusinessTypes();
