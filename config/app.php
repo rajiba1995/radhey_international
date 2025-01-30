@@ -2,6 +2,9 @@
 
 return [
 
+    'phone_min_length' => env('PHONE_MIN_LENGTH', 10),
+    'phone_max_length' => env('PHONE_MAX_LENGTH', 15),
+
     'hour' => env('SCHEDULED_HOUR', ''),
     'min' => env('SCHEDULED_MIN', ''),
 

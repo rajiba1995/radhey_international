@@ -167,7 +167,9 @@ class UserController extends Controller
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'phone' => 'required|numeric',
+            'phone' =>  ['required', 'numeric', 'digits_between:' . config('app.phone_min_length') . ',' . config('app.phone_max_length')],
+            'whatsapp_no' => ['required', 'numeric', 'digits_between:' . config('app.phone_min_length') . ',' . config('app.phone_max_length')],
+            
             'dob' => 'required|date',
             'company_name' => 'nullable|string|max:255',
             'employee_rank' => 'nullable|string|max:255',
@@ -200,6 +202,7 @@ class UserController extends Controller
                 'shipping_state' => 'required|string|max:255',
                 'shipping_country' => 'required|string|max:255',
                 'shipping_pin' => 'nullable|string|max:10',
+                'shipping_landmark' => 'nullable|string|max:255', 
             ]);
         }
 
@@ -234,6 +237,8 @@ class UserController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'phone' => $request->phone,
+                'whatsapp_no' => $request->whatsapp_no,
+                
                 'dob' => $request->dob,
                 'company_name' => $request->company_name,
                 'employee_rank' => $request->employee_rank,

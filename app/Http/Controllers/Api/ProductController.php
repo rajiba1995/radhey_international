@@ -92,7 +92,7 @@ class ProductController extends Controller
             if ($products->isEmpty()) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'No products found for the given  collection.',
+                    'message' => 'No products found for the given collection.',
                 ]);
             }
     

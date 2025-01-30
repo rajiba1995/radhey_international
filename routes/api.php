@@ -33,26 +33,36 @@ Route::post('/mpin-login', [AuthController::class, 'loginWithMpin']);
 // });
 // Route::middleware('auth:sanctum', 'token.expiry')->group(function () {
 Route::middleware('auth:sanctum', 'token.session')->group(function () {
-    // Route for creating a product
-    Route::get('/user', [UserController::class, 'index']);
-    Route::post('/user/store', [UserController::class, 'store']);
-    Route::get('/user/list', [UserController::class, 'list']);
-    Route::get('/user/search', [UserController::class, 'search']);
-    Route::get('/user/show/{id}', [UserController::class, 'show']);
+    Route::post('/logout', [AuthController::class, 'logout']);
 
+    Route::prefix('user')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('user.index');
+        Route::post('/store', [UserController::class, 'store'])->name('user.store');
+        Route::get('/list', [UserController::class, 'list'])->name('user.list');
+        Route::get('/search', [UserController::class, 'search'])->name('user.search');
+        Route::get('/show/{id}', [UserController::class, 'show'])->name('user.show');
+    });
 
-
-
-    Route::get('/category', [CategoryController::class, 'index']);
+    Route::prefix('category')->group(function () {
+        Route::get('/', [CategoryController::class, 'index'])->name('category.index');
+        Route::get('/category-collection-wise/{categoryid}', [CategoryController::class, 'getCategoriesByCollection'])->name('category.collection-wise');
+    });
+    
     Route::get('/collection', [CollectionController::class, 'index']);
     Route::get('/fabric', [FabricController::class, 'index']);
     Route::get('/business-type', [BusinessTypeController::class, 'index']);
-    Route::get('/category/category-collection-wise/{categoryid}', [CategoryController::class, 'getCategoriesByCollection']);
-    Route::get('/product/products-category-collection-wise', [ProductController::class, 'getProductsByCategoryAndCollection']);
-    Route::get('/product/products-collection-wise', [ProductController::class, 'getProductsByCollection']);
+   
+    Route::prefix('product')->group(function () {
+        Route::get('/products-category-collection-wise', [ProductController::class, 'getProductsByCategoryAndCollection']);
+        Route::get('/products-collection-wise', [ProductController::class, 'getProductsByCollection']);
+    });
     
-    Route::post('/order/store', [OrderController::class, 'createOrder']);
-    Route::get('/order/list', [OrderController::class, 'index']);
+    
+    Route::prefix('order')->group(function () { 
+        Route::post('/store', [OrderController::class, 'createOrder']);
+        Route::get('/list', [OrderController::class, 'index']);
+    });
+    
     // More routes related to products can be added here
     // Route::get('/products', [ProductController::class, 'index']);
     // Route::put('/products/{id}', [ProductController::class, 'update']);

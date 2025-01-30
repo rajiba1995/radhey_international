@@ -300,8 +300,11 @@ class OrderController extends Controller
             'employee_rank' => 'nullable',
             'name' => 'required|string|max:255',
             'email' => 'required|email',
-            'phone' => 'required|string',
-            'whatsapp_no' => 'required|string',
+            'phone' => ['required', 'numeric', 'digits_between:' . config('app.phone_min_length') . ',' . config('app.phone_max_length')],
+            // 'phone' => ['required', 'regex:' . env('PHONE_REGEX')],
+            // 'whatsapp_no' =>['required', 'regex:' . env('PHONE_REGEX')],
+            'whatsapp_no' => ['required', 'numeric', 'digits_between:' . config('app.phone_min_length') . ',' . config('app.phone_max_length')],
+      
             'dob' => 'required|date',
             'billing_address' => 'required|string',
             'billing_city' => 'required|string',
