@@ -238,7 +238,6 @@ class UserController extends Controller
                 'email' => $request->email,
                 'phone' => $request->phone,
                 'whatsapp_no' => $request->whatsapp_no,
-                
                 'dob' => $request->dob,
                 'company_name' => $request->company_name,
                 'employee_rank' => $request->employee_rank,
