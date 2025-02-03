@@ -26,6 +26,17 @@
                             </div>
                         </div>
                         <div class="card-body pb-2">
+                            <div class="d-flex justify-content-between mb-3">
+                                <!-- Import Form -->
+                                <form wire:submit.prevent="import">
+                                    <input type="file" wire:model="file" class="form-control" />
+                                    @error('file') <span class="text-danger">{{ $message }}</span> @enderror
+                                    <button type="submit" class="btn btn-outline-success mt-2">Import Fabrics</button>
+                                </form>
+
+                                <!-- Export Button -->
+                                <button wire:click="export" class="btn btn-outline-primary">Export Fabrics</button>
+                            </div>
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0" >
                                     <thead>

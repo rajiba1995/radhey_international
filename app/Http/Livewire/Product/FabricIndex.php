@@ -10,6 +10,9 @@ use App\Models\Fabric;
 use Illuminate\Http\Request;
 use App\Helpers\Helper;
 use Livewire\WithFileUploads;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\FabricsImport;
+use App\Exports\FabricsExport;
 
 
 
@@ -19,8 +22,28 @@ class FabricIndex extends Component
     use WithPagination;
     public  $image, $title, $status = 1, $fabricId,$threshold_price;
     public $search = '';
+    public $file;
 
-
+    public function import()
+    {
+        $this->validate([
+            'file' => 'required|mimes:xlsx,csv|max:2048', 
+        ]);
+    
+        try {
+            Excel::import(new FabricsImport(), $this->file->getRealPath()); 
+            session()->flash('success', 'Fabrics imported successfully!');
+            $this->file = null; // Reset file
+        } catch (\Exception $e) {
+            session()->flash('error', 'Import failed: ' . $e->getMessage());
+        }
+    }
+    
+    // Export Fabrics
+    public function export()
+    {
+        return Excel::download(new FabricsExport(), 'fabrics.xlsx');
+    }
     public function store()
     {
         $this->validate([
