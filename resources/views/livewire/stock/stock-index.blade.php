@@ -54,7 +54,7 @@
                                         <td>{{ $product->qty_in_pieces }}</td>
                                         <td>Rs. {{ number_format($product->piece_price, 2) }}</td>
                                         <td>Rs. {{ number_format($product->total_price, 2) }}</td>
-                                        <td>Rs. {{ date('d-m-Y',strtotime($product->created_at))}}</td>
+                                        <td> {{ date('d-m-Y',strtotime($product->created_at))}}</td>
                                     </tr>
                                 @empty
                                     <tr>

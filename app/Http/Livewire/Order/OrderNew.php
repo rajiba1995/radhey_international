@@ -28,7 +28,7 @@ class OrderNew extends Component
     // public $collectionsType = [];
     public $collections = [];
     public $errorMessage = [];
-    public $activeTab = 2;
+    public $activeTab = 1;
     public $items = [];
     public $FetchProduct = 1;
 
@@ -127,6 +127,7 @@ class OrderNew extends Component
              'items.*.selectedCatalogue.required' => 'Please select a catalogue for the item.',
              'items.*.selectedPage.required' => 'Please select a page for the item.',
              'items.*.price.required'  => 'Please enter a price for the item.',
+             'items.*.collection.required' =>  'Please enter a collection for the item.',
         ];
     }
     public function FindCustomer($term)

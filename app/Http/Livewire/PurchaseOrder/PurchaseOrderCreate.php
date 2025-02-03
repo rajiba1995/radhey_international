@@ -51,7 +51,7 @@ class PurchaseOrderCreate extends Component
         $pricePerPc = $row['price_per_pc'] ?? 0; 
     
         // Calculate total amount based on input values
-        if($this->isFabricSelected[$index]){
+        if($this->isFabricSelected[$index] ?? false){
             // Calculate total amount based on pcs_per_mtr and price_per_pc for Garments
             if($pcsPerMtr > 0 && $pricePerPc > 0){
                 $this->rows[$index]['total_amount'] = $pcsPerMtr * $pricePerPc;
@@ -173,7 +173,16 @@ class PurchaseOrderCreate extends Component
 
         if ($collection) {
             if ($collection->id === 1) { // GARMENT
-                $this->rows[$index]['fabrics'] = Fabric::where('status', 1)->get()->toArray();
+                $allFabrics = Fabric::where('status', 1)->get()->toArray();
+                // Exclude fabrics already selected in other rows
+                $selectedFabrics = array_column(array_filter($this->rows, function ($row) use ($index) {
+                    return $row['collection'] == 1 && $row['fabric'] != null && $row !== $this->rows[$index];
+                }), 'fabric');
+
+                $filteredFabrics = array_filter($allFabrics, function ($fabric) use ($selectedFabrics) {
+                    return !in_array($fabric['id'], $selectedFabrics);
+                });
+                $this->rows[$index]['fabrics']  = array_values($filteredFabrics);
                 $this->rows[$index]['products'] = [];
                 $this->rows[$index]['fabric'] = null;
                 $this->rows[$index]['product'] = null;

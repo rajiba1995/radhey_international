@@ -36,7 +36,7 @@
                                     <div id="fetch_customer_details" class="dropdown-menu show w-100" style="max-height: 200px; overflow-y: auto;">
                                         @foreach ($searchResults as $customer)
                                             <button class="dropdown-item" type="button" wire:click="selectCustomer({{ $customer->id }})">
-                                                <img src="{{ $customer->profile_image ? asset($customer->profile_image) : asset('assets/img/user.png') }}" alt=""> {{ $customer->name }} - {{ $customer->phone }} ({{ $customer->email }})
+                                                <img src="{{ $customer->profile_image ? asset("storage/".$customer->profile_image) : asset('assets/img/user.png') }}" alt=""> {{ $customer->name }} - {{ $customer->phone }} ({{ $customer->email }})
                                             </button>
                                         @endforeach
                                     </div>
@@ -255,23 +255,22 @@
                         <div class="row align-items-center mt-3 mb-5">
                             <!-- Collection  -->
                             <div class="mb-3 col-md-2">
-                               
                                 <label class="form-label"><strong>Collection </strong><span class="text-danger">*</span></label>
-                               <select wire:model="items.{{ $index }}.collection" wire:change="GetCategory($event.target.value, {{ $index }})" class="form-control border border-2 p-2 form-control-sm">
+                               <select wire:model="items.{{ $index }}.collection" wire:change="GetCategory($event.target.value, {{ $index }})" class="form-control border border-2 p-2 form-control-sm @error('items.'.$index.'.collection') border-danger @enderror">
                                     <option value="" selected hidden>Select collection</option>
                                     @foreach($collections as $citems)
                                         <option value="{{ $citems->id }}">{{ ucwords($citems->title) }} @if($citems->short_code)({{ $citems->short_code }})@endif</option>
                                     @endforeach
                                 </select>
                                 @error("items.$index.collection")
-                                    <p class='text-danger inputerror'>{{ $message }}</p>
+                                    <div class='text-danger'>{{ $message }}</div>
                                 @enderror
                             </div>
 
                             <!-- Category -->
                             <div class="mb-3 col-md-2">
                                 <label class="form-label"><strong>Category</strong></label>
-                                <select wire:model="items.{{ $index }}.category" class="form-select form-control-sm border border-1" wire:change="CategoryWiseProduct($event.target.value, {{ $index }})">
+                                <select wire:model="items.{{ $index }}.category" class="form-select form-control-sm border border-1 @error('items.'.$index.'.category') border-danger @enderror" wire:change="CategoryWiseProduct($event.target.value, {{ $index }})">
                                     <option value="" selected hidden>Select Category</option>
                                     @if (isset($items[$index]['categories']) && count($items[$index]['categories']) > 0)
                                         @foreach ($items[$index]['categories'] as $category)
@@ -282,14 +281,14 @@
                                     @endif
                                 </select>
                                 @error("items.$index.category")
-                                    <p class="text-danger">{{ $message }}</p>
+                                    <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
 
                             <!-- Product -->
                             <div class="mb-3 col-md-2">
                                 <label class="form-label"><strong>Product</strong></label>
-                                <input type="text" wire:keyup="FindProduct($event.target.value, {{ $index }})" wire:model="items.{{ $index }}.searchproduct" class="form-control form-control-sm border border-1 customer_input" placeholder="Enter product name">
+                                <input type="text" wire:keyup="FindProduct($event.target.value, {{ $index }})" wire:model="items.{{ $index }}.searchproduct" class="form-control form-control-sm border border-1 customer_input @error('items.'.$index.'.searchproduct') border-danger @enderror" placeholder="Enter product name">
                                 @if (session()->has('errorProduct.' . $index)) 
                                     <p class="text-danger">{{ session('errorProduct.' . $index) }}</p>
                                 @endif
@@ -307,7 +306,7 @@
                             @if(isset($items[$index]['collection']) && $items[$index]['collection'] == 1)
                             <div class="col-md-3">
                                 <label class="form-label"><strong>Catalogue</strong></label>
-                                <select wire:model="items.{{ $index }}.selectedCatalogue" class="form-control form-control-sm border border-1" wire:change="SelectedCatalogue($event.target.value, {{ $index }})">
+                                <select wire:model="items.{{ $index }}.selectedCatalogue" class="form-control form-control-sm border border-1 @error('items.'.$index.'.selectedCatalogue') border-danger @enderror" wire:change="SelectedCatalogue($event.target.value, {{ $index }})">
                                     <option value="" selected hidden>Select Catalogue</option>
                                     @foreach($catalogues[$index] ?? [] as $id => $title)
                                         <option value="{{ $id }}">{{ $title }}</option>
@@ -321,7 +320,7 @@
                             <!-- Page Number Dropdown -->
                             <div class="col-md-3">
                                 <label class="form-label"><strong>Page Number</strong></label>
-                                <select wire:model="items.{{ $index }}.selectedPage" class="form-control form-control-sm border border-1" wire:change="SelectedPage($event.target.value, {{ $index }})">
+                                <select wire:model="items.{{ $index }}.selectedPage" class="form-control form-control-sm border border-1 @error('items.'.$index.'.selectedPage') border-danger @enderror" wire:change="SelectedPage($event.target.value, {{ $index }})">
                                     <option value="" selected hidden>Select Page</option>
                                     @foreach($cataloguePages[$index] ?? [] as $page)
                                         <option value="{{ $page }}">{{ $page }}</option>

@@ -176,9 +176,9 @@
                             </div>
 
                             <!-- Checkbox to Copy Contact Number to WhatsApp Number -->
-                            <div class="col-md-4 d-flex align-items-center mt-4">
+                            {{-- <div class="col-md-4 d-flex align-items-center mt-4">
                                 
-                            </div>
+                            </div> --}}
 
                             <!-- WhatsApp Number -->
                             <div class="col-md-4">
@@ -202,7 +202,6 @@
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
-                          
                         </div>
                 <!-- Other Details -->
                     <div class="col-md-8 mt-4 d-flex align-items-center">
