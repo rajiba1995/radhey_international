@@ -518,7 +518,7 @@
                                     <td class="w-70"><label class="form-label"><strong>Order Number</strong></label></td>
                                     <td>
                                         <!-- Remaining Amount -->
-                                        <input type="text" class="form-control form-control-sm text-center border border-1" wire:model="order_number" value="{{$order_number}}" >
+                                        <input type="text" class="form-control form-control-sm text-center border border-1" disabled wire:model="order_number" value="{{$order_number}}" >
                                       
                                     </td>
                                 </tr> 

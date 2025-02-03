@@ -148,7 +148,7 @@
                 <li class="nav-item">
                     <a class="nav-link text-white {{ Route::currentRouteName() == 'stock.index' ? 'active bg-gradient-primary' : '' }}"
                         href="{{ route('stock.index') }}">
-                         Stock Report
+                         Stock Logs
                     </a>
                 </li>
                 <li class="nav-item">
