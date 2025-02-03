@@ -7,6 +7,8 @@ use App\Models\Designation;
 use App\Models\UserBank;
 use App\Models\User;
 use App\Models\UserAddress;
+use App\Models\Country;
+use App\Models\Branch;
 use App\Helpers\Helper;
 use Livewire\WithFileUploads;
 use Illuminate\Validation\Rule;
@@ -17,18 +19,33 @@ use Illuminate\Support\Facades\Hash;
 class StaffAdd extends Component
 {
     use WithFileUploads;
-    public $designation, $person_name, $email, $mobile, $aadhaar_number, $whatsapp_no,$is_wa_same,$user_id;
-    public $image, $user_id_front, $user_id_back;
+    public $branch_id,$designation, $person_name, $email, $mobile, $aadhaar_number, $whatsapp_no,$is_wa_same,$user_id;
+    public $image, $passport_id_front, $passport_id_back, $passport_expiry_date;
     public $account_holder_name, $bank_name, $branch_name, $account_no, $ifsc, $monthly_salary, $daily_salary, $travel_allowance;
     public $address, $landmark, $state, $city, $pincode, $country;
     public $designations = [];
-
+    public $branchNames = [];
+    public $Selectcountry;
+    public $selectedCountryId;
+    public $showAadhaarStar = false;
+    public $emergency_contact_person,$emergency_mobile,$emergency_whatsapp,$emergency_address,$same_as_contact;
     public function mount(){
         $this->designations = Designation::where('status',1)->orderBy('name', 'ASC')->where('id', '!=', 1)->get();
+        $this->branchNames  = Branch::all();
+        $this->Selectcountry = Country::all();
+        $this->selectedCountryId = null;
+    }
+
+    public function SelectedCountry()
+    {
+        $this->showAadhaarStar = $this->selectedCountryId == 1;
     }
 
     public function save(){
+        // dd($this->all());
+        $aadhaarValidationRule = $this->selectedCountryId == 1 ? 'required|numeric' : 'nullable|numeric';
        $this->validate([
+            'branch_id'   => 'required',
             'designation' => 'required',
             'person_name' => 'required|string|max:255',
             'email' => 'nullable|email|unique:users,email',
@@ -41,10 +58,11 @@ class StaffAdd extends Component
                 'required',
                 'regex:/^\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/', // At least VALIDATE_WHATSAPP digits
             ],
-            'aadhaar_number' => 'nullable|numeric',
+            'aadhaar_number' => $aadhaarValidationRule,
             'image' => 'nullable|image|max:2048',
-            'user_id_front' => 'nullable|image|max:2048',
-            'user_id_back' => 'nullable|image|max:2048',
+            'passport_id_front' => 'nullable|image|max:2048',
+            'passport_id_back' => 'nullable|image|max:2048',
+            'passport_expiry_date' => 'nullable',
             'account_holder_name' => 'nullable|string|max:255',
             'bank_name' => 'nullable|string|max:255',
             'branch_name' => 'nullable|string|max:255',
@@ -59,20 +77,24 @@ class StaffAdd extends Component
             'city' => 'nullable|string|max:255',
             'pincode' => 'nullable|string|max:10',
             'country' => 'nullable|string|max:255',
+       ],[
+            'branch_id.required' => 'Please select branch',
        ]);
        DB::beginTransaction();
 
        try {
         // Check and upload the images only if they are provided
             $imagePath = $this->image ? Helper::uploadImage($this->image, 'staff2') : null;
-            $userIdFrontPath = $this->user_id_front ? Helper::uploadImage($this->user_id_front, 'staff') : null;
-            $userIdBackPath = $this->user_id_back ? Helper::uploadImage($this->user_id_back, 'staff') : null;
+            $passportIdFrontPath = $this->passport_id_front ? Helper::uploadImage($this->passport_id_front, 'staff') : null;
+            $passportIdBackPath = $this->passport_id_back ? Helper::uploadImage($this->passport_id_back, 'staff') : null;
 
             // Now, you can handle these paths accordingly (e.g., store them in the database)
 
 
             // 1. Save the data into the users table
             $user = User::create([
+                'branch_id' => $this->branch_id,
+                'country_id'=> $this->selectedCountryId,
                 'user_type' => 0, //for Staff
                 'designation' => $this->designation ?? "",
                 'name' => ucwords($this->person_name) ?? "",
@@ -81,9 +103,14 @@ class StaffAdd extends Component
                 'aadhar_name' => $this->aadhaar_number ?? "",
                 'whatsapp_no' => $this->whatsapp_no ?? "",
                 'image' =>  $imagePath ?? "",
-                'user_id_front' =>  $userIdFrontPath ?? "",
-                'user_id_back' => $userIdBackPath ?? "",
-                'password'=>Hash::make('1234')
+                'passport_id_front' =>  $passportIdFrontPath ?? "",
+                'passport_id_back' => $passportIdBackPath ?? "",
+                'passport_expiry_date' => $this->passport_expiry_date ? $this->passport_expiry_date : null,
+                'password'=>Hash::make('secret'),
+                'emergency_contact_person' => $this->emergency_contact_person ?? "",
+                'emergency_mobile' => $this->emergency_mobile ?? "",
+                'emergency_whatsapp' => $this->emergency_whatsapp ?? "",
+                'emergency_address' => $this->emergency_address ?? "",
             ]);
 
             // 2. Save the data into the user_banks table
@@ -122,6 +149,7 @@ class StaffAdd extends Component
 
             // Handle the exception (e.g., log the error and show an error message)
             session()->flash('error', 'An error occurred while saving staff information: ' . $e->getMessage());
+            dd($e->getMessage());
             return back()->withInput();
         }
     }
@@ -134,6 +162,17 @@ class StaffAdd extends Component
             $this->whatsapp_no = '';
             $this->is_wa_same = 0;
         }
+    }
+
+    public function SameAsContact(){
+        if($this->same_as_contact == 0){
+            $this->emergency_whatsapp = $this->emergency_mobile;
+            $this->same_as_contact = 1;
+        }else{
+            $this->emergency_whatsapp = '';
+            $this->same_as_contact = 0;
+        }
+
     }
 
 

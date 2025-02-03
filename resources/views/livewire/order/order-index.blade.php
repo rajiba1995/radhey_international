@@ -79,7 +79,7 @@
                                 <td><p class="text-xs font-weight-bold mb-0">{{ $order->total_amount }}</p></td>
                                 <td class="{{$order->remaining_amount>0?"text-danger":""}}"><p class="text-xs font-weight-bold mb-0">{{ $order->remaining_amount }}</p></td>
                                 <td>
-                                    <a href="#" class="badge bg-info btn-sm">{{$order->status==1?"Pending":""}}</a>
+                                    <button class="badge bg-primary btn-sm">{{$order->status==1?"Pending":""}}</button>
                                 </td>
                                 <td>
                                      <a href="{{route('admin.order.view',$order->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="View product">
@@ -89,7 +89,7 @@
                                         <span class="material-icons">edit</span>
                                     </a>
                                       <a href="{{route('admin.order.ledger.view', $order->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">Ledger History</a>
-                                    <a href="{{route('admin.order.invoice', $order->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">Invoice</a>
+                                    <a href="{{route('admin.order.invoice', $order->id)}}" target="_blank" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">Invoice</a>
                                 </td>
                             </tr>
                         @endforeach

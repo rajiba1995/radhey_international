@@ -20,8 +20,8 @@ use App\Http\Livewire\Tables;
 use App\Http\Livewire\{VirtualReality,CustomerIndex};
 use GuzzleHttp\Middleware;
 use App\Http\Livewire\Order\{OrderIndex, OrderNew, OrderInvoice,OrderEdit,OrderView,LedgerView};
-use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory,FabricIndex,CollectionIndex,GalleryIndex};
-use App\Http\Livewire\Staff\{DesignationIndex,StaffIndex,StaffAdd,StaffUpdate,StaffView,StaffTask,StaffTaskAdd,StaffCities,SalesmanBillingIndex};
+use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory,FabricIndex,CollectionIndex,GalleryIndex,MasterCatalogue};
+use App\Http\Livewire\Staff\{DesignationIndex,StaffIndex,StaffAdd,StaffUpdate,StaffView,StaffTask,StaffTaskAdd,StaffCities,SalesmanBillingIndex,MasterBranch};
 use App\Http\Livewire\Expense\{ExpenseIndex};
 use App\Http\Livewire\UserAddressForm; 
 use App\Http\Livewire\CustomerEdit; 
@@ -32,7 +32,9 @@ use App\Http\Livewire\Supplier\SupplierEdit;
 use App\Http\Livewire\Supplier\SupplierDetails;
 use App\Http\Livewire\Measurement\MeasurementIndex;
 use App\Http\Livewire\Fabric\FabricsIndex;
-use App\Http\Livewire\PurchaseOrder\{PurchaseOrderIndex,PurchaseOrderCreate,PurchaseOrderEdit,GenerateGrn};
+use App\Http\Livewire\PurchaseOrder\{PurchaseOrderIndex,PurchaseOrderCreate,PurchaseOrderEdit,GenerateGrn,PurchaseOrderDetails};
+use App\Http\Livewire\Stock\{StockIndex,UserLedger};
+use App\Http\Livewire\BusinessType\BusinessTypeIndex;
 
 /*
 |--------------------------------------------------------------------------
@@ -105,7 +107,8 @@ Route::group(['prefix' => 'products'], function () {
 
         Route::get('/collections', CollectionIndex::class)->name('admin.collections.index');
         Route::get('/gallery/{product_id}', GalleryIndex::class)->name('product.gallery');
-        // Route::get('/fabrics/{product_id}', FabricIndex::class)->name('product.fabrics');
+        Route::get('/catalog', MasterCatalogue::class)->name('product.catalogue');
+
     });
 
     // Purchase Order
@@ -113,9 +116,22 @@ Route::group(['prefix' => 'products'], function () {
        Route::get('/',PurchaseOrderIndex::class)->name('purchase_order.index');
        Route::get('/create',PurchaseOrderCreate::class)->name('purchase_order.create');
        Route::get('/edit/{purchase_order_id}',PurchaseOrderEdit::class)->name('purchase_order.edit');
+       Route::get('/details/{purchase_order_id}',PurchaseOrderDetails::class)->name('purchase_order.details');
        Route::get('/generate-grn/{purchase_order_id}',GenerateGrn::class)->name('purchase_order.generate_grn');
     });
 
+    // Business Type
+    Route::group(['prefix'=> 'business-type'], function (){
+       Route::get('/',BusinessTypeIndex::class)->name('business_type.index');
+    });
+
+    // Stock Report
+    Route::group(['prefix' => 'stock'], function () {
+       Route::get('/',StockIndex::class)->name('stock.index');
+       Route::get('/user-ledger',UserLedger::class)->name('user.ledger');
+    });
+
+    Route::get('/branch',MasterBranch::class)->name('branch.index');
     Route::get('/designation',DesignationIndex::class)->name('staff.designation');
     
     // Staff

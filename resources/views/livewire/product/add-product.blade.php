@@ -187,28 +187,54 @@
     </div>
 
 
-<script src="https://cdn.ckeditor.com/ckeditor5/38.1.0/classic/ckeditor.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-    <!-- Select2 CSS -->
+<script type="text/javascript" src="{{ asset('assets/ckeditor/ckeditor/ckeditor.js') }}"></script>    <!-- Select2 CSS -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <!-- Select2 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    ClassicEditor
-        .create(document.querySelector('#short_description'))
-        .catch(error => {
-            console.error(error);
+  window.addEventListener('ck_editor_load', function(event) { 
+    // Handle short_desc_editor
+    var shortDescTextArea = document.getElementById('short_description');
+    if (shortDescTextArea) {
+      // Check if CKEditor instance already exists and destroy it
+      if (CKEDITOR.instances['short_description']) {
+        CKEDITOR.instances['short_description'].destroy(true);
+      }
+      
+      // Initialize CKEditor for short_desc_editor
+      if (typeof CKEDITOR !== 'undefined') {
+        CKEDITOR.replace('short_description');
+
+        // Sync CKEditor data to Livewire
+        CKEDITOR.instances['short_description'].on('change', function() {
+            @this.set('short_description', CKEDITOR.instances['short_description'].getData());
         });
-    ClassicEditor
-        .create(document.querySelector('#description'))
-        .catch(error => {
-            console.error(error);
+      } else {
+        console.error('CKEditor is not defined!');
+      }
+    }
+
+    var DescTextArea = document.getElementById('description');
+    if (DescTextArea) {
+      // Check if CKEditor instance already exists and destroy it
+      if (CKEDITOR.instances['description']) {
+        CKEDITOR.instances['description'].destroy(true);
+      }
+      
+      // Initialize CKEditor for short_desc_editor
+      if (typeof CKEDITOR !== 'undefined') {
+        CKEDITOR.replace('description');
+
+        // Sync CKEditor data to Livewire
+        CKEDITOR.instances['description'].on('change', function() {
+            @this.set('description', CKEDITOR.instances['description'].getData());
         });
-        
-        
-});
+      } else {
+        console.error('CKEditor is not defined!');
+      }
+    }
+  });
 
 $("#multiple").select2({
           placeholder: "Select a fabric",

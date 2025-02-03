@@ -95,12 +95,30 @@
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Master Modules</h6>
             </li>
+            {{-- Business Type --}}
+            <li class="nav-item">
+                <a class="nav-link text-white {{ Request::is('admin/business-type*') || in_array(Route::currentRouteName(), ['business_type.index']) ? 'active bg-gradient-primary' : '' }}"
+                    href="#businessTypeSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['business_type.index']) ? 'true' : 'false' }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">receipt</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Master Management</span>
+                </a>
+            </li>
+            <ul id="businessTypeSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['business_type.index']) ? 'show' : '' }}">
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'business_type.index' ? 'active bg-gradient-primary' : '' }}"
+                        href="{{route('business_type.index')}}">
+                        Business Type
+                    </a>
+                </li>
+            </ul>
             {{-- Purchase Order --}}
             <li class="nav-item">
                 <a class="nav-link text-white {{ Request::is('admin/purchase-order*') || in_array(Route::currentRouteName(), ['purchase_order.index','purchase_order.create']) ? 'active bg-gradient-primary' : '' }}"
                     href="#purchaseOrderSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['purchase_order.index','purchase_order.create']) ? 'true' : 'false' }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">receipt</i>
+                        <i class="material-icons opacity-10">receipt_long</i>
                     </div>
                     <span class="nav-link-text ms-1">Purchase Order</span>
                 </a>
@@ -112,14 +130,34 @@
                         PO
                     </a>
                 </li>
+                
+            </ul>
+            {{-- Stock Management --}}
+            <li class="nav-item">
+                <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['stock.index','user.ledger']) ? 'active bg-gradient-primary' : '' }}"
+                    href="#StockManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['stock.index']) ? 'true' : 'false' }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">inventory</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Stock Management</span>
+                </a>
+            </li>
+
+            <!-- Submenu -->
+            <ul id="StockManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['stock.index','user.ledger']) ? 'show' : '' }}">
                 <li class="nav-item">
-                    <a class="nav-link text-white {{ Route::currentRouteName() == 'purchase_order.generate_grn' ? 'active bg-gradient-primary' : '' }}"
-                        href="{{route('purchase_order.index')}}">
-                        GRN
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'stock.index' ? 'active bg-gradient-primary' : '' }}"
+                        href="{{ route('stock.index') }}">
+                         Stock Logs
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'user.ledger' ? 'active bg-gradient-primary' : '' }}"
+                        href="{{ route('user.ledger') }}">
+                         User Ledger
                     </a>
                 </li>
             </ul>
-
             {{-- Product Management --}}
             <li class="nav-item">
                 <a class="nav-link text-white {{ Request::is('admin/products*') || in_array(Route::currentRouteName(), ['product.view', 'product.gallery', 'product.add', 'product.update', 'admin.categories', 'admin.subcategories', 'measurements.index', 'product.fabrics','admin.collections.index']) ? 'active bg-gradient-primary' : '' }}"
@@ -132,7 +170,13 @@
             </li>
         
             <!-- Submenu -->
-            <ul id="productManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['product.view', 'product.gallery', 'product.add', 'product.update', 'admin.categories', 'admin.subcategories', 'measurements.index', 'product.fabrics','admin.collections.index','admin.fabrics.index']) ? 'show' : '' }}">  
+            <ul id="productManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['product.view', 'product.gallery', 'product.add', 'product.update', 'admin.categories', 'admin.subcategories', 'measurements.index', 'product.fabrics','admin.collections.index','admin.fabrics.index','product.catalogue']) ? 'show' : '' }}">  
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ Request::is('admin/products/catalogue') ? 'active bg-gradient-primary' : '' }}"
+                        href="{{route('product.catalogue')}}">
+                         Catalogue
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link text-white {{ Request::is('admin/products/collections') ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('admin.collections.index')}}">
@@ -174,17 +218,23 @@
                 
             </ul>
             <li class="nav-item">
-                <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add']) ? 'active bg-gradient-primary' : '' }}"
-                    href="#StaffManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add']) ? 'true' : 'false' }}">
+                <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add','branch.index','salesman.index']) ? 'active bg-gradient-primary' : '' }}"
+                    href="#StaffManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add','branch.index','salesman.index']) ? 'true' : 'false' }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">assignment_ind</i>
                     </div>
-                    <span class="nav-link-text ms-1">Staff Management</span>
+                    <span class="nav-link-text ms-1">Branch Management</span>
                 </a>
             </li>
         
             <!-- Submenu -->
-            <ul id="StaffManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add','staff.update','staff.view','staff.task','staff.task.add','staff.cities.add','salesman.index']) ? 'show' : '' }}">
+            <ul id="StaffManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add','staff.update','staff.view','staff.task','staff.task.add','staff.cities.add','salesman.index','branch.index']) ? 'show' : '' }}">
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'branch.index' ? 'active bg-gradient-primary' : '' }}"
+                        href="{{route('branch.index')}}">
+                        Branch
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link text-white {{ Route::currentRouteName() == 'staff.designation' ? 'active bg-gradient-primary' : '' }}"
                         href="{{route('staff.designation')}}">
