@@ -47,7 +47,9 @@
                         <span class="material-icons">refresh</span>
                    </a>
                 </div>
-
+                <button wire:click="export" class="btn btn-sm btn-success me-2">
+                    <i class="fas fa-file-export"></i> Export
+                </button>
                 <a href="{{route('admin.order.new')}}" class="btn btn-cta">
                     <i class="material-icons text-white" style="font-size: 15px;">add</i>Place New Order
                 </a>

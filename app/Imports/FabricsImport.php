@@ -13,13 +13,14 @@ class FabricsImport implements ToModel, WithHeadingRow
     {
         // Check if the fabric title already exists
         $existingFabric = Fabric::where('title', $row['title'])->first();
-        
+        $collection = Collection::firstOrCreate(['title' => $row['collection_title']]);
         if ($existingFabric) {
             // If fabric exists, skip the import for this row
             return null;
         }
 
         return new Fabric([
+            // 'collection_id' => $this->getCollectionId($row['collection_title']), // Convert collection title to ID
             'collection_id' => $this->getCollectionId($row['collection_title']), // Convert collection title to ID
             'title' => $row['title'],
             'threshold_price' => $row['threshold_price'],

@@ -14,6 +14,7 @@ class Order extends Model
 
     protected $fillable = [
         'customer_id',
+        'business_type',
         'order_number',
         'customer_name',
         'customer_email',
@@ -41,5 +42,16 @@ class Order extends Model
     {
         return $this->belongsTo(User::class, 'customer_id');
     }
-
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+    
+  
+    
+    public function businessType()
+    {
+        return $this->belongsTo(BusinessType::class, 'business_type');
+    }
+    
 }

@@ -6,6 +6,8 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Order;
 use App\Models\User;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\OrdersExport;
 
 class OrderIndex extends Component
 {
@@ -33,6 +35,18 @@ class OrderIndex extends Component
         $this->start_date = request()->query('start_date',null);
         $this->end_date = request()->query('end_date',null);
     }
+
+    public function export()
+    {
+        return Excel::download(new OrdersExport(
+            $this->customer_id,
+            $this->created_by,
+            $this->start_date,
+            $this->end_date,
+            $this->search
+        ), 'orders.xlsx');
+    }
+
     
     public function render()
     {
