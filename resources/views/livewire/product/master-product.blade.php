@@ -15,7 +15,7 @@
                     <i class="material-icons text-white">file_upload</i>
                     <span class="ms-1">Import</span>
                 </a> --}}
-                
+                <!-- <button wire:click="export">Export Products</button> -->
                 <div class="input-group w-20">
                     <select wire:model="searchFilter" class="form-select" wire:change="$refresh">
                         <option value="" selected hidden>Search By</option>
@@ -34,9 +34,28 @@
                 </div>
                         
             {{-- </div> --}}
+
+            <form wire:submit.prevent="import" class="d-flex align-items-center me-2" enctype="multipart/form-data">
+                    <input type="file" wire:model="file" class="form-control form-control-sm">
+                    @error('file') <span class="text-red-500">{{ $message }}</span> @enderror
+                    <button type="submit" class="btn btn-sm btn-primary ms-2">Import</button>
+                </form>
+
+                <!-- <form wire:submit.prevent="import">
+                    <input type="file" wire:model="file">
+                    
+                    <button type="submit">Import</button>
+                </form> -->
+
+                <!-- Export Customers -->
+                <button wire:click="export" class="btn btn-sm btn-success me-2">
+                    <i class="fas fa-file-export"></i> Export
+                </button>
+
+            
             <a class="btn btn-cta btn-sm mb-0" href="{{route('product.add')}}" role="button" >
                 <i class="material-icons text-white" style="font-size: 15px;">add</i>
-                <span class="ms-1">Create Product</span>
+                <span class="ms-1">Create ccccProduct</span>
             </a>
         </div>
         <div class="row">
