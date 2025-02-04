@@ -15,7 +15,7 @@
             </div>
             <div class="d-flex">
                 <!-- Import Customers -->
-                <form wire:submit.prevent="import" class="d-flex align-items-center me-2">
+                <form wire:submit.prevent="import" class="d-flex align-items-center me-2" enctype="multipart/form-data">
                     <input type="file" wire:model="file" class="form-control form-control-sm">
                     @error('file') <span class="text-red-500">{{ $message }}</span> @enderror
                     <button type="submit" class="btn btn-sm btn-primary ms-2">Import</button>

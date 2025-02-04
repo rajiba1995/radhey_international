@@ -13,7 +13,7 @@ class Product extends Model
     protected $fillable = [
         'collection_id',
         'category_id',
-        'sub_category_id',
+        // 'sub_category_id',
         'name',
         'product_code',
         'short_description',
@@ -26,9 +26,9 @@ class Product extends Model
         return $this->belongsTo(Category::class,'category_id');
     }
 
-    public function sub_category(){
-        return $this->belongsTo(SubCategory::class,'sub_category_id');
-    }
+    // public function sub_category(){
+    //     return $this->belongsTo(SubCategory::class,'sub_category_id');
+    // }
 
     public function collection()
     {
@@ -53,6 +53,6 @@ class Product extends Model
     {
         return $this->belongsToMany(Supplier::class, 'supplier_products', 'product_id', 'supplier_id');
     }
-  
+
     
 }

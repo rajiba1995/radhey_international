@@ -62,10 +62,14 @@ class UsersAndAddressesExport implements FromCollection, WithHeadings
 
                 return [
                     'User Name' => $user->name,
-                    'Email' => $user->email,
-                    'Phone' => $user->phone,
                     'Company Name' => $user->company_name,
-                    // 'Profile Image'=> asset('storage/' . $user->profile_image), // Full URL for profile image
+                    'Email' => $user->email,
+                    'Rank' => $user->employee_rank,
+                    'Phone' => $user->phone,
+                    'Whatsapp Number' => $user->whatsapp_no,
+                    'DOB' => $user->dob,
+                    'Profile Image'=> asset('storage/' . $user->profile_image), // Full URL for profile image
+                    'Verified Video'=> asset('storage/' . $user->verified_video), // Full URL for profile image
 
                     // 'Branch' => $branchName,
                     // 'Country' => $countryName,
@@ -77,6 +81,7 @@ class UsersAndAddressesExport implements FromCollection, WithHeadings
                     'Country' => $address->country,
                     'State' => $address->state,
                     'Zip Code' => $address->zip_code,
+                    'Status' => $user->status ? 'Active' : 'Inactive', 
                 ];
             });
         });
@@ -89,10 +94,14 @@ class UsersAndAddressesExport implements FromCollection, WithHeadings
     {
         return [
             'User Name',
-            'Email',
-            'Phone',
             'Company Name',
-            // 'Profile Image',
+            'Email',
+            'Rank',
+            'Phone',
+             'Whatsapp Number',
+             'DOB',
+            'Profile Image',
+             'Verified Video',
             // 'Branch',
             // 'Country',
             'User Type',
@@ -103,6 +112,8 @@ class UsersAndAddressesExport implements FromCollection, WithHeadings
             'Country',
             'State',
             'Zip Code',
+            'Status',
+            
         ];
     }
 }

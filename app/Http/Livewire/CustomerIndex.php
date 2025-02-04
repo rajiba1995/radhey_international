@@ -45,20 +45,41 @@ class CustomerIndex extends Component
         session()->flash('success','Customer status updated successfully');
     }
 
+    // public function import()
+    // {
+    //     $this->validate([
+    //         'file' => 'required|file|mimes:xlsx,csv|max:2048', // Ensure valid file format
+    //     ]);
+    
+    //     try {
+    //         Excel::import(new UsersWithAddressesImport(), $this->file->getRealPath()); // Pass file correctly
+    //         session()->flash('success', 'Customers and addresses imported successfully!');
+    //         $this->file = null; // Reset file input
+    //     } catch (\Exception $e) {
+    //         session()->flash('error', 'Import failed: ' . $e->getMessage());
+    //     }
+    // }
+    protected $rules = [
+        'file' => 'required|mimes:xlsx,csv|max:2048', // Validate file type and size
+    ];
+
     public function import()
     {
-        $this->validate([
-            'file' => 'required|file|mimes:xlsx,csv|max:2048', // Ensure valid file format
-        ]);
-    
-        try {
-            Excel::import(new UsersWithAddressesImport(), $this->file->getRealPath()); // Pass file correctly
-            session()->flash('success', 'Customers and addresses imported successfully!');
-            $this->file = null; // Reset file input
-        } catch (\Exception $e) {
-            session()->flash('error', 'Import failed: ' . $e->getMessage());
-        }
-}
+        $this->validate(); // Validate the file input
+
+        // Store the uploaded file in storage
+        $path = $this->file->store('imports');
+
+        // Perform the import
+        Excel::import(new UsersWithAddressesImport, storage_path('app/' . $path));
+
+        // Reset file input
+        $this->reset('file');
+
+        // Send success message
+        session()->flash('success', 'Users imported successfully!');
+    }
+
     // Export Function
     public function export()
     {
