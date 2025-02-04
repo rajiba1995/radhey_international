@@ -59,7 +59,7 @@
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody> 
                                 @if ($billings->count()>0)
                                       @foreach($billings as  $billing)
                                     <tr>

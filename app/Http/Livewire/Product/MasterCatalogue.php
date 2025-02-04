@@ -22,7 +22,7 @@ class MasterCatalogue extends Component
     protected $rules = [
         'catalogue_title_id'=>'required|string|max:255|exists:catalogue_titles,id',
         'page_number'=> 'required|numeric',
-        'image'=>'required|mimes:jpg,jpeg,png,gif,svg',
+        'image'=>'required|mimes:pdf',
     ];  
 
     protected $messages = [
@@ -69,18 +69,18 @@ class MasterCatalogue extends Component
             session()->flash('error','Page Number ' . $this->page_number .' already exists for this catalogue title');
             return;
         }
-        $imagePath = null;
+        $pdfPath = null;
         if($this->image){
            $timeStamp = now()->timestamp;
             $extension = $this->image->getClientOriginalExtension();
-            $imageName = $timeStamp . '.' . $extension;
-            $imagePath =  $this->image->storeAs('catalogue_images', $imageName, 'public');
+            $pdfName = $timeStamp . '.' . $extension;
+            $pdfPath =  $this->image->storeAs('catalogue_pdfs', $pdfName, 'public');
         }
 
         Catalogue::create([
             'catalogue_title_id' => $this->catalogue_title_id,
             'page_number' => $this->page_number,
-            'image' => $imagePath
+            'image' => $pdfPath
         ]);
 
         session()->flash('message','Catalogue Created Successfully');
@@ -107,20 +107,20 @@ class MasterCatalogue extends Component
         if ($this->image instanceof \Illuminate\Http\UploadedFile) {
             $timeStamp = now()->timestamp;
             $extension = $this->image->getClientOriginalExtension();
-            $imageName = $timeStamp . '.' . $extension;
-            $imagePath = $this->image->storeAs('catalogue_images', $imageName, 'public');
+            $pdfName = $timeStamp . '.' . $extension;
+            $pdfPath = $this->image->storeAs('catalogue_pdfs', $pdfName, 'public');
     
             if ($catalogue->image) {
                 Storage::disk('public')->delete($catalogue->image);
             }
         } else {
-            $imagePath = $catalogue->image; 
+            $pdfPath = $catalogue->image; 
         }
 
         $catalogue->update([
             'catalogue_title_id' => $this->catalogue_title_id,
             'page_number' => $this->page_number,
-            'image' => $imagePath,
+            'image' => $pdfPath,
         ]);
 
         session()->flash('message', 'Catalogue Updated Successfully');

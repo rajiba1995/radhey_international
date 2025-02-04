@@ -36,7 +36,7 @@
                                     <div id="fetch_customer_details" class="dropdown-menu show w-100" style="max-height: 200px; overflow-y: auto;">
                                         @foreach ($searchResults as $customer)
                                             <button class="dropdown-item" type="button" wire:click="selectCustomer({{ $customer->id }})">
-                                                <img src="{{ $customer->profile_image ? asset("storage/".$customer->profile_image) : asset('assets/img/user.png') }}" alt=""> {{ $customer->name }} - {{ $customer->phone }} ({{ $customer->email }})
+                                                <img src="{{ $customer->profile_image ? asset($customer->profile_image) : asset('assets/img/user.png') }}" alt=""> {{ $customer->name }} - {{ $customer->phone }} ({{ $customer->email }})
                                             </button>
                                         @endforeach
                                     </div>
@@ -317,26 +317,8 @@
                                 @enderror 
                             </div>
                         
-                            <!-- Page Number Dropdown -->
-                            <div class="col-md-3">
-                                <label class="form-label"><strong>Page Number</strong></label>
-                                <select wire:model="items.{{ $index }}.selectedPage" class="form-control form-control-sm border border-1 @error('items.'.$index.'.selectedPage') border-danger @enderror" wire:change="SelectedPage($event.target.value, {{ $index }})">
-                                    <option value="" selected hidden>Select Page</option>
-                                    @foreach($cataloguePages[$index] ?? [] as $page)
-                                        <option value="{{ $page }}">{{ $page }}</option>
-                                    @endforeach
-                                </select>
-                                @error("items." .$index. ".selectedPage") 
-                                    <div class="text-danger">{{ $message }}</div>
-                                @enderror 
-                            </div>
-                        
-                            <!-- Image Display -->
-                            @if(!empty($selectedImage[$index]))
-                                <div class="col-md-3 mt-3">
-                                    <img src="{{ asset('storage/'.$selectedImage[$index]) }}" class="img-thumbnail" alt="Catalogue Image">
-                                </div>
-                            @endif
+                          
+                            
                             @endif
                             <!-- Catalogue end -->
                             
@@ -514,7 +496,7 @@
                                     </td>
                                 </tr>
                                  <tr>
-                                    <td class="w-70"><label class="form-label"><strong>Order Number</strong></label></td>
+                                    <td class="w-70"><label class="form-label"><strong>Bill Number</strong></label></td>
                                     <td>
                                         <!-- Remaining Amount -->
                                         <input type="text" class="form-control form-control-sm text-center border border-1" disabled wire:model="order_number" value="{{$order_number}}" >

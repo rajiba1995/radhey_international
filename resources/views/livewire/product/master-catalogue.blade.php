@@ -37,7 +37,6 @@
                                     <thead>
                                         <tr>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">SL</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Image</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Title</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Page Number</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Actions</th>
@@ -47,13 +46,7 @@
                                         @foreach($catalogues as $index => $catalogue)
                                             <tr>
                                                 <td><h6 class="mb-0 text-sm">{{ $index + 1 }}</h6></td>
-                                                <td class="align-middle">
-                                                    @if($catalogue->image)
-                                                        <img src="{{ asset('storage/'.$catalogue->image) }}" class="img-thumbnail" width="50">
-                                                    @else
-                                                        <span class="text-xs font-weight-bold mb-0">No Image</span>
-                                                    @endif
-                                                </td>
+                                                
                                                 <td><p class="text-xs font-weight-bold mb-0">{{ $catalogue->catalogueTitle ? $catalogue->catalogueTitle->title : "" }}</p></td>
                                                 <td><p class="text-xs font-weight-bold mb-0">{{ $catalogue->page_number }}</p></td>
                                                 <td class="align-middle">
@@ -104,7 +97,7 @@
                                     @enderror
 
                                     <!-- Page Number -->
-                                    <label class="form-label">Page Number</label>
+                                    <label class="form-label">Total Page Available</label>
                                     <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
                                         <input type="number" wire:model="page_number" class="form-control border border-2 p-2" placeholder="Enter Page Number">
                                     </div>
@@ -113,16 +106,11 @@
                                     @enderror
 
                                     <!-- Image -->
-                                    <label class="form-label">Catalogue Image</label>
+                                    <label class="form-label">Catalogue Pdf</label>
                                     <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
                                         <input type="file" wire:model="image" class="form-control border border-2 p-2">
                                     </div>
                                     <div>
-                                        @if (is_object($image))
-                                            <img src="{{ $image->temporaryUrl() }}" class="img-thumbnail" width="50%">
-                                        @elseif ($image && !is_object($image))
-                                            <img src="{{ asset('storage/'.$image) }}" class="img-thumbnail" width="50%">    
-                                        @endif
                                     </div>
                                     @error('image')
                                         <p class="text-danger inputerror">{{ $message }}</p>
