@@ -13,12 +13,35 @@
                     <i class="fas fa-search"></i>
                 </button>
             </div>
-    
+            <div class="d-flex">
+                <!-- Import Customers -->
+                <form wire:submit.prevent="import" class="d-flex align-items-center me-2" enctype="multipart/form-data">
+                    <input type="file" wire:model="file" class="form-control form-control-sm">
+                    @error('file') <span class="text-red-500">{{ $message }}</span> @enderror
+                    <button type="submit" class="btn btn-sm btn-primary ms-2">Import</button>
+                </form>
+
+                <!-- <form wire:submit.prevent="import">
+                    <input type="file" wire:model="file">
+                    
+                    <button type="submit">Import</button>
+                </form> -->
+
+                <!-- Export Customers -->
+                <button wire:click="export" class="btn btn-sm btn-success me-2">
+                    <i class="fas fa-file-export"></i> Export
+                </button>
+                <button wire:click="sampleExport" class="btn btn-sm btn-success me-2">
+                    <i class="fas fa-file-export"></i> Sample CSV Download
+                </button>
+
+            
             <!-- Add Customer Button -->
             <a href="{{ route('admin.user-address-form') }}" class="btn btn-cta btn-sm mb-0">
                 <i class="material-icons text-white" style="font-size: 15px;">add</i>
                 Add Customer
             </a>
+        </div>
         </div>
         <div class="row">
             <div class="col-12">

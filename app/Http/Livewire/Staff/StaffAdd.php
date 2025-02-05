@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Hash;
 class StaffAdd extends Component
 {
     use WithFileUploads;
-    public $branch_id,$designation, $person_name, $email, $mobile, $aadhaar_number, $whatsapp_no,$is_wa_same,$user_id;
+    public $employee_id,$branch_id,$designation, $person_name, $email, $mobile, $aadhaar_number, $whatsapp_no,$is_wa_same,$user_id;
     public $image, $passport_id_front, $passport_id_back, $passport_expiry_date;
     public $account_holder_name, $bank_name, $branch_name, $account_no, $ifsc, $monthly_salary, $daily_salary, $travel_allowance;
     public $address, $landmark, $state, $city, $pincode, $country;
@@ -82,7 +82,13 @@ class StaffAdd extends Component
        ]);
        DB::beginTransaction();
 
-       try {
+       try { 
+
+            $lastEmployee = User::where('user_type', 0)->latest('id')->first();
+            $newEmployeeId = $lastEmployee ? intval(substr($lastEmployee->employee_id, 4)) + 1 : 1;
+            $formattedEmployeeId = 'emp_' . str_pad($newEmployeeId, 3, '0', STR_PAD_LEFT);
+
+
         // Check and upload the images only if they are provided
             $imagePath = $this->image ? Helper::uploadImage($this->image, 'staff2') : null;
             $passportIdFrontPath = $this->passport_id_front ? Helper::uploadImage($this->passport_id_front, 'staff') : null;
@@ -93,6 +99,7 @@ class StaffAdd extends Component
 
             // 1. Save the data into the users table
             $user = User::create([
+                'employee_id' => $formattedEmployeeId,
                 'branch_id' => $this->branch_id,
                 'country_id'=> $this->selectedCountryId,
                 'user_type' => 0, //for Staff

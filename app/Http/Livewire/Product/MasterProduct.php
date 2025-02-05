@@ -5,12 +5,27 @@ namespace App\Http\Livewire\Product;
 use Livewire\Component;
 use App\Models\Product;
 use App\Models\Collection;
+// use App\Models\Product;
+use App\Models\Category;
+// use App\Models\Collection;
+use App\Models\Fabric;
+// use App\Models\Supplier;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Livewire\WithFileUploads;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\ProductsImport;
+use App\Exports\ProductsExport;
+use App\Exports\SampleProductsExport;
 
 class MasterProduct extends Component
 {
+    use WithFileUploads;
+
     public $productData;
     public $collection;
     public $searchFilter;
+    public $file;
 
     public function mount(){
         $this->collection = Collection::all();
@@ -24,6 +39,31 @@ class MasterProduct extends Component
         $product->save();
         session()->flash('message','Product deleted successfully.');
     }
+    public function export()
+    {
+        return response()->streamDownload(function () {
+            echo Excel::raw(new ProductsExport, \Maatwebsite\Excel\Excel::XLSX);
+        }, 'products.xlsx');
+    }
+
+    public function sampleExport()
+    {
+        return response()->streamDownload(function () {
+            echo Excel::raw(new SampleProductsExport, \Maatwebsite\Excel\Excel::XLSX);
+        }, 'products.xlsx');
+    }
+
+    public function import()
+    {
+        $this->validate([
+            'file' => 'required|mimes:xlsx,csv|max:2048',
+        ]);
+
+        Excel::import(new ProductsImport, $this->file->getRealPath());
+
+        session()->flash('message', 'Products imported successfully!');
+    }
+
 
     public function toggleStatus($product_id){
         $product = Product::findOrFail($product_id);

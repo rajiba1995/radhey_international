@@ -18,7 +18,7 @@
                                 </div>
                                 <div class="col-lg-6 col-5 my-auto text-end">
                                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-                                        
+                                   
                                             <!-- Optionally, add a search icon button -->
                                         
                                     </div>
@@ -26,6 +26,31 @@
                             </div>
                         </div>
                         <div class="card-body pb-2">
+                            <div class="d-flex justify-content-between mb-3">
+                                <!-- Import Form -->
+                                <form wire:submit.prevent="import" class="d-flex align-items-center me-2">
+                                    <input type="file" wire:model="file" class="form-control form-control-sm" />
+                                    @error('file') <span class="text-danger">{{ $message }}</span> @enderror
+
+                                    @if(session()->has('error'))
+                                        <span class="text-danger">{{ session('error') }}</span>
+                                    @endif
+                                    @if(session()->has('success'))
+                                        <span class="text-success">{{ session('success') }}</span>
+                                    @endif
+
+                                    <button type="submit" class="btn btn-sm btn-primary ms-2">Import</button>
+                                </form>
+
+
+                                <!-- Export Button -->
+                                <button wire:click="export" class="btn btn-sm btn-success me-2">
+                                    <i class="fas fa-file-export"></i> Export
+                                </button>
+                                <button wire:click="sampleExport" class="btn btn-sm btn-success me-2">
+                                    <i class="fas fa-file-export"></i>Sample Export
+                                </button>
+                            </div>
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0" >
                                     <thead>

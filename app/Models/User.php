@@ -24,6 +24,7 @@ class User extends Authenticatable
         'emergency_whatsapp',
         'emergency_address',
         'branch_id',
+        'employee_id',
         'country_id',
         'name',
         'dob',
@@ -94,6 +95,12 @@ class User extends Authenticatable
         return $this->hasOne(UserAddress::class);
     }
 
+    public function UserAddress()
+    {
+        return $this->hasMany(UserAddress::class);
+    }
+
+
     public function billingAddress()
     {
         return $this->hasOne(UserAddress::class)->where('address_type', 1);
@@ -130,5 +137,21 @@ class User extends Authenticatable
     public function ordersAsCustomer()
     {
         return $this->hasMany(Order::class, 'customer_id'); // 'customer_id' is the foreign key in the orders table
+    }
+
+    public function businessType()
+    {
+        return $this->belongsTo(BusinessType::class, 'business_type');
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
+    // Add relationship to Country
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
     }
 }

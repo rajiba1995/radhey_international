@@ -19,7 +19,7 @@ class OrderItem extends Model
         'category',
         'sub_category',
         'product_name',
-        'price ',
+        'price',
     ];
 
     public function order()

@@ -28,7 +28,7 @@ class OrderNew extends Component
     // public $collectionsType = [];
     public $collections = [];
     public $errorMessage = [];
-    public $activeTab = 2;
+    public $activeTab = 1;
     public $items = [];
     public $FetchProduct = 1;
 
@@ -329,7 +329,7 @@ class OrderNew extends Component
     public function checkproductPrice($value, $index)
     {
         $selectedFabricId = $this->items[$index]['selected_fabric'] ?? null;
-// dd($selectedFabricId);
+        // dd($selectedFabricId);
         if ($selectedFabricId) {
             $fabricData = Fabric::find($selectedFabricId);
             if ($fabricData && floatval($value) < floatval($fabricData->threshold_price)) {

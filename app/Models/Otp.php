@@ -17,5 +17,6 @@ class Otp extends Model
         // 'identifier',
         'otp',
         'expires_at',
+        'employee_id',
     ];
 }

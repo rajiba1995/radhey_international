@@ -13,18 +13,21 @@ class Order extends Model
     protected $table = 'orders';
 
     protected $fillable = [
-        'customer_id ',
-        'order_number  ',
-        'customer_name ',
-        'customer_email ',
-        'billing_address ',
-        'shipping_address ',
-        'total_amount ',
-        'paid_amount ',
-        'remaining_amount ',
-        'last_payment_date ',
+        'customer_id',
+        'business_type',
+        'order_number',
+        'customer_name',
+        'customer_email',
+        'billing_address',
+        'shipping_address',
+        'total_amount',
+        'paid_amount',
+        'remaining_amount',
+        'last_payment_date',
         'payment_mode',
         'status',
+        'business_type',
+        'created_by' 
     ];
     public function items()
     {
@@ -39,5 +42,16 @@ class Order extends Model
     {
         return $this->belongsTo(User::class, 'customer_id');
     }
-
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+    
+  
+    
+    public function businessType()
+    {
+        return $this->belongsTo(BusinessType::class, 'business_type');
+    }
+    
 }
