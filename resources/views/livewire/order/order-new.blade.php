@@ -287,7 +287,7 @@
                             </div>
 
                             <!-- Product -->
-                            <div class="mb-3 col-md-4">
+                            <div class="mb-3 col-md-5">
                                 <label class="form-label"><strong>Product</strong></label>
                                 <input type="text" wire:keyup="FindProduct($event.target.value, {{ $index }}" wire:model="items.{{ $index }}.searchproduct" class="form-control form-control-sm border border-1 customer_input" placeholder="Enter product name">
                                 @if (session()->has('errorProduct.' . $index)) 
@@ -402,7 +402,7 @@
                     <!-- Add Item Button -->
 
                     <div class="row align-items-end mb-4">
-                        <div class="col-md-4 col-12"></div>
+                        <div class="col-md-8 col-12"></div>
                         <div class="col-md-4 col-12">
                             <table>
                                 <tr>
