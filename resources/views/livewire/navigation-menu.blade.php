@@ -253,6 +253,7 @@
                         Staff Bill Book
                     </a>
                 </li>
+               
             </ul>
             {{-- Expense management --}}
             <li class="nav-item">
@@ -277,6 +278,29 @@
                        Non Recurring 
                     </a>
                 </li>
+
+                
+            </ul>
+
+            {{-- Expense management --}}
+            <li class="nav-item">
+                <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['depot-expense.index']) ? 'active bg-gradient-primary' : '' }}"
+                    href="#ExpenseManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['depot-expense.index']) ? 'true' : 'false' }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">attach_money</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Account Management</span>
+                </a>
+            </li>
+            <ul id="ExpenseManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['depot-expense.index']) ? 'show' : '' }}">
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ Route::currentRouteName() == 'depot-expense.index' ? 'active bg-gradient-primary' : '' }}"
+                    href="{{ route('depot-expense.index') }}">
+                        Collection & Expenses 
+                    </a>
+                </li>
+                
+                
             </ul>
             {{-- Order Management --}}
             <li class="nav-item">

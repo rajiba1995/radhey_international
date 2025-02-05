@@ -28,7 +28,7 @@ class StaffUpdate extends Component
         $this->staff = User::with(['bank','address','designationDetails'])->find($staff_id);
         $this->Selectcountry = Country::all();
         $this->selectedCountryId = $this->staff->country_id;
-        // dd($this->staff);
+        // dd( $this->staff->designationDetails->id);
         $this->designations = Designation::latest()->get();
          // If staff exists, assign the data to the public variables
          if ($this->staff) {
@@ -109,6 +109,7 @@ class StaffUpdate extends Component
          // Update the staff record
          $this->staff->update([
             'country_id'=> $this->selectedCountryId,
+            'designation'=> $this->designation,
             'name' => $this->person_name ?? '',
             'email' => $this->email ?? '',
             'phone' => $this->mobile ?? '',
