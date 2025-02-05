@@ -19,6 +19,12 @@ class User extends Authenticatable
      */
     protected $table = 'users';
     protected $fillable = [
+        'emergency_contact_person',
+        'emergency_mobile',
+        'emergency_whatsapp',
+        'emergency_address',
+        'branch_id',
+        'country_id',
         'name',
         'dob',
         'user_type',
@@ -35,10 +41,12 @@ class User extends Authenticatable
         'credit_limit',
         'credit_days',
         'image',
-        'user_id_front',
-        'user_id_back',
+        'passport_id_front',
+        'passport_id_back',
+        'passport_expiry_date',
         'profile_image',
-        'verified_video'
+        'verified_video',
+        
     ];
     
     /**

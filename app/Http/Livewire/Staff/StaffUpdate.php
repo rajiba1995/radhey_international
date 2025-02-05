@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Staff;
 
 use Livewire\Component;
 use App\Models\User;
+use App\Models\Country;
 use App\Models\Designation;
 use Livewire\WithFileUploads;
 use Illuminate\Validation\Rule;
@@ -14,14 +15,19 @@ class StaffUpdate extends Component
     use WithFileUploads;
 
     public $staff, $designation, $person_name, $email, $mobile, $aadhaar_number, $whatsapp_no;
-    public $image, $user_id_front, $user_id_back;
+    public $image, $passport_id_front, $passport_id_back , $passport_expiry_date;
     public $account_holder_name, $bank_name, $branch_name, $account_no, $ifsc;
     public $monthly_salary, $daily_salary, $travel_allowance;
     public $address, $landmark, $state, $city, $pincode, $country;
     public $staff_id,$is_wa_same,$designations,$user_id;  // Variable to hold the staff id
+    public $Selectcountry;
+    public $selectedCountryId;
+    public $showAadhaarStar = false;
 
     public function mount($staff_id){
         $this->staff = User::with(['bank','address','designationDetails'])->find($staff_id);
+        $this->Selectcountry = Country::all();
+        $this->selectedCountryId = $this->staff->country_id;
         // dd($this->staff);
         $this->designations = Designation::latest()->get();
          // If staff exists, assign the data to the public variables
@@ -33,8 +39,9 @@ class StaffUpdate extends Component
             $this->aadhaar_number = $this->staff->aadhar_name;
             $this->whatsapp_no = $this->staff->whatsapp_no;
             $this->image = $this->staff->image;
-            $this->user_id_front = $this->staff->user_id_front;
-            $this->user_id_back = $this->staff->user_id_back;
+            $this->passport_id_front = $this->staff->passport_id_front;
+            $this->passport_id_back = $this->staff->passport_id_back;
+            $this->passport_expiry_date = $this->staff->passport_expiry_date;
             // Bank Information
             $this->account_holder_name = $this->staff->bank->account_holder_name;
             $this->bank_name = $this->staff->bank->bank_name;
@@ -53,8 +60,15 @@ class StaffUpdate extends Component
             $this->country = $this->staff->address->country;
         }
     }
+    
+    public function SelectedCountry()
+    {
+        $this->showAadhaarStar = $this->selectedCountryId == 1;
+    }
+
     public function update(){
     try {
+        $aadhaarValidationRule = $this->selectedCountryId == 1 ? 'required|numeric' : 'nullable|numeric';
         $this->validate([
             'designation' => 'required',
             'person_name' => 'required|string|max:255',
@@ -67,10 +81,11 @@ class StaffUpdate extends Component
                 'required',
                 'regex:/^\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/',
             ],
-            'aadhaar_number' => 'nullable|numeric',
+            'aadhaar_number' => $aadhaarValidationRule,
             'image' => 'nullable|max:2048',
-            'user_id_front' => 'nullable|max:2048',
-            'user_id_back' => 'nullable|max:2048',
+            'passport_id_front' => 'nullable|max:2048',
+            'passport_id_back' => 'nullable|max:2048',
+            'passport_expiry_date' => 'nullable',
             'account_holder_name' => 'nullable|string|max:255',
             'bank_name' => 'nullable|string|max:255',
             'branch_name' => 'nullable|string|max:255',
@@ -88,19 +103,21 @@ class StaffUpdate extends Component
        ]);
        // Store the files
        $imagePath = $this->image && $this->image instanceof \Illuminate\Http\UploadedFile ? $this->image->store('images', 'public') : $this->staff->image;
-       $userIdFrontPath = $this->user_id_front && $this->user_id_front instanceof \Illuminate\Http\UploadedFile ? $this->user_id_front->store('user_ids', 'public') : $this->staff->user_id_front;
-       $userIdBackPath = $this->user_id_back && $this->user_id_back instanceof \Illuminate\Http\UploadedFile ? $this->user_id_back->store('user_ids', 'public') : $this->staff->user_id_back;
+       $passportIdFrontPath = $this->passport_id_front && $this->passport_id_front instanceof \Illuminate\Http\UploadedFile ? $this->passport_id_front->store('user_ids', 'public') : $this->staff->passport_id_front;
+       $passportIdBackPath = $this->passport_id_back && $this->passport_id_back instanceof \Illuminate\Http\UploadedFile ? $this->passport_id_back->store('user_ids', 'public') : $this->staff->passport_id_back;
        
          // Update the staff record
          $this->staff->update([
+            'country_id'=> $this->selectedCountryId,
             'name' => $this->person_name ?? '',
             'email' => $this->email ?? '',
             'phone' => $this->mobile ?? '',
             'aadhar_name' => $this->aadhaar_number ?? '',
             'whatsapp_no' => $this->whatsapp_no ?? '',
             'image' => $imagePath ?? '',
-            'user_id_front' => $userIdFrontPath ?? '',
-            'user_id_back' => $userIdBackPath ?? '',
+            'passport_id_front' => $passportIdFrontPath ?? '',
+            'passport_id_back' => $passportIdBackPath ?? '',
+            'passport_expiry_date' => $this->passport_expiry_date ?? '',
         ]);
         // Update bank details
         if ($this->staff->bank) {

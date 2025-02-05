@@ -1,0 +1,134 @@
+<div class="container-fluid px-2 px-md-4">
+    <div class="row mb-4">
+        <!-- Catalog Table -->
+        <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card my-4">
+                        <div class="card-header pb-0">
+                            <div class="row">
+                                @if(session()->has('message'))
+                                    <div class="alert alert-success" id="flashMessage">
+                                        {{ session('message') }}
+                                    </div>
+                                @elseif(session()->has('error'))
+                                    <div class="alert alert-danger" id="flashMessage">
+                                        {{ session('error') }}
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-7">
+                                    <h5>Catalogue</h5>
+                                </div>
+                                <div class="col-lg-6 col-5 my-auto text-end">
+                                    <div class="input-group w-100 search-input-group">
+                                        <input type="text" wire:model.debounce.500ms="search" class="form-control border" placeholder="Search Title">
+                                        <button type="button" wire:target="search" class="btn btn-outline-primary mb-0">
+                                            <span class="material-icons">search</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body pb-2">
+                            <div class="table-responsive p-0">
+                                <table class="table align-items-center mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">SL</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Title</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Page Number</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($catalogues as $index => $catalogue)
+                                            <tr>
+                                                <td><h6 class="mb-0 text-sm">{{ $index + 1 }}</h6></td>
+                                                
+                                                <td><p class="text-xs font-weight-bold mb-0">{{ $catalogue->catalogueTitle ? $catalogue->catalogueTitle->title : "" }}</p></td>
+                                                <td><p class="text-xs font-weight-bold mb-0">{{ $catalogue->page_number }}</p></td>
+                                                <td class="align-middle">
+                                                    <button wire:click="edit({{ $catalogue->id }})" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" title="Edit">
+                                                        <span class="material-icons">edit</span>
+                                                    </button>
+                                                    <button wire:click="destroy({{ $catalogue->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm mb-0" title="Delete">
+                                                        <span class="material-icons">delete</span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="pagination-nav">
+                                {{-- {{ $catalogs->links() }} --}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Catalog Form -->
+        <div class="col-lg-4 col-md-6 mb-md-0 mb-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card my-4">
+                        <div class="card-body px-0 pb-2 mx-4">
+                            <div class="d-flex justify-content-between mb-3">
+                                <h5>{{ $catalogueId ? "Update Catalogue" : "Create Catalogue" }}</h5>  
+                            </div>
+                            <form wire:submit.prevent="{{ $catalogueId ? 'updateCatalogue' : 'storeCatalogue' }}">
+                                <div class="row">
+                                    <!-- Title -->
+                                    <label class="form-label">Title</label>
+                                    <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
+                                        <select wire:model="catalogue_title_id" class="form-control border border-2 p-2">
+                                            <option value="" selected hidden>Select Title</option>
+                                            @foreach ($catalogueTitle as $value)
+                                                <option value="{{ $value->id }}">{{ $value->title }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    @error('catalogue_title_id')
+                                        <p class="text-danger inputerror">{{ $message }}</p>
+                                    @enderror
+
+                                    <!-- Page Number -->
+                                    <label class="form-label">Total Page Available</label>
+                                    <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
+                                        <input type="number" wire:model="page_number" class="form-control border border-2 p-2" placeholder="Enter Page Number">
+                                    </div>
+                                    @error('page_number')
+                                        <p class="text-danger inputerror">{{ $message }}</p>
+                                    @enderror
+
+                                    <!-- Image -->
+                                    <label class="form-label">Catalogue Pdf</label>
+                                    <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
+                                        <input type="file" wire:model="image" class="form-control border border-2 p-2">
+                                    </div>
+                                    <div>
+                                    </div>
+                                    @error('image')
+                                        <p class="text-danger inputerror">{{ $message }}</p>
+                                    @enderror
+
+                                    <!-- Submit Button -->
+                                    <div class="mb-2 text-end mt-4">
+                                        <a href="" class="btn btn-cta btn-sm mt-1"><i class="material-icons text-white" style="font-size: 15px;">refresh</i>Refresh</a>
+                                        <button type="submit" class="btn btn-cta btn-sm mt-1" wire:loading.attr="disabled">
+                                            <span>{{ $catalogueId ? 'Update Catalogue' : 'Create Catalogue' }}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

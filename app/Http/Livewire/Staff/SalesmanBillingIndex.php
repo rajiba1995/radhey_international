@@ -28,7 +28,12 @@ class SalesmanBillingIndex extends Component
        $this->billing_id = $billingId;
        $existingBilling = SalesmanBilling::find($billingId);
        if ($existingBilling) {
-           $this->start_no = abs(($existingBilling->total_count - $existingBilling->no_of_used)-$existingBilling->end_no)+1; 
+          if($existingBilling->no_of_used == 0){
+            $this->start_no = $existingBilling->start_no;
+          }else{
+            $this->start_no = ($existingBilling->start_no + $existingBilling->no_of_used) ;
+          }
+        //    $this->start_no = abs(($existingBilling->total_count - $existingBilling->no_of_used)-$existingBilling->end_no) + 1; 
            $this->end_no = $existingBilling->end_no; 
            $this->salesman_id = $existingBilling->salesman_id;
        }  
@@ -42,7 +47,7 @@ class SalesmanBillingIndex extends Component
         ]);
         
     
-        $totalCount = (int)$this->end_no - (int)$this->start_no+1;
+        $totalCount = ((int)$this->end_no - (int)$this->start_no)+1 ;
     
         // $usedCount = SalesmanBilling::whereBetween('start_no', [$this->start_no, $this->end_no])
         //     ->orWhereBetween('end_no', [$this->start_no, $this->end_no])
@@ -60,13 +65,18 @@ class SalesmanBillingIndex extends Component
        // Update the existing billing record
         $existingBilling = SalesmanBilling::find($this->billing_id);
         if ($existingBilling) {
-            $updatedEndNo = $this->start_no - 1;
-            $updatedTotalCount = $updatedEndNo - $existingBilling->start_no;
+            $updatedEndNo = $this->start_no;
+            $updatedTotalCount = $updatedEndNo - $existingBilling->start_no ;
 
-            $existingBilling->update([
-                'end_no' => $updatedEndNo,
-                'total_count' => $updatedTotalCount,
-            ]);
+            // If the updated total count is zero or negative, delete the old record
+            if($updatedTotalCount <= 0){
+                $existingBilling->delete();
+            }else{
+                $existingBilling->update([
+                    'end_no' => $updatedEndNo,
+                    'total_count' => $updatedTotalCount,
+                ]);
+            }
         }
     
         // Reset fields and show success message
@@ -120,7 +130,7 @@ class SalesmanBillingIndex extends Component
         $normalizedStartNo = str_pad($this->start_no, $this->numberLength, '0', STR_PAD_LEFT);
         $normalizedEndNo = str_pad($this->end_no, $this->numberLength, '0', STR_PAD_LEFT);
 
-        $totalCount = (int)$this->end_no - (int)$this->start_no;
+        $totalCount = ((int)$this->end_no - (int)$this->start_no + 1);
         // Calculate no_of_used
         $usedCount = SalesmanBilling::whereBetween('start_no', [$this->start_no, $this->end_no])
                                         ->orWhereBetween('end_no', [$this->start_no, $this->end_no])
@@ -200,7 +210,7 @@ class SalesmanBillingIndex extends Component
         $normalizedEndNo = str_pad($this->end_no, $this->numberLength, '0', STR_PAD_LEFT);
 
         // Calculate the total_count
-         $totalCount = (int)$this->end_no - (int)$this->start_no + 1;
+         $totalCount = ((int)$this->end_no - (int)$this->start_no) + 1;
         // Calculate no_of_used
        
         $usedCount = SalesmanBilling::whereBetween('start_no', [$this->start_no, $this->end_no])
@@ -230,7 +240,7 @@ class SalesmanBillingIndex extends Component
 
     public function render()
     {
-        $salesman = User::where('designation',2)->get();
+        $salesman = User::whereIn('designation',[1,2])->get();
         $billings = SalesmanBilling::with('salesman')
                     ->when($this->staff_id, function($query){
                         $query->where('salesman_id',$this->staff_id);

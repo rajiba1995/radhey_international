@@ -16,15 +16,7 @@ class MasterCategory extends Component
 
     public $collection_id;
     public $title, $status = 1, $categoryId, $image, $search = '',$short_code;
-    // public $existingImage;
-    // protected $rules = [
-    //     'short_code' => 'required|max:255',
-    //     'collection_id' => 'required',
-    //     'title' => 'required|string|max:255',
-    //     'short_code' => 'required|max:255',
-    //     'image' => 'nullable|image|mimes:jpg,jpeg,png,svg,gif|max:2048',
-    // ];
-
+   
 
     public function store()
     {
@@ -34,7 +26,7 @@ class MasterCategory extends Component
             'collection_id' => 'required',
             'short_code' => 'required|max:255',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,svg,gif|max:2048',
-            'title' => 'required|string|max:255|unique:categories,title,NULL,id,deleted_at,NULL',
+            'title' => 'required|string|max:255'
         ],
         [
             'short_code.required' => 'The short code field is required.',
@@ -82,7 +74,7 @@ class MasterCategory extends Component
        
         $this->validate([
             'collection_id' => 'required',  
-            'title' => 'required|string|max:255|unique:categories,title,' . $this->categoryId . ',id,deleted_at,NULL',
+            'title' => 'required|string|max:255',
             'short_code' => 'required|max:255',
         ],
         [

@@ -14,6 +14,7 @@ use App\Models\Measurement;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Ledger;
+use App\Models\Catalogue;
 use App\Models\OrderMeasurement;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -27,7 +28,7 @@ class OrderNew extends Component
     // public $collectionsType = [];
     public $collections = [];
     public $errorMessage = [];
-    public $activeTab = 1;
+    public $activeTab = 2;
     public $items = [];
     public $FetchProduct = 1;
 
@@ -49,6 +50,17 @@ class OrderNew extends Component
     public $payment_mode = null;
     public $order_number;
     public $bill_book = [];
+
+    // For Catalogue
+    public $selectedCatalogue = [];
+    public $selectedPage = [];
+    public $cataloguePages = [];
+    public $catalogues = [];
+    public $selectedImage = [];
+
+    // For ordered by
+    public $salesmen;
+    public $salesman;
 
     public function mount(){
         $user_id = request()->query('user_id');
@@ -90,8 +102,9 @@ class OrderNew extends Component
         $this->customers = User::where('user_type', 1)->where('status', 1)->orderBy('name', 'ASC')->get();
         $this->categories = Category::where('status', 1)->orderBy('title', 'ASC')->get();
         $this->collections = Collection::whereIn('id',[1,2])->orderBy('title', 'ASC')->get();
-        $this->bill_book = Helper::generateInvoiceBill();
-        $this->order_number = $this->bill_book['number'];
+        // for ordered by
+        $this->salesmen = User::where('user_type',0)->where('designation',2)->get();
+        $this->salesman = Auth::id();
         $this->addItem();
     }
 
@@ -104,7 +117,19 @@ class OrderNew extends Component
         'payment_mode' => 'required|string',  // Ensuring that price is a valid number (and greater than or equal to 0).
         'items.*.measurements.*' => 'nullable|string',
         'order_number' => 'required|numeric|unique:orders,order_number|min:1',
+        // Add rules for Catalogue and Page Number
+        'items.*.selectedCatalogue' => 'required', 
+        'items.*.selectedPage' => 'required'
     ];
+
+    protected function messages(){
+        return [
+             'items.*.selectedCatalogue.required' => 'Please select a catalogue for the item.',
+             'items.*.selectedPage.required' => 'Please select a page for the item.',
+             'items.*.price.required'  => 'Please enter a price for the item.',
+             'items.*.collection.required' =>  'Please enter a collection for the item.',
+        ];
+    }
     public function FindCustomer($term)
     {
         $this->searchTerm = $term;
@@ -169,6 +194,13 @@ class OrderNew extends Component
         // $this->validate();
     }
 
+    // updateSalesman
+    public function changeSalesman($value){
+        $this->bill_book = Helper::generateInvoiceBill($value);
+        $this->order_number = $this->bill_book['number'];
+    }
+    
+
     // public function addMeasurement($index, $measurement)
     // {
     //     // Initialize measurements array if it's not already set for the specific item
@@ -199,11 +231,32 @@ class OrderNew extends Component
         $this->items[$index]['product_id'] = null;
         $this->items[$index]['measurements'] = [];
         $this->items[$index]['fabrics'] = [];
+        $this->items[$index]['selectedCatalogue'] = null; // Reset catalogue
+        $this->items[$index]['selectedPage'] = null; 
       
             // Fetch categories and products based on the selected collection 
             $this->items[$index]['categories'] = Category::orderBy('title', 'ASC')->where('collection_id', $value)->get();
             $this->items[$index]['products'] = Product::orderBy('name', 'ASC')->where('collection_id', $value)->get();
        
+        if($value == 1){
+            $this->catalogues[$index] = Catalogue::with('catalogueTitle')->distinct('catalogue_title_id')->get()->pluck('catalogueTitle.title','catalogue_title_id');
+        }else{
+            $this->catalogues[$index] = [];
+        }
+    }
+
+    public function SelectedCatalogue($value , $index){
+        $this->items[$index]['selectedCatalogue'] = $value;
+        $this->items[$index]['selectedPage'] = null;
+
+        $this->cataloguePages[$index] = Catalogue::where('catalogue_title_id', $value)->pluck('page_number');
+    }
+
+    public function SelectedPage($value , $index){
+        $this->items[$index]['selectedPage'] = $value;
+        $this->selectedImage[$index] = Catalogue::where('catalogue_title_id',$this->items[$index]['selectedCatalogue'])
+                                                ->where('page_number',$value)
+                                                ->value('image');
     }
     
 

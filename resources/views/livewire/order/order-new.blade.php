@@ -255,23 +255,22 @@
                         <div class="row align-items-center mt-3 mb-5">
                             <!-- Collection  -->
                             <div class="mb-3 col-md-2">
-                               
                                 <label class="form-label"><strong>Collection </strong><span class="text-danger">*</span></label>
-                               <select wire:model="items.{{ $index }}.collection" wire:change="GetCategory($event.target.value, {{ $index }})" class="form-control border border-2 p-2 form-control-sm">
+                               <select wire:model="items.{{ $index }}.collection" wire:change="GetCategory($event.target.value, {{ $index }})" class="form-control border border-2 p-2 form-control-sm @error('items.'.$index.'.collection') border-danger @enderror">
                                     <option value="" selected hidden>Select collection</option>
                                     @foreach($collections as $citems)
                                         <option value="{{ $citems->id }}">{{ ucwords($citems->title) }} @if($citems->short_code)({{ $citems->short_code }})@endif</option>
                                     @endforeach
                                 </select>
                                 @error("items.$index.collection")
-                                    <p class='text-danger inputerror'>{{ $message }}</p>
+                                    <div class='text-danger'>{{ $message }}</div>
                                 @enderror
                             </div>
 
                             <!-- Category -->
                             <div class="mb-3 col-md-2">
                                 <label class="form-label"><strong>Category</strong></label>
-                                <select wire:model="items.{{ $index }}.category" class="form-select form-control-sm border border-1" wire:change="CategoryWiseProduct($event.target.value, {{ $index }})">
+                                <select wire:model="items.{{ $index }}.category" class="form-select form-control-sm border border-1 @error('items.'.$index.'.category') border-danger @enderror" wire:change="CategoryWiseProduct($event.target.value, {{ $index }})">
                                     <option value="" selected hidden>Select Category</option>
                                     @if (isset($items[$index]['categories']) && count($items[$index]['categories']) > 0)
                                         @foreach ($items[$index]['categories'] as $category)
@@ -282,14 +281,14 @@
                                     @endif
                                 </select>
                                 @error("items.$index.category")
-                                    <p class="text-danger">{{ $message }}</p>
+                                    <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
 
                             <!-- Product -->
-                            <div class="mb-3 col-md-5">
+                            <div class="mb-3 col-md-2">
                                 <label class="form-label"><strong>Product</strong></label>
-                                <input type="text" wire:keyup="FindProduct($event.target.value, {{ $index }}" wire:model="items.{{ $index }}.searchproduct" class="form-control form-control-sm border border-1 customer_input" placeholder="Enter product name">
+                                <input type="text" wire:keyup="FindProduct($event.target.value, {{ $index }})" wire:model="items.{{ $index }}.searchproduct" class="form-control form-control-sm border border-1 customer_input @error('items.'.$index.'.searchproduct') border-danger @enderror" placeholder="Enter product name">
                                 @if (session()->has('errorProduct.' . $index)) 
                                     <p class="text-danger">{{ session('errorProduct.' . $index) }}</p>
                                 @endif
@@ -303,6 +302,26 @@
                                     </div>
                                 @endif
                             </div>
+                            <!-- Catalogue -->
+                            @if(isset($items[$index]['collection']) && $items[$index]['collection'] == 1)
+                            <div class="col-md-3">
+                                <label class="form-label"><strong>Catalogue</strong></label>
+                                <select wire:model="items.{{ $index }}.selectedCatalogue" class="form-control form-control-sm border border-1 @error('items.'.$index.'.selectedCatalogue') border-danger @enderror" wire:change="SelectedCatalogue($event.target.value, {{ $index }})">
+                                    <option value="" selected hidden>Select Catalogue</option>
+                                    @foreach($catalogues[$index] ?? [] as $id => $title)
+                                        <option value="{{ $id }}">{{ $title }}</option>
+                                    @endforeach
+                                </select>
+                                @error("items." .$index. ".selectedCatalogue") 
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror 
+                            </div>
+                        
+                          
+                            
+                            @endif
+                            <!-- Catalogue end -->
+                            
                             <div class="mb-3 col-md-2">
                                 <label class="form-label"><strong>Price</strong></label>
                                 <input type="text" wire:keyup="checkproductPrice($event.target.value, {{ $index }})" wire:model="items.{{ $index }}.price" class="form-control form-control-sm border border-1 customer_input text-center @if(session()->has('errorPrice.' . $index)) border-danger @endif @error('items.' . $index . '.price') border-danger  @enderror" placeholder="Enter Price">
@@ -462,14 +481,26 @@
                                          </select>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td><label class="form-label"><strong>Ordered By</strong></label></td>
+                                    <td>
+                                         <select class="form-control border border-2 p-2 form-control-sm @error('salesman') border-danger  @enderror" wire:change="changeSalesman($event.target.value)" wire:model="salesman">
+                                            <option value="" selected hidden>Choose one..</option>
+                                            <!-- Set authenticated user as default -->
+                                            <option value="{{auth()->id()}}" selected>{{auth()->user()->name}}</option>
+                                            <!-- Fetch all salesme  n from the database -->
+                                            @foreach ($salesmen as $salesmans)
+                                                <option value="{{$salesmans->id}}">{{$salesmans->name}}</option>
+                                            @endforeach
+                                         </select>
+                                    </td>
+                                </tr>
                                  <tr>
-                                    <td class="w-70"><label class="form-label"><strong>Order Number</strong></label></td>
+                                    <td class="w-70"><label class="form-label"><strong>Bill Number</strong></label></td>
                                     <td>
                                         <!-- Remaining Amount -->
-                                        <input type="text" class="form-control form-control-sm text-center border border-1" wire:model="order_number" {{$bill_book['status']==1?"disabled":""}} value="{{$order_number}}">
-                                        @if($order_number === '0000')
-                                            <span class="text-danger mt-2">⚠️ Please assign a salesman first, then you can place the order.</span>
-                                        @endif
+                                        <input type="text" class="form-control form-control-sm text-center border border-1" disabled wire:model="order_number" value="{{$order_number}}" >
+                                      
                                     </td>
                                 </tr> 
                                 @error('order_number') 

@@ -59,7 +59,7 @@
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody> 
                                 @if ($billings->count()>0)
                                       @foreach($billings as  $billing)
                                     <tr>
@@ -157,7 +157,7 @@
                                 @enderror
 
                                 <div class="mb-2 text-end mt-4">
-                                    <button type="submit" class="btn btn-primary btn-sm mt-1" wire:loading.attr="disabled">
+                                    <button type="submit" class="btn btn-cta btn-sm mt-1" wire:loading.attr="disabled">
                                         <span>Assign New Salesman</span>
                                     </button>
                                 </div>

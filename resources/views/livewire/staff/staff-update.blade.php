@@ -6,11 +6,20 @@
                 <div class="col-md-8 d-flex align-items-center">
                     <h6 class="badge bg-danger custom_danger_badge">Basic Information</h6>
                   </div>
-                <div class="col-md-4 text-end">
-                    <a href="{{ route('staff.index') }}" class="btn btn-cta">
-                        <i class="material-icons text-white" style="font-size:15px;">chevron_left</i> Back
-                    </a>
-                </div>
+                <div class="col-md-4 d-flex justify-content-end align-items-center">
+                    <div class="d-flex">
+                        <select wire:change="SelectedCountry"  wire:model="selectedCountryId"   class="form-select me-2" aria-label="Default select example">
+                            <option selected hidden>Select Country</option>
+                           @foreach($Selectcountry as $countries)
+                            <option value="{{$countries->id}}">{{$countries->title}}</option>
+                           @endforeach
+                        </select>
+                       
+                        <a href="{{ route('staff.index') }}" class="btn btn-cta btn-sm">
+                            <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i> Back
+                        </a>
+                    </div>
+                 </div>
             </div>
         </div>
 
@@ -60,7 +69,11 @@
                     </div>
 
                     <div class="mb-3 col-md-4">
-                        <label for="aadhaar_number" class="form-label">Aadhaar Number </label>
+                        <label for="aadhaar_number" class="form-label">Aadhaar Number 
+                        @if($showAadhaarStar)
+                           <span class="text-danger">*</span>   
+                         @endif
+                        </label>
                         <input type="text" wire:model="aadhaar_number" id="aadhaar_number" class="form-control form-control-sm border border-1 p-2" placeholder="Staff Aadhaar Number">
                         
                     </div>
@@ -80,7 +93,7 @@
 
                 <div class="row">
                     <!-- Image Upload Section -->
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label for="image" class="form-label">Image</label>
                         <input type="file" wire:model="image" id="image" class="form-control form-control-sm border border-1 p-2">
                         @if($staff && $staff->image)
@@ -90,30 +103,66 @@
                            <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-md-4">
-                        <label for="user_id_front" class="form-label">User ID Front</label>
-                        <input type="file" wire:model="user_id_front" id="user_id_front" class="form-control form-control-sm border border-1 p-2">
-                        @if($staff && $staff->user_id_front)
-                            <img src="{{ asset('storage/' . $staff->user_id_front) }}" alt="Stored User ID Front" class="mt-2" width="100">
+                    <div class="col-md-3">
+                        <label for="passport_id_front" class="form-label">Passport ID Front</label>
+                        <input type="file" wire:model="passport_id_front" id="passport_id_front" class="form-control form-control-sm border border-1 p-2">
+                        @if($staff && $staff->passport_id_front)
+                            <img src="{{ asset('storage/' . $staff->passport_id_front) }}" alt="Stored User ID Front" class="mt-2" width="100">
                         @endif
-
-                        @error('user_id_front')
+    
+                        @error('passport_id_front')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-md-4">
-                        <label for="user_id_back" class="form-label">User ID Back</label>
-                        <input type="file" wire:model="user_id_back" id="user_id_back" class="form-control form-control-sm border border-1 p-2">
-                        @if($staff && $staff->user_id_back)
-                            <img src="{{ asset('storage/' . $staff->user_id_back) }}" alt="Stored User ID Back" class="mt-2" width="100">
+                    <div class="col-md-3">
+                        <label for="passport_id_back" class="form-label">Passport ID Back</label>
+                        <input type="file" wire:model="passport_id_back" id="passport_id_back" class="form-control form-control-sm border border-1 p-2">
+                        @if($staff && $staff->passport_id_back)
+                            <img src="{{ asset('storage/' . $staff->passport_id_back) }}" alt="Stored User ID Back" class="mt-2" width="100">
                         @endif
 
-                        @error('user_id_back')
+                        @error('passport_id_back')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                     <div class="col-md-3">
+                        <label for="passport_expiry_date" class="form-label">Passport Expiry Date</label>
+                        <input type="date" wire:model="passport_expiry_date" id="passport_expiry_date" class="form-control form-control-sm border border-1 p-2">
+                        @error('passport_expiry_date')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
 
+                {{-- Emergency Contact Information --}}
+                    <div class="col-md-8 mt-4 d-flex align-items-center">
+                    <h6 class="badge bg-danger custom_danger_badge">Emergency Contact Information</h6>
+                </div>
+                    <div class="row mt-4">
+                        <!-- Banking Information -->
+                        <div class="col-md-4">
+                            <label class="form-label"> Contact Name</label>
+                            <input type="text" wire:model="emergency_contact_person" id="emergency_contact_person" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Contact Name">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Contact Number</label>
+                            <input type="number" wire:model="emergency_mobile" id="emergency_mobile" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Mobile Number">
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <label class="form-label">WhatsApp Number</label>
+                            <div class="d-flex align-items-center">
+                            <input type="number" wire:model="emergency_whatsapp" id="emergency_whatsapp" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Whatsapp Number">
+                                <input type="checkbox" wire:model="same_as_contact" id="same_as_contact" class="me-2">
+                            <label for="same_as_contact" class="form-label">Same as Contact Number</label>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <label class="form-label">Address</label>
+                            <textarea type="text" wire:model="emergency_contact_person" id="emergency_contact_person" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Contact Address"></textarea>
+                        </div>
+                    </div>
                 <!-- Other Details -->
                 <div class="col-md-8 mt-4 mb-2 d-flex align-items-center">
                     <h6 class="badge bg-danger custom_danger_badge">Account Information</h6>
