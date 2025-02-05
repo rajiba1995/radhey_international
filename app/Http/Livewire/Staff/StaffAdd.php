@@ -106,7 +106,7 @@ class StaffAdd extends Component
                 'passport_id_front' =>  $passportIdFrontPath ?? "",
                 'passport_id_back' => $passportIdBackPath ?? "",
                 'passport_expiry_date' => $this->passport_expiry_date ? $this->passport_expiry_date : null,
-                'password'=>Hash::make('secret'),
+                'password'=>'secret',
                 'emergency_contact_person' => $this->emergency_contact_person ?? "",
                 'emergency_mobile' => $this->emergency_mobile ?? "",
                 'emergency_whatsapp' => $this->emergency_whatsapp ?? "",
