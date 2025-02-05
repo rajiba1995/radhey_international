@@ -7,11 +7,17 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class FabricsExport implements FromCollection, WithHeadings, WithMapping
+class SampleFabricExport implements FromCollection, WithHeadings, WithMapping
 {
+    /**
+    * @return \Illuminate\Support\Collection
+    */
     public function collection()
     {
-        return Fabric::with('collection')->select('id', 'collection_id', 'title', 'threshold_price', 'status')->get();
+        return Fabric::with('collection')
+        ->select('id', 'collection_id', 'title', 'threshold_price', 'status')
+        ->limit(2)
+        ->get();
     }
 
     // Define Column Headers

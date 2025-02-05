@@ -13,6 +13,8 @@ use App\Exports\UserAddressExport;
 use App\Imports\UserAddressImport;
 use App\Exports\UsersAndAddressesExport;
 use App\Imports\UsersWithAddressesImport;
+use App\Exports\SampleUserAndAddressExport;
+
 // use Livewire\WithFileUploads; // Import file upload trait
 
 
@@ -79,12 +81,19 @@ class CustomerIndex extends Component
         // Send success message
         session()->flash('success', 'Users imported successfully!');
     }
+    
 
     // Export Function
     public function export()
     {
         // return Excel::download(new UsersExport, 'users.xlsx');
         return Excel::download(new UsersAndAddressesExport(), 'customers_and_addresses.xlsx');
+    }
+
+    public function sampleExport()
+    {
+        // return Excel::download(new UsersExport, 'users.xlsx');
+        return Excel::download(new SampleUserAndAddressExport(), 'customers_and_addresses.xlsx');
     }
     public function exportAddresses()
     {

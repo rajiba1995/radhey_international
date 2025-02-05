@@ -31,6 +31,9 @@
                 <button wire:click="export" class="btn btn-sm btn-success me-2">
                     <i class="fas fa-file-export"></i> Export
                 </button>
+                <button wire:click="sampleExport" class="btn btn-sm btn-success me-2">
+                    <i class="fas fa-file-export"></i> Sample CSV Download
+                </button>
 
             
             <!-- Add Customer Button -->

@@ -24,7 +24,7 @@ class OrdersExport implements FromQuery, WithHeadings, WithMapping
         $this->end_date = $end_date;
         $this->search = $search;
     }
-
+  
     public function query()
     {
         return Order::query()

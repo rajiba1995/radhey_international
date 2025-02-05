@@ -52,6 +52,10 @@
                     <i class="fas fa-file-export"></i> Export
                 </button>
 
+                <button wire:click="sampleExport" class="btn btn-sm btn-success me-2">
+                    <i class="fas fa-file-export"></i> Sample CSV Download
+                </button>
+
             
             <a class="btn btn-cta btn-sm mb-0" href="{{route('product.add')}}" role="button" >
                 <i class="material-icons text-white" style="font-size: 15px;">add</i>

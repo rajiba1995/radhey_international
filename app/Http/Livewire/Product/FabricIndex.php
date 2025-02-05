@@ -13,6 +13,7 @@ use Livewire\WithFileUploads;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\FabricsImport;
 use App\Exports\FabricsExport;
+use App\Exports\SampleFabricExport;
 
 
 
@@ -23,26 +24,63 @@ class FabricIndex extends Component
     public  $image, $title, $status = 1, $fabricId,$threshold_price;
     public $search = '';
     public $file;
+    public $processedFileHash = null; // Store the hash of the last processed file
 
+    // public function import()
+    // {
+    //     $this->validate([
+    //         'file' => 'required|mimes:xlsx,csv|max:2048',
+    //     ]);
+    
+    //     try {
+    //         \Maatwebsite\Excel\Facades\Excel::import(new FabricsImport, $this->file);
+    
+    //         if (session()->has('duplicate_fabrics')) {
+    //             session()->flash('error', 'These fabrics already exist: ' . session('duplicate_fabrics'));
+    //         } else {
+    //             session()->flash('success', 'File imported successfully.');
+    //         }
+    //     } catch (\Exception $e) {
+    //         session()->flash('error', 'Error importing file: ' . $e->getMessage());
+    //     }
+    
+    //     $this->reset('file');
+    // }
     public function import()
     {
         $this->validate([
-            'file' => 'required|mimes:xlsx,csv|max:2048', 
+            'file' => 'required|mimes:xlsx,csv|max:2048',
         ]);
     
         try {
-            Excel::import(new FabricsImport(), $this->file->getRealPath()); 
-            session()->flash('success', 'Fabrics imported successfully!');
-            $this->file = null; // Reset file
+            $import = new FabricsImport();
+            \Maatwebsite\Excel\Facades\Excel::import($import, $this->file);
+    
+            // Get the error message from the import process
+            $error = $import->getDuplicateError();
+    
+            if ($error) {
+                session()->flash('error', $error);
+            } else {
+                session()->flash('success', 'File imported successfully.');
+            }
         } catch (\Exception $e) {
-            session()->flash('error', 'Import failed: ' . $e->getMessage());
+            session()->flash('error', 'Error importing file: ' . $e->getMessage());
         }
+    
+        $this->reset('file');
     }
+    
     
     // Export Fabrics
     public function export()
     {
         return Excel::download(new FabricsExport(), 'fabrics.xlsx');
+    }
+
+    public function sampleExport()
+    {
+        return Excel::download(new SampleFabricExport(), 'sample_fabrics.xlsx');
     }
     public function store()
     {

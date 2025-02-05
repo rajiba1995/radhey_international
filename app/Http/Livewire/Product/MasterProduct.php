@@ -16,6 +16,7 @@ use Livewire\WithFileUploads;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ProductsImport;
 use App\Exports\ProductsExport;
+use App\Exports\SampleProductsExport;
 
 class MasterProduct extends Component
 {
@@ -42,6 +43,13 @@ class MasterProduct extends Component
     {
         return response()->streamDownload(function () {
             echo Excel::raw(new ProductsExport, \Maatwebsite\Excel\Excel::XLSX);
+        }, 'products.xlsx');
+    }
+
+    public function sampleExport()
+    {
+        return response()->streamDownload(function () {
+            echo Excel::raw(new SampleProductsExport, \Maatwebsite\Excel\Excel::XLSX);
         }, 'products.xlsx');
     }
 

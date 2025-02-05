@@ -7,12 +7,16 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class ProductsExport implements FromCollection, WithHeadings, WithMapping
+class SampleProductsExport implements FromCollection, WithHeadings, WithMapping
 {
+    /**
+    * @return \Illuminate\Support\Collection
+    */
     public function collection()
     {
         return Product::with(['category', 'collection', 'fabrics'])
                       ->whereNull('deleted_at')
+                      ->limit(2)
                       ->get();
     }
 
@@ -20,8 +24,7 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             'ID', 'Collection Name', 'Category Name', 'Product Name', 
-            'Product Code', 'Short Description', 'Description', 'GST Details', 
-             'Fabrics','Status'
+            'Product Code', 'Short Description', 'Description', 'GST Details', 'Fabrics','Status'
         ];
     }
 
