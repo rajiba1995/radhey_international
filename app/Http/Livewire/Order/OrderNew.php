@@ -125,13 +125,13 @@ class OrderNew extends Component
         'order_number' => 'required|numeric|unique:orders,order_number|min:1',
         // Add rules for Catalogue and Page Number
         'items.*.selectedCatalogue' => 'required', 
-        'items.*.selectedPage' => 'required'
+        'items.*.page_number' => 'required'
     ];
 
     protected function messages(){
         return [
              'items.*.selectedCatalogue.required' => 'Please select a catalogue for the item.',
-             'items.*.selectedPage.required' => 'Please select a page for the item.',
+             'items.*.page_number.required' => 'Please select a page for the item.',
              'items.*.price.required'  => 'Please enter a price for the item.',
              'items.*.collection.required' =>  'Please enter a collection for the item.',
         ];
@@ -289,7 +289,7 @@ class OrderNew extends Component
         }
     
         if ($pageNumber < 1 || $pageNumber > $maxPage) {
-            $this->addError("items.$index.page_number", "Page number must be between 1 and $maxPage.");
+            $this->addError("items.$index.page_number", "Page number must be between 1 to $maxPage.");
         } else {
             $this->resetErrorBag("items.$index.page_number");
         }
@@ -521,10 +521,10 @@ class OrderNew extends Component
     {
         $this->validate();
         
-
+        
         DB::beginTransaction(); // Begin transaction
-
-        try {
+        
+        try{ 
             // Calculate the total amount
             $total_amount = array_sum(array_column($this->items, 'price'));
             if ($this->paid_amount > $total_amount) {
@@ -705,6 +705,9 @@ class OrderNew extends Component
                 'transaction_type' => 'Debit', // or 'Credit' depending on your business logic
                 'payment_method' => $this->payment_mode,
                 'paid_amount' => $this->paid_amount,
+                'transaction_id' => Helper::generateTransactionId(),
+                'purpose' => 'Payment Receipt',
+                'purpose_description' => 'Order Payment',
                 // 'remaining_amount' => $this->remaining_amount,
                 'remarks' => 'Initial Payment for Order #' . $order->order_number,
             ]);
@@ -757,6 +760,7 @@ class OrderNew extends Component
             session()->flash('success', 'Order has been generated successfully.');
             return redirect()->route('admin.order.index');
         } catch (\Exception $e) {
+            dd($e);
             DB::rollBack();
             \Log::error('Error saving order: ' . $e->getMessage());
             dd($e->getMessage());

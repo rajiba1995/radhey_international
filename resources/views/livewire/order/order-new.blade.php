@@ -1,10 +1,5 @@
 
 <div class="container-fluid px-2 px-md-4">
-    <style>
-        a{
-            color: aliceblue!important;
-        }
-    </style>
     <div class="card my-4">
         <div class="card-header pb-0">
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -511,10 +506,13 @@
                                          <select class="form-control border border-2 p-2 form-control-sm @error('salesman') border-danger  @enderror" wire:change="changeSalesman($event.target.value)" wire:model="salesman">
                                             <option value="" selected hidden>Choose one..</option>
                                             <!-- Set authenticated user as default -->
+                                            
                                             <option value="{{auth()->id()}}" selected>{{auth()->user()->name}}</option>
                                             <!-- Fetch all salesme  n from the database -->
                                             @foreach ($salesmen as $salesmans)
-                                                <option value="{{$salesmans->id}}">{{$salesmans->name}}</option>
+                                             @if($salesmans->id != auth()->id())
+                                                 <option value="{{$salesmans->id}}">{{$salesmans->name}}</option> 
+                                             @endif
                                             @endforeach
                                          </select>
                                     </td>

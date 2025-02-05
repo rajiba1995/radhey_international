@@ -81,4 +81,8 @@ class Helper
     public static function generateUniqueNumber(){
         return now()->format('YmdHis') . rand(1000, 9999);
     }
+
+    public static function generateTransactionId(){
+        return 'PAYMENT'.now()->format('YmdHis');
+    }
 }
