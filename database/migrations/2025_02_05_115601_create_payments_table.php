@@ -41,7 +41,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('admin_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('set null');
-            $table->foreign('expense_id')->references('id')->on('expenses')->onDelete('cascade');
+            $table->foreign('expense_id')->references('id')->on('expences')->onDelete('cascade');
         });
     }
 

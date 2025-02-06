@@ -13,16 +13,16 @@ class AddBusinessTypeToOrdersTable extends Migration
      */
     public function up()
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->unsignedBigInteger('business_type')->after('id')->nullable();
+        // Schema::table('orders', function (Blueprint $table) {
+        //     $table->unsignedBigInteger('business_type')->after('id')->nullable();
 
-            // Add the foreign key constraint
-            $table->foreign('business_type')
-                  ->references('id')
-                  ->on('business_type')
-                  ->onDelete('cascade')
-                  ->onUpdate('cascade');
-        });
+        //     // Add the foreign key constraint
+        //     $table->foreign('business_type')
+        //           ->references('id')
+        //           ->on('business_type')
+        //           ->onDelete('cascade')
+        //           ->onUpdate('cascade');
+        // });
     }
 
     /**
