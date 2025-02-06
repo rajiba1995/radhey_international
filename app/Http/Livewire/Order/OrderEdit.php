@@ -13,6 +13,7 @@ use App\Models\OrderMeasurement;
 use App\Models\Fabric;
 use App\Models\Ledger;
 use App\Models\OrderItem;
+use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
 use Auth;
 
@@ -51,7 +52,6 @@ class OrderEdit extends Component
     public function mount($id)
     {
         $this->orders = Order::with(['items.measurements'])->findOrFail($id); // Fetch the order by ID
-
         if ($this->orders) {
             $this->order_number = $this->orders->order_number;
             $this->customer_id = $this->orders->customer_id;
@@ -62,7 +62,6 @@ class OrderEdit extends Component
             $this->shipping_address = $this->orders->shipping_address;
             $this->phone = $this->orders->customer->phone;
             $this->whatsapp_no = $this->orders->customer->whatsapp_no;
-
             $this->items = $this->orders->items->map(function ($item) {
                 $selected_titles = OrderMeasurement::where('order_item_id', $item->id)->pluck('measurement_name')->toArray();
                 $selected_values = OrderMeasurement::where('order_item_id', $item->id)->pluck('measurement_value')->toArray();
@@ -102,7 +101,6 @@ class OrderEdit extends Component
                 ];
             })->toArray();
         }
-
         // Split the address and assign to the properties
         $billingAddress = explode(',', $this->orders->billing_address);
 
@@ -704,6 +702,19 @@ class OrderEdit extends Component
                 $order->last_payment_date = now();
                 $order->created_by = auth()->id();
                 $order->save();
+
+                 // Update the payments table
+                 $payment = Payment::where('order_id',$order->id)->first();
+                 if($payment){
+                    $payment->order_id = $order->id;
+                    $payment->paid_amount = $this->paid_amount;
+                    $payment->save();
+                 }else{
+                    Payment::create([
+                        'order_id' => $order->id,
+                        'paid_amount' => $this->paid_amount
+                    ]);
+                 }
 
                 // if($order->paid_amount>$this->paid_amount){
                 //     $paid_amount=$order->paid_amount - $this->paid_amount;

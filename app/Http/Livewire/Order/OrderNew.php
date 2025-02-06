@@ -17,6 +17,7 @@ use App\Models\Ledger;
 use App\Models\Catalogue;
 use App\Models\SalesmanBilling;
 use App\Models\OrderMeasurement;
+use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\Helper;
@@ -685,6 +686,11 @@ class OrderNew extends Component
 
             $order->save();
 
+            Payment::create([
+                'order_id'=> $order->id,
+                'paid_amount' => $this->paid_amount
+            ]);
+
             Ledger::create([
                 'order_id' => $order->id,
                 'user_id' => $user->id,
@@ -697,6 +703,8 @@ class OrderNew extends Component
                 // 'remaining_amount' => $this->remaining_amount,
                 'remarks' => 'Initial Payment for Order #' . $order->order_number,
             ]);
+
+           
 
                // Validate fabric prices before generating the order
             //    foreach ($this->items as $item) {
