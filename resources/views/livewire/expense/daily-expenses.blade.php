@@ -16,64 +16,80 @@
             </div>
 
             <div class="card-body p-3">
-                <form action="path-to-your-submit-endpoint" method="POST" enctype="multipart/form-data">
+                <form wire:submit.prevent="submitForm" enctype="multipart/form-data">
                     <!-- Basic Expense Information Section -->
                     <div class="col-md-8 mb-2 d-flex align-items-center">
                         <h6 class="badge bg-danger custom_danger_badge">Expense Details</h6>
                     </div>
                     <div class="row mb-3">
-                        <!-- <div class="mb-3 col-md-4">
-                            <label for="user_id" class="form-label">User ID <span class="text-danger">*</span></label>
-                            <input type="number" name="user_id" id="user_id" class="form-control form-control-sm" placeholder="Enter User ID" required>
-                        </div> -->
-
                         <div class="mb-3 col-md-4">
-                            <label for="admin_id" class="form-label">Expense At</label>
-                            <select name="admin_id" id="admin_id" class="form-control form-control-sm">
+                            <label for="expense_at" class="form-label">Expense At</label>
+                            <select wire:model="expense_at" wire:change="onExpenseAtChange" id="expense_at" class="form-control form-control-sm">
                                 <option value="" disabled selected>Select One</option>
-                                <!-- You can dynamically populate the options here using PHP or other methods -->
                                 <option value="1">Stuff</option>
                                 <option value="2">Supplier</option>
-                                <!-- Add more options as needed -->
                             </select>
+                            @error('expense_at') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
 
+                        <!-- Stuff Name Section (Visible when "Stuff" is selected) -->
+                        @if($expense_at == '1')
+                            <div class="mb-3 col-md-4">
+                                <label for="stuff_id" class="form-label">Stuff Name</label>
+                                <select wire:model="stuff_id" id="stuff_id" class="form-control form-control-sm">
+                                    <option value="" disabled selected>Select One</option>
+                                    @foreach($stuffOptions as $id => $name)
+                                        <option value="{{ $id }}">{{ $name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('stuff_id') <span class="text-danger">{{ $message }}</span> @enderror
+                            </div>
+                        @endif
 
-                        <div class="mb-3 col-md-4">
-                            <label for="admin_id" class="form-label">Stuff Name</label>
-                            <select name="admin_id" id="admin_id" class="form-control form-control-sm">
-                                <option value="" disabled selected>Select One</option>
-                                <!-- You can dynamically populate the options here using PHP or other methods -->
-                                <option value="1">Papiya</option>
-                                <option value="2">Sujit</option>
-                                <!-- Add more options as needed -->
-                            </select>
-                        </div>
+                        <!-- Supplier Name Section (Visible when "Supplier" is selected) -->
+                        @if($expense_at == '2')
+                            <div class="mb-3 col-md-4">
+                                <label for="supplier_id" class="form-label">Supplier Name</label>
+                                <select wire:model="supplier_id" id="supplier_id" class="form-control form-control-sm">
+                                    <option value="" disabled selected>Select One</option>
+                                    @foreach($supplierOptions as $id => $name)
+                                        <option value="{{ $id }}">{{ $name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('supplier_id') <span class="text-danger">{{ $message }}</span> @enderror
+                            </div>
+                        @endif
 
-                        <div class="mb-3 col-md-4">
-                            <label for="admin_id" class="form-label">Expense For</label>
-                            <select name="admin_id" id="admin_id" class="form-control form-control-sm">
-                                <option value="" disabled selected>Select One</option>
-                                <!-- You can dynamically populate the options here using PHP or other methods -->
-                                <option value="1">Buy Anything</option>
-                                <option value="2">Supplier</option>
-                                <!-- Add more options as needed -->
-                            </select>
-                        </div>
+                        @if($expense_at == '1')
+                            <div class="mb-3 col-md-4">
+                                <label for="expense_title" class="form-label">Expense Title</label>
+                                <select wire:model="expense_title" id="expense_title" class="form-control form-control-sm">
+                                    <option value="" disabled selected>Select Expense Title</option>
+                                    @foreach($stuffExpenseTitles as $expense)
+                                        <option value="{{ $expense->id }}">{{ $expense->title }}</option>
+                                    @endforeach
+                                </select>
+                                @error('expense_title') <span class="text-danger">{{ $message }}</span> @enderror
+                            </div>
+                        @endif
 
-                        <div class="mb-3 col-md-4">
-                            <label for="expense_id" class="form-label">Expense ID <span class="text-danger">*</span></label>
-                            <input type="number" name="expense_id" id="expense_id" class="form-control form-control-sm" placeholder="Enter Expense ID" required>
-                        </div>
-
-                        <!-- <div class="mb-3 col-md-4">
-                            <label for="payment_for" class="form-label">Payment For</label>
-                            <input type="text" name="payment_for" id="payment_for" class="form-control form-control-sm" placeholder="Enter Payment Purpose">
-                        </div> -->
+                        @if($expense_at == '2')
+                            <div class="mb-3 col-md-4">
+                                <label for="expense_title" class="form-label">Expense Title</label>
+                                <select wire:model="expense_title" id="expense_title" class="form-control form-control-sm">
+                                    <option value="" disabled selected>Select Expense Title</option>
+                                    @foreach($supplierExpenseTitles as $expense)
+                                        <option value="{{ $expense->id }}">{{ $expense->title }}</option>
+                                    @endforeach
+                                </select>
+                                @error('expense_title') <span class="text-danger">{{ $message }}</span> @enderror
+                            </div>
+                        @endif
 
                         <div class="mb-3 col-md-4">
                             <label for="amount" class="form-label">Amount</label>
-                            <input type="number" name="amount" id="amount" class="form-control form-control-sm" placeholder="Enter Amount">
+                            <input wire:model="amount" type="number" id="amount" class="form-control form-control-sm" placeholder="Enter Amount">
+                            @error('amount') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                     </div>
 
@@ -82,61 +98,26 @@
                         <h6 class="badge bg-danger custom_danger_badge">Payment Information</h6>
                     </div>
                     <div class="row mb-3">
-                        <div class="mb-3 col-md-4">
-                            <label for="payment_in" class="form-label">Payment In</label>
-                            <select name="payment_in" id="payment_in" class="form-control form-control-sm">
-                                <option value="" disabled selected>Select One</option>
-                                <!-- You can dynamically populate the options here using PHP or other methods -->
-                                <option value="1">Online</option>
-                                <option value="2">Cash</option>
-                                <!-- Add more options as needed -->
-                            </select>
-                        </div>
-                        <!-- <div class="mb-3 col-md-4">
-                            <label for="bank_cash" class="form-label">Bank/Cash</label>
-                            <input type="text" name="bank_cash" id="bank_cash" class="form-control form-control-sm" placeholder="Enter Bank or Cash">
-                        </div> -->
-
-                        <!-- <div class="mb-3 col-md-4">
-                            <label for="payment_date" class="form-label">Payment Date</label>
-                            <input type="date" name="payment_date" id="payment_date" class="form-control form-control-sm">
-                        </div> -->
-
-                        <div class="mb-3 col-md-4">
-                            <label for="payment_mode" class="form-label">Payment Mode</label>
-                            <select name="payment_mode" id="payment_mode" class="form-control form-control-sm" >
-                                <option value="" disabled selected>Select One</option>
-                                <!-- You can dynamically populate the options here using PHP or other methods -->
-                                <option value="1">Online</option>
-                                <option value="2">Cash</option>
-                                <!-- Add more options as needed -->
-                            </select>
-                        </div>
+                        
 
                         <div class="mb-3 col-md-4">
                             <label for="voucher_no" class="form-label">Voucher No</label>
-                            <input type="text" name="voucher_no" id="voucher_no" class="form-control form-control-sm" placeholder="Enter Voucher Number">
+                            <input wire:model="voucher_no" type="text" id="voucher_no" class="form-control form-control-sm" placeholder="Enter Voucher Number">
+                            @error('voucher_no') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
-                    </div>
-
-                    <!-- Additional Information Section -->
-                    <div class="col-md-8 mb-2 d-flex align-items-center">
-                        <h6 class="badge bg-danger custom_danger_badge">Additional Information</h6>
-                    </div>
-                    <div class="row mb-3">
-                        <!-- <div class="mb-3 col-md-4">
-                            <label for="chq_utr_no" class="form-label">Cheque/UTR No</label>
-                            <input type="text" name="chq_utr_no" id="chq_utr_no" class="form-control form-control-sm" placeholder="Enter Cheque/UTR No">
-                        </div> -->
-
-                        <!-- <div class="mb-3 col-md-4">
-                            <label for="bank_name" class="form-label">Bank Name</label>
-                            <input type="text" name="bank_name" id="bank_name" class="form-control form-control-sm" placeholder="Enter Bank Name">
-                        </div> -->
 
                         <div class="mb-3 col-md-4">
-                            <label for="narration" class="form-label">Narration</label>
-                            <textarea name="narration" id="narration" class="form-control form-control-sm" placeholder="Enter Narration"></textarea>
+                            <label for="image" class="form-label">Upload File</label>
+                            <input wire:model="image" type="file" id="image" class="form-control form-control-sm">
+                            @error('image') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+
+                         <!-- Remarks Section -->
+                   
+                        <div class="mb-3 col-md-4">
+                            <label for="remarks" class="form-label">Remarks</label>
+                            <textarea wire:model="remarks" id="remarks" class="form-control form-control-sm" rows="4" placeholder="Enter any remarks here..."></textarea>
+                            @error('remarks') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                     </div>
 
@@ -146,3 +127,9 @@
         </div>
     </div>
 </div>
+
+@if (session()->has('message'))
+    <div class="alert alert-success mt-3">
+        {{ session('message') }}
+    </div>
+@endif
