@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DepExpanse extends Model
+class Payment extends Model
 {
     use HasFactory;
 
 
-    protected $table = "depot_expanses";
+    protected $table = "payments";
 
     protected $fillable = [
         'user_id', 'admin_id', 'supplier_id', 'expense_id', 'service_slip_id',
