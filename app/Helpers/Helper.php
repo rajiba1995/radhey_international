@@ -108,6 +108,7 @@ class Helper
             $salesmanBillBook = SalesmanBilling::where('salesman_id',$salesManId)
                 ->whereColumn('total_count', '>', 'no_of_used')
                 ->first();
+                // dd($salesmanBillBook);
 
 
             if ($salesmanBillBook) {
@@ -117,6 +118,7 @@ class Helper
                     'status' => 1,
                 ];
                 return $data;
+
             } else {
                 // If no SalesmanBilling record is found
                 $data = [
@@ -141,5 +143,9 @@ class Helper
 
     public static function generateUniqueNumber(){
         return now()->format('YmdHis') . rand(1000, 9999);
+    }
+
+    public static function generateTransactionId(){
+        return 'PAYMENT'.now()->format('YmdHis');
     }
 }

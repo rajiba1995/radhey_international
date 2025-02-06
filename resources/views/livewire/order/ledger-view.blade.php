@@ -1,11 +1,12 @@
-<div class="row mb-4">
+
+<div class="container-fluid row mb-4">
     <div class="col-12 d-flex justify-content-end mb-3">
         <a href="{{ route('admin.order.index') }}" class="btn btn-dark">
             <i class="material-icons text-white">chevron_left</i> Back
         </a>
     </div>
     <!-- Left Column: Transaction History -->
-    <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
+    <div class="{{$totalRemaining > 0 ? 'col-lg-8' : 'col-lg-12'}} col-md-6 mb-4">
         <div class="card my-4">
         
             <div class="card-header pb-0">
@@ -55,68 +56,73 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>  
 
     <!-- Right Column: Add Payment Form -->
-    <div class="col-lg-4 col-md-6 mb-md-0 mb-4">
-        <div class="card my-4">
-            <div class="card-header pb-0">
-                <div class="row">
-                    <div>
-                        <h6>Add Payment<span style="color: red;"> ({{$order->order_number}})</span></h6>
-                    </div>
+    @if ($totalRemaining > 0)
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card my-4">
+                <div class="card-header pb-0">
                     <div class="row">
-                        @if(session()->has('error'))
-                            <div class="alert alert-success" id="flashMessage">
-                                {{ session('error') }}
-                            </div>
-                        @endif
+                        <div>
+                            <h6>Add Payment<span style="color: red;"> ({{$order->order_number}})</span></h6>
+                        </div>
+                        <div class="row">
+                            @if(session()->has('error'))
+                                <div class="alert alert-danger" id="flashMessage">
+                                    {{ session('error') }}
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="card-body px-0 pb-2">
-                <form wire:submit.prevent="addPayment">
-                    <div class="row p-3">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="payment_method">Payment method</label>
-                                <select class="form-control border border-2 p-2 form-control-sm @error('payment_method') border-danger @enderror" 
-                                    wire:model="payment_method" >
-                                    <option value="" selected hidden>Choose one...</option>
-                                    <option value="Cash">Cash</option>
-                                    <option value="Online">Online</option>
-                                </select>
-                                @error('payment_method') <span class="text-danger">{{ $message }}</span> @enderror
+                <div class="card-body px-0 pb-2">
+                    <form wire:submit.prevent="addPayment">
+                        <div class="row p-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="payment_method">Payment method</label>
+                                    <select class="form-control border border-2 p-2 form-control-sm @error('payment_method') border-danger @enderror" 
+                                        wire:model="payment_method" >
+                                        <option value="" selected hidden>Choose one...</option>
+                                        <option value="Cash">Cash</option>
+                                        <option value="Online">Online</option>
+                                    </select>
+                                    @error('payment_method') <span class="text-danger">{{ $message }}</span> @enderror
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="paid_amount">Paid Amount</label>
-                                <input type="number" 
-                                    wire:model="paid_amount" 
-                                    class="form-control border border-2 p-2 form-control-sm @error('paid_amount') border-danger @enderror" 
-                                    required>
-                                @error('paid_amount') <span class="text-danger">{{ $message }}</span> @enderror
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="paid_amount">Paid Amount</label>
+                                    <input type="number" 
+                                        wire:model="paid_amount" 
+                                        class="form-control border border-2 p-2 form-control-sm @error('paid_amount') border-danger @enderror" 
+                                        required>
+                                    @error('paid_amount') <span class="text-danger">{{ $message }}</span> @enderror
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="remarks">Remarks</label>
-                                <textarea 
-                                    wire:model="remarks" 
-                                    class="form-control border border-2 p-2 form-control-sm @error('remarks') border-danger @enderror"></textarea>
-                                @error('remarks') <span class="text-danger">{{ $message }}</span> @enderror
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="remarks">Remarks</label>
+                                    <textarea 
+                                        wire:model="remarks" 
+                                        class="form-control border border-2 p-2 form-control-sm @error('remarks') border-danger @enderror"></textarea>
+                                    @error('remarks') <span class="text-danger">{{ $message }}</span> @enderror
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-12 text-end">
-                            <button type="submit" class="btn btn-primary btn-sm mt-1" wire:loading.attr="disabled">
-                                <span wire:loading.remove>Add Payment</span>
-                                <span wire:loading><i class="fas fa-spinner fa-spin"></i> Saving...</span>
-                            </button>
-                        </div>
+                            <div class="col-md-12 text-end mt-2">
+                                <input type="checkbox" wire:click= "togglePayment" id="allowPayment">Are you sure to add payment?
+                                <button type="submit" class="btn btn-primary btn-sm mt-1" wire:loading.attr="disabled" @if (!$allowPayment)
+                                    disabled
+                                @endif>
+                                    <span wire:loading.remove>Add Payment</span>
+                                    <span wire:loading><i class="fas fa-spinner fa-spin"></i> Saving...</span>
+                                </button>
+                            </div>
+                    </div>
+                    </form>
                 </div>
-                </form>
             </div>
-        </div>
-    </div>
+        </div>   
+    @endif
 </div>

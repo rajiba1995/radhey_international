@@ -15,6 +15,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Ledger;
 use App\Models\Catalogue;
+use App\Models\SalesmanBilling;
 use App\Models\OrderMeasurement;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -53,14 +54,17 @@ class OrderNew extends Component
 
     // For Catalogue
     public $selectedCatalogue = [];
-    public $selectedPage = [];
     public $cataloguePages = [];
     public $catalogues = [];
-    public $selectedImage = [];
-
+    public $maxPages = [];
+    
     // For ordered by
     public $salesmen;
     public $salesman;
+
+    // for checking salesman billing exists or not
+    public $salesmanBill;
+
 
     public function mount(){
         $user_id = request()->query('user_id');
@@ -106,6 +110,8 @@ class OrderNew extends Component
         $this->salesmen = User::where('user_type',0)->where('designation',2)->get();
         $this->salesman = Auth::id();
         $this->addItem();
+         // Check if the authenticated user has a related SalesmanBilling
+        $this->salesmanBill = SalesmanBilling::where('salesman_id',auth()->id())->first();
     }
 
     // Define rules for validation
@@ -119,13 +125,13 @@ class OrderNew extends Component
         'order_number' => 'required|numeric|unique:orders,order_number|min:1',
         // Add rules for Catalogue and Page Number
         'items.*.selectedCatalogue' => 'required', 
-        'items.*.selectedPage' => 'required'
+        'items.*.page_number' => 'required'
     ];
 
     protected function messages(){
         return [
              'items.*.selectedCatalogue.required' => 'Please select a catalogue for the item.',
-             'items.*.selectedPage.required' => 'Please select a page for the item.',
+             'items.*.page_number.required' => 'Please select a page for the item.',
              'items.*.price.required'  => 'Please enter a price for the item.',
              'items.*.collection.required' =>  'Please enter a collection for the item.',
         ];
@@ -232,32 +238,71 @@ class OrderNew extends Component
         $this->items[$index]['measurements'] = [];
         $this->items[$index]['fabrics'] = [];
         $this->items[$index]['selectedCatalogue'] = null; // Reset catalogue
-        $this->items[$index]['selectedPage'] = null; 
+        // $this->items[$index]['selectedPage'] = null; 
       
             // Fetch categories and products based on the selected collection 
             $this->items[$index]['categories'] = Category::orderBy('title', 'ASC')->where('collection_id', $value)->get();
             $this->items[$index]['products'] = Product::orderBy('name', 'ASC')->where('collection_id', $value)->get();
        
-        if($value == 1){
-            $this->catalogues[$index] = Catalogue::with('catalogueTitle')->distinct('catalogue_title_id')->get()->pluck('catalogueTitle.title','catalogue_title_id');
-        }else{
-            $this->catalogues[$index] = [];
+            if ($value == 1) {
+                $catalogues = Catalogue::with('catalogueTitle')->get();
+                $this->catalogues[$index] = $catalogues->pluck('catalogueTitle.title', 'catalogue_title_id');
+        
+                // Fetch max page numbers per catalogue
+                $this->maxPages[$index] = [];
+                foreach ($catalogues as $catalogue) {
+                    $this->maxPages[$index][$catalogue->catalogue_title_id] = $catalogue->page_number;
+                }
+            } else {
+                $this->catalogues[$index] = [];
+                $this->maxPages[$index] = [];
+            }
+    }
+
+    public function SelectedCatalogue($catalogueId, $index)
+    {
+        $this->items[$index]['page_number'] = null; // Reset page number
+        $this->maxPages[$index] = []; // Reset max page number
+
+        // Fetch max page number from database
+        $maxPage = Catalogue::where('catalogue_title_id', $catalogueId)->value('page_number');
+
+        if ($maxPage) {
+            $this->maxPages[$index][$catalogueId] = $maxPage;
         }
     }
 
-    public function SelectedCatalogue($value , $index){
-        $this->items[$index]['selectedCatalogue'] = $value;
-        $this->items[$index]['selectedPage'] = null;
-
-        $this->cataloguePages[$index] = Catalogue::where('catalogue_title_id', $value)->pluck('page_number');
+    public function validatePageNumber($index)
+    {
+        if (!isset($this->items[$index]['page_number']) || !isset($this->items[$index]['selectedCatalogue'])) {
+            return;
+        }
+    
+        $pageNumber = (int) $this->items[$index]['page_number'];
+        $selectedCatalogue = $this->items[$index]['selectedCatalogue'];
+    
+        // Ensure we get the correct max page for the selected catalogue
+        $maxPage = $this->maxPages[$index][$selectedCatalogue] ?? null;
+    
+        if ($maxPage === null) {
+            return; // No catalogue selected, or no max page found
+        }
+    
+        if ($pageNumber < 1 || $pageNumber > $maxPage) {
+            $this->addError("items.$index.page_number", "Page number must be between 1 to $maxPage.");
+        } else {
+            $this->resetErrorBag("items.$index.page_number");
+        }
     }
+    
 
-    public function SelectedPage($value , $index){
-        $this->items[$index]['selectedPage'] = $value;
-        $this->selectedImage[$index] = Catalogue::where('catalogue_title_id',$this->items[$index]['selectedCatalogue'])
-                                                ->where('page_number',$value)
-                                                ->value('image');
-    }
+
+    // public function SelectedPage($value , $index){
+    //     $this->items[$index]['selectedPage'] = $value;
+    //     $this->selectedImage[$index] = Catalogue::where('catalogue_title_id',$this->items[$index]['selectedCatalogue'])
+    //                                             ->where('page_number',$value)
+    //                                             ->value('image');
+    // }
     
 
 
@@ -368,8 +413,8 @@ class OrderNew extends Component
        // Remove leading zeros if present in the paid amount
         
         // Ensure the values are numeric before performing subtraction
-        $billingAmount = (float) $this->billing_amount;
-        $paidAmount = (float) $paid_amount;
+        $billingAmount = floatval($this->billing_amount);
+        $paidAmount = floatval($paid_amount);
         $paidAmount = $paidAmount;
         if ($billingAmount > 0) {
             if(empty($paid_amount)){
@@ -395,20 +440,7 @@ class OrderNew extends Component
 
     
 
-    // public function selectProduct($index, $name, $id)
-    // {
-    //     $this->items[$index]['searchproduct'] = $name;
-    //     $this->items[$index]['product_id'] = $id;
-    //     $this->items[$index]['products'] = [];
-    //     $this->items[$index]['measurements'] = Measurement::where('product_id', $id)->where('status', 1)->orderBy('position','ASC')->get();
-    //     $this->items[$index]['fabrics'] = Fabric::where('product_id', $id)->where('status', 1)->get();
-        
-    //     session()->forget('measurements_error.' . $index);
-    //     if (count($this->items[$index]['measurements']) == 0) {
-    //         session()->flash('measurements_error.' . $index, '🚨 Oops! Measurement data not added for this product.');
-    //         return;
-    //     }
-    // }
+  
 
     public function selectProduct($index, $name, $id)
     {
@@ -476,10 +508,10 @@ class OrderNew extends Component
     {
         $this->validate();
         
-
+        
         DB::beginTransaction(); // Begin transaction
-
-        try {
+        
+        try{ 
             // Calculate the total amount
             $total_amount = array_sum(array_column($this->items, 'price'));
             if ($this->paid_amount > $total_amount) {
@@ -660,6 +692,8 @@ class OrderNew extends Component
                 'transaction_type' => 'Debit', // or 'Credit' depending on your business logic
                 'payment_method' => $this->payment_mode,
                 'paid_amount' => $this->paid_amount,
+                'purpose' => 'Payment Receipt',
+                'purpose_description' => 'Order Payment',
                 // 'remaining_amount' => $this->remaining_amount,
                 'remarks' => 'Initial Payment for Order #' . $order->order_number,
             ]);
@@ -712,6 +746,7 @@ class OrderNew extends Component
             session()->flash('success', 'Order has been generated successfully.');
             return redirect()->route('admin.order.index');
         } catch (\Exception $e) {
+            dd($e);
             DB::rollBack();
             \Log::error('Error saving order: ' . $e->getMessage());
             dd($e->getMessage());

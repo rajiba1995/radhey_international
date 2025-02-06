@@ -9,12 +9,19 @@
                         {{ session('error') }}
                     </div>
                 @endif
+                @if ($activeTab==1 && $salesmanBill == null)
+                    <div class="badge bg-primary">
+                        <a href="{{ route('salesman.index') }}"> <strong>Error:</strong> Please add a bill for this user before placing the order.</a>
+                    </div>
+                @endif
                 @if($activeTab==1)
                 <a href="{{route('admin.order.index')}}" class="btn btn-cta"> <i class="material-icons text-white">chevron_left</i> 
-                    Back </a>
+                    Back 
+                </a>
                 @endif
             </div>
         </div>
+
         <div class="card-body" id="sales_order_data">
             <form wire:submit.prevent="save">
                 <div class="{{$activeTab==1?"d-block":"d-none"}}" id="tab1">
@@ -309,15 +316,27 @@
                                 <select wire:model="items.{{ $index }}.selectedCatalogue" class="form-control form-control-sm border border-1 @error('items.'.$index.'.selectedCatalogue') border-danger @enderror" wire:change="SelectedCatalogue($event.target.value, {{ $index }})">
                                     <option value="" selected hidden>Select Catalogue</option>
                                     @foreach($catalogues[$index] ?? [] as $id => $title)
-                                        <option value="{{ $id }}">{{ $title }}</option>
+                                        <option value="{{ $id }}">{{ $title }}
+                                            @if(isset($maxPages[$index][$id]))
+                                              (1 - {{ $maxPages[$index][$id] }})
+                                            @endif
+                                        </option>
                                     @endforeach
                                 </select>
                                 @error("items." .$index. ".selectedCatalogue") 
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror 
                             </div>
-                        
-                          
+                            
+                            <div class="col-md-3">
+                                <label class="form-label"><strong>Page Number</strong></label>
+                                <input type="number" wire:model="items.{{$index}}.page_number"  wire:keyup="validatePageNumber({{ $index }})" id="page_number" class="form-control form-control-sm border border-2 @error('items.'.$index.'.page_number') border-danger @enderror"  min="1" 
+                                 max="{{ isset($items[$index]['selectedCatalogue']) && isset($maxPages[$index][$items[$index]['selectedCatalogue']]) ? $maxPages[$index][$items[$index]['selectedCatalogue']] : '' }}"
+                                >
+                                @error("items.$index.page_number") 
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
                             
                             @endif
                             <!-- Catalogue end -->
@@ -487,10 +506,13 @@
                                          <select class="form-control border border-2 p-2 form-control-sm @error('salesman') border-danger  @enderror" wire:change="changeSalesman($event.target.value)" wire:model="salesman">
                                             <option value="" selected hidden>Choose one..</option>
                                             <!-- Set authenticated user as default -->
+                                            
                                             <option value="{{auth()->id()}}" selected>{{auth()->user()->name}}</option>
                                             <!-- Fetch all salesme  n from the database -->
                                             @foreach ($salesmen as $salesmans)
-                                                <option value="{{$salesmans->id}}">{{$salesmans->name}}</option>
+                                             @if($salesmans->id != auth()->id())
+                                                 <option value="{{$salesmans->id}}">{{$salesmans->name}}</option> 
+                                             @endif
                                             @endforeach
                                          </select>
                                     </td>

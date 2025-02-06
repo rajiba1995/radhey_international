@@ -31,25 +31,26 @@ class AdminLogin extends Component
     {
         $attributes = $this->validate();
 
-        if (! Auth::attempt($attributes)) {
+        // Attempt to authenticate user
+        if (!Auth::attempt(['email' => $this->email, 'password' => $this->password])) {
             throw ValidationException::withMessages([
-                'email' => 'Your provided credentials could not be verified.',
+                'email' => 'Invalid credentials.',
             ]);
         }
 
+        // Check if logged-in user has user_type = 0
         $user = Auth::user();
-        if($user->user_type == 0){
-            return redirect()->route('dashboard');
-        }elseif($user->user_type == 1){
-            return redirect()->route('dashboard');
-        }else{
-             Auth::logout();
+        if ($user->user_type !== 0) {
+            Auth::logout(); // Logout immediately
             throw ValidationException::withMessages([
-                'email' => 'Unauthorized user type.',
+                'email' => 'You are not authorized to access this panel.',
             ]);
         }
+
+        // Regenerate session to prevent session fixation
         session()->regenerate();
 
-        return redirect()->route('dashboard'); // Adjust the route or path as needed
+        // Redirect to dashboard
+        return redirect()->route('dashboard');
     }
 }

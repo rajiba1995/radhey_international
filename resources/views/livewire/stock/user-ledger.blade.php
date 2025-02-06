@@ -53,22 +53,22 @@
                     <thead class="thead-light">
                         <tr>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Date</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Transaction Id / Voucher No</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Order Id</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Purpose</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Debit</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Credit</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Closing</th>
+                            {{-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Closing</th> --}}
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($ledgerData as $entry)
                             <tr>
-                                <td>{{ $entry->transaction_date }}</td>
-                                <td></td>
-                                <td></td>
+                                <td>{{ date('d/m/Y',strtotime($entry->transaction_date)) }}</td>
+                                <td>{{ $entry->order?  $entry->order->order_number : "" }}</td>
+                                <td>{{ $entry->purpose }}</td>
                                 <td>{{ $entry->transaction_type == 'Debit' ? $entry->paid_amount : '0' }}</td>
                                 <td>{{ $entry->transaction_type == 'Credit' ? $entry->paid_amount : '0' }}</td>
-                                <td>{{ $entry->remaining_amount }}</td>
+                                {{-- <td>{{ $entry->remaining_amount }}</td> --}}
                             </tr>
                         @endforeach
                     </tbody>

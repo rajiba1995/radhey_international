@@ -9,15 +9,10 @@ class OrderMeasurement extends Model
 {
     use HasFactory;
 
-
-    protected $table = 'order_measurements';
-
+    protected $table = "order_measurements";
     protected $fillable = [
-        'order_item_id',
-        'measurement_name',
-        'measurement_value',
+        'order_item_id', 'measurement_name', 'measurement_value', 'created_at', 'updated_at'
     ];
-   
     public function orderItem()
     {
         return $this->belongsTo(OrderItem::class);

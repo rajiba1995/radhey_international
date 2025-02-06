@@ -65,8 +65,8 @@ class SalesmanBillingIndex extends Component
        // Update the existing billing record
         $existingBilling = SalesmanBilling::find($this->billing_id);
         if ($existingBilling) {
-            $updatedEndNo = $this->start_no;
-            $updatedTotalCount = $updatedEndNo - $existingBilling->start_no ;
+            $updatedEndNo = $this->start_no -1 ;
+            $updatedTotalCount = ( $updatedEndNo - $existingBilling->start_no)+1 ;
 
             // If the updated total count is zero or negative, delete the old record
             if($updatedTotalCount <= 0){
