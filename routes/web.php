@@ -22,7 +22,7 @@ use GuzzleHttp\Middleware;
 use App\Http\Livewire\Order\{OrderIndex, OrderNew, OrderInvoice,OrderEdit,OrderView,LedgerView};
 use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory,FabricIndex,CollectionIndex,GalleryIndex,MasterCatalogue};
 use App\Http\Livewire\Staff\{DesignationIndex,StaffIndex,StaffAdd,StaffUpdate,StaffView,StaffTask,StaffTaskAdd,StaffCities,SalesmanBillingIndex,MasterBranch};
-use App\Http\Livewire\Expense\{ExpenseIndex};
+use App\Http\Livewire\Expense\{ExpenseIndex,DepotExpanse,DailyExpenses};
 use App\Http\Livewire\UserAddressForm; 
 use App\Http\Livewire\CustomerEdit; 
 use App\Http\Livewire\CustomerDetails; 
@@ -35,6 +35,7 @@ use App\Http\Livewire\Fabric\FabricsIndex;
 use App\Http\Livewire\PurchaseOrder\{PurchaseOrderIndex,PurchaseOrderCreate,PurchaseOrderEdit,GenerateGrn,PurchaseOrderDetails};
 use App\Http\Livewire\Stock\{StockIndex,UserLedger};
 use App\Http\Livewire\BusinessType\BusinessTypeIndex;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -166,7 +167,15 @@ Route::group(['prefix' => 'products'], function () {
     // Expense
     Route::prefix('expense')->name('expense.')->group(function() {
         Route::get('/{parent_id}', ExpenseIndex::class)->name('index');
+
     });
+    Route::prefix('depot-expense')->name('depot-expense.')->group(function() {
+        Route::get('/', DepotExpanse::class)->name('index');
+        Route::get('/daily/expenses', DailyExpenses::class)->name('daily.expenses');
+
+    });
+    
+
     
     // Route::get('/measurements/add', MeasurementAdd::class)->name('measurements.add');
     // Route::get('/measurements/edit/{id}', MeasurementEdit::class)->name('measurements.edit');

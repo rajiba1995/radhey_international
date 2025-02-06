@@ -119,6 +119,7 @@ class StaffAdd extends Component
                 'emergency_whatsapp' => $this->emergency_whatsapp ?? "",
                 'emergency_address' => $this->emergency_address ?? "",
             ]);
+            
 
             // 2. Save the data into the user_banks table
             UserBank::create([
