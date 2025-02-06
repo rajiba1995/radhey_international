@@ -54,7 +54,26 @@ class DailyExpenses extends Component
             $this->supplierExpenseTitles = [];
         }
     }
+    public function mount()
+    {
+        // Auto-generate voucher number
+        $this->generateVoucherNumber();
+    }
 
+    public function generateVoucherNumber()
+    {
+        // Get the latest voucher number
+        $latestVoucher = Payment::latest()->first();
+
+        // Extract the numeric part from the latest voucher number
+        $lastVoucherNumber = $latestVoucher ? (int) substr($latestVoucher->voucher_no, 7) : 0;
+
+        // Increment the voucher number by 1
+        $newVoucherNumber = $lastVoucherNumber + 1;
+
+        // Format the new voucher number as EXPENSE001, EXPENSE002, etc.
+        $this->voucher_no = 'EXPENSE' . str_pad($newVoucherNumber, 3, '0', STR_PAD_LEFT);
+    }
     public function submitForm()
     {
         $this->validate([

@@ -102,9 +102,10 @@
 
                         <div class="mb-3 col-md-4">
                             <label for="voucher_no" class="form-label">Voucher No</label>
-                            <input wire:model="voucher_no" type="text" id="voucher_no" class="form-control form-control-sm" placeholder="Enter Voucher Number">
+                            <input wire:model="voucher_no" type="text" id="voucher_no" class="form-control form-control-sm" placeholder="Voucher Number" readonly>
                             @error('voucher_no') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
+
 
                         <div class="mb-3 col-md-4">
                             <label for="image" class="form-label">Upload File</label>
