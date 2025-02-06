@@ -19,6 +19,7 @@ class LedgerView extends Component
 
     public $totalPaid = 0;
     public $totalRemaining = 0;
+    public $allowPayment = false;
 
     public function mount($id)
     {
@@ -27,6 +28,10 @@ class LedgerView extends Component
         $this->order = Order::findOrFail($id);
         // dd($this->order);
         $this->loadTransactions();
+    }
+
+    public function togglePayment(){
+        $this->allowPayment = !$this->allowPayment;
     }
 
     // Load all transactions for the given order
@@ -84,17 +89,18 @@ class LedgerView extends Component
                 'order_id' => $this->order->id,
                 'transaction_date' => now()->format('Y-m-d'),
                 'transaction_type' => "Debit",
+                'purpose'  => 'Installment Payments',
+                'purpose_description'  => 'Partial Payment for Order #'.$this->order->order_number,
                 'payment_method' => $this->payment_method,
                 'paid_amount' => $this->paid_amount,
                 'remarks' => $this->remarks,
             ]);
         
-            $order = $this->order;
-            $order->paid_amount += $this->paid_amount;
-            $order->remaining_amount = max(0, $order->total_amount - $order->paid_amount);
-            $order->last_payment_date = now()->format('Y-m-d');
-            $order->payment_mode = $this->payment_method;
-            $order->save();
+            $this->order->increment('paid_amount', $this->paid_amount);
+            $this->order->remaining_amount = max(0, $this->order->total_amount - $this->order->paid_amount);
+            $this->order->last_payment_date = now()->format('Y-m-d');
+            $this->order->payment_mode = $this->payment_method;
+            $this->order->save();
         });
         
         // Reset input fields and reload transactions

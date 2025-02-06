@@ -50,6 +50,7 @@ class Helper
             $salesmanBillBook = SalesmanBilling::where('salesman_id',$salesManId)
                 ->whereColumn('total_count', '>', 'no_of_used')
                 ->first();
+                // dd($salesmanBillBook);
 
             if ($salesmanBillBook) {
                 // If a valid SalesmanBilling record is found
@@ -58,6 +59,7 @@ class Helper
                     'status' => 1,
                 ];
                 return $data;
+
             } else {
                 // If no SalesmanBilling record is found
                 $data = [

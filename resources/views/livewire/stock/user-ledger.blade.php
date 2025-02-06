@@ -53,7 +53,7 @@
                     <thead class="thead-light">
                         <tr>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Date</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Transaction Id / Voucher No</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Order Id</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Purpose</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Debit</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Credit</th>
@@ -64,7 +64,7 @@
                         @foreach ($ledgerData as $entry)
                             <tr>
                                 <td>{{ date('d/m/Y',strtotime($entry->transaction_date)) }}</td>
-                                <td>{{ $entry->transaction_id }}</td>
+                                <td>{{ $entry->order?  $entry->order->order_number : "" }}</td>
                                 <td>{{ $entry->purpose }}</td>
                                 <td>{{ $entry->transaction_type == 'Debit' ? $entry->paid_amount : '0' }}</td>
                                 <td>{{ $entry->transaction_type == 'Credit' ? $entry->paid_amount : '0' }}</td>

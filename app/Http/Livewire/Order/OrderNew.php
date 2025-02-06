@@ -413,8 +413,8 @@ class OrderNew extends Component
        // Remove leading zeros if present in the paid amount
         
         // Ensure the values are numeric before performing subtraction
-        $billingAmount = (float) $this->billing_amount;
-        $paidAmount = (float) $paid_amount;
+        $billingAmount = floatval($this->billing_amount);
+        $paidAmount = floatval($paid_amount);
         $paidAmount = $paidAmount;
         if ($billingAmount > 0) {
             if(empty($paid_amount)){
@@ -440,20 +440,7 @@ class OrderNew extends Component
 
     
 
-    // public function selectProduct($index, $name, $id)
-    // {
-    //     $this->items[$index]['searchproduct'] = $name;
-    //     $this->items[$index]['product_id'] = $id;
-    //     $this->items[$index]['products'] = [];
-    //     $this->items[$index]['measurements'] = Measurement::where('product_id', $id)->where('status', 1)->orderBy('position','ASC')->get();
-    //     $this->items[$index]['fabrics'] = Fabric::where('product_id', $id)->where('status', 1)->get();
-        
-    //     session()->forget('measurements_error.' . $index);
-    //     if (count($this->items[$index]['measurements']) == 0) {
-    //         session()->flash('measurements_error.' . $index, '🚨 Oops! Measurement data not added for this product.');
-    //         return;
-    //     }
-    // }
+  
 
     public function selectProduct($index, $name, $id)
     {
@@ -705,7 +692,6 @@ class OrderNew extends Component
                 'transaction_type' => 'Debit', // or 'Credit' depending on your business logic
                 'payment_method' => $this->payment_mode,
                 'paid_amount' => $this->paid_amount,
-                'transaction_id' => Helper::generateTransactionId(),
                 'purpose' => 'Payment Receipt',
                 'purpose_description' => 'Order Payment',
                 // 'remaining_amount' => $this->remaining_amount,

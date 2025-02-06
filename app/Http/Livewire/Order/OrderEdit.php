@@ -217,8 +217,8 @@ class OrderEdit extends Component
        // Remove leading zeros if present in the paid amount
         
         // Ensure the values are numeric before performing subtraction
-        $billingAmount = (float) $this->billing_amount;
-        $paidAmount = (float) $paid_amount;
+        $billingAmount =  floatval($this->billing_amount);
+        $paidAmount = floatval($paid_amount);
         $paidAmount = ltrim($paidAmount, '0');
         if ($billingAmount > 0) {
             if(empty($paid_amount)){
@@ -261,8 +261,14 @@ class OrderEdit extends Component
         $this->items[$index]['searchproduct'] = $name;
         $this->items[$index]['product_id'] = $id;
         $this->items[$index]['products'] = [];
-        $this->items[$index]['measurements'] = Measurement::where('product_id', $id)->where('status', 1)->orderBy('position','ASC')->get();
-        $this->items[$index]['fabrics'] = Fabric::where('product_id', $id)->where('status', 1)->get();
+        $this->items[$index]['measurements'] = Measurement::where('product_id', $id)
+                                                            ->where('status', 1)
+                                                            ->orderBy('position','ASC')
+                                                            ->get();
+        $this->items[$index]['fabrics'] = Fabric::join('product_fabrics', 'fabrics.id', '=', 'product_fabrics.fabric_id')
+                                            ->where('product_fabrics.product_id', $id)
+                                            ->where('fabrics.status', 1)
+                                            ->get(['fabrics.*']);
         
         session()->forget('measurements_error.' . $index);
         if (count($this->items[$index]['measurements']) == 0) {
@@ -683,7 +689,7 @@ class OrderEdit extends Component
                 session()->flash('error', 'Order not found.');
                 return redirect()->route('admin.order.index');
             }else{
-               
+                $previousPaidAmount = $order->paid_amount;
                 $order->customer_id = $user->id;
                 $order->customer_name = $this->name;
                 $order->customer_email = $this->email;
@@ -699,22 +705,25 @@ class OrderEdit extends Component
                 $order->created_by = auth()->id();
                 $order->save();
 
-                if($order->paid_amount>$this->paid_amount){
-                    $paid_amount=$order->paid_amount - $this->paid_amount;
-                }elseif($order->paid_amount>$this->paid_amount){
-                    $paid_amount=$this->paid_amount - $order->paid_amount;
-                }elseif($order->paid_amount=$this->paid_amount){
-                    $paid_amount= '';
-                }
+                // if($order->paid_amount>$this->paid_amount){
+                //     $paid_amount=$order->paid_amount - $this->paid_amount;
+                // }elseif($order->paid_amount>$this->paid_amount){
+                //     $paid_amount=$this->paid_amount - $order->paid_amount;
+                // }elseif($order->paid_amount=$this->paid_amount){
+                //     $paid_amount= '';
+                // }
 
-                if($order->paid_amount>$this->paid_amount||$order->paid_amount<$this->paid_amount){
+                if ($this->paid_amount != $previousPaidAmount) {
+                    $paidDifference =$this->paid_amount - $previousPaidAmount;
+                    $transactionType = $paidDifference > 0 ? 'Debit' : 'Credit';
+
                     Ledger::create([
                         'order_id' => $order->id,
                         'user_id' => $user->id,
                         'transaction_date' => now(),
-                        'transaction_type' => 'Debit', // or 'Credit' depending on your business logic
+                        'transaction_type' => $transactionType, // or 'Credit' depending on your business logic
                         'payment_method' => $this->payment_mode,
-                        'paid_amount' => $this->paid_amount,
+                        'paid_amount' => abs($paidDifference),
                         // 'remaining_amount' => $this->remaining_amount,
                         'remarks' => 'Initial Payment for Order #' . $order->order_number,
                     ]);
