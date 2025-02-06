@@ -4,7 +4,7 @@ namespace App\Http\Livewire\Expense;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\DepExpanse;
+use App\Models\Payment;
 
 class DepotExpanse extends Component
 {
@@ -35,7 +35,7 @@ class DepotExpanse extends Component
     {
         return view('livewire.expense.depot-expanse', [
             // 'expanses' => DepotExpanse::latest()->paginate(10),
-            'expanses' => DepExpanse::latest()->paginate(10),
+            'expanses' => Payment::latest()->paginate(10),
         ]);
     }
 
@@ -43,7 +43,7 @@ class DepotExpanse extends Component
     {
         $this->validate();
 
-        DepotExpanse::create([
+        Payment::create([
             'payment_for' => $this->payment_for,
             'payment_in' => $this->payment_in,
             'bank_cash' => $this->bank_cash,
