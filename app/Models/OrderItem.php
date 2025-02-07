@@ -13,6 +13,8 @@ class OrderItem extends Model
 
     protected $fillable = [
         'order_id',
+        'catalogue_id',
+        'cat_page_number',
         'product_id',
         'collection',
         'fabrics',

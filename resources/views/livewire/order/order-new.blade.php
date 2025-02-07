@@ -293,7 +293,11 @@
                             </div>
 
                             <!-- Product -->
-                            <div class="mb-3 col-md-2">
+                            @if(isset($items[$index]['collection']) && $items[$index]['collection'] == 1)
+                                <div class="mb-3 col-md-4">
+                            @else
+                                <div class="mb-3 col-md-8">
+                            @endif
                                 <label class="form-label"><strong>Product</strong></label>
                                 <input type="text" wire:keyup="FindProduct($event.target.value, {{ $index }})" wire:model="items.{{ $index }}.searchproduct" class="form-control form-control-sm border border-1 customer_input @error('items.'.$index.'.searchproduct') border-danger @enderror" placeholder="Enter product name">
                                 @if (session()->has('errorProduct.' . $index)) 
@@ -311,7 +315,7 @@
                             </div>
                             <!-- Catalogue -->
                             @if(isset($items[$index]['collection']) && $items[$index]['collection'] == 1)
-                            <div class="col-md-3">
+                            <div class="mb-3 col-md-2">
                                 <label class="form-label"><strong>Catalogue</strong></label>
                                 <select wire:model="items.{{ $index }}.selectedCatalogue" class="form-control form-control-sm border border-1 @error('items.'.$index.'.selectedCatalogue') border-danger @enderror" wire:change="SelectedCatalogue($event.target.value, {{ $index }})">
                                     <option value="" selected hidden>Select Catalogue</option>
@@ -328,7 +332,7 @@
                                 @enderror 
                             </div>
                             
-                            <div class="col-md-3">
+                            <div class="mb-3 col-md-2">
                                 <label class="form-label"><strong>Page Number</strong></label>
                                 <input type="number" wire:model="items.{{$index}}.page_number"  wire:keyup="validatePageNumber({{ $index }})" id="page_number" class="form-control form-control-sm border border-2 @error('items.'.$index.'.page_number') border-danger @enderror"  min="1" 
                                  max="{{ isset($items[$index]['selectedCatalogue']) && isset($maxPages[$index][$items[$index]['selectedCatalogue']]) ? $maxPages[$index][$items[$index]['selectedCatalogue']] : '' }}"
@@ -340,29 +344,7 @@
                             
                             @endif
                             <!-- Catalogue end -->
-                            
-                            <div class="mb-3 col-md-2">
-                                <label class="form-label"><strong>Price</strong></label>
-                                <input type="text" wire:keyup="checkproductPrice($event.target.value, {{ $index }})" wire:model="items.{{ $index }}.price" class="form-control form-control-sm border border-1 customer_input text-center @if(session()->has('errorPrice.' . $index)) border-danger @endif @error('items.' . $index . '.price') border-danger  @enderror" placeholder="Enter Price">
-                                 @if(session()->has('errorPrice.' . $index))
-                                        <div class="text-danger">{{ session('errorPrice.' . $index) }}</div>
-                                @endif
-                                    
-                                @error('items.' . $index . '.price') 
-                                    <div class="text-danger">{{ $message }}</div>
-                                @enderror 
-                               
-                            </div>
-
-
-                            <!-- Delete Button -->
-                            <div class="col-md-1" style="margin-top: 19px;">
-                                <button type="button" class="btn btn-danger btn-sm mb-0" wire:click="removeItem({{ $index }})">
-                                    <span class="material-icons">delete</span>
-                                </button>
-                            </div>
                             {{-- Append Measurements data --}}
-                            {{-- {{dd($items[$index]['searchproduct'])}} --}}
                             @if(isset($this->items[$index]['product_id']) && $items[$index]['collection'] == 1)
                                 <div class="row">
                                     <div class="col-12 col-md-6 mb-2 mb-md-0 measurement_div">
@@ -393,46 +375,65 @@
                                     </div>
                                     <div class="col-12 col-md-6 mb-2 mb-md-0">
                                         <h6 class="badge bg-danger custom_success_badge dark-badge">Fabrics</h6>
-                                        <div class="row mx-2">
+
+                                        <div class="row mx-2 fabric-item">
                                             @if(isset($items[$index]['fabrics']) && count($items[$index]['fabrics']) > 0)
-                                                @foreach ($items[$index]['fabrics'] as $fabric)
-                                                <div class="col-lg-3 col-sm-6 col-12">
-                                                    <div class="btn-group" style="display: contents !important">
-                                                        <input 
-                                                            type="radio" 
-                                                            class="btn-check btn-check-custom" 
-                                                            name="fabric_{{ $index }}" 
-                                                            id="fabric_{{ $index }}_{{ $fabric->id }}" 
-                                                            wire:model="items.{{ $index }}.selected_fabric" 
-                                                            value="{{ $fabric->id }}" 
-                                                            autocomplete="off"
-                                                        />
-                                                        <label 
-                                                            class="btn btn-outline-success" 
-                                                            for="fabric_{{ $index }}_{{ $fabric->id }}" 
-                                                            data-mdb-ripple-init
-                                                        >
-                                                            {{ $fabric->title }}
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                @endforeach
+                                                <div class="col-lg-4 col-md-6 col-sm-12"> {{-- First column starts --}}
+                                                    @foreach ($items[$index]['fabrics'] as $fabric)
+                                                        @if ($loop->index % 12 == 0 && $loop->index != 0)
+                                                            </div><div class="col-lg-4 col-md-6 col-sm-12"> {{-- Close previous column and start a new one --}}
+                                                        @endif
+                                                        <div class="radio">
+                                                            <input 
+                                                                type="radio" 
+                                                                class="radio-input" 
+                                                                name="fabric_{{ $index }}" 
+                                                                id="fabric_{{ $index }}_{{ $fabric->id }}" 
+                                                                wire:model="items.{{ $index }}.selected_fabric" 
+                                                                value="{{ $fabric->id }}"
+                                                            />
+                                                            <label for="fabric_{{ $index }}_{{ $fabric->id }}" class="radio-label">
+                                                                <span class="radio-border"></span> 
+                                                                {{ $fabric->title }}
+                                                            </label>
+                                                        </div>
+                                                    @endforeach
+                                                </div> {{-- Close the last column --}}
                                             @else
                                                 <p>No fabrics available for this item.</p>
                                             @endif
                                         
-                                    
                                             @if (session()->has('fabrics_error.' . $index)) 
                                                 <div class="alert alert-danger">
                                                     {{ session('fabrics_error.' . $index) }}
                                                 </div>
                                             @endif
-                                        </div>
+                                        </div> {{-- Close the row --}}
                                     </div>
-                                    
                                 </div>
                             @endif
-
+                            <div class="row justify-content-end">
+                                <div class="mb-3 col-md-2">
+                                    <label class="form-label"><strong>Price</strong></label>
+                                    <input type="text" wire:keyup="checkproductPrice($event.target.value, {{ $index }})" wire:model="items.{{ $index }}.price" class="form-control form-control-sm border border-1 customer_input text-center @if(session()->has('errorPrice.' . $index)) border-danger @endif @error('items.' . $index . '.price') border-danger  @enderror" placeholder="Enter Price">
+                                     @if(session()->has('errorPrice.' . $index))
+                                            <div class="text-danger">{{ session('errorPrice.' . $index) }}</div>
+                                    @endif
+                                        
+                                    @error('items.' . $index . '.price') 
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror 
+                                   
+                                </div>
+    
+    
+                                <!-- Delete Button -->
+                                <div class="col-md-1" style="margin-top: 33px;">
+                                    <button type="button" class="btn btn-danger btn-sm mb-0" wire:click="removeItem({{ $index }})">
+                                        <span class="material-icons">delete</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     @endforeach
 
@@ -457,7 +458,7 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="text-align: center;">
+                                                    <td style="text-align: end;">
                                                         <button type="button" class="btn btn-cta btn-sm" wire:click="addItem">
                                                             <i class="material-icons text-white" style="font-size: 15px;">add</i>
                                                             Add Item

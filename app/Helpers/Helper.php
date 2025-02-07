@@ -44,81 +44,43 @@ class Helper
     }
 
 
-    //     public static function generateInvoiceBill()
-    // {
-    //     $user = Auth::user();
-    //     // Salesman logic (user_type == 0 and designation == 2)
-    //     if ($user->user_type == 0 && $user->designation == 2) {
-    //         $salesmanBillBook = SalesmanBilling::where('salesman_id', $user->id)
-    //             ->whereColumn('total_count', '>', 'no_of_used')
-    //             ->first();
-
-    //         if ($salesmanBillBook) {
-    //             // Start with the calculated invoice number
-    //             $orderNumber = $salesmanBillBook->start_no + $salesmanBillBook->no_of_used;
-
-    //             // Use do-while loop to ensure the invoice number is unique
-    //             do {
-    //                 // Check if the invoice number already exists in the database
-    //                 $exists = Order::where('order_number', $orderNumber)->exists();
-
-    //                 // If it exists, increment the number
-    //                 if ($exists) {
-    //                     $orderNumber++;
-    //                 }
-    //             } while ($exists);
-
-    //             // Return the unique invoice number
-    //             return [
-    //                 'number' => $orderNumber,
-    //                 'status' => 1,
-    //             ];
-    //         }
-
-    //         // No valid SalesmanBilling record found
-    //         return [
-    //             'number' => '0000',
-    //             'status' => 1,
-    //             'message' => 'No valid billing record found for the salesman.',
-    //         ];
-    //     }
-
-    //     // Manager logic (user_type == 0 and designation == 1)
-    //     if ($user->user_type == 0 && $user->designation == 1) {
-    //         return [
-    //             'number' => 0,
-    //             'status' => 0,
-    //             'message' => 'Invoice generation is not available for managers.',
-    //         ];
-    //     }
-
-    //     // Default return for unhandled user types or designations
-    //     return [
-    //         'number' => '0000',
-    //         'status' => 0,
-    //         'message' => 'Invoice generation not applicable for this user type or designation.',
-    //     ];
-    // }
     public static function generateInvoiceBill($salesManId)
     {
        
-
-
         // Check for salesman type user
             $salesmanBillBook = SalesmanBilling::where('salesman_id',$salesManId)
                 ->whereColumn('total_count', '>', 'no_of_used')
                 ->first();
-                // dd($salesmanBillBook);
-
-
             if ($salesmanBillBook) {
-                // If a valid SalesmanBilling record is found
+                $new_number = $salesmanBillBook->start_no + $salesmanBillBook->no_of_used;
+
+                do {
+                    // Check if the order number already exists
+                    $existing_order = Order::where('order_number', $new_number)->first();
+                    
+                    // If order number exists, increment it
+                    if ($existing_order) {
+                        $new_number++;
+                    }
+            
+                    // Continue loop while the new_number is within the allowed range
+                } while ($existing_order && $new_number <= $salesmanBillBook->end_no);
+            
+                // If we exit the loop and new_number is still valid, you can proceed
+                if ($new_number <= $salesmanBillBook->end_no) {
+                    $data = [
+                        'number' => $new_number,
+                        'status' => 1,
+                        'bill_id' => $salesmanBillBook->id,
+                    ];
+                    return $data;
+                } 
+
                 $data = [
-                    'number' => $salesmanBillBook->start_no + $salesmanBillBook->no_of_used,
+                    'number' => '0000',
                     'status' => 1,
                 ];
                 return $data;
-
             } else {
                 // If no SalesmanBilling record is found
                 $data = [
@@ -127,17 +89,6 @@ class Helper
                 ];
                 return $data;
             }
-       
-
-
-        // Check for other user type (e.g., managers)
-        // if ($user->user_type == 0 && $user->designation == 1) {
-        //     $data = [
-        //         'number' => 0,
-        //         'status' => 0,
-        //     ];
-        //     return $data;
-        // }
     }
 
 

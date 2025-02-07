@@ -30,6 +30,8 @@ class DepotExpanse extends Component
         'narration' => 'nullable|string',
         'is_gst' => 'boolean',
     ];
+   
+
 
     public function render()
     {

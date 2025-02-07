@@ -285,9 +285,12 @@
                                 <p class="text-danger">{{ $message }}</p>
                                 @enderror
                             </div>
-
                             <!-- Product -->
-                            <div class="mb-3 col-md-4">
+                            @if(isset($item['selected_collection']) && $item['selected_collection'] == 1)
+                                <div class="mb-3 col-md-4">
+                            @else
+                                <div class="mb-3 col-md-8">
+                            @endif
                                 <label class="form-label"><strong>Product</strong></label>
                                 <input type="text" wire:keyup="FindProduct($event.target.value, {{ $index }})"
                                     wire:model="items.{{ $index }}.searchproduct"
@@ -309,8 +312,38 @@
                                 </div>
                                 @endif
                             </div>
-
-                          
+                            <!-- Catalogue -->
+                           @if(isset($item['selected_collection']) && $item['selected_collection'] == 1)
+                            <div class="mb-3 col-md-2">
+                                <label class="form-label"><strong>Catalogue</strong></label>
+                                <select wire:model="items.{{ $index }}.selectedCatalogue" class="form-control form-control-sm border border-1 @error('items.'.$index.'.selectedCatalogue') border-danger @enderror" wire:change="SelectedCatalogue($event.target.value, {{ $index }})">
+                                    <option value="" selected hidden>Select Catalogue</option>
+                                    @foreach($item['catalogues'] ?? [] as $id => $cat_log)
+                                        @if($cat_log['catalogue_title'])
+                                            <option value="{{ $cat_log['id'] }}">{{ $cat_log['catalogue_title']['title'] }}
+                                                @if(isset($maxPages[$index][$id]))
+                                                (1 - {{ $maxPages[$index][$id] }})
+                                                @endif
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                                @error("items." .$index. ".selectedCatalogue") 
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror 
+                            </div>
+                            
+                            <div class="mb-3 col-md-2">
+                                <label class="form-label"><strong>Page Number</strong></label>
+                                <input type="number" wire:model="items.{{$index}}.page_number"  wire:keyup="validatePageNumber({{ $index }})" id="page_number" class="form-control form-control-sm border border-2 @error('items.'.$index.'.page_number') border-danger @enderror"  min="1" max="{{ isset($item['selectedCatalogue']) && isset($maxPages[$index][$item['selectedCatalogue']]) ? $maxPages[$index][$item['selectedCatalogue']] : '' }}"
+                                >
+                                @error("items.$index.page_number") 
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                            
+                            @endif
                             <!-- Measurements -->
                             @if(isset($item['product_id']))
                             <div class="row">
@@ -341,6 +374,44 @@
                                 </div>
                                 <!-- Fabrics -->
                                 <div class="col-12 col-md-6 mb-2 mb-md-0">
+                                    <h6 class="badge bg-danger custom_success_badge dark-badge">Fabrics</h6>
+                            
+                                    <div class="row mx-2 fabric-item">
+                                        @if(isset($item['fabrics']) && count($item['fabrics']) > 0)
+                                            <div class="col-lg-4 col-md-6 col-sm-12"> {{-- First column starts --}}
+                                                @forelse ($item['fabrics'] ?? [] as $fabric)
+                                                    @if ($loop->index % 12 == 0 && $loop->index != 0)
+                                                        </div><div class="col-lg-4 col-md-6 col-sm-12"> {{-- Close previous column and start a new one --}}
+                                                    @endif
+                                                    <div class="radio">
+                                                        <input 
+                                                            type="radio" 
+                                                            class="radio-input" 
+                                                            name="fabric_{{ $index }}" 
+                                                            id="fabric_{{ $index }}_{{ $fabric->id }}" 
+                                                            wire:model="items.{{ $index }}.selected_fabric" 
+                                                            value="{{ $fabric->id }}"
+                                                            @checked(isset($item['selected_fabric']) && $item['selected_fabric'] == $fabric->id)
+                                                        />
+                                                        <label for="fabric_{{ $index }}_{{ $fabric->id }}" class="radio-label">
+                                                            <span class="radio-border"></span> 
+                                                            {{ $fabric->title }}
+                                                        </label>
+                                                    </div>
+                                                @empty
+                                                    <p>No fabrics available for this item.</p>
+                                                @endforelse
+                                            </div> {{-- Close the last column --}}
+                                        @endif
+                            
+                                        @if (session()->has('fabrics_error.' . $index)) 
+                                            <div class="alert alert-danger">
+                                                {{ session('fabrics_error.' . $index) }}
+                                            </div>
+                                        @endif
+                                    </div> {{-- Close the row --}}
+                                </div>
+                                {{-- <div class="col-12 col-md-6 mb-2 mb-md-0">
                                     <h6 class="badge bg-danger custom_success_badge">Fabrics</h6>
                                     <div class="row mx-2">
                                         @forelse ($item['fabrics'] ?? [] as $fabric)
@@ -358,7 +429,7 @@
                                         <p>No fabrics available for this item.</p>
                                         @endforelse
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                             @endif
 
