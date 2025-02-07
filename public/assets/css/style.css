@@ -584,3 +584,56 @@ table td h6.text-sm {
     border-color: #000 !important;
     background: #000 !important;
 }
+.fabric-item .radio-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  /* Custom radio outer border */
+  .fabric-item .radio-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 13px;
+    position: relative;
+    font-weight: 600;
+    padding-left: 30px;
+  }
+  
+  /* Outer circle */
+  .fabric-item .radio-border {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #d449e3;
+    border-radius: 50%;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  /* Inner filled circle */
+  .fabric-item .radio-border::after {
+    content: "";
+    width: 12px;
+    height: 12px;
+    background-color: transparent;
+    border-radius: 50%;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  /* Checked state */
+  .fabric-item .radio-input:checked + .radio-label .radio-border {
+    border-color: #64236b;
+  }
+  
+  .fabric-item .radio-input:checked + .radio-label .radio-border::after {
+    background-color: #64236b;
+  }
+  

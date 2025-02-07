@@ -41,17 +41,7 @@
                                         Salesman
                                     </th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
-                                        Start No
-                                    </th>
-                                   
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
-                                        End No
-                                    </th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
-                                       Total Bill
-                                    </th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle">
-                                       No of Used Bill
+                                        Bill Book Info
                                     </th>
                                    
                                     <th class="text-end text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 align-middle px-4">
@@ -63,20 +53,18 @@
                                 @if ($billings->count()>0)
                                       @foreach($billings as  $billing)
                                     <tr>
-                                        <td>Created At:- 
-                                            {{date('d M Y',strtotime($billing->created_at))}}<br>
-                                            {{date('H:i A',strtotime($billing->created_at))}}
+                                        <td>
+                                            {{date('d M Y',strtotime($billing->created_at))}}
                                         </td>
                                         <td class="align-middle text-center">{{ $billing->salesman? $billing->salesman->name : ""}}</td>
-                                        <td class="align-middle text-center">{{ $billing->start_no}}</td>
                                         <td class="align-middle text-center">
-                                            {{ $billing->end_no}}
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            {{ $billing->total_count}}
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            {{ $billing->no_of_used}}
+                                            <ul>
+                                               <li>   Start No: {{ $billing->start_no}}</li>
+                                              <li>    End No:{{ $billing->end_no}}</li>
+                                               <li>   Total Bill:  {{ $billing->total_count}}</li>
+                                                <li>  No Of Used Bill: {{ $billing->no_of_used}}</li>
+                                            </ul>
+                                         
                                         </td>
                                         <td class="align-middle text-end px-4">
                                             <button wire:click="edit({{ $billing->id }})" class="btn btn-outline-info btn-sm custom-btn-sm" title="Edit">

@@ -10,11 +10,11 @@
     <div class="row g-3 mb-4">
         <div class="col-md-3">
             <label class="form-label text-xs">From Date</label>
-            <input type="date" class="form-control border border-2" wire:model="from_date" value="{{$from_date}}" placeholder="From" autocomplete="off">
+            <input type="date" class="form-control border border-2" wire:change="updateDate($event.target.value)" wire:model="from_date" value="{{$from_date}}" placeholder="From" autocomplete="off">
         </div>
         <div class="col-md-3">
             <label class="form-label text-xs">To Date</label>
-            <input type="date" class="form-control border border-2" wire:model="to_date" value="{{$to_date}}" placeholder="To" autocomplete="off">
+            <input type="date" class="form-control border border-2" wire:change="updateDate($event.target.value)" wire:model="to_date" value="{{$to_date}}" placeholder="To" autocomplete="off">
         </div>
             <div class="col-md-3">
                 <label class="form-label text-xs">User Type</label>
@@ -35,7 +35,7 @@
                         placeholder="Search {{ ucwords($userType) }}...">
                     
                     @if (!empty($results))
-                        <ul class="list-group mt-2">
+                        <ul class="list-group position-absolute w-100 mt-1" style="z-index: 1050;">
                             @foreach ($results as $name)
                                 <li class="list-group-item" style="cursor: pointer;" wire:click="selectUser('{{$name}}')">{{ $name }}</li>
                             @endforeach

@@ -51,6 +51,7 @@ class OrderNew extends Component
     public $remaining_amount = 0;
     public $payment_mode = null;
     public $order_number;
+    public $bill_id;
     public $bill_book = [];
 
     // For Catalogue
@@ -209,6 +210,7 @@ class OrderNew extends Component
     public function changeSalesman($value){
         $this->bill_book = Helper::generateInvoiceBill($value);
         $this->order_number = $this->bill_book['number'];
+        $this->bill_id = $this->bill_book['bill_id'];
     }
     
 
@@ -511,9 +513,8 @@ class OrderNew extends Component
 
     public function save()
     {
+        // dd($this->all());
         $this->validate();
-        
-        
         DB::beginTransaction(); // Begin transaction
         
         try{ 
@@ -686,9 +687,15 @@ class OrderNew extends Component
             $order->remaining_amount = $this->remaining_amount;
             $order->payment_mode = $this->payment_mode;
             $order->last_payment_date = date('Y-m-d H:i:s');
-            $order->created_by = auth()->id();
+            $order->created_by = (int) $this->salesman; // Explicitly cast to integer
 
             $order->save();
+
+            $update_bill_book = SalesmanBilling::where('id',$this->bill_id)->first();
+            if($update_bill_book){
+                $update_bill_book->no_of_used = $update_bill_book->no_of_used +1;
+                $update_bill_book->save();
+            }
 
             Payment::create([
                 'order_id'=> $order->id,
@@ -710,15 +717,6 @@ class OrderNew extends Component
 
            
 
-               // Validate fabric prices before generating the order
-            //    foreach ($this->items as $item) {
-            //        $fabric_data = Fabric::find($item['selected_fabric']);
-            //        if ($fabric_data && isset($item['price']) && $item['price'] < $fabric_data->threshold_price) {
-            //         session()->flash('error', '🚨 The price for fabric "' . $fabric_data->title . '" cannot be less than its threshold price of ' . $fabric_data->threshold_price . '.');
-            //         return;
-            //     }
-            //    }
-
             // Save order items and measurements
             foreach ($this->items as $k => $item) {
                 $collection_data = Collection::find($item['collection']);
@@ -728,6 +726,8 @@ class OrderNew extends Component
 
                 $orderItem = new OrderItem();
                 $orderItem->order_id = $order->id;
+                $orderItem->catalogue_id = $item['selectedCatalogue'];
+                $orderItem->cat_page_number = $item['page_number'];
                 $orderItem->product_id = $item['product_id'];
                 $orderItem->collection = $collection_data ? $collection_data->id : "";
                 $orderItem->category = $category_data ? $category_data->id : "";

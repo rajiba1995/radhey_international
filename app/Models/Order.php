@@ -53,5 +53,16 @@ class Order extends Model
     {
         return $this->belongsTo(BusinessType::class, 'business_type');
     }
+
+    public static $statuses = [
+        1 => 'Pending',
+        2 => 'Confirmed',
+        5 => 'In Production',
+        7 => 'Ready for Delivery',
+        8 => 'Shipped',
+        9 => 'Delivered',
+        10 => 'Cancelled',
+        11 => 'Returned',
+    ];
     
 }

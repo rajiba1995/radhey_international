@@ -12,6 +12,11 @@
                         {{ session('success') }}
                     </div>
                 @endif
+                @if (session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
             </div>
             <div class="d-flex justify-content-between mb-3">
                 <div class="d-flex align-items-center">
@@ -81,15 +86,25 @@
                                 <td><p class="text-xs font-weight-bold mb-0">{{ $order->total_amount }}</p></td>
                                 <td class="{{$order->remaining_amount>0?"text-danger":""}}"><p class="text-xs font-weight-bold mb-0">{{ $order->remaining_amount }}</p></td>
                                 <td>
-                                    <button class="badge bg-primary btn-sm">{{$order->status==1?"Pending":""}}</button>
+                                    <select name="status" class="form-select" wire:change="updateStatus($event.target.value, {{$order->id}})">
+                                        @foreach (\App\Models\Order::$statuses as $key => $value)
+                                            <option value="{{ $value }}" {{ $order->status == $value ? 'selected' : '' }}>
+                                                {{ $value }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    
+                                    {{-- <button class="badge bg-primary btn-sm">{{$order->status}}</button> --}}
                                 </td>
                                 <td>
                                      <a href="{{route('admin.order.view',$order->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="View product">
                                          <span class="material-icons">visibility</span>
                                     </a>
+                                    @if($order->status=="Pending")
                                     <a href="{{route('admin.order.edit', $order->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="Edit product">
                                         <span class="material-icons">edit</span>
                                     </a>
+                                    @endif
                                       <a href="{{route('admin.order.ledger.view', $order->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">Ledger History</a>
                                     <a href="{{route('admin.order.invoice', $order->id)}}" target="_blank" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">Invoice</a>
                                 </td>
