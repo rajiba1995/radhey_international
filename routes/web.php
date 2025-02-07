@@ -22,7 +22,7 @@ use GuzzleHttp\Middleware;
 use App\Http\Livewire\Order\{OrderIndex, OrderNew, OrderInvoice,OrderEdit,OrderView,LedgerView};
 use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory,FabricIndex,CollectionIndex,GalleryIndex,MasterCatalogue};
 use App\Http\Livewire\Staff\{DesignationIndex,StaffIndex,StaffAdd,StaffUpdate,StaffView,StaffTask,StaffTaskAdd,StaffCities,SalesmanBillingIndex,MasterBranch};
-use App\Http\Livewire\Expense\{ExpenseIndex,DepotExpanse,DailyExpenses};
+use App\Http\Livewire\Expense\{ExpenseIndex,DepotExpanse,DailyExpenses,DailyCollection};
 use App\Http\Livewire\UserAddressForm; 
 use App\Http\Livewire\CustomerEdit; 
 use App\Http\Livewire\CustomerDetails; 
@@ -174,7 +174,12 @@ Route::group(['prefix' => 'products'], function () {
         Route::get('/daily/expenses', DailyExpenses::class)->name('daily.expenses');
 
     });
-    
+
+    Route::prefix('daily-collection')->name('daily-collection.')->group(function() {
+        // Route::get('/', DepotExpanse::class)->name('index');
+        Route::get('/add', DailyCollection::class)->name('add');
+
+    });
 
     
     // Route::get('/measurements/add', MeasurementAdd::class)->name('measurements.add');
