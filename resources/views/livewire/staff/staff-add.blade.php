@@ -75,7 +75,7 @@
                 <div class="row">
                     <div class="mb-3 col-md-4">
                         <label for="mobile" class="form-label">Mobile <span class="text-danger">*</span></label>
-                        <input type="number" wire:model="mobile" id="mobile" class="form-control form-control-sm border border-1 p-2" placeholder="Staff Mobile No">
+                        <input type="text" wire:model="mobile" id="mobile" class="form-control form-control-sm border border-1 p-2" placeholder="Staff Mobile No">
                         @error('mobile')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
@@ -87,7 +87,7 @@
                            <span class="text-danger">*</span>   
                          @endif
                          </label>
-                        <input type="number" wire:model="aadhaar_number" id="aadhaar_number" class="form-control form-control-sm border border-1 p-2" placeholder="Staff Aadhaar Number">
+                        <input type="text" wire:model="aadhaar_number" id="aadhaar_number" class="form-control form-control-sm border border-1 p-2" placeholder="Staff Aadhaar Number">
                         @error('aadhaar_number')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
@@ -96,7 +96,7 @@
                     <div class="mb-3 col-md-4">
                         <label for="whatsapp_no" class="form-label">WhatsApp <span class="text-danger">*</span></label>
                         <div class="d-flex align-items-center">
-                            <input type="number" wire:model="whatsapp_no" id="whatsapp_no" class="form-control form-control-sm border border-1 p-2 me-2" placeholder="Staff WhatsApp No"  @if($is_wa_same) disabled @endif>
+                            <input type="text" wire:model="whatsapp_no" id="whatsapp_no" class="form-control form-control-sm border border-1 p-2 me-2" placeholder="Staff WhatsApp No"  @if($is_wa_same) disabled @endif>
                            
                             <input type="checkbox" id="is_wa_same" wire:change="SameAsMobile" value="0" @if($is_wa_same) checked @endif>
                             <label for="is_wa_same" class="form-check-label ms-2">Same as Phone Number</label>
@@ -169,7 +169,7 @@
                             <!-- Contact Number -->
                             <div class="col-md-4">
                                 <label class="form-label">Contact Number</label>
-                                <input type="number" wire:model="emergency_mobile" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Emergency Mobile Number">
+                                <input type="text" wire:model="emergency_mobile" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Emergency Mobile Number">
                                 @error('emergency_mobile')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -184,7 +184,7 @@
                             <div class="col-md-4">
                                 <label class="form-label">WhatsApp Number</label>
                                 <div class="d-flex align-items-center">
-                                    <input type="number" wire:model="emergency_whatsapp" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Emergency WhatsApp Number" @if($same_as_contact)
+                                    <input type="text" wire:model="emergency_whatsapp" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Emergency WhatsApp Number" @if($same_as_contact)
                                         disabled
                                     @endif>
                                     <input type="checkbox" wire:change="SameAsContact" id="same_as_contact" class="me-2" value="0" @if($same_as_contact)
@@ -192,6 +192,9 @@
                                     @endif>
                                     <label for="same_as_contact" class="form-label">Same as Contact Number</label>
                                 </div>
+                                @error('emergency_whatsapp')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <!-- Contact Address -->

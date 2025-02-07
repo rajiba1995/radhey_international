@@ -124,7 +124,7 @@
                             @enderror
                         </div>
                         <div class="mb-3 col-md-4">
-                            <label for="billing_state" class="form-label"> State <span class="text-danger">*</span></label>
+                            <label for="billing_state" class="form-label"> State </label>
                             <input type="text" wire:model="billing_state" id="billing_state" class="form-control form-control-sm border border-1 p-2" placeholder="Enter State">
                             @error('billing_state')
                                 <div class="text-danger">{{ $message }}</div>
@@ -177,7 +177,7 @@
                             @enderror
                         </div>
                         <div class="mb-3 col-md-4">
-                            <label for="shipping_state" class="form-label"> State <span class="text-danger">*</span></label>
+                            <label for="shipping_state" class="form-label"> State </label>
                             <input type="text" wire:model="shipping_state" id="shipping_state" class="form-control form-control-sm border border-1 p-2" placeholder="Enter State" @if($is_billing_shipping_same) disabled @endif>
                             @error('shipping_state')
                                 <div class="text-danger">{{ $message }}</div>

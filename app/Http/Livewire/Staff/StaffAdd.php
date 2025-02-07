@@ -51,12 +51,12 @@ class StaffAdd extends Component
             'email' => 'nullable|email|unique:users,email',
           'mobile' => [
                 'required',
-                'regex:/^\d{' . env('VALIDATE_MOBILE', 8) . ',}$/', // At least VALIDATE_MOBILE digits
+                'regex:/^\+?\d{' . env('VALIDATE_MOBILE', 8) . ',}$/', // At least VALIDATE_MOBILE digits
                 'unique:users,phone,' . ($this->user_id ?? 'null'),
             ],
             'whatsapp_no' => [
                 'required',
-                'regex:/^\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/', // At least VALIDATE_WHATSAPP digits
+                'regex:/^\+?\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/', // At least VALIDATE_WHATSAPP digits
             ],
             'aadhaar_number' => $aadhaarValidationRule,
             'image' => 'nullable|image|max:2048',
@@ -77,6 +77,14 @@ class StaffAdd extends Component
             'city' => 'nullable|string|max:255',
             'pincode' => 'nullable|string|max:10',
             'country' => 'nullable|string|max:255',
+            'emergency_mobile'=> [
+                'nullable',
+                'regex:/^\+?\d{' . env('VALIDATE_MOBILE', 8) . ',}$/', // At least VALIDATE_MOBILE digits
+            ],
+            'emergency_whatsapp'=>[
+                'nullable',
+                'regex:/^\+?\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/',
+            ]
        ],[
             'branch_id.required' => 'Please select branch',
        ]);

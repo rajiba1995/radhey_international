@@ -118,6 +118,8 @@ class OrderNew extends Component
     // Define rules for validation
     protected $rules = [
         'items.*.collection' => 'required|string',
+        'items.*.category' => 'required|string',
+        'items.*.searchproduct' => 'required|string',
         'items.*.product_id' => 'required|integer',
         'items.*.price' => 'required|numeric|min:1',  // Ensuring that price is a valid number (and greater than or equal to 0).
         'paid_amount' => 'required|numeric|min:1',   // Ensuring that price is a valid number (and greater than or equal to 0).
@@ -131,6 +133,8 @@ class OrderNew extends Component
 
     protected function messages(){
         return [
+             'items.*.category.required' => 'Please select a category for the item.',
+             'items.*.searchproduct.required' => 'Please select a product for the item.',
              'items.*.selectedCatalogue.required' => 'Please select a catalogue for the item.',
              'items.*.page_number.required' => 'Please select a page for the item.',
              'items.*.price.required'  => 'Please enter a price for the item.',
@@ -859,16 +863,7 @@ class OrderNew extends Component
             }
     
             // Validate Email
-            if (empty($this->email)) {
-                $this->errorClass['email'] = 'border-danger';
-                $this->errorMessage['email'] = 'Please enter customer email';
-            } elseif (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
-                $this->errorClass['email'] = 'border-danger';
-                $this->errorMessage['email'] = 'Please enter a valid email address';
-            } else {
-                $this->errorClass['email'] = null;
-                $this->errorMessage['email'] = null;
-            }
+           
     
             // Validate Date of Birth
             if (empty($this->dob)) {
@@ -883,7 +878,7 @@ class OrderNew extends Component
             if (empty($this->phone)) {
                 $this->errorClass['phone'] = 'border-danger';
                 $this->errorMessage['phone'] = 'Please enter customer phone number';
-            } elseif (!preg_match('/^\d{' . env('VALIDATE_MOBILE', 8) . ',}$/', $this->phone)) {
+            } elseif (!preg_match('/^\+?\d{' . env('VALIDATE_MOBILE', 8) . ',}$/', $this->phone)) {
                 $this->errorClass['phone'] = 'border-danger';
                 $this->errorMessage['phone'] = 'Phone number must be ' . env('VALIDATE_MOBILE', 8) . ' or more digits long';
             } else {
@@ -895,7 +890,7 @@ class OrderNew extends Component
            if (empty($this->whatsapp_no)) {
                 $this->errorClass['whatsapp_no'] = 'border-danger';
                 $this->errorMessage['whatsapp_no'] = 'Please enter WhatsApp number';
-            } elseif (!preg_match('/^\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/', $this->whatsapp_no)) {
+            } elseif (!preg_match('/^\+?\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/', $this->whatsapp_no)) {
                 $this->errorClass['whatsapp_no'] = 'border-danger';
                 $this->errorMessage['whatsapp_no'] = 'WhatsApp number must be ' . env('VALIDATE_WHATSAPP', 8) . ' or more digits long';
             } else {
@@ -921,13 +916,7 @@ class OrderNew extends Component
                 $this->errorMessage['billing_city'] = null;
             }
     
-            if (empty($this->billing_state)) {
-                $this->errorClass['billing_state'] = 'border-danger';
-                $this->errorMessage['billing_state'] = 'Please enter billing state';
-            } else {
-                $this->errorClass['billing_state'] = null;
-                $this->errorMessage['billing_state'] = null;
-            }
+           
     
             if (empty($this->billing_country)) {
                 $this->errorClass['billing_country'] = 'border-danger';
@@ -969,13 +958,6 @@ class OrderNew extends Component
                 $this->errorMessage['shipping_city'] = null;
             }
     
-            if (empty($this->shipping_state)) {
-                $this->errorClass['shipping_state'] = 'border-danger';
-                $this->errorMessage['shipping_state'] = 'Please enter shipping state';
-            } else {
-                $this->errorClass['shipping_state'] = null;
-                $this->errorMessage['shipping_state'] = null;
-            }
     
             if (empty($this->shipping_country)) {
                 $this->errorClass['shipping_country'] = 'border-danger';

@@ -53,12 +53,12 @@
                             </div>
 
                             <div class="mb-3 col-md-3">
-                                <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                                <label for="email" class="form-label">Email</label>
                                 <input type="email" wire:model="email" id="email"
                                     class="form-control form-control-sm border border-1 p-2 {{ $errorClass['email'] ?? '' }}"
                                     placeholder="Enter Email">
                                 @if(isset($errorMessage['email']))
-                                <div class="text-danger">{{ $errorMessage['email'] }}</div>
+                                  <div class="text-danger">{{ $errorMessage['email'] }}</div>
                                 @endif
                             </div>
 
@@ -74,7 +74,7 @@
 
                             <div class="mb-3 col-md-3">
                                 <label for="phone" class="form-label">Phone Number<span class="text-danger">*</span></label>
-                                <input type="number" wire:model="phone" id="phone"
+                                <input type="text" wire:model="phone" id="phone"
                                     class="form-control form-control-sm border border-1 p-2 {{ $errorClass['phone'] ?? '' }}"
                                     placeholder="Enter Phone Number">
                                 @if(isset($errorMessage['phone']))
@@ -85,7 +85,7 @@
                             <div class="mb-3 col-md-3">
                                 <label for="whatsapp_no" class="form-label">WhatsApp Number <span
                                         class="text-danger">*</span></label>
-                                <input type="number" wire:model="whatsapp_no" id="whatsapp_no"
+                                <input type="text" wire:model="whatsapp_no" id="whatsapp_no"
                                     class="form-control form-control-sm border border-1 p-2 {{ $errorClass['whatsapp_no'] ?? '' }}"
                                     placeholder="Enter WhatsApp Number" @if($whatsapp_no)disabled @endif>
                                 @if(isset($errorMessage['whatsapp_no']))
@@ -133,8 +133,7 @@
                         </div>
 
                         <div class="mb-3 col-md-4">
-                            <label for="billing_state" class="form-label">State <span
-                                    class="text-danger">*</span></label>
+                            <label for="billing_state" class="form-label">State </label>
                             <input type="text" wire:model="billing_state" id="billing_state"
                                 class="form-control form-control-sm border border-1 p-2 {{ $errorClass['billing_state'] ?? '' }}"
                                 placeholder="Enter state">
@@ -183,7 +182,9 @@
                                     class="text-danger">*</span></label>
                             <textarea wire:model="shipping_address" id="shipping_address"
                                 class="form-control form-control-sm border border-1 p-2 {{ $errorClass['shipping_address'] ?? '' }}"
-                                placeholder="Enter shipping address"></textarea>
+                                placeholder="Enter shipping address" @if ($shipping_address)
+                                    disabled
+                                @endif></textarea>
                             @if(isset($errorMessage['shipping_address']))
                             <div class="text-danger">{{ $errorMessage['shipping_address'] }}</div>
                             @endif
@@ -200,18 +201,21 @@
                                     class="text-danger">*</span></label>
                             <input type="text" wire:model="shipping_city" id="shipping_city"
                                 class="form-control form-control-sm border border-1 p-2 {{ $errorClass['shipping_city'] ?? '' }}"
-                                placeholder="Enter city">
+                                placeholder="Enter city" @if ($shipping_city)
+                                    disabled
+                                @endif>
                             @if(isset($errorMessage['shipping_city']))
                             <div class="text-danger">{{ $errorMessage['shipping_city'] }}</div>
                             @endif
                         </div>
 
                         <div class="mb-3 col-md-4">
-                            <label for="shipping_state" class="form-label">State <span
-                                    class="text-danger">*</span></label>
+                            <label for="shipping_state" class="form-label">State </label>
                             <input type="text" wire:model="shipping_state" id="shipping_state"
                                 class="form-control form-control-sm border border-1 p-2 {{ $errorClass['shipping_state'] ?? '' }}"
-                                placeholder="Enter state">
+                                placeholder="Enter state" @if ($shipping_state)
+                                    disabled
+                                @endif>
                             @if(isset($errorMessage['shipping_state']))
                             <div class="text-danger">{{ $errorMessage['shipping_state'] }}</div>
                             @endif
@@ -222,7 +226,9 @@
                                     class="text-danger">*</span></label>
                             <input type="text" wire:model="shipping_country" id="shipping_country"
                                 class="form-control form-control-sm border border-1 p-2 {{ $errorClass['shipping_country'] ?? '' }}"
-                                placeholder="Enter country">
+                                placeholder="Enter country" @if ($shipping_country)
+                                    disabled
+                                @endif>
                             @if(isset($errorMessage['shipping_country']))
                             <div class="text-danger">{{ $errorMessage['shipping_country'] }}</div>
                             @endif
@@ -233,7 +239,9 @@
                                     class="text-danger">*</span></label>
                             <input type="number" wire:model="shipping_pin" id="shipping_pin"
                                 class="form-control form-control-sm border border-1 p-2 {{ $errorClass['shipping_pin'] ?? '' }}"
-                                placeholder="Enter PIN">
+                                placeholder="Enter PIN" @if ($shipping_pin)
+                                    disabled
+                                @endif>
                             @if(isset($errorMessage['shipping_pin']))
                             <div class="text-danger">{{ $errorMessage['shipping_pin'] }}</div>
                             @endif

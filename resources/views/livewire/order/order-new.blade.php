@@ -43,7 +43,7 @@
                                     <div id="fetch_customer_details" class="dropdown-menu show w-100" style="max-height: 200px; overflow-y: auto;">
                                         @foreach ($searchResults as $customer)
                                             <button class="dropdown-item" type="button" wire:click="selectCustomer({{ $customer->id }})">
-                                                <img src="{{ $customer->profile_image ? asset($customer->profile_image) : asset('assets/img/user.png') }}" alt=""> {{ $customer->name }} - {{ $customer->phone }} ({{ $customer->email }})
+                                                <img src="{{ $customer->profile_image ? asset($customer->profile_image) : asset('assets/img/user.png') }}" alt=""> {{ $customer->name }}  ({{ $customer->phone }}) 
                                             </button>
                                         @endforeach
                                     </div>
@@ -116,7 +116,7 @@
                         </div>
     
                         <div class="mb-3 col-md-3">
-                            <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                            <label for="email" class="form-label">Email </label>
                             <input type="email" wire:model="email" id="email" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['email'] ?? '' }}" placeholder="Enter email">
                             @if(isset($errorMessage['email']))
                                 <div class="text-danger">{{ $errorMessage['email'] }}</div>
@@ -132,7 +132,7 @@
                         </div>
                         <div class="mb-3 col-md-3">
                             <label for="phone" class="form-label">Phone <span class="text-danger">*</span></label>
-                            <input type="number" wire:model="phone" id="phone" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['phone'] ?? '' }}" placeholder="Enter phone number">
+                            <input type="text" wire:model="phone" id="phone" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['phone'] ?? '' }}" placeholder="Enter phone number">
                             @if(isset($errorMessage['phone']))
                                 <div class="text-danger">{{ $errorMessage['phone'] }}</div>
                             @endif
@@ -140,7 +140,7 @@
     
                         <div class="mb-3 col-md-3">
                             <label for="whatsapp_no" class="form-label">WhatsApp Number <span class="text-danger">*</span></label>
-                            <input type="number" wire:model="whatsapp_no" id="whatsapp_no" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['whatsapp_no'] ?? '' }}" placeholder="Enter whatsapp number"  @if($whatsapp_no)disabled @endif>
+                            <input type="text" wire:model="whatsapp_no" id="whatsapp_no" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['whatsapp_no'] ?? '' }}" placeholder="Enter whatsapp number"  @if($whatsapp_no)disabled @endif>
                             @if(isset($errorMessage['whatsapp_no']))
                                 <div class="text-danger">{{ $errorMessage['whatsapp_no'] }}</div>
                             @endif
@@ -176,7 +176,7 @@
                             @endif
                         </div>
                         <div class="mb-3 col-md-4">
-                            <label for="billing_state" class="form-label">State <span class="text-danger">*</span></label>
+                            <label for="billing_state" class="form-label">State</label>
                             <input type="text" wire:model="billing_state" id="billing_state" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['billing_state'] ?? '' }}" placeholder="Enter state">
                             @if(isset($errorMessage['billing_state']))
                                 <div class="text-danger">{{ $errorMessage['billing_state'] }}</div>
@@ -210,39 +210,51 @@
                     <div class="row">
                         <div class="mb-3 col-md-4">
                             <label for="shipping_address" class="form-label">Street Address <span class="text-danger">*</span></label>
-                            <textarea  wire:model="shipping_address" id="shipping_address" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['shipping_address'] ?? '' }}" placeholder="Enter shipping address"></textarea>
+                            <textarea  wire:model="shipping_address" id="shipping_address" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['shipping_address'] ?? '' }}" placeholder="Enter shipping address" @if ($shipping_address)
+                                disabled
+                            @endif></textarea>
                             @if(isset($errorMessage['shipping_address']))
                                 <div class="text-danger">{{ $errorMessage['shipping_address'] }}</div>
                             @endif
                         </div>
                         <div class="mb-3 col-md-4">
                             <label for="shipping_landmark" class="form-label">Landmark</label>
-                            <input type="text" wire:model="shipping_landmark" id="shipping_landmark" class="form-control form-control-sm border border-1 p-2" placeholder="Enter landmark">
+                            <input type="text" wire:model="shipping_landmark" id="shipping_landmark" class="form-control form-control-sm border border-1 p-2" placeholder="Enter landmark" @if ($shipping_landmark)
+                                disabled
+                            @endif>
                         </div>
                         <div class="mb-3 col-md-4">
                             <label for="shipping_city" class="form-label">City <span class="text-danger">*</span></label>
-                            <input type="text" wire:model="shipping_city" id="shipping_city" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['shipping_city'] ?? '' }}" placeholder="Enter city">
+                            <input type="text" wire:model="shipping_city" id="shipping_city" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['shipping_city'] ?? '' }}" placeholder="Enter city" @if ($shipping_city)
+                                disabled
+                            @endif>
                             @if(isset($errorMessage['shipping_city']))
                                 <div class="text-danger">{{ $errorMessage['shipping_city'] }}</div>
                             @endif
                         </div>
                         <div class="mb-3 col-md-4">
-                            <label for="shipping_state" class="form-label">State <span class="text-danger">*</span></label>
-                            <input type="text" wire:model="shipping_state" id="shipping_state" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['shipping_state'] ?? '' }}" placeholder="Enter state">
+                            <label for="shipping_state" class="form-label">State </label>
+                            <input type="text" wire:model="shipping_state" id="shipping_state" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['shipping_state'] ?? '' }}" placeholder="Enter state" @if ($shipping_state)
+                                disabled
+                            @endif>
                             @if(isset($errorMessage['shipping_state']))
                                 <div class="text-danger">{{ $errorMessage['shipping_state'] }}</div>
                             @endif
                         </div>
                         <div class="mb-3 col-md-4">
                             <label for="shipping_country" class="form-label">Country <span class="text-danger">*</span></label>
-                            <input type="text" wire:model="shipping_country" id="shipping_country" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['shipping_country'] ?? '' }}" placeholder="Enter country">
+                            <input type="text" wire:model="shipping_country" id="shipping_country" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['shipping_country'] ?? '' }}" placeholder="Enter country" @if ($shipping_country)
+                                disabled
+                            @endif>
                             @if(isset($errorMessage['shipping_country']))
                                 <div class="text-danger">{{ $errorMessage['shipping_country'] }}</div>
                             @endif
                         </div>
                         <div class="mb-3 col-md-4">
                             <label for="shipping_pin" class="form-label">Zip Code </label>
-                            <input type="number" wire:model="shipping_pin" id="shipping_pin" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['shipping_pin'] ?? '' }}" placeholder="Enter PIN">
+                            <input type="number" wire:model="shipping_pin" id="shipping_pin" class="form-control form-control-sm border border-1 p-2 {{ $errorClass['shipping_pin'] ?? '' }}" placeholder="Enter PIN" @if ($shipping_pin)
+                                disabled
+                            @endif>
                             @if(isset($errorMessage['shipping_pin']))
                                 <div class="text-danger">{{ $errorMessage['shipping_pin'] }}</div>
                             @endif
@@ -276,7 +288,7 @@
 
                             <!-- Category -->
                             <div class="mb-3 col-md-2">
-                                <label class="form-label"><strong>Category</strong></label>
+                                <label class="form-label"><strong>Category</strong> <span class="text-danger">*</span></label>
                                 <select wire:model="items.{{ $index }}.category" class="form-select form-control-sm border border-1 @error('items.'.$index.'.category') border-danger @enderror" wire:change="CategoryWiseProduct($event.target.value, {{ $index }})">
                                     <option value="" selected hidden>Select Category</option>
                                     @if (isset($items[$index]['categories']) && count($items[$index]['categories']) > 0)
@@ -294,7 +306,7 @@
 
                             <!-- Product -->
                             <div class="mb-3 col-md-2">
-                                <label class="form-label"><strong>Product</strong></label>
+                                <label class="form-label"><strong>Product</strong> <span class="text-danger">*</span></label>
                                 <input type="text" wire:keyup="FindProduct($event.target.value, {{ $index }})" wire:model="items.{{ $index }}.searchproduct" class="form-control form-control-sm border border-1 customer_input @error('items.'.$index.'.searchproduct') border-danger @enderror" placeholder="Enter product name">
                                 @if (session()->has('errorProduct.' . $index)) 
                                     <p class="text-danger">{{ session('errorProduct.' . $index) }}</p>
@@ -308,6 +320,9 @@
                                         @endforeach
                                     </div>
                                 @endif
+                                @error("items.$index.searchproduct")
+                                  <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             <!-- Catalogue -->
                             @if(isset($items[$index]['collection']) && $items[$index]['collection'] == 1)
