@@ -81,8 +81,27 @@ class DailyExpenses extends Component
             'expense_title' => 'required',
             'amount' => 'required|numeric',
             'remarks' => 'nullable|string',
-            'image' => 'nullable|image|max:1024', // Validate the image upload
+            'image' => 'required|image|max:1024', // Validate the image upload
+        
+            // Conditional validation
+            'stuff_id' => 'required_if:expense_at,1|nullable|exists:stuffs,id',
+            'supplier_id' => 'required_if:expense_at,2|nullable|exists:suppliers,id',
+        ], [
+            'expense_at.required' => 'Please select where the expense is being made.',
+            'expense_title.required' => 'Please select an expense title.',
+            'amount.required' => 'The amount field is required.',
+            'amount.numeric' => 'The amount must be a valid number.',
+            'image.required' => 'Please upload an image for this expense.',
+            'image.image' => 'The file must be an image.',
+            'image.max' => 'The image size must not exceed 1MB.',
+        
+            // Custom messages for conditional fields
+            'stuff_id.required_if' => 'The Stuff Name is required .',
+            'stuff_id.exists' => 'The selected Stuff Name is invalid.',
+            'supplier_id.required_if' => 'The Supplier Name is required.',
+            'supplier_id.exists' => 'The selected Supplier Name is invalid.',
         ]);
+        
 
         $imagePath = null;
         if ($this->image) {

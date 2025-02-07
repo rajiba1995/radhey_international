@@ -35,11 +35,6 @@
                             <span class="material-icons">refresh</span>
                         </a>
                     </div>
-                    <div class="col-md-4 text-end">
-                            <a type="button" class="btn btn-primary btn-sm" href="{{route('depot-expense.daily.expenses')}}">
-                                + Add Expense
-                            </a>
-                        </div>
                 </div>
 
                 <div class="col-lg-12 col-md-6">

@@ -1,4 +1,10 @@
 <div class="container-fluid px-2 px-md-4">
+    @if (session()->has('message'))
+        <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+            {{ session('message') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
     <div class="card card-body">
         <h4 class="m-0">Add Daily Expense</h4>
         <div class="card card-plain h-100">
@@ -14,6 +20,7 @@
                     </div>
                 </div>
             </div>
+           
 
             <div class="card-body p-3">
                 <form wire:submit.prevent="submitForm" enctype="multipart/form-data">
