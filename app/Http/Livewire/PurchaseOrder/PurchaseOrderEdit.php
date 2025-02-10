@@ -123,14 +123,14 @@ class PurchaseOrderEdit extends Component
 
 
         if ($this->isFabricSelected[$index] ?? false) {
-            if ($pcsPerMtr > 0 && $pricePerPc > 0) {
-                $this->rows[$index]['total_amount'] = $pcsPerMtr * $pricePerPc;
+            if ($pcsPerMtr > 0 && $pricePerMtr > 0) {
+                $this->rows[$index]['total_amount'] = $pcsPerMtr * $pricePerMtr;
             } else {
                 $this->rows[$index]['total_amount'] = null;
             }
         } else {
-            if ($pcsPerQty > 0 && $pricePerPc > 0) {
-                $this->rows[$index]['total_amount'] = $pcsPerQty * $pricePerPc;
+            if ($pcsPerQty > 0 && $pricePerQty > 0) {
+                $this->rows[$index]['total_amount'] = $pcsPerQty * $pricePerQty;
             } else {
                 $this->rows[$index]['total_amount'] = null;
             }
@@ -146,13 +146,15 @@ class PurchaseOrderEdit extends Component
             'rows.*.product' => 'required_if:rows.*.fabric,null',
             'rows.*.pcs_per_mtr' => 'nullable|numeric|min:1',
             'rows.*.pcs_per_qty' => 'nullable|numeric|min:1',
-            'rows.*.price_per_pc' => 'required|numeric|min:0',
+           'rows.*.price_per_mtr' => 'required_if:rows.*.fabric,!null|nullable|numeric|min:0',
+            'rows.*.price_per_qty' => 'required_if:rows.*.product,!null |nullable|numeric|min:0',
             'rows.*.total_amount' => 'required|numeric|min:0',
         ], [
             'rows.*.collections.required' => 'The collection field is required.',
             'rows.*.fabric.required_if' => 'The fabric field is required.',
             'rows.*.product.required_if' => 'The product field is required.',
-            'rows.*.price_per_pc.required' => 'The price per piece is required.',
+            'rows.*.price_per_mtr.required_if' => 'The price per meter is required for fabric items.',
+            'rows.*.price_per_qty.required_if' => 'The price per quantity is required for product items.',
             'rows.*.total_amount.required' => 'The total amount is required.',
         ]);
 
@@ -177,7 +179,7 @@ class PurchaseOrderEdit extends Component
             PurchaseOrderProduct::where('purchase_order_id', $this->purchaseOrder->id)->delete();
 
             // Insert updated purchase order products
-            foreach ($this->rows as $row) {
+            foreach ($this->rows as $index => $row) {
                 $purchaseOrderProduct = new PurchaseOrderProduct();
                 $purchaseOrderProduct->purchase_order_id = $this->purchaseOrder->id;
                 $purchaseOrderProduct->collection_id = $row['collections'];
@@ -191,7 +193,7 @@ class PurchaseOrderEdit extends Component
                     $purchaseOrderProduct->fabric_name = null;
                     $purchaseOrderProduct->qty_in_meter = null;
                 }
-                $purchaseOrderProduct->piece_price = $row['price_per_pc'];
+                $purchaseOrderProduct->piece_price = $this->isFabricSelected[$index] ? $row['price_per_mtr'] : $row['price_per_qty'];
                 $purchaseOrderProduct->total_price = $row['total_amount'];
                 $purchaseOrderProduct->fabric_id = $row['fabric'] ?? null;
                 $purchaseOrderProduct->product_id = $row['product'] ?? null;
@@ -231,7 +233,7 @@ class PurchaseOrderEdit extends Component
             'product' => [], 
             'pcs_per_mtr' => 1, 
             'pcs_per_qty' => 1, 
-            'price_per_pc' => null, 
+            'price_per_mtr' => null, 'price_per_qty' => null, 
             'total_amount' => null
         ];
     }

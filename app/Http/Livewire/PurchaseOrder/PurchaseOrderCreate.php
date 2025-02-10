@@ -81,8 +81,8 @@ class PurchaseOrderCreate extends Component
             'rows.*.product' => 'required_if:rows.*.fabric,null',
             'rows.*.pcs_per_mtr' => 'nullable|numeric|min:1',
             'rows.*.pcs_per_qty' => 'nullable|numeric|min:1',
-            'rows.*.price_per_mtr' => 'required_if:rows.*.fabric,not_null|nullable|numeric|min:0',
-            'rows.*.price_per_qty' => 'required_if:rows.*.product,not_null|nullable|numeric|min:0',
+            'rows.*.price_per_mtr' => 'required_if:rows.*.fabric,!null|nullable|numeric|min:0',
+            'rows.*.price_per_qty' => 'required_if:rows.*.product,!null |nullable|numeric|min:0',
             'rows.*.total_amount' => 'required|numeric|min:0',
         ], [
             'rows.*.collections.required' => 'The collection field is required.',

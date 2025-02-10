@@ -91,9 +91,9 @@ class Helper
             }
     }
 
-
+    public static $counter = 0;
     public static function generateUniqueNumber(){
-        return now()->format('YmdHis') . rand(1000, 9999);
+        return now()->format('YmdHis') . str_pad(self::$counter, 4, '0', STR_PAD_LEFT);
     }
 
     public static function generateTransactionId(){
