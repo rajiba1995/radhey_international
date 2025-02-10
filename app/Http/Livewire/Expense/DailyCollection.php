@@ -36,14 +36,14 @@ class DailyCollection extends Component
             $this->stuffOptions = User::where('user_type', 0)->pluck('name', 'id')->toArray();
             $this->supplierOptions = []; // Clear supplier options
             $this->supplier_id = null;   // Reset supplier selection
-            $this->stuffCollectionTitles = Expense::where('for_staff', 1)->get(); 
+            $this->stuffCollectionTitles = Expense::where('for_staff', 1)->where('for_credit',1)->get(); 
             $this->supplierCollectionTitles = []; // Clear Supplier Titles
         } elseif ($this->collection_at == '2') {
             // Fetch Supplier list
             $this->supplierOptions = Supplier::pluck('name', 'id')->toArray();
             $this->stuffOptions = [];   // Clear stuff options
             $this->stuff_id = null;     // Reset stuff selection
-            $this->supplierCollectionTitles = Expense::where('for_partner', 1)->get();
+            $this->supplierCollectionTitles = Expense::where('for_partner', 1)->where('for_credit',1)->get();
             $this->stuffCollectionTitles = [];
         } else {
             // If nothing is selected, reset both options
@@ -64,10 +64,13 @@ class DailyCollection extends Component
     public function generateVoucherNumber()
     {
         // Get the latest voucher number
-        $latestVoucher = Payment::latest('payment_for','Cradit')->first();
-
+        // $latestVoucher = Payment::latest()->first();
+        $latestVoucher = Payment::where('payment_for', 'Credit')
+        ->orderByDesc('voucher_no') // Ensure correct sorting
+        ->first();
+        // dd( $latestVoucher->voucher_no);
         // Extract the numeric part from the latest voucher number
-        $lastVoucherNumber = $latestVoucher ? (int) substr($latestVoucher->voucher_no, 7) : 0;
+        $lastVoucherNumber = $latestVoucher ? (int) substr($latestVoucher->voucher_no, 10) : 0;
 
         // Increment the voucher number by 1
         $newVoucherNumber = $lastVoucherNumber + 1;

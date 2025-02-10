@@ -177,8 +177,8 @@
                                                 <td class="text-center">{{ \Carbon\Carbon::parse($collection->updated_at)->format('d-m-Y') }}</td>
                                                 <td class="text-center"> {{ $collection->staff?->name ?? $collection->customer?->name ?? 'N/A' }}</td>
                                                 <td class="text-center">{{ $collection->amount }}</td>
-                                                <td class="text-center">{{ $collection->purpose }}</td>
-                                                <td class="text-center">{{ $collection->remarks ?? 'No remarks' }}</td>
+                                                <td class="text-center">{{ $collection->expense->title }}</td>
+                                                <td class="text-center">{{ $collection->narration ?? 'No remarks' }}</td>
                                             </tr>
                                         @empty
                                             <tr>
