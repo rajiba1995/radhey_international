@@ -154,7 +154,6 @@ class PurchaseOrderCreate extends Component
             $purchaseOrder->product_ids = implode(',', $productIds);
             $purchaseOrder->fabric_ids = implode(',', $fabricIds);
             $purchaseOrder->save();
-    
             // Commit transaction
             DB::commit();
     

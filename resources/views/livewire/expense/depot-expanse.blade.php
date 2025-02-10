@@ -2,12 +2,14 @@
     <!-- Nav Tabs -->
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link" :class="{ 'active': activeTab === 'dailyCollection' }" @click="activeTab = 'dailyCollection'">
+            <a class="nav-link" :class="{ 'active': activeTab === 'dailyCollection' }"
+               @click="activeTab = 'dailyCollection'; $wire.set('activeTab', 'dailyCollection');">
                 Daily Collection
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" :class="{ 'active': activeTab === 'dailyExpenses' }" @click="activeTab = 'dailyExpenses'">
+            <a class="nav-link" :class="{ 'active': activeTab === 'dailyExpenses' }"
+               @click="activeTab = 'dailyExpenses'; $wire.set('activeTab', 'dailyExpenses');">
                 Daily Expenses
             </a>
         </li>

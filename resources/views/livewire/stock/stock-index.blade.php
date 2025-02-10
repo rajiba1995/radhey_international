@@ -1,7 +1,7 @@
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="block-heading m-0">Stock Overview</h4>
-        <div class="input-group w-50 search-input-group">
+        <!-- <div class="input-group w-50 search-input-group">
             <input
                 type="text"
                 wire:model.debounce.500ms="search"
@@ -11,7 +11,7 @@
             <button type="button" wire:click="$refresh" class="btn btn-outline-primary mb-0">
                 <span class="material-icons">search</span>
             </button>
-        </div>
+        </div> -->
     </div>
 
     <div class="d-flex justify-start gap-4 mb-4">
@@ -27,13 +27,40 @@
         >
             Fabric Stock
         </button>
+        
+
     </div>
 
     <div>
         @if ($activeTab === 'product')
             <div class="card">
                 <div class="card-body">
+                    <!-- <button wire:click="exportStockProduct" class="btn btn-success btn-sm">
+                        Export to Excel
+                    </button> -->
+                    <!-- Export & Date Filters -->
+                    <!-- <div class="d-flex align-items-center gap-2 mb-3">
+                        <input type="date" wire:model="startDate" class="form-control w-auto" />
+                        <input type="date" wire:model="endDate" class="form-control w-auto" />
+                        <button wire:click="exportStockProduct" class="btn btn-success btn-sm">
+                            Export Product CSV
+                        </button>
+                    </div> -->
+
+                    <div class="d-flex justify-content-end gap-2 mb-3">
+                        <input type="text" wire:model="search" class="form-control w-auto" placeholder="Search by Product Name" />
+                        <input type="date" wire:model="startDate" class="form-control w-auto" />
+                        <input type="date" wire:model="endDate" class="form-control w-auto" />
+                        <button type="button" wire:click="$refresh" class="btn btn-outline-primary mb-0">
+                            <span class="material-icons">search</span>
+                        </button>
+                        <button wire:click="exportStockProduct" class="btn btn-success btn-sm">
+                            Export Product CSV
+                        </button>
+                    </div>
+
                     <h5 class="mb-3">Product Stock</h5>
+                    
                     <div class="table-responsive">
                         <table class="table table-hover table-bordered align-items-center">
                             <thead>
@@ -73,6 +100,19 @@
         @elseif ($activeTab === 'fabric')
             <div class="card">
                 <div class="card-body">
+                    <div class="d-flex justify-content-end gap-2 mb-3">
+                        <input type="text" wire:model="search" class="form-control w-auto" placeholder="Search by Fabric Name" />
+                        <input type="date" wire:model="startDate" class="form-control w-auto" />
+                        <input type="date" wire:model="endDate" class="form-control w-auto" />
+                        <button type="button" wire:click="$refresh" class="btn btn-outline-primary mb-0">
+                            <span class="material-icons">search</span>
+                        </button>
+                        <button wire:click="exportStockFabric" class="btn btn-success btn-sm">
+                            Export Fabric CSV
+                        </button>
+                    </div>
+
+
                     <h5 class="mb-3">Fabric Stock</h5>
                     <div class="table-responsive">
                         <table class="table table-hover table-bordered align-items-center">

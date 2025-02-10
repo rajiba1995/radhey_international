@@ -27,7 +27,7 @@ class DailyExpenses extends Component
     public $supplierOptions = []; // Stores Supplier Names
     public $stuffExpenseTitles = [];  // Holds Stuff Expense Titles
     public $supplierExpenseTitles = [];
-
+    public $activeTab = 'dailyExpenses'; // Default tab
     // Called when the 'expense_at' dropdown value changes
     public function onExpenseAtChange()
     {
@@ -57,6 +57,7 @@ class DailyExpenses extends Component
     }
     public function mount()
     {
+        $this->activeTab = request()->query('activeTab', 'dailyExpenses');
         // Auto-generate voucher number
         $this->generateVoucherNumber();
     }

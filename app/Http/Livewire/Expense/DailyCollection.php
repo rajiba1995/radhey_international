@@ -27,7 +27,9 @@ class DailyCollection extends Component
     public $supplierOptions = []; // Stores Supplier Names
     public $stuffCollectionTitles = [];  // Holds Stuff Collection Titles
     public $supplierCollectionTitles = [];
+    public $activeTab = 'dailyCollection'; // Default tab
 
+   
     // Called when the 'collection_at' dropdown value changes
     public function onCollectionAtChange()
     {
@@ -57,6 +59,8 @@ class DailyCollection extends Component
     }
     public function mount()
     {
+        $this->activeTab = request()->query('activeTab', 'dailyCollection');
+
         // Auto-generate voucher number
         $this->generateVoucherNumber();
     }
