@@ -81,15 +81,15 @@ class PurchaseOrderCreate extends Component
             'rows.*.product' => 'required_if:rows.*.fabric,null',
             'rows.*.pcs_per_mtr' => 'nullable|numeric|min:1',
             'rows.*.pcs_per_qty' => 'nullable|numeric|min:1',
-            'rows.*.price_per_mtr' => 'required|numeric|min:0',
-            'rows.*.price_per_qty' => 'required|numeric|min:0',
+            'rows.*.price_per_mtr' => 'required_if:rows.*.fabric,not_null|nullable|numeric|min:0',
+            'rows.*.price_per_qty' => 'required_if:rows.*.product,not_null|nullable|numeric|min:0',
             'rows.*.total_amount' => 'required|numeric|min:0',
         ], [
             'rows.*.collections.required' => 'The collection field is required.',
             'rows.*.fabric.required_if' => 'The fabric field is required.',
             'rows.*.product.required_if' => 'The product field is required.',
-           'rows.*.price_per_mtr.required' => 'The price per meter is required for fabric items.',
-            'rows.*.price_per_qty.required' => 'The price per quantity is required for product items.',
+           'rows.*.price_per_mtr.required_if' => 'The price per meter is required for fabric items.',
+            'rows.*.price_per_qty.required_if' => 'The price per quantity is required for product items.',
             'rows.*.total_amount.required' => 'The total amount is required.',
         ]);
         
