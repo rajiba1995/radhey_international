@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Models\SalesmanBilling;
 use App\Models\Order;
+use App\Models\User;
 
 class Helper
 {
@@ -90,6 +91,59 @@ class Helper
                 return $data;
             }
     }
+
+    // public static function generateInvoiceBill($salesManId)
+    // {
+    //     // Get the salesman details
+    //     $salesman = User::find($salesManId);
+
+    //     if (!$salesman) {
+    //         return [
+    //             'number' => 'XXX-0000',
+    //             'status' => 1,
+    //         ];
+    //     }
+
+    //     // Extract the first 3 characters of the salesman's name and convert to uppercase
+    //     $prefix = strtoupper(substr($salesman->name, 0, 3));
+
+    //     // Check for salesman type user
+    //     $salesmanBillBook = SalesmanBilling::where('salesman_id', $salesManId)
+    //         ->whereColumn('total_count', '>', 'no_of_used')
+    //         ->first();
+
+    //     if ($salesmanBillBook) {
+    //         $new_number = $salesmanBillBook->start_no + $salesmanBillBook->no_of_used;
+
+    //         do {
+    //             // Check if the order number already exists
+    //             $existing_order = Order::where('order_number', $prefix . '-' . str_pad($new_number, 3, '0', STR_PAD_LEFT))->first();
+                
+    //             // If order number exists, increment it
+    //             if ($existing_order) {
+    //                 $new_number++;
+    //             }
+
+    //             // Continue loop while the new_number is within the allowed range
+    //         } while ($existing_order && $new_number <= $salesmanBillBook->end_no);
+
+    //         // If we exit the loop and new_number is still valid, you can proceed
+    //         if ($new_number <= $salesmanBillBook->end_no) {
+    //             $formatted_number = $prefix . '-' . str_pad($new_number, 3, '0', STR_PAD_LEFT);
+    //             return [
+    //                 'number' => $formatted_number,
+    //                 'status' => 1,
+    //                 'bill_id' => $salesmanBillBook->id,
+    //             ];
+    //         }
+    //     }
+
+    //     return [
+    //         'number' => $prefix . '-000',
+    //         'status' => 1,
+    //     ];
+    // }
+
 
     public static $counter = 0;
     public static function generateUniqueNumber(){
