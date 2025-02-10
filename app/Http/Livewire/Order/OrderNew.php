@@ -17,6 +17,7 @@ use App\Models\Ledger;
 use App\Models\Catalogue;
 use App\Models\SalesmanBilling;
 use App\Models\OrderMeasurement;
+use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\Helper;
@@ -50,6 +51,7 @@ class OrderNew extends Component
     public $remaining_amount = 0;
     public $payment_mode = null;
     public $order_number;
+    public $bill_id;
     public $bill_book = [];
 
     // For Catalogue
@@ -117,6 +119,8 @@ class OrderNew extends Component
     // Define rules for validation
     protected $rules = [
         'items.*.collection' => 'required|string',
+        'items.*.category' => 'required|string',
+        'items.*.searchproduct' => 'required|string',
         'items.*.product_id' => 'required|integer',
         'items.*.price' => 'required|numeric|min:1',  // Ensuring that price is a valid number (and greater than or equal to 0).
         'paid_amount' => 'required|numeric|min:1',   // Ensuring that price is a valid number (and greater than or equal to 0).
@@ -130,6 +134,8 @@ class OrderNew extends Component
 
     protected function messages(){
         return [
+             'items.*.category.required' => 'Please select a category for the item.',
+             'items.*.searchproduct.required' => 'Please select a product for the item.',
              'items.*.selectedCatalogue.required' => 'Please select a catalogue for the item.',
              'items.*.page_number.required' => 'Please select a page for the item.',
              'items.*.price.required'  => 'Please enter a price for the item.',
@@ -204,6 +210,7 @@ class OrderNew extends Component
     public function changeSalesman($value){
         $this->bill_book = Helper::generateInvoiceBill($value);
         $this->order_number = $this->bill_book['number'];
+        $this->bill_id = $this->bill_book['bill_id'];
     }
     
 
@@ -506,9 +513,8 @@ class OrderNew extends Component
 
     public function save()
     {
+        // dd($this->all());
         $this->validate();
-        
-        
         DB::beginTransaction(); // Begin transaction
         
         try{ 
@@ -681,9 +687,20 @@ class OrderNew extends Component
             $order->remaining_amount = $this->remaining_amount;
             $order->payment_mode = $this->payment_mode;
             $order->last_payment_date = date('Y-m-d H:i:s');
-            $order->created_by = auth()->id();
+            $order->created_by = (int) $this->salesman; // Explicitly cast to integer
 
             $order->save();
+
+            $update_bill_book = SalesmanBilling::where('id',$this->bill_id)->first();
+            if($update_bill_book){
+                $update_bill_book->no_of_used = $update_bill_book->no_of_used +1;
+                $update_bill_book->save();
+            }
+
+            Payment::create([
+                'order_id'=> $order->id,
+                'paid_amount' => $this->paid_amount
+            ]);
 
             Ledger::create([
                 'order_id' => $order->id,
@@ -698,14 +715,7 @@ class OrderNew extends Component
                 'remarks' => 'Initial Payment for Order #' . $order->order_number,
             ]);
 
-               // Validate fabric prices before generating the order
-            //    foreach ($this->items as $item) {
-            //        $fabric_data = Fabric::find($item['selected_fabric']);
-            //        if ($fabric_data && isset($item['price']) && $item['price'] < $fabric_data->threshold_price) {
-            //         session()->flash('error', '🚨 The price for fabric "' . $fabric_data->title . '" cannot be less than its threshold price of ' . $fabric_data->threshold_price . '.');
-            //         return;
-            //     }
-            //    }
+           
 
             // Save order items and measurements
             foreach ($this->items as $k => $item) {
@@ -716,6 +726,8 @@ class OrderNew extends Component
 
                 $orderItem = new OrderItem();
                 $orderItem->order_id = $order->id;
+                $orderItem->catalogue_id = $item['selectedCatalogue'];
+                $orderItem->cat_page_number = $item['page_number'];
                 $orderItem->product_id = $item['product_id'];
                 $orderItem->collection = $collection_data ? $collection_data->id : "";
                 $orderItem->category = $category_data ? $category_data->id : "";
@@ -851,16 +863,7 @@ class OrderNew extends Component
             }
     
             // Validate Email
-            if (empty($this->email)) {
-                $this->errorClass['email'] = 'border-danger';
-                $this->errorMessage['email'] = 'Please enter customer email';
-            } elseif (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
-                $this->errorClass['email'] = 'border-danger';
-                $this->errorMessage['email'] = 'Please enter a valid email address';
-            } else {
-                $this->errorClass['email'] = null;
-                $this->errorMessage['email'] = null;
-            }
+           
     
             // Validate Date of Birth
             if (empty($this->dob)) {
@@ -875,7 +878,7 @@ class OrderNew extends Component
             if (empty($this->phone)) {
                 $this->errorClass['phone'] = 'border-danger';
                 $this->errorMessage['phone'] = 'Please enter customer phone number';
-            } elseif (!preg_match('/^\d{' . env('VALIDATE_MOBILE', 8) . ',}$/', $this->phone)) {
+            } elseif (!preg_match('/^\+?\d{' . env('VALIDATE_MOBILE', 8) . ',}$/', $this->phone)) {
                 $this->errorClass['phone'] = 'border-danger';
                 $this->errorMessage['phone'] = 'Phone number must be ' . env('VALIDATE_MOBILE', 8) . ' or more digits long';
             } else {
@@ -887,7 +890,7 @@ class OrderNew extends Component
            if (empty($this->whatsapp_no)) {
                 $this->errorClass['whatsapp_no'] = 'border-danger';
                 $this->errorMessage['whatsapp_no'] = 'Please enter WhatsApp number';
-            } elseif (!preg_match('/^\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/', $this->whatsapp_no)) {
+            } elseif (!preg_match('/^\+?\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/', $this->whatsapp_no)) {
                 $this->errorClass['whatsapp_no'] = 'border-danger';
                 $this->errorMessage['whatsapp_no'] = 'WhatsApp number must be ' . env('VALIDATE_WHATSAPP', 8) . ' or more digits long';
             } else {
@@ -913,13 +916,7 @@ class OrderNew extends Component
                 $this->errorMessage['billing_city'] = null;
             }
     
-            if (empty($this->billing_state)) {
-                $this->errorClass['billing_state'] = 'border-danger';
-                $this->errorMessage['billing_state'] = 'Please enter billing state';
-            } else {
-                $this->errorClass['billing_state'] = null;
-                $this->errorMessage['billing_state'] = null;
-            }
+           
     
             if (empty($this->billing_country)) {
                 $this->errorClass['billing_country'] = 'border-danger';
@@ -961,13 +958,6 @@ class OrderNew extends Component
                 $this->errorMessage['shipping_city'] = null;
             }
     
-            if (empty($this->shipping_state)) {
-                $this->errorClass['shipping_state'] = 'border-danger';
-                $this->errorMessage['shipping_state'] = 'Please enter shipping state';
-            } else {
-                $this->errorClass['shipping_state'] = null;
-                $this->errorMessage['shipping_state'] = null;
-            }
     
             if (empty($this->shipping_country)) {
                 $this->errorClass['shipping_country'] = 'border-danger';

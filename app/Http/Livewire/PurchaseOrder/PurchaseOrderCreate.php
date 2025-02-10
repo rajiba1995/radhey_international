@@ -48,20 +48,22 @@ class PurchaseOrderCreate extends Component
         $row = $this->rows[$index];
         $pcsPerMtr = $row['pcs_per_mtr'] ?? 0; 
         $pcsPerQty = $row['pcs_per_qty'] ?? 0; 
-        $pricePerPc = $row['price_per_pc'] ?? 0; 
+        $pricePerMtr = $row['price_per_mtr'] ?? 0;
+        $pricePerQty = $row['price_per_qty'] ?? 0;
+
     
         // Calculate total amount based on input values
         if($this->isFabricSelected[$index] ?? false){
             // Calculate total amount based on pcs_per_mtr and price_per_pc for Garments
-            if($pcsPerMtr > 0 && $pricePerPc > 0){
-                $this->rows[$index]['total_amount'] = $pcsPerMtr * $pricePerPc;
+            if($pcsPerMtr > 0 && $pricePerMtr > 0){
+                $this->rows[$index]['total_amount'] = $pcsPerMtr * $pricePerMtr;
             } else {
                 $this->rows[$index]['total_amount'] = null; // Reset if invalid inputs
             }
         } else {
             // Calculate total amount based on pcs_per_qty and price_per_pc for Garment Items
-            if($pcsPerQty > 0 && $pricePerPc > 0){
-                $this->rows[$index]['total_amount'] = $pcsPerQty * $pricePerPc;
+            if($pcsPerQty > 0 && $pricePerQty > 0){
+                $this->rows[$index]['total_amount'] = $pcsPerQty * $pricePerQty;
             } else {
                 $this->rows[$index]['total_amount'] = null; // Reset if invalid inputs
             }
@@ -79,13 +81,15 @@ class PurchaseOrderCreate extends Component
             'rows.*.product' => 'required_if:rows.*.fabric,null',
             'rows.*.pcs_per_mtr' => 'nullable|numeric|min:1',
             'rows.*.pcs_per_qty' => 'nullable|numeric|min:1',
-            'rows.*.price_per_pc' => 'required|numeric|min:0',
+            'rows.*.price_per_mtr' => 'required|numeric|min:0',
+            'rows.*.price_per_qty' => 'required|numeric|min:0',
             'rows.*.total_amount' => 'required|numeric|min:0',
         ], [
             'rows.*.collections.required' => 'The collection field is required.',
             'rows.*.fabric.required_if' => 'The fabric field is required.',
             'rows.*.product.required_if' => 'The product field is required.',
-            'rows.*.price_per_pc.required' => 'The price per piece is required.',
+           'rows.*.price_per_mtr.required' => 'The price per meter is required for fabric items.',
+            'rows.*.price_per_qty.required' => 'The price per quantity is required for product items.',
             'rows.*.total_amount.required' => 'The total amount is required.',
         ]);
         
@@ -111,7 +115,7 @@ class PurchaseOrderCreate extends Component
             $purchaseOrder->save();
 
             // Insert related purchase order products
-            foreach ($this->rows as $row) {
+            foreach ($this->rows as $index => $row) {
                 $purchaseOrderProduct = new PurchaseOrderProduct();
                 $purchaseOrderProduct->purchase_order_id = $purchaseOrder->id;
                 $purchaseOrderProduct->collection_id = $row['collections'];
@@ -126,7 +130,7 @@ class PurchaseOrderCreate extends Component
                     $purchaseOrderProduct->fabric_name = null;
                     $purchaseOrderProduct->qty_in_meter = null;
                 }
-                $purchaseOrderProduct->piece_price = $row['price_per_pc'];
+                $purchaseOrderProduct->piece_price =$this->isFabricSelected[$index] ? $row['price_per_mtr'] : $row['price_per_qty'];
                 $purchaseOrderProduct->total_price = $row['total_amount'];
                 $purchaseOrderProduct->fabric_id = $row['fabric'] ?? null;
                 // $purchaseOrderProduct->qty_in_meter = $row['pcs_per_mtr'] ?? null;
@@ -208,7 +212,7 @@ class PurchaseOrderCreate extends Component
 
     public function addRow()
     {
-        $this->rows[] = ['collection' => null, 'fabric' => [], 'product' => [], 'pcs_per_mtr' => 1, 'pcs_per_qty' => 1, 'price_per_pc' => null, 'total_amount' => null];
+        $this->rows[] = ['collection' => null, 'fabric' => [], 'product' => [], 'pcs_per_mtr' => 1, 'pcs_per_qty' => 1, 'price_per_mtr' => null, 'price_per_qty' => null, 'total_amount' => null];
 
     }
 

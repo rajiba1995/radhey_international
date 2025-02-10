@@ -90,12 +90,6 @@ class SalesmanBillingIndex extends Component
             'salesman_id' => [
                 'required',
                 'exists:users,id',
-                // function ($attribute, $value, $fail) {
-                //     $exists = SalesmanBilling::where('salesman_id', $value)->exists();
-                //     // if ($exists) {
-                //     //     $fail('A billing range already exists for the selected salesman.');
-                //     // }
-                // },
             ],
             'start_no' => [
                 'required',

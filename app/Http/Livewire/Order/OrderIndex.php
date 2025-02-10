@@ -47,6 +47,18 @@ class OrderIndex extends Component
         ), 'orders.xlsx');
     }
 
+    public function updateStatus($status, $id)
+    {
+        $order = Order::find($id); // Fetch the order by ID
+        
+        if ($order) {
+            $order->update(['status' => $status]);
+            session()->flash('success', 'Order status updated successfully.');
+        } else {
+            session()->flash('error', 'Order not found.');
+        }
+    }
+
     
     public function render()
     {

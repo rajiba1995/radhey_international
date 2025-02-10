@@ -39,6 +39,11 @@ class UserLedger extends Component
             }else{
                 $this->results = [];
             }
+        }else {
+            // Clear the table when search input is empty
+            $this->results = [];
+            $this->selectedUser = '';
+            $this->ledgerData = [];
         }
     }
 
@@ -58,13 +63,14 @@ class UserLedger extends Component
         }
     }
 
-    public function updated($propertyName){
-        if ($propertyName == 'from_date' || $propertyName == 'to_date') {
-            $this->ledgerData = $this->getLedgerData();
-        }
+    public function updateDate($propertyName){
+         $this->ledgerData = $this->getLedgerData();
     }
 
     private function getLedgerData(){
+        if (!$this->selectedUser) {
+            return []; // If no user is selected, return empty data
+        }
         $query = Ledger::where('user_id', $this->selectedUser);
         if($this->from_date) {
             $query->where('transaction_date', '>=', $this->from_date);
@@ -73,7 +79,8 @@ class UserLedger extends Component
         if($this->to_date) {
             $query->where('transaction_date', '<=', $this->to_date);
         }
-        return $query->get(); // Fetch ledger data for the selected customer and date range
+        $data = $query->get(); // Fetch ledger data for the selected customer and date range
+        return $data->isEmpty() ? [] : $data;
     }
     
     public function render()

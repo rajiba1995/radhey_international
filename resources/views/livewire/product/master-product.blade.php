@@ -59,7 +59,7 @@
             
             <a class="btn btn-cta btn-sm mb-0" href="{{route('product.add')}}" role="button" >
                 <i class="material-icons text-white" style="font-size: 15px;">add</i>
-                <span class="ms-1">Create ccccProduct</span>
+                <span class="ms-1">Create Product</span>
             </a>
         </div>
         <div class="row">

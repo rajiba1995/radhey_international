@@ -111,11 +111,11 @@ class CustomerEdit extends Component
             'dob'=> 'required|date',
             'phone' => [
                 'required',
-                'regex:/^\d{' . env('VALIDATE_MOBILE', 8) . ',}$/'
+                'regex:/^\+?\d{' . env('VALIDATE_MOBILE', 8) . ',}$/'
             ],
             'whatsapp_no' => [
                 'required',
-                'regex:/^\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/'
+                'regex:/^\+?\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/'
             ],
             'gst_number' => 'nullable|string|max:15',
             'credit_limit' => 'nullable|numeric|min:0',
@@ -123,7 +123,7 @@ class CustomerEdit extends Component
             'billing_address' => 'required|string',
             'billing_landmark' => 'nullable|string',
             'billing_city' => 'required|string',
-            'billing_state' => 'required|string',
+            'billing_state' => 'nullable|string',
             'billing_country' => 'required|string',
             'billing_pin' => 'nullable|string',
         ];
@@ -133,7 +133,7 @@ class CustomerEdit extends Component
                 'shipping_address' => 'required|string',
                 'shipping_landmark' => 'nullable|string',
                 'shipping_city' => 'required|string',
-                'shipping_state' => 'required|string',
+                'shipping_state' => 'nullable|string',
                 'shipping_country' => 'required|string',
                 'shipping_pin' => 'nullable|string',
             ]);

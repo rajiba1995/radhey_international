@@ -65,7 +65,7 @@
                 <div class="card-header pb-0">
                     <div class="row">
                         <div>
-                            <h6>Add Payment<span style="color: red;"> ({{$order->order_number}})</span></h6>
+                            <h6>Add Payment<span style="color: red;"> ({{env('ORDER_PREFIX').$order->order_number}})</span></h6>
                         </div>
                         <div class="row">
                             @if(session()->has('error'))

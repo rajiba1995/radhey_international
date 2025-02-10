@@ -13,7 +13,8 @@ class Catalogue extends Model
         'image'	
     ];
 
-    public function catalogueTitle(){
-        return $this->belongsTo(CatalogueTitle::class,'catalogue_title_id');
+    public function catalogueTitle()
+    {
+        return $this->belongsTo(CatalogueTitle::class, 'catalogue_title_id', 'id');
     }
 }

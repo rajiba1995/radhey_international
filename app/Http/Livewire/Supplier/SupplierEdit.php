@@ -46,11 +46,11 @@ class SupplierEdit extends Component
             'email' => 'required|email|unique:suppliers,email,' . $this->supplier->id,
             'mobile' => [
                 'required',
-                'regex:/^\d{' . env('VALIDATE_MOBILE', 8) . ',}$/',
+                'regex:/^\+?\d{' . env('VALIDATE_MOBILE', 8) . ',}$/',
             ],
             'whatsapp_no' => [
                 'required',
-                'regex:/^\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/',
+                'regex:/^\+?\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/',
             ],
             'billing_address' => 'required|string|max:255',
             'billing_landmark' => 'nullable|string|max:255',
