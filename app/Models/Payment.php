@@ -24,10 +24,10 @@ class Payment extends Model
         return $this->belongsTo(User::class, 'stuff_id', 'id')->where('user_type', 0);
     }
 
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'stuff_id', 'id')->where('user_type', 0);
-    }
+    // public function user()
+    // {
+    //     return $this->belongsTo(User::class, 'stuff_id', 'id')->where('user_type', 0);
+    // }
 
     // Relationship with the admin (User model)
     public function admin()
