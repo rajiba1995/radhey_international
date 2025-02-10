@@ -30,7 +30,7 @@ class GenerateGrn extends Component
     public function mount($purchase_order_id){
          $this->purchaseOrderId = $purchase_order_id;
          $this->purchaseOrder = PurchaseOrder::with('orderproducts.product', 'orderproducts.fabric','orderproducts.collection')->find($this->purchaseOrderId);    
-         $this-> uniqueNumber = Helper::generateUniqueNumber();      
+         $this->uniqueNumber = Helper::generateUniqueNumber();      
     }
 
     public function toggleFabricUniqueNumbers($orderProductId){
