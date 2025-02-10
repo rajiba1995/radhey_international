@@ -154,4 +154,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Country::class);
     }
+    
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'supplier_id');
+    }
 }
