@@ -117,7 +117,9 @@ class PurchaseOrderEdit extends Component
         $row = $this->rows[$index];
         $pcsPerMtr = $row['pcs_per_mtr'] ?? 0;
         $pcsPerQty = $row['pcs_per_qty'] ?? 0;
-        $pricePerPc = $row['price_per_pc'] ?? 0;
+        $pricePerMtr = $row['price_per_mtr'] ?? 0;
+        $pricePerQty = $row['price_per_qty'] ?? 0;
+
 
         if ($this->isFabricSelected[$index] ?? false) {
             if ($pcsPerMtr > 0 && $pricePerPc > 0) {
