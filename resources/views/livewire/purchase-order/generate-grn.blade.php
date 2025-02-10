@@ -51,7 +51,7 @@
                                             <td>{{ intval($orderProduct->qty_in_meter) }}</td>
                                             <td>
                                                 <input type="checkbox" wire:model="selectedFabricUniqueNumbers" value="{{ $orderProduct->id }}" disabled>
-                                                {{ $uniqueNumber }}
+                                                {{ $fabricUniqueNumbers[$orderProduct->id] ?? '' }}
                                             </td>
                                         </tr>
                                     @endif
@@ -107,7 +107,9 @@
                                                     @else
                                                         <input type="checkbox" disabled>
                                                     @endif
-                                                    {{ $uniqueNumber }}
+                                                    @if(isset($productUniqueNumbers[$orderProduct->id]))
+                                                        {{ $productUniqueNumbers[$orderProduct->id][$i] ?? '' }}
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endfor

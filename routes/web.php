@@ -32,9 +32,12 @@ use App\Http\Livewire\Supplier\SupplierEdit;
 use App\Http\Livewire\Supplier\SupplierDetails;
 use App\Http\Livewire\Measurement\MeasurementIndex;
 use App\Http\Livewire\Fabric\FabricsIndex;
-use App\Http\Livewire\PurchaseOrder\{PurchaseOrderIndex,PurchaseOrderCreate,PurchaseOrderEdit,GenerateGrn,PurchaseOrderDetails};
+use App\Http\Livewire\PurchaseOrder\{PurchaseOrderIndex,PurchaseOrderCreate,PurchaseOrderEdit,GenerateGrn,PurchaseOrderDetails,GeneratePdf};
 use App\Http\Livewire\Stock\{StockIndex,UserLedger};
 use App\Http\Livewire\BusinessType\BusinessTypeIndex;
+// purchase Order pdf
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\PurchaseOrder;
 
 
 /*
@@ -119,6 +122,11 @@ Route::group(['prefix' => 'products'], function () {
        Route::get('/edit/{purchase_order_id}',PurchaseOrderEdit::class)->name('purchase_order.edit');
        Route::get('/details/{purchase_order_id}',PurchaseOrderDetails::class)->name('purchase_order.details');
        Route::get('/generate-grn/{purchase_order_id}',GenerateGrn::class)->name('purchase_order.generate_grn');
+       Route::get('/pdf/{purchase_order_id}',function($purchase_order_id){
+            $purchaseOrder = PurchaseOrder::with('supplier', 'orderproducts')->findOrFail($purchase_order_id);
+            $pdf = Pdf::loadView('livewire.purchase-order.generate-pdf', compact('purchaseOrder'));
+            return $pdf->download('purchase_order_' . $purchase_order_id . '.pdf');
+       })->name('purchase_order.generate_pdf');
     });
 
     // Business Type
