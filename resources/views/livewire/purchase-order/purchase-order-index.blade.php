@@ -98,6 +98,9 @@
                                                     <a href="{{route('purchase_order.details',['purchase_order_id'=>$purchaseOrder->id])}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">
                                                         Details
                                                     </a>
+                                                    <a href="{{route('purchase_order.generate_pdf',['purchase_order_id'=>$purchaseOrder->id])}}" target="_blank" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">
+                                                        PDF
+                                                    </a>
                                             </td>
                                         </tr>
                                         @empty

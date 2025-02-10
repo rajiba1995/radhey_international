@@ -126,7 +126,7 @@ class OrderNew extends Component
         'paid_amount' => 'required|numeric|min:1',   // Ensuring that price is a valid number (and greater than or equal to 0).
         'payment_mode' => 'required|string',  // Ensuring that price is a valid number (and greater than or equal to 0).
         'items.*.measurements.*' => 'nullable|string',
-        'order_number' => 'required|numeric|unique:orders,order_number|min:1',
+        'order_number' => 'required|string|unique:orders,order_number|min:1',
         // Add rules for Catalogue and Page Number
         'items.*.selectedCatalogue' => 'required', 
         'items.*.page_number' => 'required'
@@ -210,7 +210,7 @@ class OrderNew extends Component
     public function changeSalesman($value){
         $this->bill_book = Helper::generateInvoiceBill($value);
         $this->order_number = $this->bill_book['number'];
-        $this->bill_id = $this->bill_book['bill_id'];
+        $this->bill_id = $this->bill_book['bill_id'] ?? null;
     }
     
 

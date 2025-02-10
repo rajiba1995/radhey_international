@@ -14,7 +14,9 @@ class GenerateGrn extends Component
 {
     public $purchaseOrderId;
     public $purchaseOrder;
-    public $uniqueNumber;
+    public $fabricUniqueNumbers = [];
+    public $productUniqueNumbers = [];
+
     // Product
     public $selectedBulkIn = []; 
     public $selectedUniqueNumbers = [];
@@ -30,25 +32,51 @@ class GenerateGrn extends Component
     public function mount($purchase_order_id){
          $this->purchaseOrderId = $purchase_order_id;
          $this->purchaseOrder = PurchaseOrder::with('orderproducts.product', 'orderproducts.fabric','orderproducts.collection')->find($this->purchaseOrderId);    
-         $this->uniqueNumber = Helper::generateUniqueNumber();      
+        //  $this->uniqueNumber = Helper::generateUniqueNumber();      
     }
 
-    public function toggleFabricUniqueNumbers($orderProductId){
-        if(in_array($orderProductId,$this->selectedFabricBulkIn)){
+    public function toggleFabricUniqueNumbers($orderProductId) {
+        if (in_array($orderProductId, $this->selectedFabricBulkIn)) {
+            // Generate a unique number and assign it
+            $this->fabricUniqueNumbers[$orderProductId] = Helper::generateUniqueNumber(count($this->fabricUniqueNumbers));
             $this->selectedFabricUniqueNumbers[] = $orderProductId;
-        }else{
+        } else {
+            unset($this->fabricUniqueNumbers[$orderProductId]);
             $this->selectedFabricUniqueNumbers = array_diff($this->selectedFabricUniqueNumbers, [$orderProductId]);
         }
     }
-
-    public function toggleUniqueNumbersForProduct($orderProductId, $rowCount)
-    {
+    
+    public function toggleUniqueNumbersForProduct($orderProductId, $rowCount) {
         if (in_array($orderProductId, $this->selectedBulkIn)) {
-            $this->selectedUniqueNumbers[$orderProductId] = range(0, $rowCount - 1); 
+            // Generate a unique number for each row
+            $this->productUniqueNumbers[$orderProductId] = [];
+            for ($i = 0; $i < $rowCount; $i++) {
+                $this->productUniqueNumbers[$orderProductId][] = Helper::generateUniqueNumber(count($this->productUniqueNumbers) + $i);
+            }
+            $this->selectedUniqueNumbers[$orderProductId] = range(0, $rowCount - 1);
         } else {
+            unset($this->productUniqueNumbers[$orderProductId]);
             unset($this->selectedUniqueNumbers[$orderProductId]);
         }
     }
+    
+
+    // public function toggleFabricUniqueNumbers($orderProductId){
+    //     if(in_array($orderProductId,$this->selectedFabricBulkIn)){
+    //         $this->selectedFabricUniqueNumbers[] = $orderProductId;
+    //     }else{
+    //         $this->selectedFabricUniqueNumbers = array_diff($this->selectedFabricUniqueNumbers, [$orderProductId]);
+    //     }
+    // }
+
+    // public function toggleUniqueNumbersForProduct($orderProductId, $rowCount)
+    // {
+    //     if (in_array($orderProductId, $this->selectedBulkIn)) {
+    //         $this->selectedUniqueNumbers[$orderProductId] = range(0, $rowCount - 1); 
+    //     } else {
+    //         unset($this->selectedUniqueNumbers[$orderProductId]);
+    //     }
+    // }
 
     // Generate GRN
     public function generateGrn()
@@ -79,7 +107,7 @@ class GenerateGrn extends Component
                 // Calculate the overall total price
                 $this->totalPrice = $this->productTotalPrice + $this->fabricTotalPrice;
     
-                $grn_no = "GRN-" . $this->uniqueNumber;
+                $grn_no =  "GRN-" . Helper::generateUniqueNumber();
                 // Collect Fabric IDs
                 if (count($this->selectedFabricUniqueNumbers) > 0) {
                     foreach ($this->selectedFabricUniqueNumbers as $orderProductId) {
@@ -154,6 +182,7 @@ class GenerateGrn extends Component
         } catch (\Exception $e) {
             // Log the error and flash a user-friendly message
             \Log::error('Error generating GRN: ' . $e->getMessage());
+            dd($e->getMessage());
             session()->flash('error', 'An error occurred while generating the GRN. Please try again.');
             return redirect()->back();
         }
@@ -161,8 +190,6 @@ class GenerateGrn extends Component
     
     public function render()
     {
-        return view('livewire.purchase-order.generate-grn',[
-            'uniqueNumber' => $this->uniqueNumber
-        ]);
+        return view('livewire.purchase-order.generate-grn');
     }
 }
