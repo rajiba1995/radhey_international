@@ -142,7 +142,7 @@ class Helper
         }
 
         return [
-            'number' => $prefix . '-000',
+            'number' => '000',
             'status' => 1,
             'bill_id' => null,
         ];

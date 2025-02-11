@@ -21,6 +21,7 @@ use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\Helper;
+use Illuminate\Validation\Rule;
 
 class OrderNew extends Component
 {
@@ -126,8 +127,8 @@ class OrderNew extends Component
         'paid_amount' => 'required|numeric|min:1',   // Ensuring that price is a valid number (and greater than or equal to 0).
         'payment_mode' => 'required|string',  // Ensuring that price is a valid number (and greater than or equal to 0).
         'items.*.measurements.*' => 'nullable|string',
-        'order_number' => 'required|string|unique:orders,order_number|min:1',
-        // Add rules for Catalogue and Page Number
+        // 'order_number' => 'required|numeric|unique:orders,order_number|min:1',
+        'order_number' => 'required|string|not_in:000|unique:orders,order_number',
         'items.*.selectedCatalogue' => 'required', 
         'items.*.page_number' => 'required'
     ];
@@ -140,6 +141,9 @@ class OrderNew extends Component
              'items.*.page_number.required' => 'Please select a page for the item.',
              'items.*.price.required'  => 'Please enter a price for the item.',
              'items.*.collection.required' =>  'Please enter a collection for the item.',
+             'order_number.required' => 'Order number is required.',
+             'order_number.not_in' => 'Order number "000" is not allowed.',
+             'order_number.unique' => 'Order number already exists, please try again.',
         ];
     }
     public function FindCustomer($term)
