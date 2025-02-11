@@ -68,6 +68,10 @@ class OrderNew extends Component
     // for checking salesman billing exists or not
     public $salesmanBill;
 
+    // public $searchTerm = '';
+    // public $searchResults = [];
+    public $selectedFabric = null;
+
 
     public function mount(){
         $user_id = request()->query('user_id');
@@ -115,6 +119,82 @@ class OrderNew extends Component
         $this->addItem();
          // Check if the authenticated user has a related SalesmanBilling
         $this->salesmanBill = SalesmanBilling::where('salesman_id',auth()->id())->first();
+    }
+    // public function searchFabrics()
+    // {
+    //     if (strlen($this->searchTerm) > 0) {
+    //         $this->searchResults = Fabric::where('title', 'LIKE', "%{$this->searchTerm}%")
+    //             ->select('id', 'title')
+    //             ->limit(10)
+    //             ->get();
+    //     } else {
+    //         $this->searchResults = [];
+    //     }
+    // }
+
+    public function searchFabrics($index)
+{
+    // Ensure product ID exists for the given item index
+    if (!isset($this->items[$index]['product_id'])) {
+        return;
+    }
+
+    $productId = $this->items[$index]['product_id']; 
+
+    if (strlen($this->searchTerm) > 0) {
+        $this->searchResults = Fabric::join('product_fabrics', 'fabrics.id', '=', 'product_fabrics.fabric_id')
+            ->where('product_fabrics.product_id', $productId)
+            ->where('fabrics.status', 1)
+            ->where('fabrics.title', 'LIKE', "%{$this->searchTerm}%") // Fixed issue
+            ->select('fabrics.id', 'fabrics.title')
+            ->limit(10)
+            ->get();
+    } else {
+        $this->searchResults = [];
+    }
+}
+
+    
+
+    public function selectFabric($fabricId)
+    {
+        // $fabric = Fabric::find($fabricId);
+
+        // if ($fabric) {
+        //     $this->selectedFabric = $fabric->id;
+        //     $this->searchTerm = $fabric->title;
+        //     $this->searchResults = [];
+        // }
+
+
+
+
+        // Set the selected product details
+        $this->items[$index]['searchproduct'] = $name;
+        $this->items[$index]['product_id'] = $id;
+        $this->items[$index]['products'] = [];
+
+        // Get the fabrics available for the selected product
+        $this->items[$index]['fabrics'] = Fabric::join('product_fabrics', 'fabrics.id', '=', 'product_fabrics.fabric_id')
+            ->where('product_fabrics.product_id', $id)
+            ->where('fabrics.status', 1)
+            ->get(['fabrics.*']);
+
+        // Check if fabrics are available before setting selected fabric
+        if ($this->items[$index]['fabrics']->isNotEmpty()) {
+            $firstFabric = $this->items[$index]['fabrics']->first(); // Get the first available fabric
+
+            $this->selectedFabric = $firstFabric->id;
+            $this->searchTerm = $firstFabric->title;
+            $this->searchResults = [];
+        } else {
+            // If no fabrics are available, reset the selected fabric details
+            $this->selectedFabric = null;
+            $this->searchTerm = '';
+            $this->searchResults = [];
+        }
+
+        
     }
 
     // Define rules for validation
