@@ -639,4 +639,11 @@ table td h6.text-sm {
   .fabric-item .radio-input:checked + .radio-label .radio-border::after {
     background-color: #64236b;
   }
+  .company-logo{
+    justify-content: center;
+  }
+  .navbar-vertical .navbar-brand > img, .navbar-vertical .navbar-brand-img{
+    max-width: 150px !important;
+    max-height: 150px !important;
+  }
   
