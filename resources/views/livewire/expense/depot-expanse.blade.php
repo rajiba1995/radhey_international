@@ -2,12 +2,14 @@
     <!-- Nav Tabs -->
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link" :class="{ 'active': activeTab === 'dailyCollection' }" @click="activeTab = 'dailyCollection'">
+            <a class="nav-link" :class="{ 'active': activeTab === 'dailyCollection' }"
+               @click="activeTab = 'dailyCollection'; $wire.set('activeTab', 'dailyCollection');">
                 Daily Collection
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" :class="{ 'active': activeTab === 'dailyExpenses' }" @click="activeTab = 'dailyExpenses'">
+            <a class="nav-link" :class="{ 'active': activeTab === 'dailyExpenses' }"
+               @click="activeTab = 'dailyExpenses'; $wire.set('activeTab', 'dailyExpenses');">
                 Daily Expenses
             </a>
         </li>
@@ -177,8 +179,8 @@
                                                 <td class="text-center">{{ \Carbon\Carbon::parse($collection->updated_at)->format('d-m-Y') }}</td>
                                                 <td class="text-center"> {{ $collection->staff?->name ?? $collection->customer?->name ?? 'N/A' }}</td>
                                                 <td class="text-center">{{ $collection->amount }}</td>
-                                                <td class="text-center">{{ $collection->purpose }}</td>
-                                                <td class="text-center">{{ $collection->remarks ?? 'No remarks' }}</td>
+                                                <td class="text-center">{{ $collection->expense->title }}</td>
+                                                <td class="text-center">{{ $collection->narration ?? 'No remarks' }}</td>
                                             </tr>
                                         @empty
                                             <tr>

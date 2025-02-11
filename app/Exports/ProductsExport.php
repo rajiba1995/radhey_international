@@ -23,6 +23,7 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping
             'Product Code', 'Short Description', 'Description', 'GST Details', 
              'Fabrics','Status'
         ];
+        
     }
 
     public function map($product): array

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Models\SalesmanBilling;
 use App\Models\Order;
+use App\Models\User;
 
 class Helper
 {
@@ -44,53 +45,109 @@ class Helper
     }
 
 
+    // public static function generateInvoiceBill($salesManId)
+    // {
+       
+    //     // Check for salesman type user
+    //         $salesmanBillBook = SalesmanBilling::where('salesman_id',$salesManId)
+    //             ->whereColumn('total_count', '>', 'no_of_used')
+    //             ->first();
+    //         if ($salesmanBillBook) {
+    //             $new_number = $salesmanBillBook->start_no + $salesmanBillBook->no_of_used;
+
+    //             do {
+    //                 // Check if the order number already exists
+    //                 $existing_order = Order::where('order_number', $new_number)->first();
+                    
+    //                 // If order number exists, increment it
+    //                 if ($existing_order) {
+    //                     $new_number++;
+    //                 }
+            
+    //                 // Continue loop while the new_number is within the allowed range
+    //             } while ($existing_order && $new_number <= $salesmanBillBook->end_no);
+            
+    //             // If we exit the loop and new_number is still valid, you can proceed
+    //             if ($new_number <= $salesmanBillBook->end_no) {
+    //                 $data = [
+    //                     'number' => $new_number,
+    //                     'status' => 1,
+    //                     'bill_id' => $salesmanBillBook->id,
+    //                 ];
+    //                 return $data;
+    //             } 
+
+    //             $data = [
+    //                 'number' => '0000',
+    //                 'status' => 1,
+    //             ];
+    //             return $data;
+    //         } else {
+    //             // If no SalesmanBilling record is found
+    //             $data = [
+    //                 'number' => '0000',
+    //                 'status' => 1,
+    //                 'bill_id' => null,
+    //             ];
+    //             return $data;
+    //         }
+    // }
     public static function generateInvoiceBill($salesManId)
     {
-       
-        // Check for salesman type user
-            $salesmanBillBook = SalesmanBilling::where('salesman_id',$salesManId)
-                ->whereColumn('total_count', '>', 'no_of_used')
-                ->first();
-            if ($salesmanBillBook) {
-                $new_number = $salesmanBillBook->start_no + $salesmanBillBook->no_of_used;
+        // Fetch Salesman Details
+        $salesman = User::find($salesManId);
 
-                do {
-                    // Check if the order number already exists
-                    $existing_order = Order::where('order_number', $new_number)->first();
-                    
-                    // If order number exists, increment it
-                    if ($existing_order) {
-                        $new_number++;
-                    }
-            
-                    // Continue loop while the new_number is within the allowed range
-                } while ($existing_order && $new_number <= $salesmanBillBook->end_no);
-            
-                // If we exit the loop and new_number is still valid, you can proceed
-                if ($new_number <= $salesmanBillBook->end_no) {
-                    $data = [
-                        'number' => $new_number,
-                        'status' => 1,
-                        'bill_id' => $salesmanBillBook->id,
-                    ];
-                    return $data;
-                } 
+        if (!$salesman) {
+            return [
+                'number' => 'XXX-000',
+                'status' => 1,
+                'bill_id' => null,
+            ];
+        }
 
-                $data = [
-                    'number' => '0000',
+        // Extract the first 3 characters of the salesman's name and convert to uppercase
+        $prefix = strtoupper(substr($salesman->name, 0, 3));
+
+        // Check for salesman billing record
+        $salesmanBillBook = SalesmanBilling::where('salesman_id', $salesManId)
+            ->whereColumn('total_count', '>', 'no_of_used')
+            ->first();
+
+        if ($salesmanBillBook) {
+            $new_number = $salesmanBillBook->start_no + $salesmanBillBook->no_of_used;
+
+            do {
+                // Format the order number with prefix and zero-padding
+                $formatted_number = $prefix . '-' . str_pad($new_number, 3, '0', STR_PAD_LEFT);
+
+                // Check if the order number already exists
+                $existing_order = Order::where('order_number', $formatted_number)->first();
+                
+                // If order number exists, increment it
+                if ($existing_order) {
+                    $new_number++;
+                }
+
+                // Continue loop while the new_number is within the allowed range
+            } while ($existing_order && $new_number <= $salesmanBillBook->end_no);
+
+            // If we exit the loop and new_number is still valid, proceed
+            if ($new_number <= $salesmanBillBook->end_no) {
+                return [
+                    'number' => $formatted_number,
                     'status' => 1,
+                    'bill_id' => $salesmanBillBook->id,
                 ];
-                return $data;
-            } else {
-                // If no SalesmanBilling record is found
-                $data = [
-                    'number' => '0000',
-                    'status' => 1,
-                    'bill_id' => null,
-                ];
-                return $data;
             }
+        }
+
+        return [
+            'number' => '000',
+            'status' => 1,
+            'bill_id' => null,
+        ];
     }
+
 
     public static function generateUniqueNumber($increment = 0) {
         return now()->format('YmdHis') . str_pad($increment, 3, '0', STR_PAD_LEFT);

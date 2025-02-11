@@ -14,7 +14,10 @@
                         <h6 class="badge bg-danger custom_danger_badge">Expense Information</h6>
                     </div>
                     <div class="col-md-4 text-end">
-                        <a href="#" class="btn btn-cta">
+                        <!-- <a href="#" class="btn btn-cta">
+                            <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i> Back
+                        </a> -->
+                        <a href="{{ route('depot-expense.index', ['activeTab' => $activeTab]) }}" class="btn btn-cta">
                             <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i> Back
                         </a>
                     </div>

@@ -27,7 +27,7 @@ class DailyExpenses extends Component
     public $supplierOptions = []; // Stores Supplier Names
     public $stuffExpenseTitles = [];  // Holds Stuff Expense Titles
     public $supplierExpenseTitles = [];
-
+    public $activeTab = 'dailyExpenses'; // Default tab
     // Called when the 'expense_at' dropdown value changes
     public function onExpenseAtChange()
     {
@@ -36,14 +36,14 @@ class DailyExpenses extends Component
             $this->stuffOptions = User::where('user_type', 0)->pluck('name', 'id')->toArray();
             $this->supplierOptions = []; // Clear supplier options
             $this->supplier_id = null;   // Reset supplier selection
-            $this->stuffExpenseTitles = Expense::where('for_staff', 1)->get(); 
+            $this->stuffExpenseTitles = Expense::where('for_staff', 1)->where('for_debit',1)->get(); 
             $this->supplierExpenseTitles = []; // Clear Supplier Titles
         } elseif ($this->expense_at == '2') {
             // Fetch Supplier list
             $this->supplierOptions = Supplier::pluck('name', 'id')->toArray();
             $this->stuffOptions = [];   // Clear stuff options
             $this->stuff_id = null;     // Reset stuff selection
-            $this->supplierExpenseTitles = Expense::where('for_partner', 1)->get();
+            $this->supplierExpenseTitles = Expense::where('for_partner', 1)->where('for_debit',1)->get();
             $this->stuffExpenseTitles = [];
         } else {
             // If nothing is selected, reset both options
@@ -57,6 +57,7 @@ class DailyExpenses extends Component
     }
     public function mount()
     {
+        $this->activeTab = request()->query('activeTab', 'dailyExpenses');
         // Auto-generate voucher number
         $this->generateVoucherNumber();
     }
@@ -64,8 +65,9 @@ class DailyExpenses extends Component
     public function generateVoucherNumber()
     {
         // Get the latest voucher number
-        $latestVoucher = Payment::latest()->first();
-
+        $latestVoucher = Payment::orderByDesc('voucher_no')
+        ->first();
+        // dd($latestVoucher);
         // Extract the numeric part from the latest voucher number
         $lastVoucherNumber = $latestVoucher ? (int) substr($latestVoucher->voucher_no, 7) : 0;
 
