@@ -5,63 +5,158 @@ namespace App\Http\Livewire\Expense;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Payment;
+use App\Models\Collection;
+use App\Models\User;
+use Carbon\Carbon;
 
 class DepotExpanse extends Component
 {
-    
     use WithPagination;
 
-    public $payment_for, $payment_in, $bank_cash, $voucher_no, $payment_date, 
-           $payment_mode, $amount, $chq_utr_no, $bank_name, $narration, $is_gst;
+    // Daily Expenses Properties
+    public $start_date;
+    public $end_date;
+    public $search = '';
 
-    public $expanse_id;
-    public $updateMode = false;
+    // Daily Collection Properties
+    public $start_date_collection;
+    public $end_date_collection;
+    public $search_collection = '';
 
-    protected $rules = [
-        'payment_for' => 'required|string|max:255',
-        'payment_in' => 'required|string|max:255',
-        'bank_cash' => 'required|in:bank,cash',
-        'voucher_no' => 'required|unique:depot_expanses,voucher_no',
-        'payment_date' => 'required|date',
-        'payment_mode' => 'required|string|max:255',
-        'amount' => 'required|numeric|min:0',
-        'chq_utr_no' => 'nullable|string|max:255',
-        'bank_name' => 'nullable|string|max:255',
-        'narration' => 'nullable|string',
-        'is_gst' => 'boolean',
-    ];
-   
+    public $activeTab = 'dailyCollection';
 
+    public function mount()
+    {
+        $this->start_date = now()->format('Y-m-d');
+        $this->end_date = now()->format('Y-m-d');
+
+        $this->start_date_collection = now()->format('Y-m-d');
+        $this->end_date_collection = now()->format('Y-m-d');
+    }
+
+    public function setActiveTab($tab)
+    {
+        $this->activeTab = $tab;
+    }
+
+    // public function render()
+    // {
+    //     // **Query for Daily Expenses**
+    //     $query = Payment::with(['user', 'supplier'])->where('payment_for','Debit')->latest('updated_at');
+
+    //     // Apply date filter for expenses
+    //     if ($this->start_date && $this->end_date) {
+    //         $query->whereBetween('updated_at', [
+    //             $this->start_date . ' 00:00:00',
+    //             $this->end_date . ' 23:59:59'
+    //         ]);
+    //     }
+
+    //     // Search filter for expenses
+    //     if (!empty($this->search)) {
+    //         $query->where(function ($q) {
+    //             $q->whereHas('staff', function ($q) {
+    //                 $q->where('name', 'like', '%' . $this->search . '%');
+    //             })->orWhereHas('supplier', function ($q) {
+    //                 $q->where('name', 'like', '%' . $this->search . '%');
+    //             });
+    //         });
+    //     }
+
+    //     $totalAmount = $query->sum('amount');
+    //     $payments = $query->paginate(10);
+
+    //     // **Query for Daily Collections**
+    //     $collectionQuery = Payment::with(['staff', 'supplier'])->latest('updated_at');
+
+    //     // Apply date filter for collections
+    //     if ($this->start_date_collection && $this->end_date_collection) {
+    //         $collectionQuery->whereBetween('updated_at', [
+    //             $this->start_date_collection . ' 00:00:00',
+    //             $this->end_date_collection . ' 23:59:59'
+    //         ]);
+    //     }
+
+    //     // Search filter for collections
+    //     if (!empty($this->search_collection)) {
+    //         $collectionQuery->where(function ($q) {
+    //             $q->whereHas('staff', function ($q) {
+    //                 $q->where('name', 'like', '%' . $this->search . '%');
+    //             })->orWhereHas('supplier', function ($q) {
+    //                 $q->where('name', 'like', '%' . $this->search . '%');
+    //             });
+    //         });
+    //     }
+
+    //     $totalCollection = $collectionQuery->sum('amount');
+    //     $collections = $collectionQuery->paginate(10);
+
+    //     return view('livewire.expense.depot-expanse', compact('payments', 'totalAmount', 'collections', 'totalCollection'));
+    // }
 
     public function render()
     {
-        return view('livewire.expense.depot-expanse', [
-            // 'expanses' => DepotExpanse::latest()->paginate(10),
-            'expanses' => Payment::latest()->paginate(10),
-        ]);
+        // **Query for Daily Expenses**
+        $query = Payment::with(['user', 'supplier'])
+            ->where('payment_for', 'Debit')
+            ->latest('updated_at');
+
+        // Clone query before modifying
+        $expenseQuery = clone $query;
+
+        // Apply date filter for expenses
+        if ($this->start_date && $this->end_date) {
+            $expenseQuery->whereBetween('updated_at', [
+                $this->start_date . ' 00:00:00',
+                $this->end_date . ' 23:59:59'
+            ]);
+        }
+
+        // Search filter for expenses
+        if (!empty($this->search)) {
+            $expenseQuery->where(function ($q) {
+                $q->whereHas('user', function ($q) {
+                    $q->where('name', 'like', '%' . $this->search . '%');
+                })->orWhereHas('supplier', function ($q) {
+                    $q->where('name', 'like', '%' . $this->search . '%');
+                });
+            });
+        }
+
+        $totalAmount = $expenseQuery->sum('amount');
+        $payments = $expenseQuery->paginate(10);
+
+        // **Query for Daily Collections**
+        $collectionQuery = Payment::with(['user', 'supplier'])
+            ->where('payment_for', 'Credit')
+            ->latest('updated_at');
+
+        // Clone query before modifying
+        $collectionsQuery = clone $collectionQuery;
+
+        // Apply date filter for collections
+        if ($this->start_date_collection && $this->end_date_collection) {
+            $collectionsQuery->whereBetween('updated_at', [
+                $this->start_date_collection . ' 00:00:00',
+                $this->end_date_collection . ' 23:59:59'
+            ]);
+        }
+
+        // Search filter for collections
+        if (!empty($this->search_collection)) {
+            $collectionsQuery->where(function ($q) {
+                $q->whereHas('user', function ($q) {
+                    $q->where('name', 'like', '%' . $this->search_collection . '%');
+                })->orWhereHas('supplier', function ($q) {
+                    $q->where('name', 'like', '%' . $this->search_collection . '%');
+                });
+            });
+        }
+
+        $totalCollection = $collectionsQuery->sum('amount');
+        $collections = $collectionsQuery->paginate(10);
+
+        return view('livewire.expense.depot-expanse', compact('payments', 'totalAmount', 'collections', 'totalCollection'));
     }
 
-    public function store()
-    {
-        $this->validate();
-
-        Payment::create([
-            'payment_for' => $this->payment_for,
-            'payment_in' => $this->payment_in,
-            'bank_cash' => $this->bank_cash,
-            'voucher_no' => $this->voucher_no,
-            'payment_date' => $this->payment_date,
-            'payment_mode' => $this->payment_mode,
-            'amount' => $this->amount,
-            'chq_utr_no' => $this->chq_utr_no,
-            'bank_name' => $this->bank_name,
-            'narration' => $this->narration,
-            'is_gst' => $this->is_gst,
-            'created_by' => auth()->id(),
-        ]);
-
-        session()->flash('message', 'Depot Expense Created Successfully.');
-
-        $this->reset();
-    }
 }

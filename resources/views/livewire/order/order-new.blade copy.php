@@ -392,34 +392,38 @@
                                         <h6 class="badge bg-danger custom_success_badge dark-badge">Fabrics</h6>
 
                                         <div class="row mx-2 fabric-item">
-                                        <div>
-                                        @if(isset($items[$index]['fabrics']) && count($items[$index]['fabrics']) > 0)
-    <label for="searchFabric" class="form-label mb-0">Search Fabric</label>
-    <input type="text" 
-           id="searchFabric" 
-           wire:model="searchTerm" 
-           wire:keyup="searchFabrics({{ $index }})" 
-           class="form-control form-control-sm border border-1 customer_input" 
-           placeholder="Search by fabric name">
-    
-    @if(!empty($searchResults))
-        <div id="fabric_dropdown" class="dropdown-menu show w-100" style="max-height: 200px; overflow-y: auto;">
-            @foreach ($searchResults as $fabric)
-                <button class="dropdown-item" type="button" wire:click="selectFabric({{ $fabric->id }})">
-                    {{ $fabric->title }}
-                </button>
-            @endforeach
-        </div>
-    @else
-        <p class="mt-2 text-muted">No fabrics found.</p>
-    @endif
-</div>
-
-
-@else
-    <p class="mt-2 text-danger">No fabric selected.</p>
-@endif
-
+                                            @if(isset($items[$index]['fabrics']) && count($items[$index]['fabrics']) > 0)
+                                                <div class="col-lg-4 col-md-6 col-sm-12"> {{-- First column starts --}}
+                                                    @foreach ($items[$index]['fabrics'] as $fabric)
+                                                        @if ($loop->index % 12 == 0 && $loop->index != 0)
+                                                            </div><div class="col-lg-4 col-md-6 col-sm-12"> {{-- Close previous column and start a new one --}}
+                                                        @endif
+                                                        <div class="radio">
+                                                            <input 
+                                                                type="radio" 
+                                                                class="radio-input" 
+                                                                name="fabric_{{ $index }}" 
+                                                                id="fabric_{{ $index }}_{{ $fabric->id }}" 
+                                                                wire:model="items.{{ $index }}.selected_fabric" 
+                                                                value="{{ $fabric->id }}"
+                                                            />
+                                                            <label for="fabric_{{ $index }}_{{ $fabric->id }}" class="radio-label">
+                                                                <span class="radio-border"></span> 
+                                                                {{ $fabric->title }}
+                                                            </label>
+                                                        </div>
+                                                    @endforeach
+                                                </div> {{-- Close the last column --}}
+                                            @else
+                                                <p>No fabrics available for this item.</p>
+                                            @endif
+                                        
+                                            @if (session()->has('fabrics_error.' . $index)) 
+                                                <div class="alert alert-danger">
+                                                    {{ session('fabrics_error.' . $index) }}
+                                                </div>
+                                            @endif
+                                        </div> {{-- Close the row --}}
                                     </div>
                                 </div>
                             @endif
