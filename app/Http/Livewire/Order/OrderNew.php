@@ -304,7 +304,7 @@ class OrderNew extends Component
             if ($value == 1) {
                 $catalogues = Catalogue::with('catalogueTitle')->get();
                 $this->catalogues[$index] = $catalogues->pluck('catalogueTitle.title', 'catalogue_title_id');
-        
+        // dd($this->catalogues[$index]);
                 // Fetch max page numbers per catalogue
                 $this->maxPages[$index] = [];
                 foreach ($catalogues as $catalogue) {
