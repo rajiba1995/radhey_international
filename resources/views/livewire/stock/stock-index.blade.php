@@ -83,6 +83,7 @@
                                     <th>Quantity (Meters)</th>
                                     <th>Piece Price</th>
                                     <th>Total Price</th>
+                                    <th>Entry Date</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -93,6 +94,7 @@
                                         <td>{{ $fabric->qty_in_meter }}</td>
                                         <td>Rs. {{ number_format($fabric->piece_price, 2) }}</td>
                                         <td>Rs. {{ number_format($fabric->total_price, 2) }}</td>
+                                        <td> {{ date('d-m-Y', strtotime($fabric->created_at))}}</td>
                                     </tr>
                                 @empty
                                     <tr>

@@ -8,7 +8,13 @@
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center">
                 <h6 class="mb-4 text-muted">PO: <span class="text-dark">{{ $purchaseOrder->unique_id }}</span></h6>
-                 <a href="{{route('purchase_order.index')}}" class="btn btn-cta" ><i class="material-icons text-white" style="font-size: 15px;">chevron_left</i>Back</a>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <label>
+                    <input type="checkbox" wire:model="selectAll" id="bulkInCheckbox" wire:change="toggleAllCheckboxes">
+                    Bulk In
+                </label>
+                <a href="{{route('purchase_order.index')}}" class="btn btn-cta" ><i class="material-icons text-white" style="font-size: 15px;">chevron_left</i>Back</a>
             </div>
             @if(Session::has('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -45,7 +51,7 @@
                                     @if ($orderProduct->collection_id == 1)
                                         <tr class="text-center">
                                             <td>
-                                                <input type="checkbox" wire:model="selectedFabricBulkIn" value="{{ $orderProduct->id }}" wire:change="toggleFabricUniqueNumbers({{ $orderProduct->id }})">
+                                                <input type="checkbox" wire:model="selectedFabricBulkIn" value="{{ $orderProduct->id }}" disabled>
                                             </td>
                                             <td>{{ $orderProduct->collection ? $orderProduct->collection->title : '' }}</td>
                                             <td>{{ $orderProduct->fabric ? $orderProduct->fabric->title : 'N/A' }}</td>
@@ -56,16 +62,8 @@
                                                 <button type="button" wire:click="incrementGrnQuantity({{ $orderProduct->id }})">+</button>
                                             </td>
                                             <td>
-                                                <input type="text" wire:model="prices.{{ $orderProduct->id }}" value="{{ $orderProduct->total_price }}" readonly>
+                                                <input type="text" class="border-0 text-center bg-transparent" wire:model="prices.{{ $orderProduct->id }}" value="{{ $orderProduct->total_price }}" readonly>
                                             </td>
-
-
-                                            {{-- <td>{{ intval($orderProduct->qty_in_meter) }}</td>
-                                            <td>{{ intval($orderProduct->qty_in_meter) }}</td> --}}
-                                            {{-- <td>
-                                                <input type="checkbox" wire:model="selectedFabricUniqueNumbers" value="{{ $orderProduct->id }}" disabled>
-                                                {{ $fabricUniqueNumbers[$orderProduct->id] ?? '' }}
-                                            </td> --}}
                                         </tr>
                                     @endif
                                 @endforeach
@@ -104,8 +102,7 @@
                                                     <td rowspan="{{ $rowCount }}">
                                                         <input type="checkbox" 
                                                                wire:model="selectedBulkIn" 
-                                                               value="{{ $orderProduct->id }}" 
-                                                               wire:change="toggleUniqueNumbersForProduct({{ $orderProduct->id }}, {{ $rowCount }})">
+                                                               value="{{ $orderProduct->id }}" disabled>
                                                     </td>
                                                     <td rowspan="{{ $rowCount }}">{{ $orderProduct->collection ? $orderProduct->collection->title : '' }}</td>
                                                     <td rowspan="{{ $rowCount }}">{{ $orderProduct->product ? $orderProduct->product->name : '' }}</td>
@@ -116,23 +113,9 @@
                                                         <button type="button" wire:click="incrementGrnQuantity({{ $orderProduct->id }})">+</button>
                                                     </td>
                                                     <td>
-                                                        <input type="text" wire:model="prices.{{ $orderProduct->id }}" value="{{$orderProduct->total_price}}" readonly>
+                                                        <input type="text" class="border-0 text-center bg-transparent" wire:model="prices.{{ $orderProduct->id }}" value="{{$orderProduct->total_price}}" readonly>
                                                     </td>
                                                 @endif
-                                                {{-- <td>
-                                                    @if(isset($selectedUniqueNumbers[$orderProduct->id]))
-                                                        @if(in_array($i, $selectedUniqueNumbers[$orderProduct->id]))
-                                                            <input type="checkbox" checked disabled>
-                                                        @else
-                                                            <input type="checkbox" disabled>
-                                                        @endif
-                                                    @else
-                                                        <input type="checkbox" disabled>
-                                                    @endif
-                                                    @if(isset($productUniqueNumbers[$orderProduct->id]))
-                                                        {{ $productUniqueNumbers[$orderProduct->id][$i] ?? '' }}
-                                                    @endif
-                                                </td> --}}
                                             </tr>
                                         @endfor
                                     @endif
@@ -143,10 +126,24 @@
                 </div>
                 @endif
                 <div class="d-flex justify-content-end mt-4">
-                    <button type="submit" class="btn btn-cta">Generate GRN</button>
+                    <button type="submit"  wire:click.prevent="generateGrn" class="btn btn-cta" @if (!$selectAll)
+                        disabled
+                    @endif>Generate GRN</button>
                 </div>
             </form>
         </div>
     </div>
+    <script>
+        document.getElementById('bulkInCheckbox').addEventListener('change', function (event) {
+            if (event.target.checked) {
+                if (!confirm('Are you sure you want to bulk in?')) {
+                    event.target.checked = false; // Revert checkbox if canceled
+                    return;
+                }
+            }
+            @this.call('toggleAllCheckboxes');
+        });
+        </script>
+        
 </div>
 
