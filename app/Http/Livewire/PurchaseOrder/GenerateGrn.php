@@ -27,56 +27,65 @@ class GenerateGrn extends Component
     public $productTotalPrice = 0;
     public $fabricTotalPrice = 0;
     public $totalPrice = 0;
+    // grn quantity
+    public $grnQuantities = [];
+    public $prices = [];
     
 
     public function mount($purchase_order_id){
          $this->purchaseOrderId = $purchase_order_id;
          $this->purchaseOrder = PurchaseOrder::with('orderproducts.product', 'orderproducts.fabric','orderproducts.collection')->find($this->purchaseOrderId);    
-        //  $this->uniqueNumber = Helper::generateUniqueNumber();      
+        // Pre-fill GRN quantity
+        foreach ($this->purchaseOrder->orderproducts  as $orderProduct) {
+            $this->grnQuantities[$orderProduct->id] = $orderProduct->collection_id == 1 
+            ? $orderProduct->qty_in_meter 
+            : $orderProduct->qty_in_pieces;
+
+            $this->prices[$orderProduct->id] = $orderProduct->total_price;
+        }  
     }
 
-    public function toggleFabricUniqueNumbers($orderProductId) {
-        if (in_array($orderProductId, $this->selectedFabricBulkIn)) {
-            // Generate a unique number and assign it
-            $this->fabricUniqueNumbers[$orderProductId] = Helper::generateUniqueNumber(count($this->fabricUniqueNumbers));
-            $this->selectedFabricUniqueNumbers[] = $orderProductId;
-        } else {
-            unset($this->fabricUniqueNumbers[$orderProductId]);
-            $this->selectedFabricUniqueNumbers = array_diff($this->selectedFabricUniqueNumbers, [$orderProductId]);
+    public function incrementGrnQuantity($orderProductId){
+        $product = $this->purchaseOrder->orderproducts->findOrFail($orderProductId);
+        if($product){
+            $maxQuantity = $product->collection_id == 1 ? intval($product->qty_in_meter) : intval($product->qty_in_pieces);
         }
-    }
-    
-    public function toggleUniqueNumbersForProduct($orderProductId, $rowCount) {
-        if (in_array($orderProductId, $this->selectedBulkIn)) {
-            // Generate a unique number for each row
-            $this->productUniqueNumbers[$orderProductId] = [];
-            for ($i = 0; $i < $rowCount; $i++) {
-                $this->productUniqueNumbers[$orderProductId][] = Helper::generateUniqueNumber(count($this->productUniqueNumbers) + $i);
-            }
-            $this->selectedUniqueNumbers[$orderProductId] = range(0, $rowCount - 1);
-        } else {
-            unset($this->productUniqueNumbers[$orderProductId]);
-            unset($this->selectedUniqueNumbers[$orderProductId]);
-        }
-    }
-    
 
-    // public function toggleFabricUniqueNumbers($orderProductId){
-    //     if(in_array($orderProductId,$this->selectedFabricBulkIn)){
+         // Prevent exceeding the maximum allowed quantity
+         if(!isset($this->grnQuantities[$orderProductId]) || ($this->grnQuantities[$orderProductId] < $maxQuantity)){
+             $this->grnQuantities[$orderProductId] = isset($this->grnQuantities[$orderProductId]) ? $this->grnQuantities[$orderProductId] + 1 : 1;
+         }
+
+    }
+
+
+    // public function toggleFabricUniqueNumbers($orderProductId) {
+    //     if (in_array($orderProductId, $this->selectedFabricBulkIn)) {
+    //         // Generate a unique number and assign it
+    //         $this->fabricUniqueNumbers[$orderProductId] = Helper::generateUniqueNumber(count($this->fabricUniqueNumbers));
     //         $this->selectedFabricUniqueNumbers[] = $orderProductId;
-    //     }else{
+    //     } else {
+    //         unset($this->fabricUniqueNumbers[$orderProductId]);
     //         $this->selectedFabricUniqueNumbers = array_diff($this->selectedFabricUniqueNumbers, [$orderProductId]);
     //     }
     // }
-
-    // public function toggleUniqueNumbersForProduct($orderProductId, $rowCount)
-    // {
+    
+    // public function toggleUniqueNumbersForProduct($orderProductId, $rowCount) {
     //     if (in_array($orderProductId, $this->selectedBulkIn)) {
-    //         $this->selectedUniqueNumbers[$orderProductId] = range(0, $rowCount - 1); 
+    //         // Generate a unique number for each row
+    //         $this->productUniqueNumbers[$orderProductId] = [];
+    //         for ($i = 0; $i < $rowCount; $i++) {
+    //             $this->productUniqueNumbers[$orderProductId][] = Helper::generateUniqueNumber(count($this->productUniqueNumbers) + $i);
+    //         }
+    //         $this->selectedUniqueNumbers[$orderProductId] = range(0, $rowCount - 1);
     //     } else {
+    //         unset($this->productUniqueNumbers[$orderProductId]);
     //         unset($this->selectedUniqueNumbers[$orderProductId]);
     //     }
     // }
+    
+
+    
 
     // Generate GRN
     public function generateGrn()
