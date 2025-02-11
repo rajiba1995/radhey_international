@@ -489,9 +489,9 @@ button[disabled] {
 .block-heading {
     color: #000000;
 }
-.search-input-group input[type="text"].form-control {
+/* .search-input-group input[type="text"].form-control {
     padding: 0.5rem;
-}
+} */
 .search-input-group input[type="text"],
 .search-input-group input[type="text"].border {
     border-color: #000000 !important;
@@ -646,4 +646,80 @@ table td h6.text-sm {
     max-width: 150px !important;
     max-height: 150px !important;
   }
+  .navbar-vertical.bg-white .navbar-nav .nav-link.active{
+    border-right-width: 0;
+    border-bottom-width: 0;
+    background-color: rgba(199, 199, 199, 0.2) !important;
+  }
+  .admin__title{
+    display: flex;
+    align-items: flex-end;
+  }
+  .breadcrumb_menu {
+    padding: 5px 15px;
+    font-size: 12px;
+    background: #ffffff;
+    margin-bottom: 20px;
+    box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075) !important;
+    border-radius: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    list-style-type: none;
+    justify-content: space-between; /* Add this to separate items */
+  }
+  
+  .breadcrumb_menu li:not(:last-child):before {
+    content: '/';
+    margin: 0 10px;
+  }
+  
+  .breadcrumb_menu li a {
+    color: #dc3545;
+    text-decoration: none;
+  }
+  
+  .breadcrumb_menu .back-button {
+    margin-left: auto; /* Move the back button to the right side */
+  }
+.form-control{
+    padding: 5px 10px;
+    border: 1px solid #d2d6da !important;
+}
+
+.loader-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    z-index: 9999; /* Ensure it is above all other elements */
+    visibility: hidden; /* Initially hidden */
+    opacity: 0; /* Initially invisible */
+    pointer-events: none; /* Prevent interactions with the loader */
+    transition: visibility 0s, opacity 0.3s ease-in-out; /* Smooth transition for visibility */
+    display: flex;/* Flexbox for centering */
+}
+
+.loader-container[wire\:loading] {
+    visibility: visible; /* Make it visible when loading */
+    opacity: 1; /* Make it fully opaque */
+    pointer-events: all; /* Enable interactions with the loader */
+}
+
+.loader {
+    width: 50px;
+    height: 50px;
+    border: 6px solid #f3f3f3; /* Light grey */
+    border-top: 6px solid #3498db; /* Blue */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+   
   
