@@ -109,20 +109,30 @@
                                     @endif
                                     <div class="col-md-1">
                                         @if($isFabricSelected[$index] ?? false)
-                                            <label for="pcs_per_mtr_{{$index}}" class="form-label">Pcs per Mtr </label>
+                                            <label for="pcs_per_mtr_{{$index}}" class="form-label"> Meter </label>
                                             <input type="number" wire:model="rows.{{$index}}.pcs_per_mtr" wire:keyup="updateRowAmount({{$index}})" id="pcs_per_mtr_{{$index}}" class="form-control form-control-sm border border-1 p-2" value="1">
                                         @else
-                                            <label for="pcs_per_qty_{{$index}}" class="form-label">Pcs per Qty </label>
+                                            <label for="pcs_per_qty_{{$index}}" class="form-label"> Quantity </label>
                                             <input type="number" wire:model="rows.{{$index}}.pcs_per_qty" wire:keyup="updateRowAmount({{$index}})" id="pcs_per_qty_{{$index}}" class="form-control form-control-sm border border-1 p-2" value="1">
                                         @endif
                                     </div>
                                     
                                     <div class="col-md-2">
-                                        <label for="price_per_pc_{{$index}}" class="form-label">Price/Pc (Inc. Tax) <span class="text-danger">*</span></label>
-                                        <input type="text" wire:model="rows.{{$index}}.price_per_pc" wire:keyup="updateRowAmount({{$index}})" id="price_per_pc_{{$index}}" class="form-control form-control-sm border border-1 p-2" placeholder="Product Cost Price">
-                                        @error('rows.'.$index.'.price_per_pc')
+                                        @if ($isFabricSelected[$index] ?? false)
+                                        <label for="price_per_mtr_{{$index}}" class="form-label">Price/Mtr (Inc. Tax) <span class="text-danger">*</span></label>
+                                        <input type="text" wire:model="rows.{{$index}}.price_per_mtr"
+                                            wire:keyup="updateRowAmount({{ $index }})"  id="price_per_mtr_{{$index}}" class="form-control form-control-sm border border-1 p-2" placeholder="Product Cost Price">
+                                        @error('rows.'.$index.'.price_per_mtr')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
+                                     @else
+                                        <label for="price_per_qty_{{$index}}" class="form-label">Price/Qty (Inc. Tax) <span class="text-danger">*</span></label>
+                                        <input type="text" wire:model="rows.{{$index}}.price_per_qty"
+                                            wire:keyup="updateRowAmount({{ $index }})"  id="price_per_qty_{{$index}}" class="form-control form-control-sm border border-1 p-2" placeholder="Product Cost Price">
+                                        @error('rows.'.$index.'.price_per_qty')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                     @endif
                                     </div>
                                     <div class="col-md-2">
                                         <label for="total_amount_{{$index}}" class="form-label">Total Amount</label>

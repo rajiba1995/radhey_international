@@ -210,7 +210,7 @@ class OrderNew extends Component
     public function changeSalesman($value){
         $this->bill_book = Helper::generateInvoiceBill($value);
         $this->order_number = $this->bill_book['number'];
-        $this->bill_id = $this->bill_book['bill_id'];
+        $this->bill_id = $this->bill_book['bill_id'] ?? null;
     }
     
 

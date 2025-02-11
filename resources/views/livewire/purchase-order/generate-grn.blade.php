@@ -35,8 +35,9 @@
                                     <td>Bulk In</td>
                                     <th>Collection</th>
                                     <th>Fabric Name</th>
-                                    <th>Quantity (in meters)</th>
-                                    <th>Unique Number</th>
+                                    <th>Order Quantity (in meters)</th>
+                                    <th>GRN Quantity</th>
+                                    <th>Price</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -50,9 +51,21 @@
                                             <td>{{ $orderProduct->fabric ? $orderProduct->fabric->title : 'N/A' }}</td>
                                             <td>{{ intval($orderProduct->qty_in_meter) }}</td>
                                             <td>
-                                                <input type="checkbox" wire:model="selectedFabricUniqueNumbers" value="{{ $orderProduct->id }}" disabled>
-                                                {{ $uniqueNumber }}
+                                                <button type="button" wire:click="decrementGrnQuantity({{ $orderProduct->id }})">-</button>
+                                                <input type="number"  wire:model="grnQuantities.{{ $orderProduct->id }}" value="{{ $orderProduct->qty_in_meter }}" min="0" disabled>
+                                                <button type="button" wire:click="incrementGrnQuantity({{ $orderProduct->id }})">+</button>
                                             </td>
+                                            <td>
+                                                <input type="text" wire:model="prices.{{ $orderProduct->id }}" value="{{ $orderProduct->total_price }}" readonly>
+                                            </td>
+
+
+                                            {{-- <td>{{ intval($orderProduct->qty_in_meter) }}</td>
+                                            <td>{{ intval($orderProduct->qty_in_meter) }}</td> --}}
+                                            {{-- <td>
+                                                <input type="checkbox" wire:model="selectedFabricUniqueNumbers" value="{{ $orderProduct->id }}" disabled>
+                                                {{ $fabricUniqueNumbers[$orderProduct->id] ?? '' }}
+                                            </td> --}}
                                         </tr>
                                     @endif
                                 @endforeach
@@ -74,8 +87,9 @@
                                     <th>Bulk In</th>
                                     <th>Collection</th>
                                     <th>Product Name</th>
-                                    <th>Quantity (in pieces)</th>
-                                    <th>Unique Number</th>
+                                    <th>Order Quantity (in pieces)</th>
+                                    <th>GRN Quantity</th>
+                                    <th>Price</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -96,8 +110,16 @@
                                                     <td rowspan="{{ $rowCount }}">{{ $orderProduct->collection ? $orderProduct->collection->title : '' }}</td>
                                                     <td rowspan="{{ $rowCount }}">{{ $orderProduct->product ? $orderProduct->product->name : '' }}</td>
                                                     <td rowspan="{{ $rowCount }}">{{ $orderProduct->qty_in_pieces }}</td>
+                                                    <td>
+                                                        <button type="button" wire:click="decrementGrnQuantity({{ $orderProduct->id }})">-</button>
+                                                        <input type="number"  wire:model="grnQuantities.{{ $orderProduct->id }}" value="{{ $orderProduct->qty_in_pieces }}" min="0" disabled>
+                                                        <button type="button" wire:click="incrementGrnQuantity({{ $orderProduct->id }})">+</button>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" wire:model="prices.{{ $orderProduct->id }}" value="{{$orderProduct->total_price}}" readonly>
+                                                    </td>
                                                 @endif
-                                                <td>
+                                                {{-- <td>
                                                     @if(isset($selectedUniqueNumbers[$orderProduct->id]))
                                                         @if(in_array($i, $selectedUniqueNumbers[$orderProduct->id]))
                                                             <input type="checkbox" checked disabled>
@@ -107,8 +129,10 @@
                                                     @else
                                                         <input type="checkbox" disabled>
                                                     @endif
-                                                    {{ $uniqueNumber }}
-                                                </td>
+                                                    @if(isset($productUniqueNumbers[$orderProduct->id]))
+                                                        {{ $productUniqueNumbers[$orderProduct->id][$i] ?? '' }}
+                                                    @endif
+                                                </td> --}}
                                             </tr>
                                         @endfor
                                     @endif

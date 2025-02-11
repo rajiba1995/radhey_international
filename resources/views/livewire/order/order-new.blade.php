@@ -30,7 +30,7 @@
                         <div class="col-12 col-md-6">
                             <div class="d-flex justify-content-between">
                                 <!-- Search Label -->
-                                <label for="searchCustomer" class="form-label mb-0">Existing Customer</label>
+                                <label for="searchCustomer" class="form-label mb-0">Search By Order Id</label>
                             </div>
         
                             <div class="position-relative">

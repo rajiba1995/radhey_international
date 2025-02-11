@@ -86,15 +86,16 @@ class Helper
                 $data = [
                     'number' => '0000',
                     'status' => 1,
+                    'bill_id' => null,
                 ];
                 return $data;
             }
     }
 
-
-    public static function generateUniqueNumber(){
-        return now()->format('YmdHis') . rand(1000, 9999);
+    public static function generateUniqueNumber($increment = 0) {
+        return now()->format('YmdHis') . str_pad($increment, 3, '0', STR_PAD_LEFT);
     }
+    
 
     public static function generateTransactionId(){
         return 'PAYMENT'.now()->format('YmdHis');
