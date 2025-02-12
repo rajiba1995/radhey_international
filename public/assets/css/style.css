@@ -685,6 +685,10 @@ table td h6.text-sm {
     padding: 5px 10px;
     border: 1px solid #d2d6da !important;
 }
+.form-control[disabled] {
+    padding: 5px 10px;
+    border: 1px solid #d2d6da !important;
+}
 
 .loader-container {
     position: fixed;
