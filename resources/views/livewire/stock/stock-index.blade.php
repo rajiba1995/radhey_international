@@ -48,11 +48,17 @@
                     </div> -->
 
                     <div class="d-flex justify-content-end gap-2 mb-3">
-                        <input type="text" wire:model="search" class="form-control w-auto" placeholder="Search by Product Name" />
-                        <input type="date" wire:model="startDate" class="form-control w-auto" />
-                        <input type="date" wire:model="endDate" class="form-control w-auto" />
+                        <div class="position-relative">
+                            <input type="text" wire:model="searchProduct"  class="searchInput form-control w-auto" placeholder="Search by Product Name" />
+                        </div>
+                        <input type="date" wire:model="startDateProduct" class="form-control w-auto" />
+                        <input type="date" wire:model="endDateProduct" class="form-control w-auto" />
                         <button type="button" wire:click="$refresh" class="btn btn-outline-primary mb-0">
                             <span class="material-icons">search</span>
+                        </button>
+                        <button type="button" class="btn btn-outline-primary mb-0"
+                            wire:click="clearProductFilters"  wire:loading.attr="disabled">
+                            ✖
                         </button>
                         <button wire:click="exportStockProduct" class="btn btn-success btn-sm">
                             Export Product CSV
@@ -67,7 +73,8 @@
                                 <tr class="text-center">
                                     <th>#</th>
                                     <th>Product Name</th>
-                                    <th>Quantity (Pieces)</th>
+                                    <th>Order Quantity (Pieces)</th>
+                                    <th>GRN Quantity (Pieces)</th>
                                     <th>Piece Price</th>
                                     <th>Total Price</th>
                                     <th>Entry Date</th>
@@ -78,7 +85,8 @@
                                     <tr class="text-center">
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $product->product->name ?? 'N/A' }}</td>
-                                        <td>{{ $product->qty_in_pieces }}</td>
+                                        <td>{{ intval($product->qty_in_pieces) }}</td>
+                                        <td>{{ intval($product->qty_while_grn) }}</td>
                                         <td>Rs. {{ number_format($product->piece_price, 2) }}</td>
                                         <td>Rs. {{ number_format($product->total_price, 2) }}</td>
                                         <td> {{ date('d-m-Y',strtotime($product->created_at))}}</td>
@@ -101,11 +109,15 @@
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-end gap-2 mb-3">
-                        <input type="text" wire:model="search" class="form-control w-auto" placeholder="Search by Fabric Name" />
-                        <input type="date" wire:model="startDate" class="form-control w-auto" />
-                        <input type="date" wire:model="endDate" class="form-control w-auto" />
+                        <input type="text" wire:model="searchFabric" class="form-control w-auto" placeholder="Search by Fabric Name" />
+                        <input type="date" wire:model="startDateFabric" class="form-control w-auto" />
+                        <input type="date" wire:model="endDateFabric" class="form-control w-auto" />
                         <button type="button" wire:click="$refresh" class="btn btn-outline-primary mb-0">
                             <span class="material-icons">search</span>
+                        </button>
+                        <button type="button" class="btn btn-outline-primary mb-0"
+                            wire:click="clearFabricFilters"  wire:loading.attr="disabled">
+                            ✖
                         </button>
                         <button wire:click="exportStockFabric" class="btn btn-success btn-sm">
                             Export Fabric CSV
@@ -120,7 +132,8 @@
                                 <tr class="text-center">
                                     <th>#</th>
                                     <th>Fabric Name</th>
-                                    <th>Quantity (Meters)</th>
+                                    <th>Order Quantity (Meters)</th>
+                                    <th>GRN Quantity (Meters)</th>
                                     <th>Piece Price</th>
                                     <th>Total Price</th>
                                     <th>Entry Date</th>
@@ -131,7 +144,8 @@
                                     <tr class="text-center">
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $fabric->fabric->title ?? 'N/A' }}</td>
-                                        <td>{{ $fabric->qty_in_meter }}</td>
+                                        <td>{{ intval($fabric->qty_in_meter) }}</td>
+                                        <td>{{ intval($fabric->qty_while_grn) }}</td>
                                         <td>Rs. {{ number_format($fabric->piece_price, 2) }}</td>
                                         <td>Rs. {{ number_format($fabric->total_price, 2) }}</td>
                                         <td> {{ date('d-m-Y', strtotime($fabric->created_at))}}</td>

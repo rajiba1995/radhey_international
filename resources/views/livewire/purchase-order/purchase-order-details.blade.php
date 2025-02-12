@@ -76,7 +76,7 @@
                                             <td>{{$index}}</td>
                                             <td>{{ ucwords($item->product_name) }}</td>
                                             <td>{{$item->qty_in_pieces }}</td>
-                                            <td>{{$item->qty_while_grn_product }}</td>
+                                            <td>{{ intval($item->qty_while_grn_product) }}</td>
                                             <td>Rs. {{ number_format($item->piece_price, 2) }}</td>
                                             <td>Rs. {{ number_format($item->total_price, 2) }}</td>
                                         </tr>
@@ -91,7 +91,7 @@
                                     </tr>
                                 @endif
                                     <tr>
-                                        <td colspan="4" class="text-right font-weight-bold">Total PO Price</td>
+                                        <td colspan="5" class="text-right font-weight-bold">Total PO Price</td>
                                         <td>Rs. <strong>{{ number_format($totalProductPrice, 2) }}</strong></td>
                                     </tr>
                                 </tbody>
@@ -127,8 +127,8 @@
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $item->fabric_name }}</td>
-                                            <td>{{ $item->qty_in_meter }}</td>
-                                            <td>{{ $item->qty_while_grn_fabric }}</td>
+                                            <td>{{ intval($item->qty_in_meter) }}</td>
+                                            <td>{{ intval($item->qty_while_grn_fabric) }}</td>
                                             <td>Rs. {{ number_format($item->piece_price, 2) }}</td>
                                             <td>Rs. {{ number_format($item->total_price, 2) }}</td>
                                         </tr>
@@ -138,7 +138,7 @@
                                     @endif
                                     @endforeach
                                     <tr>
-                                        <td colspan="4" class="text-right font-weight-bold">Total Fabric Price</td>
+                                        <td colspan="5" class="text-right font-weight-bold">Total Fabric Price</td>
                                         <td>Rs. <strong>{{ number_format($totalFabricPrice, 2) }}</strong></td>
                                     </tr>
                                 </tbody>

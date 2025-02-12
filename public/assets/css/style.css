@@ -725,5 +725,9 @@ table td h6.text-sm {
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+.searchInput{
+    padding: 11px 10px;
+}
    
   

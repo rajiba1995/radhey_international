@@ -18,39 +18,49 @@ class StockIndex extends Component
 
     public $activeTab = 'product'; // Default active tab
     protected $paginationTheme = 'bootstrap';
-    public $startDate;
-    public $endDate;
-    public $search = '';
+    public $startDateProduct;
+    public $endDateProduct;
+    public $startDateFabric;
+    public $endDateFabric;
+    public $searchProduct  = '';
+    public $searchFabric  = '';
+    public $clearProductFilters  = '';
+    public $clearFabricFilters  = '';
+    protected $listeners = ['refreshComponent' => '$refresh'];
     
+   
     public function setActiveTab($tab)
     {
         $this->activeTab = $tab;
     }
 
-    // public function exportStockProduct()
-    // {
-    //     return Excel::download(new StockProductExport($this->startDate, $this->endDate), 'stock_products.xlsx');
-    // }
+    public function clearProductFilters(){
+        $this->reset([
+            'searchProduct','startDateProduct','endDateProduct'
+        ]);
+    }
+
+    public function clearFabricFilters(){
+        $this->reset([
+            'searchFabric','startDateFabric','endDateFabric'
+        ]);
+    }
+      
 
 
     public function exportStockProduct()
     {
         $fileName = 'product_stock_' . now()->format('Ymd_His') . '.csv';
 
-        return Excel::download(new StockProductExport($this->search, $this->startDate, $this->endDate), $fileName);
+        return Excel::download(new StockProductExport($this->searchProduct, $this->startDateProduct, $this->endDateProduct), $fileName);
     }
 
 
-    // public function exportStockFabric()
-    // {
-    //     $fileName = 'fabric_stock_' . Carbon::now()->format('Ymd_His') . '.csv';
-
-    //     return Excel::download(new StockFabricExport($this->startDate, $this->endDate), $fileName);
-    // }
+    
     public function exportStockFabric()
     {
         $fileName = 'fabric_stock_' . Carbon::now()->format('Ymd_His') . '.csv';
-        return Excel::download(new StockFabricExport($this->search, $this->startDate, $this->endDate), $fileName);
+        return Excel::download(new StockFabricExport($this->searchFabric, $this->startDateFabric, $this->endDateFabric), $fileName);
     }
 
     public function render()
@@ -58,31 +68,31 @@ class StockIndex extends Component
         // $products = StockProduct::with('product')->paginate(10);
 
         $products = StockProduct::with('product')
-        ->when($this->search, function ($q) {
+        ->when($this->searchProduct, function ($q) {
             $q->whereHas('product', function ($products) {
-                $products->where('name', 'like', '%' . $this->search . '%');
+                $products->where('name', 'like', '%' . $this->searchProduct . '%');
             });
         })
-        ->when($this->startDate, function ($q) {
-            $q->whereDate('created_at', '>=', $this->startDate);
+        ->when($this->startDateProduct, function ($q) {
+            $q->whereDate('created_at', '>=', $this->startDateProduct);
         })
-        ->when($this->endDate, function ($q) {
-            $q->whereDate('created_at', '<=', $this->endDate);
+        ->when($this->endDateProduct, function ($q) {
+            $q->whereDate('created_at', '<=', $this->endDateProduct);
         })
         ->paginate(10);
         // $fabrics = StockFabric::with('fabric')->get();
 
         $fabrics = StockFabric::with('fabric')
-            ->when($this->search, function ($q) {
+            ->when($this->searchFabric, function ($q) {
                 $q->whereHas('fabric', function ($fabrics) {
-                    $fabrics->where('title', 'like', '%' . $this->search . '%');
+                    $fabrics->where('title', 'like', '%' . $this->searchFabric . '%');
                 });
             })
-            ->when($this->startDate, function ($q) {
-                $q->whereDate('created_at', '>=', $this->startDate);
+            ->when($this->startDateFabric, function ($q) {
+                $q->whereDate('created_at', '>=', $this->startDateFabric);
             })
-            ->when($this->endDate, function ($q) {
-                $q->whereDate('created_at', '<=', $this->endDate);
+            ->when($this->endDateFabric, function ($q) {
+                $q->whereDate('created_at', '<=', $this->endDateFabric);
             })
             ->paginate(10);
 
