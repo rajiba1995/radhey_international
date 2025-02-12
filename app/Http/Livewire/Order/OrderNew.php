@@ -120,81 +120,47 @@ class OrderNew extends Component
          // Check if the authenticated user has a related SalesmanBilling
         $this->salesmanBill = SalesmanBilling::where('salesman_id',auth()->id())->first();
     }
-    // public function searchFabrics()
-    // {
-    //     if (strlen($this->searchTerm) > 0) {
-    //         $this->searchResults = Fabric::where('title', 'LIKE', "%{$this->searchTerm}%")
-    //             ->select('id', 'title')
-    //             ->limit(10)
-    //             ->get();
-    //     } else {
-    //         $this->searchResults = [];
-    //     }
-    // }
-
-    public function searchFabrics($index)
-{
-    // Ensure product ID exists for the given item index
-    if (!isset($this->items[$index]['product_id'])) {
-        return;
-    }
-
-    $productId = $this->items[$index]['product_id']; 
-
-    if (strlen($this->searchTerm) > 0) {
-        $this->searchResults = Fabric::join('product_fabrics', 'fabrics.id', '=', 'product_fabrics.fabric_id')
-            ->where('product_fabrics.product_id', $productId)
-            ->where('fabrics.status', 1)
-            ->where('fabrics.title', 'LIKE', "%{$this->searchTerm}%") // Fixed issue
-            ->select('fabrics.id', 'fabrics.title')
-            ->limit(10)
-            ->get();
-    } else {
-        $this->searchResults = [];
-    }
-}
-
     
-
-    public function selectFabric($fabricId)
+    public function searchFabrics($index)
     {
-        // $fabric = Fabric::find($fabricId);
-
-        // if ($fabric) {
-        //     $this->selectedFabric = $fabric->id;
-        //     $this->searchTerm = $fabric->title;
-        //     $this->searchResults = [];
-        // }
-
-
-
-
-        // Set the selected product details
-        $this->items[$index]['searchproduct'] = $name;
-        $this->items[$index]['product_id'] = $id;
-        $this->items[$index]['products'] = [];
-
-        // Get the fabrics available for the selected product
-        $this->items[$index]['fabrics'] = Fabric::join('product_fabrics', 'fabrics.id', '=', 'product_fabrics.fabric_id')
-            ->where('product_fabrics.product_id', $id)
-            ->where('fabrics.status', 1)
-            ->get(['fabrics.*']);
-
-        // Check if fabrics are available before setting selected fabric
-        if ($this->items[$index]['fabrics']->isNotEmpty()) {
-            $firstFabric = $this->items[$index]['fabrics']->first(); // Get the first available fabric
-
-            $this->selectedFabric = $firstFabric->id;
-            $this->searchTerm = $firstFabric->title;
-            $this->searchResults = [];
+        // Ensure product_id exists for the given index
+        if (!isset($this->items[$index]['product_id'])) {
+            return;
+        }
+    
+        $productId = $this->items[$index]['product_id'];
+    
+        // Ensure searchTerm exists for this index
+        $searchTerm = $this->items[$index]['searchTerm'] ?? '';
+    
+        if (!empty($searchTerm)) {
+            $this->items[$index]['searchResults'] = Fabric::join('product_fabrics', 'fabrics.id', '=', 'product_fabrics.fabric_id')
+                ->where('product_fabrics.product_id', $productId)
+                ->where('fabrics.status', 1)
+                ->where('fabrics.title', 'LIKE', "%{$searchTerm}%")
+                ->select('fabrics.id', 'fabrics.title')
+                ->limit(10)
+                ->get();
         } else {
-            // If no fabrics are available, reset the selected fabric details
-            $this->selectedFabric = null;
-            $this->searchTerm = '';
-            $this->searchResults = [];
+            $this->items[$index]['searchResults'] = [];
+        }
+    }
+    
+    public function selectFabric($fabricId, $index)
+    {
+        // Get the selected fabric details
+        $fabric = Fabric::find($fabricId);
+
+        if (!$fabric) {
+            return;
         }
 
+        // Set the exact selected fabric name
+        $this->items[$index]['searchTerm'] = $fabric->title; 
+        $this->items[$index]['selected_fabric'] = $fabric->id;
         
+        // Clear search results to hide the dropdown after selection
+        $this->items[$index]['searchResults'] = [];
     }
 
     // Define rules for validation
@@ -338,7 +304,7 @@ class OrderNew extends Component
             if ($value == 1) {
                 $catalogues = Catalogue::with('catalogueTitle')->get();
                 $this->catalogues[$index] = $catalogues->pluck('catalogueTitle.title', 'catalogue_title_id');
-        
+        // dd($this->catalogues[$index]);
                 // Fetch max page numbers per catalogue
                 $this->maxPages[$index] = [];
                 foreach ($catalogues as $catalogue) {
