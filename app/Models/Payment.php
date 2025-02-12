@@ -12,7 +12,7 @@ class Payment extends Model
     protected $table = "payments";
 
     protected $fillable = [
-        'stuff_id', 'user_id', 'admin_id', 'supplier_id', 'expense_id', 'service_slip_id',
+        'stuff_id', 'customer_id', 'admin_id', 'supplier_id', 'expense_id', 'service_slip_id',
         'discount_id', 'payment_for', 'payment_in', 'bank_cash', 'voucher_no', 'payment_date',
         'payment_mode', 'amount', 'chq_utr_no', 'bank_name', 'narration', 'created_from',
         'is_gst', 'created_by', 'updated_by', 'image'
@@ -24,11 +24,6 @@ class Payment extends Model
         return $this->belongsTo(User::class, 'stuff_id', 'id')->where('user_type', 0);
     }
 
-    // public function user()
-    // {
-    //     return $this->belongsTo(User::class, 'stuff_id', 'id')->where('user_type', 0);
-    // }
-
     // Relationship with the admin (User model)
     public function admin()
     {
@@ -36,9 +31,9 @@ class Payment extends Model
     }
 
     // Relationship with the user (if needed for customers or different role users)
-    public function user()
+    public function customer()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'customer_id', 'id');
     }
 
     // Relationship with suppliers

@@ -210,10 +210,16 @@
                 </a>
             </li>
             <ul id="AccountManagementSubmenu" class="collapse list-unstyled ms-4 {{ request()->is('admin/accounting*') ? 'show' : '' }}">
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a class="nav-link text-white {{ request()->is('admin/accounting/collection-and-expenses') ? 'active' : '' }}"
                     href="{{ route('admin.accounting.collection_and_expenses') }}">
                         Collection & Expenses 
+                    </a>
+                </li> --}}
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ request()->is('admin/accounting/payment-collection') ? 'active' : '' }}"
+                    href="{{ route('admin.accounting.payment_collection') }}">
+                       Payment Collections
                     </a>
                 </li>
                 <li class="nav-item">

@@ -82,7 +82,6 @@ class CustomerIndex extends Component
         session()->flash('success', 'Users imported successfully!');
     }
     
-
     // Export Function
     public function export()
     {
