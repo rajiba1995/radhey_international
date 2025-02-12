@@ -59,6 +59,7 @@
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder">#</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Product</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Quantity(Pieces)</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder">GRN Quantity(Pieces)</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Piece Price</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Total Amount</th>
                                     </tr>
@@ -75,6 +76,7 @@
                                             <td>{{$index}}</td>
                                             <td>{{ ucwords($item->product_name) }}</td>
                                             <td>{{$item->qty_in_pieces }}</td>
+                                            <td>{{$item->qty_while_grn_product }}</td>
                                             <td>Rs. {{ number_format($item->piece_price, 2) }}</td>
                                             <td>Rs. {{ number_format($item->total_price, 2) }}</td>
                                         </tr>
@@ -111,6 +113,7 @@
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder">#</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Fabric Name</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Quantity (meters)</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder">GRN Quantity (meters)</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Unit Price</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Total Price</th>
                                     </tr>
@@ -125,6 +128,7 @@
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $item->fabric_name }}</td>
                                             <td>{{ $item->qty_in_meter }}</td>
+                                            <td>{{ $item->qty_while_grn_fabric }}</td>
                                             <td>Rs. {{ number_format($item->piece_price, 2) }}</td>
                                             <td>Rs. {{ number_format($item->total_price, 2) }}</td>
                                         </tr>

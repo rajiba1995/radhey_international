@@ -11,6 +11,7 @@ class StockFabric extends Model
         'stock_id',
         'fabric_id',
         'qty_in_meter',
+        'qty_while_grn',
         'piece_price',
         'total_price',
     ];

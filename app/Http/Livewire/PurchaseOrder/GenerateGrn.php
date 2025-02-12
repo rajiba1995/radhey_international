@@ -116,10 +116,15 @@ class GenerateGrn extends Component
                         $stockProduct = new StockProduct();
                         $stockProduct->stock_id = $stocks->id;
                         $stockProduct->product_id = $product->product->id;
-                        $stockProduct->qty_in_pieces = $grnQty;
+                        $stockProduct->qty_in_pieces = $product->qty_in_pieces;
+                        $stockProduct->qty_while_grn = $grnQty;
                         $stockProduct->piece_price = $product->piece_price;
                         $stockProduct->total_price = $productTotalPrice;
                         $stockProduct->save();
+                        // update purchase order product table 
+                        $product->qty_while_grn_product = $grnQty;
+                        $product->total_price = $productTotalPrice;
+                        $product->save();
 
                         $productIds[] = $product->product->id;
                         $this->productTotalPrice += $productTotalPrice;
@@ -137,10 +142,16 @@ class GenerateGrn extends Component
                         $stockFabric = new StockFabric();
                         $stockFabric->stock_id = $stocks->id;
                         $stockFabric->fabric_id = $fabric->fabric->id;
-                        $stockFabric->qty_in_meter = $grnQty;
+                        $stockFabric->qty_in_meter = $fabric->qty_in_meter;
+                        $stockFabric->qty_while_grn = $grnQty;
                         $stockFabric->piece_price = $fabric->piece_price;
                         $stockFabric->total_price = $fabricTotalPrice;
                         $stockFabric->save(); 
+
+                        // Update purchase order product table in case of fabric
+                        $fabric->qty_while_grn_fabric = $grnQty;
+                        $fabric->total_price = $fabricTotalPrice;
+                        $fabric->save();
 
                         $fabricIds[] = $fabric->fabric->id;
                         $this->fabricTotalPrice += $fabricTotalPrice;
@@ -150,6 +161,7 @@ class GenerateGrn extends Component
                 $stocks->fabric_ids = implode(',',array_unique($fabricIds));    
                 $stocks->total_price = $this->fabricTotalPrice + $this->productTotalPrice;
                 $stocks->save();
+                $this->purchaseOrder->total_price =  $this->fabricTotalPrice + $this->productTotalPrice;
                 $this->purchaseOrder->status = 1;
                 $this->purchaseOrder->save();
                 
