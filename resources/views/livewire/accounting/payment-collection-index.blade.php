@@ -192,7 +192,7 @@
     </div>
     <div class="loader-container" wire:loading>
         <div class="loader"></div>
-      </div>
+    </div>
 </div>
 @push('js')
 </script>

@@ -1,16 +1,19 @@
-<div class="container-fluid px-2 px-md-4">
+<div class="container">
+    <section class="admin__title">
+        <h5>Create Purchase Order</h5>
+    </section>
+    <section>
+        <ul class="breadcrumb_menu">
+            <li>Purchase Order</li>
+            <li><a href="{{route('purchase_order.create')}}">PO</a></li>
+            <li>Create Purchase Order</li>
+            <li class="back-button">
+                <a href="{{ route('purchase_order.index') }}" class="btn btn-sm btn-danger select-md text-light font-weight-bold mb-0">Back to PO </a>
+            </li>
+          </ul>
+    </section>
     <div class="card card-body">
         <div class="card card-plain h-100">
-            <div class="card-header pb-0 p-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h4 class="m-0">Create Purchase Order</h4>
-                    <a href="{{ route('purchase_order.index') }}" class="btn btn-cta">
-                        <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
-                        Back
-                    </a>
-                </div>
-            </div>
-
             <div class="card-body p-3">
                 <form wire:submit.prevent="savePurchaseOrder">
                     <!-- Supplier Information -->
@@ -139,10 +142,10 @@
                                     </div>
                                     <div class="col-md-1 d-flex align-items-end">
                                         @if ($loop->first)
-                                           <button type="button" class="btn btn-success btn-sm" wire:click="addRow"><i class="fa fa-plus"></i></button>
+                                           <button type="button" class="btn btn-success btn-sm mb-0" wire:click="addRow"><i class="fa fa-plus"></i></button>
                                         @else  
-                                        <button type="button" class="btn btn-success btn-sm" wire:click="addRow"><i class="fa fa-plus"></i></button>
-                                           <button type="button" class="btn btn-danger btn-sm" wire:click="removeRow({{ $index }})"><i class="fa fa-times"></i></button>
+                                        <button type="button" class="btn btn-success btn-sm mb-0" wire:click="addRow"><i class="fa fa-plus"></i></button>
+                                           <button type="button" class="btn btn-danger btn-sm mb-0" wire:click="removeRow({{ $index }})"><i class="fa fa-times"></i></button>
                                         @endif
                                     </div>
                                 </div>

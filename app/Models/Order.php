@@ -47,22 +47,39 @@ class Order extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
     
-  
-    
+    public function packingslip()
+    {
+        return $this->hasOne(PackingSlip::class, 'order_id', 'id');
+    }
     public function businessType()
     {
         return $this->belongsTo(BusinessType::class, 'business_type');
     }
 
-    public static $statuses = [
-        1 => 'Pending',
-        2 => 'Confirmed',
-        5 => 'In Production',
-        7 => 'Ready for Delivery',
-        8 => 'Shipped',
-        9 => 'Delivered',
-        10 => 'Cancelled',
-        11 => 'Returned',
+   
+    protected $status_classes = [
+        "Confirmed"          => ["Received", "success"], 
+        "Pending"            => ["Pending", "warning"], 
+        "In Production"      => ["In Production", "primary"], 
+        "Ready for Delivery" => ["Ready for Delivery", "info"], 
+        "Shipped"            => ["Shipped", "secondary"], 
+        "Delivered"          => ["Delivered", "success"], 
+        "Cancelled"          => ["Cancelled", "danger"], 
+        "Returned"           => ["Returned", "dark"]
     ];
+
+    // Accessor to get status label
+    public function getStatusLabelAttribute()
+    {
+        $order_status = $this->attributes['status'] ?? 'Returned'; // Default to "Returned"
+        return $this->status_classes[$order_status][0] ?? "Unknown"; // Fallback to "Unknown"
+    }
+
+    // Accessor to get status class
+    public function getStatusClassAttribute()
+    {
+        $order_status = $this->attributes['status'] ?? 'Returned'; // Default to "Returned"
+        return $this->status_classes[$order_status][1] ?? "muted"; // Default class if not found
+    }
     
 }

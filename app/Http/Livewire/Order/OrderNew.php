@@ -73,53 +73,134 @@ class OrderNew extends Component
     public $selectedFabric = null;
 
 
-    public function mount(){
-        $user_id = request()->query('user_id');
-            if($user_id){
-                $customer = User::with(['billingAddress','shippingAddress'])->where('id', $user_id)->where('user_type', 1)->where('status', 1)->first();
-                if($customer){
-                    $this->customer_id = $customer->id;
-                    $this->name = $customer->name;
-                    $this->company_name = $customer->company_name;
-                    $this->employee_rank = $customer->employee_rank;
-                    $this->email = $customer->email;
-                    $this->dob = $customer->dob;
-                    $this->phone = $customer->phone;
-                    $this->whatsapp_no = $customer->whatsapp_no;
+    // public function mount(){
+    //     $user_id = request()->query('user_id');
+    //         if($user_id){
+    //             $customer = User::with(['billingAddress','shippingAddress'])->where('id', $user_id)->where('user_type', 1)->where('status', 1)->first();
+    //             if($customer){
+    //                 $this->customer_id = $customer->id;
+    //                 $this->name = $customer->name;
+    //                 $this->company_name = $customer->company_name;
+    //                 $this->employee_rank = $customer->employee_rank;
+    //                 $this->email = $customer->email;
+    //                 $this->dob = $customer->dob;
+    //                 $this->phone = $customer->phone;
+    //                 $this->whatsapp_no = $customer->whatsapp_no;
                     
-                    // Billing Address
-                    if($customer->billingAddress){
-                        $this->billing_address = $customer->billingAddress->address;
-                        $this->billing_landmark = $customer->billingAddress->landmark;
-                        $this->billing_city = $customer->billingAddress->city;
-                        $this->billing_state = $customer->billingAddress->state;
-                        $this->billing_country = $customer->billingAddress->country;
-                        $this->billing_pin = $customer->billingAddress->zip_code;
-                    }
+    //                 // Billing Address
+    //                 if($customer->billingAddress){
+    //                     $this->billing_address = $customer->billingAddress->address;
+    //                     $this->billing_landmark = $customer->billingAddress->landmark;
+    //                     $this->billing_city = $customer->billingAddress->city;
+    //                     $this->billing_state = $customer->billingAddress->state;
+    //                     $this->billing_country = $customer->billingAddress->country;
+    //                     $this->billing_pin = $customer->billingAddress->zip_code;
+    //                 }
 
-                    // Shipping Address
-                    if($customer->shippingAddress){
-                        $this->shipping_address = $customer->shippingAddress->address;
-                        $this->shipping_landmark = $customer->shippingAddress->landmark;
-                        $this->shipping_city = $customer->shippingAddress->city;
-                        $this->shipping_state = $customer->shippingAddress->state;
-                        $this->shipping_country = $customer->shippingAddress->country;
-                        $this->shipping_pin = $customer->shippingAddress->zip_code;
-                    }
+    //                 // Shipping Address
+    //                 if($customer->shippingAddress){
+    //                     $this->shipping_address = $customer->shippingAddress->address;
+    //                     $this->shipping_landmark = $customer->shippingAddress->landmark;
+    //                     $this->shipping_city = $customer->shippingAddress->city;
+    //                     $this->shipping_state = $customer->shippingAddress->state;
+    //                     $this->shipping_country = $customer->shippingAddress->country;
+    //                     $this->shipping_pin = $customer->shippingAddress->zip_code;
+    //                 }
                     
-                    $this->orders  =  Order::where('customer_id', $customer->id)->latest('created_at')->take(1)->get();
-                }
+    //                 $this->orders  =  Order::where('customer_id', $customer->id)->latest('created_at')->take(1)->get();
+    //             }
+    //         }
+    //     $this->customers = User::where('user_type', 1)->where('status', 1)->orderBy('name', 'ASC')->get();
+    //     $this->categories = Category::where('status', 1)->orderBy('title', 'ASC')->get();
+    //     $this->collections = Collection::whereIn('id',[1,2])->orderBy('title', 'ASC')->get();
+    //     // for ordered by
+    //     $this->salesmen = User::where('user_type',0)->where('designation',2)->get();
+    //     $this->salesman = Auth::id();
+    //     $this->addItem();
+    //      // Check if the authenticated user has a related SalesmanBilling
+    //     $this->salesmanBill = SalesmanBilling::where('salesman_id',auth()->id())->first();
+    // }
+
+    public function mount()
+{
+    $user_id = request()->query('user_id');
+
+    if ($user_id) {
+        $customer = User::with(['billingAddress', 'shippingAddress'])
+            ->where([
+                ['id', $user_id],
+                ['user_type', 1],
+                ['status', 1]
+            ])
+            ->first();
+
+        if ($customer) {
+            $this->customer_id = $customer->id;
+            $this->name = $customer->name;
+            $this->company_name = $customer->company_name;
+            $this->employee_rank = $customer->employee_rank;
+            $this->email = $customer->email;
+            $this->dob = $customer->dob;
+            $this->phone = $customer->phone;
+            $this->whatsapp_no = $customer->whatsapp_no;
+
+            // Assign Billing Address (if exists)
+            if ($billing = $customer->billingAddress) {
+                $this->billing_address = $billing->address;
+                $this->billing_landmark = $billing->landmark;
+                $this->billing_city = $billing->city;
+                $this->billing_state = $billing->state;
+                $this->billing_country = $billing->country;
+                $this->billing_pin = $billing->zip_code;
             }
-        $this->customers = User::where('user_type', 1)->where('status', 1)->orderBy('name', 'ASC')->get();
-        $this->categories = Category::where('status', 1)->orderBy('title', 'ASC')->get();
-        $this->collections = Collection::whereIn('id',[1,2])->orderBy('title', 'ASC')->get();
-        // for ordered by
-        $this->salesmen = User::where('user_type',0)->where('designation',2)->get();
-        $this->salesman = Auth::id();
-        $this->addItem();
-         // Check if the authenticated user has a related SalesmanBilling
-        $this->salesmanBill = SalesmanBilling::where('salesman_id',auth()->id())->first();
+
+            // Assign Shipping Address (if exists)
+            if ($shipping = $customer->shippingAddress) {
+                $this->shipping_address = $shipping->address;
+                $this->shipping_landmark = $shipping->landmark;
+                $this->shipping_city = $shipping->city;
+                $this->shipping_state = $shipping->state;
+                $this->shipping_country = $shipping->country;
+                $this->shipping_pin = $shipping->zip_code;
+            }
+
+            // Fetch latest order
+            $this->orders = Order::where('customer_id', $customer->id)
+                ->latest()
+                ->take(1)
+                ->get();
+        }
     }
+
+    // Load common dropdowns
+    $this->customers = User::where([
+        ['user_type', 1],
+        ['status', 1]
+    ])->orderBy('name')->get();
+
+    $this->categories = Category::where('status', 1)
+        ->orderBy('title')
+        ->get();
+
+    $this->collections = Collection::whereIn('id', [1, 2])
+        ->orderBy('title')
+        ->get();
+
+    // Load salesmen list & assign logged-in salesman
+    $this->salesmen = User::where([
+        ['user_type', 0],
+        ['designation', 2]
+    ])->get();
+
+    $this->salesman = Auth::id();
+
+    // Add initial order item
+    $this->addItem();
+
+    // Fetch Salesman Billing if exists
+    $this->salesmanBill = SalesmanBilling::where('salesman_id', auth()->id())->first();
+}
+
     
     public function searchFabrics($index)
     {

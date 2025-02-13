@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Accounting;
+namespace App\Http\Livewire\Order;
 
 use Livewire\Component;
 use App\Models\User;
@@ -11,44 +11,49 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Interfaces\AccountingRepositoryInterface;
 
-class AddPaymentReceipt extends Component
-{   
+class AddOrderSlip extends Component
+{
     protected $accountingRepository;
-    public $searchResults = [];
+    public $order;
     public $errorMessage = [];
+    public $order_item = [];
     public $activePayementMode = 'cash';
     public $staffs =[];
-    public $payment_collection_id;
+    public $payment_collection_id = "";
     public $readonly = "readonly";
-    public $customer,$customer_id, $staff_id, $amount, $voucher_no, $payment_date, $payment_mode, $chq_utr_no, $bank_name, $receipt_for = "Customer";
+    public $customer,$customer_id, $staff_id,$staff_name, $total_amount, $amount, $voucher_no, $payment_date, $payment_mode, $chq_utr_no, $bank_name, $receipt_for = "Customer";
 
     public function boot(AccountingRepositoryInterface $accountingRepository)
     {
         $this->accountingRepository = $accountingRepository;
     }
-    public function mount($payment_collection_id = ""){
-        $this->payment_collection_id = $payment_collection_id;
+    public function mount($id){
+
+        $this->order = Order::with('items','customer','createdBy')->where('id', $id)->first();
+        if($this->order){
+            foreach($this->order->items as $key=>$order_item){
+                $this->order_item[$key]['id']= $order_item->id;
+                $this->order_item[$key]['quantity']= $order_item->quantity;
+            }
+            $this->total_amount = $this->order->total_amount;
+            $this->amount = $this->order->total_amount;
+            $this->customer = $this->order->customer->name;
+            $this->customer_id = $this->order->customer->id;
+            $this->staff_id = $this->order->createdBy->id;
+            $this->staff_name = $this->order->createdBy->name;
+            $this->payment_date = date('Y-m-d');
+        }
         $this->voucher_no = 'PAYRECEIPT'.time();
         $this->staffs = User::where('user_type', 0)->where('designation', 2)->select('name', 'id')->orderBy('name', 'ASC')->get();
-        $payment_collection = PaymentCollection::with('customer', 'user')->where('id',$payment_collection_id)->first();
-        if($payment_collection){
-            $this->customer = $payment_collection->customer->name;
-            $this->customer_id = $payment_collection->customer_id;
-            $this->staff_id = $payment_collection->user_id;
-            $this->amount = $payment_collection->collection_amount;
-            $this->voucher_no = $payment_collection->voucher_no;
-            $this->payment_date = $payment_collection->cheque_date;
-            $this->payment_mode = $payment_collection->payment_type;
-            $this->chq_utr_no = $payment_collection->cheque_number;
-            $this->bank_name = $payment_collection->bank_name;
-        }
-        if(empty($payment_collection_id)){
-            $this->readonly = "";
-        }
     }
-   
+
+    public function updateQuantity($value, $key){
+        $this->order_item[$key]['quantity']= $value;
+    }
+
     public function submitForm()
     {
+        dd($this->all());
         $this->reset(['errorMessage']);
         $this->errorMessage = array();
         // Validate customer
@@ -107,41 +112,22 @@ class AddPaymentReceipt extends Component
         }
        
     }
+    public function is_valid_date($date) {
+        $timestamp = strtotime($date);
+        if ($timestamp !== false) {
+            return true;
+        }
+        return false;
+    }
     public function ResetForm(){
         $this->reset(['customer','customer_id','staff_id', 'amount', 'voucher_no', 'payment_date', 'payment_mode', 'chq_utr_no', 'bank_name']);
         $this->voucher_no = 'PAYRECEIPT'.time();
     }
-
-    public function FindCustomer($term)
-    {
-        $this->searchResults = Helper::GetCustomerDetails($term);
-    }
-      // Function to validate date
-       public function is_valid_date($date) {
-            $timestamp = strtotime($date);
-            if ($timestamp !== false) {
-                return true;
-            }
-            return false;
-        }
-
-      public function selectCustomer($customer_id){
-     
-            $customer = User::find($customer_id);
-            if($customer){
-                $this->customer = $customer->name.'('.$customer->phone.')';
-                $this->customer_id = $customer->id;
-            }else{
-                $this->reset(['customer','customer_id',]);
-            }
-            $this->searchResults = [];
-           
-      }
     public function ChangePaymentMode($value){
         $this->activePayementMode = $value;
     }
     public function render()
     {
-        return view('livewire.accounting.add-payment-receipt');
+        return view('livewire.order.add-order-slip');
     }
 }

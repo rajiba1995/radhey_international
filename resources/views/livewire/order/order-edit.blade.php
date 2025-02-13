@@ -284,7 +284,7 @@
                                 <select wire:model="items.{{ $index }}.selected_category"
                                     class="form-select form-control-sm border border-1"
                                     wire:change="CategoryWiseProduct($event.target.value, {{ $index }})">
-                                    <!-- <option value="" selected hidden>Select Category</option> -->
+                                    <option value="" selected hidden>Select Category</option>
                                     @foreach ($item['categories'] as $category)
                                     <option value="{{ $category->id }}" {{$item['selected_category']==$category->id?"selected":""}}>{{ $category->title }}</option>
                                     @endforeach
@@ -297,8 +297,8 @@
                             @if(isset($item['selected_collection']) && $item['selected_collection'] == 1)
                                 <div class="mb-3 col-md-4">
                             @else
-                                <div class="mb-3 col-md-8">
-                            @endif
+                            <div class="mb-3 col-md-8">
+                                    @endif
                                 <label class="form-label"><strong>Product</strong></label>
                                 <input type="text" wire:keyup="FindProduct($event.target.value, {{ $index }})"
                                     wire:model="items.{{ $index }}.searchproduct"
@@ -321,35 +321,33 @@
                                 @endif
                             </div>
                             <!-- Catalogue -->
-                           @if(isset($item['selected_collection']) && $item['selected_collection'] == 1)
-                            <div class="mb-3 col-md-2">
-                                <label class="form-label"><strong>Catalogue</strong></label>
-                                <select wire:model="items.{{ $index }}.selectedCatalogue" class="form-control form-control-sm border border-1 @error('items.'.$index.'.selectedCatalogue') border-danger @enderror" wire:change="SelectedCatalogue($event.target.value, {{ $index }})">
-                                    <option value="" selected hidden>Select Catalogue</option>
-                                    @foreach($item['catalogues'] ?? [] as $id => $cat_log)
-                                        @if($cat_log['catalogue_title'])
-                                            <option value="{{ $cat_log['id'] }}">{{ $cat_log['catalogue_title']['title'] }}
-                                                @if(isset($maxPages[$index][$id]))
-                                                (1 - {{ $maxPages[$index][$id] }})
-                                                @endif
+                             @if(isset($item['selected_collection']) && $item['selected_collection'] == 1)
+                                <div class="mb-3 col-md-2">
+                                    <label class="form-label"><strong>Catalogue</strong></label>
+                                    <select wire:model="items.{{ $index }}.selectedCatalogue" 
+                                            class="form-control form-control-sm border border-1 @error('items.'.$index.'.selectedCatalogue') border-danger @enderror" 
+                                            wire:change="SelectedCatalogue($event.target.value, {{ $index }})">
+                                        <option value="" selected hidden>Select Catalogue</option>
+                                        @foreach($item['catalogues'] ?? [] as $cat_log)
+                                            <option value="{{ $cat_log['id'] }}">
+                                                {{ $cat_log['title'] }} (1 - {{ $cat_log['page_number'] }})
                                             </option>
-                                        @endif
-                                    @endforeach
-                                </select>
-                                @error("items." .$index. ".selectedCatalogue") 
-                                    <div class="text-danger">{{ $message }}</div>
-                                @enderror 
-                            </div>
-                            
-                            <div class="mb-3 col-md-2">
-                                <label class="form-label"><strong>Page Number</strong></label>
-                                <input type="number" wire:model="items.{{$index}}.page_number"  wire:keyup="validatePageNumber({{ $index }})" id="page_number" class="form-control form-control-sm border border-2 @error('items.'.$index.'.page_number') border-danger @enderror"  min="1" max="{{ isset($item['selectedCatalogue']) && isset($maxPages[$index][$item['selectedCatalogue']]) ? $maxPages[$index][$item['selectedCatalogue']] : '' }}"
-                                >
-                                @error("items.$index.page_number") 
-                                    <div class="text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        <!-- </div> -->
+                                        @endforeach
+                                    </select>
+                                    @error("items." .$index. ".selectedCatalogue") 
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror 
+                                </div>
+                                
+                                <div class="mb-3 col-md-2">
+                                    <label class="form-label"><strong>Page Number</strong></label>
+                                    <input type="number" wire:model="items.{{$index}}.page_number"  wire:keyup="validatePageNumber({{ $index }})" id="page_number" class="form-control form-control-sm border border-2 @error('items.'.$index.'.page_number') border-danger @enderror"  min="1" max="{{ isset($item['selectedCatalogue']) && isset($maxPages[$index][$item['selectedCatalogue']]) ? $maxPages[$index][$item['selectedCatalogue']] : '' }}"
+                                    >
+                                    @error("items.$index.page_number") 
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <!-- </div> -->
                             
                             @endif
                             <!-- Measurements -->
