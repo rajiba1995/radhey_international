@@ -48,7 +48,8 @@ class StockProductExport implements FromCollection, WithHeadings, WithMapping
         return [
             'ID',
             'Product Name',
-            'Quantity',
+            'Order Quantity',
+            'GRN Quantity',
             'Piece Price',
             'Total Price',
             'Entry Date'
@@ -64,6 +65,7 @@ class StockProductExport implements FromCollection, WithHeadings, WithMapping
             $stock->id,
             $stock->product->name ?? 'N/A',
             $stock->qty_in_pieces,
+            intval($stock->qty_while_grn),
             number_format($stock->piece_price, 2),
             number_format($stock->total_price, 2),
             optional($stock->created_at)->format('d-m-Y') ?? 'N/A', // Fix Entry Date Format

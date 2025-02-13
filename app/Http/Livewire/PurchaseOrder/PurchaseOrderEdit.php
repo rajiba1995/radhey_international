@@ -91,7 +91,7 @@ class PurchaseOrderEdit extends Component
                 $this->rows[$index]['product'] = null;
                 $this->isFabricSelected[$index] = true;
             } elseif (in_array($collection->id, [2, 4])) { // GARMENT ITEMS
-                $this->rows[$index]['products'] = Product::where('collection_id', $collection->id)->get()->toArray();
+                $this->rows[$index]['products'] = Product::where('collection_id', $collection->id)->where('status',1)->where('deleted_at',NULL)->get()->toArray();
                 $this->rows[$index]['fabrics'] = [];
                 $this->isFabricSelected[$index] = false;
             } else {

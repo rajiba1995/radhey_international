@@ -30,7 +30,9 @@ class GenerateGrn extends Component
     // grn quantity
     public $grnQuantities = [];
     public $prices = [];
-    
+    public $selectAll = false;
+
+
 
     public function mount($purchase_order_id){
          $this->purchaseOrderId = $purchase_order_id;
@@ -45,149 +47,127 @@ class GenerateGrn extends Component
         }  
     }
 
+    public function toggleAllCheckboxes(){
+        if($this->selectAll){
+            // select all fabrics
+            $this->selectedFabricBulkIn = $this->purchaseOrder->orderproducts->where('collection_id',1)->pluck('id')->toArray();
+            // select all products
+            $this->selectedBulkIn = $this->purchaseOrder->orderproducts->where('collection_id','!=',1)->pluck('id')->toArray();
+        }else{
+            $this->selectedFabricBulkIn = [];
+            $this->selectedBulkIn = [];
+        }
+    }
+
     public function incrementGrnQuantity($orderProductId){
-        $product = $this->purchaseOrder->orderproducts->findOrFail($orderProductId);
+        $product = $this->purchaseOrder->orderproducts->firstwhere('id',$orderProductId);
         if($product){
             $maxQuantity = $product->collection_id == 1 ? intval($product->qty_in_meter) : intval($product->qty_in_pieces);
+             // Prevent exceeding the maximum allowed quantity
+            if(!isset($this->grnQuantities[$orderProductId]) || ($this->grnQuantities[$orderProductId] < $maxQuantity)){
+                $this->grnQuantities[$orderProductId] = isset($this->grnQuantities[$orderProductId]) ? $this->grnQuantities[$orderProductId] + 1 : 1;
+                $this->updatePrice($orderProductId);
+            }else{
+                session()->flash('error','GRN quantity cannot exceed the order quantity.');
+            }
         }
-
-         // Prevent exceeding the maximum allowed quantity
-         if(!isset($this->grnQuantities[$orderProductId]) || ($this->grnQuantities[$orderProductId] < $maxQuantity)){
-             $this->grnQuantities[$orderProductId] = isset($this->grnQuantities[$orderProductId]) ? $this->grnQuantities[$orderProductId] + 1 : 1;
-         }
 
     }
 
+    public function decrementGrnQuantity($orderProductId){
+        if($this->grnQuantities[$orderProductId] && $this->grnQuantities[$orderProductId] > 0){
+            $this->grnQuantities[$orderProductId] -=1;
+            $this->updatePrice($orderProductId);
+        }
+    }
 
-    // public function toggleFabricUniqueNumbers($orderProductId) {
-    //     if (in_array($orderProductId, $this->selectedFabricBulkIn)) {
-    //         // Generate a unique number and assign it
-    //         $this->fabricUniqueNumbers[$orderProductId] = Helper::generateUniqueNumber(count($this->fabricUniqueNumbers));
-    //         $this->selectedFabricUniqueNumbers[] = $orderProductId;
-    //     } else {
-    //         unset($this->fabricUniqueNumbers[$orderProductId]);
-    //         $this->selectedFabricUniqueNumbers = array_diff($this->selectedFabricUniqueNumbers, [$orderProductId]);
-    //     }
-    // }
-    
-    // public function toggleUniqueNumbersForProduct($orderProductId, $rowCount) {
-    //     if (in_array($orderProductId, $this->selectedBulkIn)) {
-    //         // Generate a unique number for each row
-    //         $this->productUniqueNumbers[$orderProductId] = [];
-    //         for ($i = 0; $i < $rowCount; $i++) {
-    //             $this->productUniqueNumbers[$orderProductId][] = Helper::generateUniqueNumber(count($this->productUniqueNumbers) + $i);
-    //         }
-    //         $this->selectedUniqueNumbers[$orderProductId] = range(0, $rowCount - 1);
-    //     } else {
-    //         unset($this->productUniqueNumbers[$orderProductId]);
-    //         unset($this->selectedUniqueNumbers[$orderProductId]);
-    //     }
-    // }
-    
-
-    
+    public function updatePrice($orderProductId){
+        $product = $this->purchaseOrder->orderproducts->firstWhere('id',$orderProductId);
+        if($product){
+            $this->prices[$orderProductId] = $product->piece_price * ($this->grnQuantities[$orderProductId] ?? 0);
+        }
+    }
 
     // Generate GRN
     public function generateGrn()
     {
         try {
-            if (count($this->selectedFabricUniqueNumbers) > 0 || count($this->selectedUniqueNumbers) > 0) {
-                $this->productTotalPrice = 0;
-                $this->fabricTotalPrice = 0;
-                $productIds = [];
-                $fabricIds = [];
-    
-                // Calculate total prices for fabrics
-                if (count($this->selectedFabricUniqueNumbers) > 0) {
-                    foreach ($this->selectedFabricUniqueNumbers as $orderProductId) {
-                        $fabric = $this->purchaseOrder->orderproducts->find($orderProductId);
-                        $this->fabricTotalPrice += $fabric->qty_in_meter * $fabric->piece_price;
-                    }
-                }
-    
-                // Calculate total prices for products
-                if (count($this->selectedUniqueNumbers) > 0) {
-                    foreach ($this->selectedUniqueNumbers as $orderProductId => $uniqueNumbers) {
-                        $product = $this->purchaseOrder->orderproducts->find($orderProductId);
-                        $this->productTotalPrice += $product->qty_in_pieces * $product->piece_price;
-                    }
-                }
-    
-                // Calculate the overall total price
-                $this->totalPrice = $this->productTotalPrice + $this->fabricTotalPrice;
-    
-                $grn_no =  "GRN-" . Helper::generateUniqueNumber();
-                // Collect Fabric IDs
-                if (count($this->selectedFabricUniqueNumbers) > 0) {
-                    foreach ($this->selectedFabricUniqueNumbers as $orderProductId) {
-                        $product = $this->purchaseOrder->orderproducts->find($orderProductId);
-                        $fabricIds[] = $product->fabric->id; // Collect only fabric IDs
-                    }
-                }
-    
-                // Collect Product IDs
-                if (count($this->selectedUniqueNumbers) > 0) {
-                    foreach ($this->selectedUniqueNumbers as $orderProductId => $uniqueNumbers) {
-                        $product = $this->purchaseOrder->orderproducts->find($orderProductId);
-                        $productIds[] = $product->product->id; // Collect only product IDs
-                    }
-                }
+            $this->productTotalPrice = 0;
+            $this->fabricTotalPrice = 0;
+            $productIds = [];
+            $fabricIds = [];
 
-                $productIds = array_unique($productIds);
-                 $fabricIds = array_unique($fabricIds);
-                 
-                $stocks = new Stock();
-                $stocks->grn_no = $grn_no;
-                $stocks->purchase_order_id = $this->purchaseOrderId;
-                $stocks->po_unique_id = $this->purchaseOrder->unique_id;
-                $stocks->goods_in_type = 'goods_in';
-                
-                // Remove duplicates and set IDs in Stock
-                $stocks->product_ids = implode(',',$productIds);
-                $stocks->fabric_ids = implode(',', $fabricIds);
-                $stocks->total_price = $this->totalPrice;
-                $stocks->save();
-    
-                // Insert Stock Products if only products are selected or both are selected
-                if (count($this->selectedUniqueNumbers) > 0) {
-                    foreach ($this->selectedUniqueNumbers as $orderProductId => $uniqueNumbers) {
-                        $product = $this->purchaseOrder->orderproducts->find($orderProductId);
-                        foreach ($uniqueNumbers as $number) {
-                            $stockProduct = new StockProduct();
-                            $stockProduct->stock_id = $stocks->id;
-                            $stockProduct->product_id = $product->product->id;
-                            $stockProduct->qty_in_pieces = $product->qty_in_pieces;
-                            $stockProduct->piece_price = $product->piece_price;
-                            $stockProduct->total_price = $stockProduct->piece_price * $stockProduct->qty_in_pieces;
-                            $stockProduct->save();
-                        }
+            $grn_no =  "GRN-" . Helper::generateUniqueNumber();
+            $stocks = new Stock();
+            $stocks->grn_no = $grn_no;
+            $stocks->purchase_order_id = $this->purchaseOrderId;
+            $stocks->po_unique_id = $this->purchaseOrder->unique_id;
+            $stocks->goods_in_type = 'goods_in';
+
+            $stocks->save();
+
+            // Insert Stock Products
+            if(!empty($this->selectedBulkIn)){
+                foreach ($this->selectedBulkIn as $orderProductId) {
+                    $product = $this->purchaseOrder->orderproducts->find($orderProductId);
+                    if($product){
+                        $grnQty = $this->grnQuantities[$orderProductId] ?? 0; // Use GRN Quantity
+                        $productTotalPrice = $grnQty * $product->piece_price;
+                        $stockProduct = new StockProduct();
+                        $stockProduct->stock_id = $stocks->id;
+                        $stockProduct->product_id = $product->product->id;
+                        $stockProduct->qty_in_pieces = $product->qty_in_pieces;
+                        $stockProduct->qty_while_grn = $grnQty;
+                        $stockProduct->piece_price = $product->piece_price;
+                        $stockProduct->total_price = $productTotalPrice;
+                        $stockProduct->save();
+                        // update purchase order product table 
+                        $product->qty_while_grn_product = $grnQty;
+                        $product->total_price = $productTotalPrice;
+                        $product->save();
+
+                        $productIds[] = $product->product->id;
+                        $this->productTotalPrice += $productTotalPrice;
                     }
                 }
-    
-                // Insert Stock Fabrics if only fabrics are selected or both are selected
-                if (count($this->selectedFabricUniqueNumbers) > 0) {
-                    foreach ($this->selectedFabricUniqueNumbers as $orderProductId) {
-                        $fabric = $this->purchaseOrder->orderproducts->find($orderProductId);
+            }
+
+            // Insert Stock Fabrics
+            if(!empty($this->selectedFabricBulkIn))
+                foreach ($this->selectedFabricBulkIn as $orderProductId) {
+                    $fabric = $this->purchaseOrder->orderproducts->find($orderProductId);
+                    if($fabric){
+                        $grnQty = $this->grnQuantities[$orderProductId] ?? 0;
+                        $fabricTotalPrice = $grnQty * $fabric->piece_price;
                         $stockFabric = new StockFabric();
                         $stockFabric->stock_id = $stocks->id;
                         $stockFabric->fabric_id = $fabric->fabric->id;
                         $stockFabric->qty_in_meter = $fabric->qty_in_meter;
+                        $stockFabric->qty_while_grn = $grnQty;
                         $stockFabric->piece_price = $fabric->piece_price;
-                        $stockFabric->total_price = $stockFabric->piece_price * $stockFabric->qty_in_meter;
-                        $stockFabric->save();
-                            
+                        $stockFabric->total_price = $fabricTotalPrice;
+                        $stockFabric->save(); 
+
+                        // Update purchase order product table in case of fabric
+                        $fabric->qty_while_grn_fabric = $grnQty;
+                        $fabric->total_price = $fabricTotalPrice;
+                        $fabric->save();
+
+                        $fabricIds[] = $fabric->fabric->id;
+                        $this->fabricTotalPrice += $fabricTotalPrice;
                     }
                 }
-                
+                $stocks->product_ids = implode(',',array_unique($productIds));    
+                $stocks->fabric_ids = implode(',',array_unique($fabricIds));    
+                $stocks->total_price = $this->fabricTotalPrice + $this->productTotalPrice;
+                $stocks->save();
+                $this->purchaseOrder->total_price =  $this->fabricTotalPrice + $this->productTotalPrice;
                 $this->purchaseOrder->status = 1;
                 $this->purchaseOrder->save();
-              
+                
                 session()->flash('success', 'GRN Generated Successfully');
                 return redirect()->route('purchase_order.index');
-            } else {
-                session()->flash('error', 'Please Select Products or Fabrics');
-                return redirect()->back();
-            }
+           
         } catch (\Exception $e) {
             // Log the error and flash a user-friendly message
             \Log::error('Error generating GRN: ' . $e->getMessage());
