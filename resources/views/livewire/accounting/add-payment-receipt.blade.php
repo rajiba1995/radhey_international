@@ -62,7 +62,7 @@
                                     <select wire:model="staff_id" class="form-control" {{$readonly}}>
                                         <option value="">Choose an user</option>
                                         @foreach($staffs as $staff)
-                                            <option value="{{$staff->id}}" {{$staff_id!=$staff->id?"hidden":""}}>{{ucwords($staff->name)}}</option>
+                                            <option value="{{$staff->id}}" >{{ucwords($staff->name)}}</option>
                                         @endforeach
                                     </select>
                                     @if(isset($errorMessage['staff_id']))

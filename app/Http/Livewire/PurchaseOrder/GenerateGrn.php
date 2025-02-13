@@ -8,6 +8,7 @@ use App\Helpers\Helper;
 use App\Models\Stock;
 use App\Models\StockProduct;
 use App\Models\StockFabric;
+use App\Models\Ledger;
 
 
 class GenerateGrn extends Component
@@ -164,6 +165,19 @@ class GenerateGrn extends Component
                 $this->purchaseOrder->total_price =  $this->fabricTotalPrice + $this->productTotalPrice;
                 $this->purchaseOrder->status = 1;
                 $this->purchaseOrder->save();
+
+                //  Supplier Ledger Entry
+                Ledger::insert([
+                    'user_type'=> 'supplier',
+                    'supplier_id'=> $this->purchaseOrder->supplier_id,
+                    'transaction_id'=> $grn_no,
+                    'transaction_amount' => $stocks->total_price,
+                    'entry_date'=> date('Y-m-d'),
+                    'is_credit'=> 1,
+                    'purpose'=> 'goods_received_note',
+                    'purpose_description' => 'Goods Received Note',
+                    'created_at' => date('Y-m-d H:i:s')
+                ]);
                 
                 session()->flash('success', 'GRN Generated Successfully');
                 return redirect()->route('purchase_order.index');
