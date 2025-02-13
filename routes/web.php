@@ -19,7 +19,7 @@ use App\Http\Livewire\StaticSignUp;
 use App\Http\Livewire\Tables;
 use App\Http\Livewire\{VirtualReality,CustomerIndex};
 use GuzzleHttp\Middleware;
-use App\Http\Livewire\Order\{OrderIndex, OrderNew, OrderInvoice,OrderEdit,OrderView,LedgerView};
+use App\Http\Livewire\Order\{OrderIndex, OrderNew, OrderInvoice,OrderEdit,OrderView,LedgerView,AddOrderSlip};
 use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory,FabricIndex,CollectionIndex,GalleryIndex,MasterCatalogue};
 use App\Http\Livewire\Staff\{DesignationIndex,StaffIndex,StaffAdd,StaffUpdate,StaffView,StaffTask,StaffTaskAdd,StaffCities,SalesmanBillingIndex,MasterBranch};
 use App\Http\Livewire\Expense\{ExpenseIndex,DepotExpanse,DailyExpenses,DailyCollection};
@@ -198,7 +198,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
     // Route::get('/measurements/details/{id}', MeasurementDetails::class)->name('measurements.details');
 
     Route::group(['prefix' => 'orders'], function () {
-        Route::get('/', OrderIndex::class)->name('admin.order.index');
+        Route::get('/list', OrderIndex::class)->name('admin.order.index');
+        Route::get('/add-slip/{id}', AddOrderSlip::class)->name('admin.order.add_order_slip');
         Route::get('/invoice/{id}', OrderInvoice::class)->name('admin.order.invoice');
         Route::get('/new', OrderNew::class)->name('admin.order.new');
         Route::get('/edit/{id}', OrderEdit::class)->name('admin.order.edit');

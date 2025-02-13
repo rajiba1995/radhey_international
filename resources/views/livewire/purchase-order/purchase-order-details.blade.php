@@ -1,10 +1,17 @@
-<div class="container-fluid py-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="block-heading m-0">Purchase Order Detail</h4>
-        <a href="{{route('purchase_order.index')}}" class="btn btn-cta btn-sm">
-        <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
-        Back</a>
-    </div>
+<div class="container">
+    <section class="admin__title">
+        <h5>Purchase Order Detail</h5>
+    </section>
+    <section>
+        <ul class="breadcrumb_menu">
+            <li>Purchase Order</li>
+            <li><a href="{{route('purchase_order.create')}}">PO</a></li>
+            <li>Purchase Order Detail</li>
+            <li class="back-button">
+                <a href="{{ route('purchase_order.index') }}" class="btn btn-sm btn-danger select-md text-light font-weight-bold mb-0">Back to PO </a>
+            </li>
+          </ul>
+    </section>
 
     <div class="row">
         <!-- Order Information -->
@@ -53,7 +60,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Products Details</h5>
                         <div class="table-responsive">
-                            <table class="table align-items-center">
+                            <table class="table table-sm table-hover">
                                 <thead>
                                     <tr>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder">#</th>
@@ -107,7 +114,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Fabric Details</h5>
                         <div class="table-responsive">
-                            <table class="table align-items-center">
+                            <table class="table table-sm table-hover">
                                 <thead>
                                     <tr>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder">#</th>
