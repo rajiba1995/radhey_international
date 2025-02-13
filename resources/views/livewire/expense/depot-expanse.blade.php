@@ -38,7 +38,7 @@
                         </a>
                     </div>
                     <div class="col-md-4 text-end">
-                        <a type="button" class="btn btn-primary btn-sm" href="{{route('depot-expense.daily.expenses')}}">
+                        <a type="button" class="btn btn-primary btn-sm" href="{{route('admin.accounting.daily.expenses')}}">
                             + Add Expense
                         </a>
                     </div>

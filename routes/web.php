@@ -35,6 +35,7 @@ use App\Http\Livewire\Fabric\FabricsIndex;
 use App\Http\Livewire\PurchaseOrder\{PurchaseOrderIndex,PurchaseOrderCreate,PurchaseOrderEdit,GenerateGrn,PurchaseOrderDetails,GeneratePdf};
 use App\Http\Livewire\Stock\{StockIndex,UserLedger};
 use App\Http\Livewire\BusinessType\BusinessTypeIndex;
+use App\Http\Livewire\Accounting\{AddPaymentReceipt,PaymentCollectionIndex};
 // purchase Order pdf
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\PurchaseOrder;
@@ -97,7 +98,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
 
     
     
-Route::group(['prefix' => 'products'], function () {
+    Route::group(['prefix' => 'products'], function () {
         Route::get('/', MasterProduct::class)->name('product.view');
         Route::get('/products/import', MasterProduct::class)->name('product.import');
         Route::get('/add/products', AddProduct::class)->name('product.add');
@@ -177,9 +178,11 @@ Route::group(['prefix' => 'products'], function () {
         Route::get('/{parent_id}', ExpenseIndex::class)->name('index');
 
     });
-    Route::prefix('depot-expense')->name('depot-expense.')->group(function() {
-        Route::get('/', DepotExpanse::class)->name('index');
-        Route::get('/daily/expenses', DailyExpenses::class)->name('daily.expenses');
+    Route::prefix('accounting')->group(function() {
+        Route::get('/collection-and-expenses', DepotExpanse::class)->name('admin.accounting.collection_and_expenses');
+        Route::get('/daily/expenses', DailyExpenses::class)->name('admin.accounting.daily.expenses');
+        Route::get('/payment-collection', PaymentCollectionIndex::class)->name('admin.accounting.payment_collection');
+        Route::get('/add-payment-receipt/{payment_collection_id?}', AddPaymentReceipt::class)->name('admin.accounting.add_payment_receipt');
 
     });
 

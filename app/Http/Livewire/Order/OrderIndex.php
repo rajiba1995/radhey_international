@@ -84,7 +84,7 @@ class OrderIndex extends Component
                 $query->whereDate('created_at','<=' , $this->end_date);
             })
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->paginate(2);
 
         return view('livewire.order.order-index', [
             'orders' => $orders,

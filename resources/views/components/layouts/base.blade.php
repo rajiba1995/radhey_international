@@ -36,6 +36,7 @@
 
     <script src="{{ asset('assets') }}/js/core/popper.min.js"></script>
     <script src="{{ asset('assets') }}/js/custom.js"></script>
+    <script src="{{ asset('assets') }}/js/script.js"></script>
     <script src="{{ asset('assets') }}/js/core/bootstrap.min.js"></script>
     <script src="{{ asset('assets') }}/js/plugins/perfect-scrollbar.min.js"></script>
     <script src="{{ asset('assets') }}/js/plugins/smooth-scrollbar.min.js"></script>
@@ -55,8 +56,7 @@
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="{{ asset('assets') }}/js/material-dashboard.min.js?v=3.0.0"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-
-
+    
 </body>
 
 </html>

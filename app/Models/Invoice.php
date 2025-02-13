@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+class Invoice extends Model
+{
+    use HasFactory;
+    protected $table = 'invoices';
+    protected $fillable = [
+        'order_id', 'customer_id', 'user_id', 'packingslip_id', 'invoice_no', 'net_price', 'required_payment_amount', 'payment_status', 'is_paid', 'created_by', 'created_at', 'updated_by', 'updated_at'
+    ];
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'order_id', 'id');
+    }
+   
+    public function customer()
+    {
+        return $this->belongsTo(User::class, 'customer_id', 'id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+    public function packing()
+    {
+        return $this->belongsTo(PackingSlip::class, 'packingslip_id', 'id');
+    }
+}
