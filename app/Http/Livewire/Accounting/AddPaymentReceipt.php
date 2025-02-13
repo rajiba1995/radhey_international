@@ -5,22 +5,47 @@ namespace App\Http\Livewire\Accounting;
 use Livewire\Component;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\PaymentCollection;
+use App\Helpers\Helper;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Interfaces\AccountingRepositoryInterface;
 
 class AddPaymentReceipt extends Component
 {   
+    protected $accountingRepository;
     public $searchResults = [];
     public $errorMessage = [];
     public $activePayementMode = 'cash';
     public $staffs =[];
-    public $customer,$customer_id, $staff_id, $amount, $voucher_no, $payment_date, $payment_mode, $chq_utr_no, $bank_name;
+    public $payment_collection_id;
+    public $readonly = "readonly";
+    public $customer,$customer_id, $staff_id, $amount, $voucher_no, $payment_date, $payment_mode, $chq_utr_no, $bank_name, $receipt_for = "Customer";
 
-    public function mount(){
+    public function boot(AccountingRepositoryInterface $accountingRepository)
+    {
+        $this->accountingRepository = $accountingRepository;
+    }
+    public function mount($payment_collection_id = ""){
+        $this->payment_collection_id = $payment_collection_id;
         $this->voucher_no = 'PAYRECEIPT'.time();
         $this->staffs = User::where('user_type', 0)->where('designation', 2)->select('name', 'id')->orderBy('name', 'ASC')->get();
+        $payment_collection = PaymentCollection::with('customer', 'user')->where('id',$payment_collection_id)->first();
+        if($payment_collection){
+            $this->customer = $payment_collection->customer->name;
+            $this->customer_id = $payment_collection->customer_id;
+            $this->staff_id = $payment_collection->user_id;
+            $this->amount = $payment_collection->collection_amount;
+            $this->voucher_no = $payment_collection->voucher_no;
+            $this->payment_date = $payment_collection->cheque_date;
+            $this->payment_mode = $payment_collection->payment_type;
+            $this->chq_utr_no = $payment_collection->cheque_number;
+            $this->bank_name = $payment_collection->bank_name;
+        }
+        if(empty($payment_collection_id)){
+            $this->readonly = "";
+        }
     }
-
    
     public function submitForm()
     {
@@ -68,47 +93,29 @@ class AddPaymentReceipt extends Component
         if(count($this->errorMessage)>0){
             return $this->errorMessage;
         }else{
-
             try {
                 DB::beginTransaction();
                 //code...
+                $this->accountingRepository->StorePaymentReceipt($this->all());
+                session()->flash('success', 'Payment receipt added successfully.');
+                DB::commit();
+                return redirect()->route('admin.accounting.payment_collection');
             } catch (\Exception $e) {
                 DB::rollBack();
-                Session::flash('message', $e->getMessage());
-                \Log::error('Error in invoicePayments: ' . $e->getMessage());
+                session()->flash('error', $e->getMessage());
             }
-            dd($this->all());
         }
        
+    }
+    public function ResetForm(){
+        $this->reset(['customer','customer_id','staff_id', 'amount', 'voucher_no', 'payment_date', 'payment_mode', 'chq_utr_no', 'bank_name']);
+        $this->voucher_no = 'PAYRECEIPT'.time();
     }
 
     public function FindCustomer($term)
     {
-        $this->searchTerm = $term;
+        $this->searchResults = Helper::GetCustomerDetails($term);
 
-        if (!empty($this->searchTerm)) {
-            $this->searchResults = User::where('user_type', 1)
-                ->where('status', 1)
-                ->where(function ($query) {
-                    $query->where('name', 'like', '%' . $this->searchTerm . '%')
-                        ->orWhere('phone', 'like', '%' . $this->searchTerm . '%')
-                        ->orWhere('whatsapp_no', 'like', '%' . $this->searchTerm . '%')
-                        ->orWhere('email', 'like', '%' . $this->searchTerm . '%');
-                })
-                ->take(20)
-                ->get();
-                $orders = Order::where('order_number', 'like', '%' . $this->searchTerm . '%')
-                    ->orWhereHas('customer', function ($query) {
-                        $query->where('name', 'like', '%' . $this->searchTerm . '%');
-                    })
-                    ->latest()
-                    ->take(1)
-                    ->get();
-
-        } else {
-            // Reset results when the search term is empty
-            $this->searchResults = [];
-        }
     }
       // Function to validate date
        public function is_valid_date($date) {

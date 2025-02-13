@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('payment_for')->nullable();
             $table->string('payment_in')->nullable();
             $table->enum('bank_cash', ['Bank', 'Cash'])->nullable();
-            $table->string('voucher_no')->unique()->nullable();
+            $table->string('voucher_no')->nullable();
             $table->date('payment_date')->nullable();
             $table->enum('payment_mode', ['Cash', 'Cheque', 'UPI', 'Bank Transfer'])->nullable();
             $table->decimal('amount', 10, 2)->nullable();

@@ -730,4 +730,43 @@ table td h6.text-sm {
     padding: 11px 10px;
 }
    
+.select-md {
+    font-size: 13px;
+    padding: 3px 6px;
+    line-height: 1.2;
+}
+.btn-outline-success {
+    color: #198754;
+    border-color: #198754;
+}
+.table .tr_active{
+    background: #ddd;
+}
+.table.table-sm th, .table.table-sm td {
+    padding: 3px 6px;
+}
+.table th {
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    color: #000000;
+    vertical-align: bottom;
+    padding: 12px 20px;
+}
+.table td {
+    font-size: 14px;
+    font-weight: 400;
+    color: #8691aa;
+    border: none;
+    padding: 12px 20px;
+}
+.badge {
+    font-weight: 400;
+    font-size: 11px;
+    padding: 6px 12px;
+}
+.bg-success {
+    color: #0f5132;
+    background-color: #d1e7dd !important;
+}
   

@@ -44,54 +44,6 @@ class Helper
         return 'uploads/' . $folderName . '/' . $filename;
     }
 
-
-    // public static function generateInvoiceBill($salesManId)
-    // {
-       
-    //     // Check for salesman type user
-    //         $salesmanBillBook = SalesmanBilling::where('salesman_id',$salesManId)
-    //             ->whereColumn('total_count', '>', 'no_of_used')
-    //             ->first();
-    //         if ($salesmanBillBook) {
-    //             $new_number = $salesmanBillBook->start_no + $salesmanBillBook->no_of_used;
-
-    //             do {
-    //                 // Check if the order number already exists
-    //                 $existing_order = Order::where('order_number', $new_number)->first();
-                    
-    //                 // If order number exists, increment it
-    //                 if ($existing_order) {
-    //                     $new_number++;
-    //                 }
-            
-    //                 // Continue loop while the new_number is within the allowed range
-    //             } while ($existing_order && $new_number <= $salesmanBillBook->end_no);
-            
-    //             // If we exit the loop and new_number is still valid, you can proceed
-    //             if ($new_number <= $salesmanBillBook->end_no) {
-    //                 $data = [
-    //                     'number' => $new_number,
-    //                     'status' => 1,
-    //                     'bill_id' => $salesmanBillBook->id,
-    //                 ];
-    //                 return $data;
-    //             } 
-
-    //             $data = [
-    //                 'number' => '0000',
-    //                 'status' => 1,
-    //             ];
-    //             return $data;
-    //         } else {
-    //             // If no SalesmanBilling record is found
-    //             $data = [
-    //                 'number' => '0000',
-    //                 'status' => 1,
-    //                 'bill_id' => null,
-    //             ];
-    //             return $data;
-    //         }
-    // }
     public static function generateInvoiceBill($salesManId)
     {
         // Fetch Salesman Details
@@ -156,6 +108,34 @@ class Helper
 
     public static function generateTransactionId(){
         return 'PAYMENT'.now()->format('YmdHis');
+    }
+
+    public static function GetCustomerDetails($term)
+    {
+        if (!empty($term)) {
+            // dd($term);
+           return User::where('user_type', 1)
+                ->where('status', 1)
+                ->where(function ($query) use ($term) {
+                    $query->where('name', 'like', '%' . $term . '%')
+                        ->orWhere('phone', 'like', '%' . $term . '%')
+                        ->orWhere('whatsapp_no', 'like', '%' . $term . '%')
+                        ->orWhere('email', 'like', '%' . $term . '%');
+                })
+                ->take(20)
+                ->get();
+                $orders = Order::where('order_number', 'like', '%' . $term . '%')
+                    ->orWhereHas('customer', function ($query) {
+                        $query->where('name', 'like', '%' . $term . '%');
+                    })
+                    ->latest()
+                    ->take(1)
+                    ->get();
+
+        } else {
+            // Reset results when the search term is empty
+            return [];
+        }
     }
 
 }

@@ -392,34 +392,30 @@
                                         <h6 class="badge bg-danger custom_success_badge dark-badge">Fabrics</h6>
 
                                         <div class="row mx-2 fabric-item">
-                                        <div>
-                                        @if(isset($items[$index]['fabrics']) && count($items[$index]['fabrics']) > 0)
-    <label for="searchFabric" class="form-label mb-0">Search Fabric</label>
-    <input type="text" 
-           id="searchFabric" 
-           wire:model="searchTerm" 
-           wire:keyup="searchFabrics({{ $index }})" 
-           class="form-control form-control-sm border border-1 customer_input" 
-           placeholder="Search by fabric name">
-    
-    @if(!empty($searchResults))
-        <div id="fabric_dropdown" class="dropdown-menu show w-100" style="max-height: 200px; overflow-y: auto;">
-            @foreach ($searchResults as $fabric)
-                <button class="dropdown-item" type="button" wire:click="selectFabric({{ $fabric->id }})">
-                    {{ $fabric->title }}
-                </button>
-            @endforeach
-        </div>
-    @else
-        <p class="mt-2 text-muted">No fabrics found.</p>
-    @endif
-</div>
+                                            <div>
+                                                @if(isset($items[$index]['fabrics']) && count($items[$index]['fabrics']) > 0)
+                                                <label for="searchFabric" class="form-label mb-0">Search Fabric</label>
+                                                @foreach ($items as $index => $item)
+                                                    <input type="text"
+                                                        wire:model="items.{{ $index }}.searchTerm"
+                                                        wire:keyup="searchFabrics({{ $index }})"
+                                                        class="form-control"
+                                                        placeholder="Search by fabric name">
 
-
-@else
-    <p class="mt-2 text-danger">No fabric selected.</p>
-@endif
-
+                                                    @if(!empty($items[$index]['searchResults']))
+                                                        <div class="dropdown-menu show w-100" style="max-height: 200px; overflow-y: auto;">
+                                                            @foreach ($items[$index]['searchResults'] as $fabric)
+                                                                <button class="dropdown-item" type="button" wire:click="selectFabric({{ $fabric->id }}, {{ $index }})">
+                                                                    {{ $fabric->title }}
+                                                                </button>
+                                                            @endforeach
+                                                        </div>
+                                                    @endif
+                                                @endforeach
+                                            </div>
+                                            @else
+                                                <p class="mt-2 text-danger">No fabric found.</p>
+                                            @endif
                                     </div>
                                 </div>
                             @endif

@@ -349,7 +349,7 @@
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
-                        <!-- </div> -->
+                        </div>
                             
                             @endif
                             <!-- Measurements -->
@@ -373,7 +373,7 @@
                                                 @error("items.{$index}.measurements.{$key}.value")
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
-                                             </div>
+                                            </div>
                                         @endforeach
                                     @endif
 
