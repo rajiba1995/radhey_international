@@ -57,7 +57,7 @@
                             <span class="material-icons">search</span>
                         </button>
                         <button type="button" class="btn btn-outline-primary mb-0"
-                            wire:click="clearProductFilters"  wire:loading.attr="disabled">
+                            wire:click="clearProductFilters">
                             ✖
                         </button>
                         <button wire:click="exportStockProduct" class="btn btn-success btn-sm">
@@ -116,7 +116,7 @@
                             <span class="material-icons">search</span>
                         </button>
                         <button type="button" class="btn btn-outline-primary mb-0"
-                            wire:click="clearFabricFilters"  wire:loading.attr="disabled">
+                            wire:click="clearFabricFilters">
                             ✖
                         </button>
                         <button wire:click="exportStockFabric" class="btn btn-success btn-sm">

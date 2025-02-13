@@ -24,29 +24,22 @@ class StockIndex extends Component
     public $endDateFabric;
     public $searchProduct  = '';
     public $searchFabric  = '';
-    public $clearProductFilters  = '';
-    public $clearFabricFilters  = '';
-    protected $listeners = ['refreshComponent' => '$refresh'];
+ 
     
-   
     public function setActiveTab($tab)
     {
         $this->activeTab = $tab;
     }
 
     public function clearProductFilters(){
-        $this->reset([
-            'searchProduct','startDateProduct','endDateProduct'
-        ]);
+        $this->reset(['searchProduct','startDateProduct','endDateProduct']);
+       
     }
 
     public function clearFabricFilters(){
-        $this->reset([
-            'searchFabric','startDateFabric','endDateFabric'
-        ]);
+        $this->reset(['searchFabric','startDateFabric','endDateFabric']);
     }
       
-
 
     public function exportStockProduct()
     {
@@ -65,7 +58,6 @@ class StockIndex extends Component
 
     public function render()
     {
-        // $products = StockProduct::with('product')->paginate(10);
 
         $products = StockProduct::with('product')
         ->when($this->searchProduct, function ($q) {
@@ -80,7 +72,7 @@ class StockIndex extends Component
             $q->whereDate('created_at', '<=', $this->endDateProduct);
         })
         ->paginate(10);
-        // $fabrics = StockFabric::with('fabric')->get();
+        
 
         $fabrics = StockFabric::with('fabric')
             ->when($this->searchFabric, function ($q) {
