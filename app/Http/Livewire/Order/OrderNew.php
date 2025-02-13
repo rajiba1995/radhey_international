@@ -122,84 +122,84 @@ class OrderNew extends Component
     // }
 
     public function mount()
-{
-    $user_id = request()->query('user_id');
+    {
+        $user_id = request()->query('user_id');
 
-    if ($user_id) {
-        $customer = User::with(['billingAddress', 'shippingAddress'])
-            ->where([
-                ['id', $user_id],
-                ['user_type', 1],
-                ['status', 1]
-            ])
-            ->first();
+        if ($user_id) {
+            $customer = User::with(['billingAddress', 'shippingAddress'])
+                ->where([
+                    ['id', $user_id],
+                    ['user_type', 1],
+                    ['status', 1]
+                ])
+                ->first();
 
-        if ($customer) {
-            $this->customer_id = $customer->id;
-            $this->name = $customer->name;
-            $this->company_name = $customer->company_name;
-            $this->employee_rank = $customer->employee_rank;
-            $this->email = $customer->email;
-            $this->dob = $customer->dob;
-            $this->phone = $customer->phone;
-            $this->whatsapp_no = $customer->whatsapp_no;
+            if ($customer) {
+                $this->customer_id = $customer->id;
+                $this->name = $customer->name;
+                $this->company_name = $customer->company_name;
+                $this->employee_rank = $customer->employee_rank;
+                $this->email = $customer->email;
+                $this->dob = $customer->dob;
+                $this->phone = $customer->phone;
+                $this->whatsapp_no = $customer->whatsapp_no;
 
-            // Assign Billing Address (if exists)
-            if ($billing = $customer->billingAddress) {
-                $this->billing_address = $billing->address;
-                $this->billing_landmark = $billing->landmark;
-                $this->billing_city = $billing->city;
-                $this->billing_state = $billing->state;
-                $this->billing_country = $billing->country;
-                $this->billing_pin = $billing->zip_code;
+                // Assign Billing Address (if exists)
+                if ($billing = $customer->billingAddress) {
+                    $this->billing_address = $billing->address;
+                    $this->billing_landmark = $billing->landmark;
+                    $this->billing_city = $billing->city;
+                    $this->billing_state = $billing->state;
+                    $this->billing_country = $billing->country;
+                    $this->billing_pin = $billing->zip_code;
+                }
+
+                // Assign Shipping Address (if exists)
+                if ($shipping = $customer->shippingAddress) {
+                    $this->shipping_address = $shipping->address;
+                    $this->shipping_landmark = $shipping->landmark;
+                    $this->shipping_city = $shipping->city;
+                    $this->shipping_state = $shipping->state;
+                    $this->shipping_country = $shipping->country;
+                    $this->shipping_pin = $shipping->zip_code;
+                }
+
+                // Fetch latest order
+                $this->orders = Order::where('customer_id', $customer->id)
+                    ->latest()
+                    ->take(1)
+                    ->get();
             }
-
-            // Assign Shipping Address (if exists)
-            if ($shipping = $customer->shippingAddress) {
-                $this->shipping_address = $shipping->address;
-                $this->shipping_landmark = $shipping->landmark;
-                $this->shipping_city = $shipping->city;
-                $this->shipping_state = $shipping->state;
-                $this->shipping_country = $shipping->country;
-                $this->shipping_pin = $shipping->zip_code;
-            }
-
-            // Fetch latest order
-            $this->orders = Order::where('customer_id', $customer->id)
-                ->latest()
-                ->take(1)
-                ->get();
         }
+
+        // Load common dropdowns
+        $this->customers = User::where([
+            ['user_type', 1],
+            ['status', 1]
+        ])->orderBy('name')->get();
+
+        $this->categories = Category::where('status', 1)
+            ->orderBy('title')
+            ->get();
+
+        $this->collections = Collection::whereIn('id', [1, 2])
+            ->orderBy('title')
+            ->get();
+
+        // Load salesmen list & assign logged-in salesman
+        $this->salesmen = User::where([
+            ['user_type', 0],
+            ['designation', 2]
+        ])->get();
+
+        $this->salesman = Auth::id();
+
+        // Add initial order item
+        $this->addItem();
+
+        // Fetch Salesman Billing if exists
+        $this->salesmanBill = SalesmanBilling::where('salesman_id', auth()->id())->first();
     }
-
-    // Load common dropdowns
-    $this->customers = User::where([
-        ['user_type', 1],
-        ['status', 1]
-    ])->orderBy('name')->get();
-
-    $this->categories = Category::where('status', 1)
-        ->orderBy('title')
-        ->get();
-
-    $this->collections = Collection::whereIn('id', [1, 2])
-        ->orderBy('title')
-        ->get();
-
-    // Load salesmen list & assign logged-in salesman
-    $this->salesmen = User::where([
-        ['user_type', 0],
-        ['designation', 2]
-    ])->get();
-
-    $this->salesman = Auth::id();
-
-    // Add initial order item
-    $this->addItem();
-
-    // Fetch Salesman Billing if exists
-    $this->salesmanBill = SalesmanBilling::where('salesman_id', auth()->id())->first();
-}
 
     
     public function searchFabrics($index)
@@ -320,10 +320,26 @@ class OrderNew extends Component
         }
       }
 
+    // public function addItem()
+    // {
+    //     $this->items[] = [
+           
+    //         'collection' => '',
+    //         'category' => '',
+    //         'sub_category' => '',
+    //         'searchproduct' => '',
+    //         'selected_fabric' => null,
+    //         'measurements' => [],
+    //         'products' => [],
+    //         'product_id' => null,
+    //         'price' => '', // Ensure price is initialized to an empty string, not null.
+    //     ];
+    //     // $this->validate();
+    // }
+
     public function addItem()
     {
         $this->items[] = [
-           
             'collection' => '',
             'category' => '',
             'sub_category' => '',
@@ -332,10 +348,13 @@ class OrderNew extends Component
             'measurements' => [],
             'products' => [],
             'product_id' => null,
-            'price' => '', // Ensure price is initialized to an empty string, not null.
+            'price' => '',
+            // 'searchTerm' => '', // Ensure search field is empty
+            // 'searchResults' => [], // Clear previous search results
         ];
-        // $this->validate();
     }
+    
+
 
     // updateSalesman
     public function changeSalesman($value){
@@ -833,18 +852,18 @@ class OrderNew extends Component
                 'paid_amount' => $this->paid_amount
             ]);
 
-            Ledger::create([
-                'order_id' => $order->id,
-                'user_id' => $user->id,
-                'transaction_date' => now(),
-                'transaction_type' => 'Debit', // or 'Credit' depending on your business logic
-                'payment_method' => $this->payment_mode,
-                'paid_amount' => $this->paid_amount,
-                'purpose' => 'Payment Receipt',
-                'purpose_description' => 'Order Payment',
-                // 'remaining_amount' => $this->remaining_amount,
-                'remarks' => 'Initial Payment for Order #' . $order->order_number,
-            ]);
+            // Ledger::create([
+            //     'order_id' => $order->id,
+            //     'user_id' => $user->id,
+            //     'transaction_date' => now(),
+            //     'transaction_type' => 'Debit', // or 'Credit' depending on your business logic
+            //     'payment_method' => $this->payment_mode,
+            //     'paid_amount' => $this->paid_amount,
+            //     'purpose' => 'Payment Receipt',
+            //     'purpose_description' => 'Order Payment',
+            //     // 'remaining_amount' => $this->remaining_amount,
+            //     'remarks' => 'Initial Payment for Order #' . $order->order_number,
+            // ]);
 
            
 

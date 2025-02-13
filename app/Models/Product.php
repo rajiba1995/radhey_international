@@ -40,6 +40,7 @@ class Product extends Model
         return $this->belongsToMany(Fabric::class, 'product_fabrics', 'product_id', 'fabric_id');
     }
     
+    
     public function images()
     {
         return $this->hasMany(ProductImage::class);
