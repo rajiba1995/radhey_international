@@ -374,8 +374,6 @@
                                              </div>
                                         @endforeach
                                     @endif
-
-                                    
                                     </div>
                                 </div>
                                 <!-- Fabrics -->
