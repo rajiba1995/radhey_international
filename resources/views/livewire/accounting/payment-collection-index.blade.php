@@ -125,7 +125,7 @@
                                             @endif
                                             
                                             @if (!empty($payment->is_ledger_added))
-                                                <a href="#" onclick="return confirm('Are you sure want to revoke payment?');" class="btn btn-outline-warning select-md">Revoke</a>
+                                                <a href="#" wire:click="revokePayment({{$payment->id}})" class="btn btn-outline-warning select-md">Revoke</a>
                                             @endif
                                             
                                         </td>   

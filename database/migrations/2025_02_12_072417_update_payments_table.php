@@ -15,7 +15,7 @@ class UpdatePaymentsTable extends Migration
     {
         // Remove existing columns
         Schema::table('payments', function (Blueprint $table) {
-            $table->dropColumn('user_id');
+            // $table->dropColumn('user_id');
             $table->dropColumn('store_id');
         });
 
