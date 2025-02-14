@@ -852,18 +852,18 @@ class OrderNew extends Component
                 'paid_amount' => $this->paid_amount
             ]);
 
-            // Ledger::create([
-            //     'order_id' => $order->id,
-            //     'user_id' => $user->id,
-            //     'transaction_date' => now(),
-            //     'transaction_type' => 'Debit', // or 'Credit' depending on your business logic
-            //     'payment_method' => $this->payment_mode,
-            //     'paid_amount' => $this->paid_amount,
-            //     'purpose' => 'Payment Receipt',
-            //     'purpose_description' => 'Order Payment',
-            //     // 'remaining_amount' => $this->remaining_amount,
-            //     'remarks' => 'Initial Payment for Order #' . $order->order_number,
-            // ]);
+            Ledger::create([
+                'order_id' => $order->id,
+                'user_id' => $user->id,
+                'transaction_date' => now(),
+                'transaction_type' => 'Debit', // or 'Credit' depending on your business logic
+                'payment_method' => $this->payment_mode,
+                'paid_amount' => $this->paid_amount,
+                'purpose' => 'Payment Receipt',
+                'purpose_description' => 'Order Payment',
+                // 'remaining_amount' => $this->remaining_amount,
+                'remarks' => 'Initial Payment for Order #' . $order->order_number,
+            ]);
 
            
 
