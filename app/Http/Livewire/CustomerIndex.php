@@ -46,7 +46,12 @@ class CustomerIndex extends Component
         $user->save();
         session()->flash('success','Customer status updated successfully');
     }
-
+    public function FindCustomer($keywords){
+        $this->search = $keywords;
+    }
+    public function resetForm(){
+        $this->reset(['search']);
+    }
     // public function import()
     // {
     //     $this->validate([

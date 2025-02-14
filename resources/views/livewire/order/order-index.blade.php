@@ -98,7 +98,7 @@
                                 </td>
                                 <td><p class="text-xs font-weight-bold mb-0">{{ $order->total_amount }}</p></td>
                                 <td>
-                                   <p class="small text-muted mb-1 text-uppercase">{{$order->createdBy->name}}</p>
+                                   <p class="small text-muted mb-1 text-uppercase">{{$order->createdBy?$order->createdBy->name:""}}</p>
                                 </td>
                                 {{-- <td class="{{$order->remaining_amount>0?"text-danger":""}}"><p class="text-xs font-weight-bold mb-0">{{ $order->remaining_amount }}</p></td> --}}
                                 <td>
