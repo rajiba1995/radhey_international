@@ -392,15 +392,14 @@
                                         <h6 class="badge bg-danger custom_success_badge dark-badge">Fabrics</h6>
 
                                         <div class="row mx-2 fabric-item">
-                                            <div>
-                                                @if(isset($items[$index]['fabrics']) && count($items[$index]['fabrics']) > 0)
-                                                <label for="searchFabric" class="form-label mb-0">Search Fabric</label>
-                                                @foreach ($items as $index => $item)
+                                                <div>
+                                                    <label for="searchFabric_{{ $index }}" class="form-label mb-0">Search Fabric</label>
                                                     <input type="text"
-                                                        wire:model="items.{{ $index }}.searchTerm"
+                                                        wire:model.defer="items.{{ $index }}.searchTerm"
                                                         wire:keyup="searchFabrics({{ $index }})"
                                                         class="form-control"
-                                                        placeholder="Search by fabric name">
+                                                        placeholder="Search by fabric name"
+                                                        id="searchFabric_{{ $index }}">
 
                                                     @if(!empty($items[$index]['searchResults']))
                                                         <div class="dropdown-menu show w-100" style="max-height: 200px; overflow-y: auto;">
@@ -411,12 +410,10 @@
                                                             @endforeach
                                                         </div>
                                                     @endif
-                                                @endforeach
-                                            </div>
-                                            @else
-                                                <p class="mt-2 text-danger">No fabric found.</p>
-                                            @endif
+                                                </div>
+                                        </div>
                                     </div>
+
                                 </div>
                             @endif
                             <div class="row justify-content-end">

@@ -361,8 +361,8 @@
                                         @foreach ($items[$index]['measurements'] as $key => $measurement)
                                             <div class="col-md-3">
                                                 <label>
-                                                    {{ $measurement['title'] }}
-                                                    <strong>[{{ $measurement['short_code'] }}]</strong>
+                                                    {{ isset($measurement['title']) ? $measurement['title'] : 'N/A' }}
+                                                    <strong>[{{ isset($measurement['short_code']) ? $measurement['short_code'] : '' }}]</strong>
                                                 </label>
                                                 <input 
                                                     type="text" 
@@ -381,42 +381,45 @@
                                 <!-- Fabrics -->
                                 <div class="col-12 col-md-6 mb-2 mb-md-0">
                                     <h6 class="badge bg-danger custom_success_badge dark-badge">Fabrics</h6>
-                            
+
                                     <div class="row mx-2 fabric-item">
-                                        @if(isset($item['fabrics']) && count($item['fabrics']) > 0)
-                                            <div class="col-lg-4 col-md-6 col-sm-12"> {{-- First column starts --}}
-                                                @forelse ($item['fabrics'] ?? [] as $fabric)
-                                                    @if ($loop->index % 12 == 0 && $loop->index != 0)
-                                                        </div><div class="col-lg-4 col-md-6 col-sm-12"> {{-- Close previous column and start a new one --}}
+                                        <div>
+                                            @if(isset($items[$index]['fabrics']) && count($items[$index]['fabrics']) > 0)
+                                                <label for="searchFabric_{{ $index }}" class="form-label mb-0">Search Fabric</label>
+
+                                                <div class="position-relative">
+                                                    <!-- Fabric Search Input -->
+                                                    <input type="text"
+                                                        wire:model.defer="items.{{ $index }}.searchTerm"
+                                                        wire:keyup="searchFabrics({{ $index }})"
+                                                        class="form-control mt-2"
+                                                        placeholder="Search by fabric name"
+                                                        id="searchFabric_{{ $index }}"
+                                                        value="{{ optional(collect($items[$index]['fabrics'])->firstWhere('id', $items[$index]['selected_fabric']))->title }}">
+
+                                                    <!-- Search Results Dropdown -->
+                                                    @if(!empty($items[$index]['searchResults']))
+                                                        <div class="dropdown-menu show w-100" style="max-height: 200px; overflow-y: auto; position: absolute; z-index: 1000;">
+                                                            @foreach ($items[$index]['searchResults'] as $fabric)
+                                                                <button class="dropdown-item" type="button" 
+                                                                    wire:click="selectFabric({{ $fabric->id }}, {{ $index }})">
+                                                                    {{ $fabric->title }}
+                                                                </button>
+                                                            @endforeach
+                                                        </div>
                                                     @endif
-                                                    <div class="radio">
-                                                        <input 
-                                                            type="radio" 
-                                                            class="radio-input" 
-                                                            name="fabric_{{ $index }}" 
-                                                            id="fabric_{{ $index }}_{{ $fabric->id }}" 
-                                                            wire:model="items.{{ $index }}.selected_fabric" 
-                                                            value="{{ $fabric->id }}"
-                                                            @checked(isset($item['selected_fabric']) && $item['selected_fabric'] == $fabric->id)
-                                                        />
-                                                        <label for="fabric_{{ $index }}_{{ $fabric->id }}" class="radio-label">
-                                                            <span class="radio-border"></span> 
-                                                            {{ $fabric->title }}
-                                                        </label>
-                                                    </div>
-                                                @empty
-                                                    <p>No fabrics available for this item.</p>
-                                                @endforelse
-                                            </div> {{-- Close the last column --}}
-                                        @endif
-                            
-                                        @if (session()->has('fabrics_error.' . $index)) 
-                                            <div class="alert alert-danger">
-                                                {{ session('fabrics_error.' . $index) }}
-                                            </div>
-                                        @endif
-                                    </div> {{-- Close the row --}}
+                                                </div>
+
+                                            @else
+                                                <p class="mt-2 text-danger">No fabric found.</p>
+                                            @endif
+                                        </div>
+                                    </div>
                                 </div>
+
+
+                                <!-- </div> -->
+                                <!-- </div> -->
                                 {{-- <div class="col-12 col-md-6 mb-2 mb-md-0">
                                     <h6 class="badge bg-danger custom_success_badge">Fabrics</h6>
                                     <div class="row mx-2">
