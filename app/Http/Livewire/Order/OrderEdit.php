@@ -381,10 +381,11 @@ class OrderEdit extends Component
             $this->items[$index]['catalogues'] = $catalogues->map(function ($catalogue) {
                 return [
                     'id' => $catalogue->catalogue_title_id,
-                    'title' => $catalogue->catalogueTitle ? $catalogue->catalogueTitle->title : null,
+                    'title' => $catalogue->catalogueTitle->title,
                     'page_number' => $catalogue->page_number,
                 ];
             })->toArray();
+           
         
             // Fetch max page numbers per catalogue
             $this->maxPages[$index] = [];
@@ -392,8 +393,11 @@ class OrderEdit extends Component
                 $this->maxPages[$index][$catalogue->catalogue_title_id] = $catalogue->page_number;
             }
             
-            if ($previousCatalogue && collect($this->items[$index]['catalogues'])->pluck('id')->contains($previousCatalogue)) {
-                $this->items[$index]['selectedCatalogue'] = $previousCatalogue;
+            if ($previousCatalogue) {
+                $selectedCatalogue = collect($this->items[$index]['catalogues'])->firstWhere('id', $previousCatalogue);
+                if ($selectedCatalogue) {
+                    $this->items[$index]['selectedCatalogue'] = $selectedCatalogue['id']; 
+                }
             }
 
         } else {

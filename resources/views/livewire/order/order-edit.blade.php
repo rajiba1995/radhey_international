@@ -328,11 +328,12 @@
                                             class="form-control form-control-sm border border-1 @error('items.'.$index.'.selectedCatalogue') border-danger @enderror" 
                                             wire:change="SelectedCatalogue($event.target.value, {{ $index }})">
                                         <option value="" selected hidden>Select Catalogue</option>
-                                        @foreach($item[$index]['catalogues'] ?? [] as $cat_log)
-                                            <option value="{{ $cat_log['id'] }}" {{$item['selectedCatalogue'] == $cat_log['id'] ? 'selected' : ''}}>
-                                                {{ $cat_log['title'] }} (1 - {{ $cat_log['page_number'] }})
-                                            </option>
-                                        @endforeach
+                                    @foreach($item[$index]['catalogues'] ?? [] as $cat_log)
+                                        <option value="{{ $cat_log['id'] }}" 
+                                            {{ (isset($item['selectedCatalogue']) && $item['selectedCatalogue'] == $cat_log['id']) ? 'selected' : '' }}>
+                                            {{ $cat_log['title'] ? $cat_log['title'] : 'No Title' }} (1 - {{ $cat_log['page_number'] }})
+                                        </option>
+                                    @endforeach
                                     </select>
                                     @error("items." .$index. ".selectedCatalogue") 
                                         <div class="text-danger">{{ $message }}</div>
