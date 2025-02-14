@@ -191,8 +191,20 @@ class PurchaseOrderCreate extends Component
                 $this->rows[$index]['product'] = null;
                 $this->isFabricSelected[$index] = true;
             } elseif (in_array($collection->id, [2, 4])) { // GARMENT ITEMS
-                $this->rows[$index]['products'] = Product::where('collection_id', $collection->id)->get()->toArray();
+                $allProducts = Product::where('collection_id', $collection->id)->where('status',1)->where('deleted_at',NULL)->get()->toArray();
+                // Exclude products already selected in other rows
+                $selectedProducts = array_column(array_filter($this->rows , function ($row) use ($index){
+                    return in_array($row['collection'], [2, 4]) && $row['product'] != null && $row !== $this->rows[$index];
+                }),'product');
+
+                $filteredProducts = array_filter($allProducts, function ($product) use ($selectedProducts) {
+                    return !in_array($product['id'], $selectedProducts);
+                });
+
+                $this->rows[$index]['products'] = array_values($filteredProducts);
                 $this->rows[$index]['fabrics'] = [];
+                $this->rows[$index]['fabric'] = null;
+                $this->rows[$index]['product'] = null;
                 $this->isFabricSelected[$index] = false;
             } else {
                 $this->rows[$index]['fabrics'] = [];

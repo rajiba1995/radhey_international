@@ -725,8 +725,13 @@ table td h6.text-sm {
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+.searchInput{
+    padding: 11px 10px;
+}
    
 .select-md {
+    border-radius: 3px;
     font-size: 13px;
     padding: 3px 6px;
     line-height: 1.2;
@@ -742,12 +747,16 @@ table td h6.text-sm {
     padding: 3px 6px;
 }
 .table th {
-    font-size: 14px;
-    font-weight: 500;
+    text-transform: uppercase !important;
+    color: #000000 !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    opacity: 1 !important;
+    padding: 0.5rem 0.5rem !important;
+    vertical-align: middle;
     border: none;
-    color: #000000;
-    vertical-align: bottom;
-    padding: 12px 20px;
+    border-bottom: 1px solid #f0f2f5;
+  
 }
 .table td {
     font-size: 14px;
@@ -755,6 +764,7 @@ table td h6.text-sm {
     color: #8691aa;
     border: none;
     padding: 12px 20px;
+    vertical-align: middle !important;
 }
 .badge {
     font-weight: 400;
@@ -765,4 +775,58 @@ table td h6.text-sm {
     color: #0f5132;
     background-color: #d1e7dd !important;
 }
+.bg-warning{
+    color: #664d03;
+    background-color: #fff3cd !important;
+}
   
+.btn-outline-success:hover:not(.active) {
+    background-color: #198754;
+    opacity: .75;
+    box-shadow: none;
+    color: #ffffff;
+}
+.btn-outline-danger:hover:not(.active) {
+    background-color: #F44335;
+    opacity: .75;
+    box-shadow: none;
+    color: #fff;
+}
+.date_lable{
+    margin: 0px;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+/* Light and Soft Status Colors */
+.bg-success { background-color: #b2e0b6 !important; color: #155724 !important; }
+.bg-warning { background-color: #ffeeba !important; color: #856404 !important; }
+.bg-primary { background-color: #cce5ff !important; color: #004085 !important; }
+.bg-info { background-color: #bee5eb !important; color: #0c5460 !important; }
+.bg-secondary { background-color: #e2e3e5 !important; color: #383d41 !important; }
+.bg-danger { background-color: #f8d7da !important; color: #721c24 !important; }
+.bg-dark { background-color: #d6d8d9 !important; color: #1b1e21 !important; }
+.bg-muted { background-color: #f1f3f5 !important; color: #495057 !important; }
+
+.btn_action{
+    font-weight: 600 !important;
+    color: #3c5bee !important;
+    border-color: #3c5bee !important;
+    font-size: 10px !important;
+}
+.btn_action:hover{
+    font-weight: 600 !important;
+    color: #f8f8f8 !important;
+    background-color: #1530b3 !important;
+    border-color: #1530b3 !important;
+    font-size: 10px !important;
+}
+.btn_edit{
+    font-weight: 600 !important;
+    font-size: 10px !important;
+}
+.btn_cancel{
+    font-weight: 600 !important;
+    font-size: 10px !important;
+}

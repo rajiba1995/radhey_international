@@ -23,27 +23,105 @@
             <td><strong>Date:</strong> {{ date('d/m/Y', strtotime($purchaseOrder->created_at)) }}</td>
         </tr>
     </table>
+    @if ($purchaseOrder->status == 0)
+        @if ($purchaseOrder->orderproducts->where('stock_type', 'product')->count() > 0)
+        <!-- PRODUCTS TABLE -->
+        <div class="section-title">Products</div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                    <th>Rate</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php $i = 1; $totalProducts = 0; @endphp
+                @foreach ($purchaseOrder->orderproducts->where('stock_type', 'product') as $item)
+                    @php $amount = $item->qty_in_pieces * $item->piece_price; $totalProducts += $amount; @endphp
+                    <tr>
+                        <td>{{ $i++ }}</td>
+                        <td>{{ $item->product_name }}</td>
+                        <td>{{ $item->qty_in_pieces  }}</td>
+                        <td>Rs. {{ number_format($item->piece_price, 2) }}</td>
+                        <td>Rs. {{ number_format($amount, 2) }}</td>
+                    </tr>
+                @endforeach
+                <tr>
+                    <td colspan="4" align="right"><strong>Total Product Value:</strong></td>
+                    <td><strong>Rs. {{ number_format($totalProducts, 2) }}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+        @endif
+
+        @if ($purchaseOrder->orderproducts->where('stock_type', 'fabric')->count() > 0 )
+        <!-- FABRICS TABLE -->
+        <div class="section-title">Fabrics</div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                    <th>Rate</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php $j = 1; $totalFabrics = 0; @endphp
+                @foreach ($purchaseOrder->orderproducts->where('stock_type', 'fabric') as $item)
+                    @php $amount = $item->qty_in_meter * $item->piece_price; $totalFabrics += $amount; @endphp
+                    <tr>
+                        <td>{{ $j++ }}</td>
+                        <td>{{ $item->fabric_name }}</td>
+                        <td>{{ $item->qty_in_meter }}</td>
+                        <td>Rs. {{ number_format($item->piece_price, 2) }}</td>
+                        <td>Rs. {{ number_format($amount, 2) }}</td>
+                    </tr>
+                @endforeach
+                <tr>
+                    <td colspan="4" align="right"><strong>Total Fabric Value:</strong></td>
+                    <td><strong>Rs. {{ number_format($totalFabrics, 2) }}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+         <h3 align="right">Grand Total: Rs. {{ number_format($totalProducts + $totalFabrics, 2) }}</h3>
+
+        @endif
+        {{-- after generate the grn else part will work --}}
+    @else
     @if ($purchaseOrder->orderproducts->where('stock_type', 'product')->count() > 0)
     <!-- PRODUCTS TABLE -->
     <div class="section-title">Products</div>
     <table class="table">
         <thead>
-            <tr><th>#</th><th>Name</th><th>Quantity</th><th>Rate</th><th>Amount</th></tr>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Order Quantity</th>
+                <th>GRN Quantity</th>
+                <th>Rate</th>
+                <th>Amount</th>
+            </tr>
         </thead>
         <tbody>
             @php $i = 1; $totalProducts = 0; @endphp
             @foreach ($purchaseOrder->orderproducts->where('stock_type', 'product') as $item)
-                @php $amount = $item->qty_in_pieces * $item->piece_price; $totalProducts += $amount; @endphp
+                @php $amount = $item->qty_while_grn_product * $item->piece_price; $totalProducts += $amount; @endphp
                 <tr>
                     <td>{{ $i++ }}</td>
                     <td>{{ $item->product_name }}</td>
                     <td>{{ $item->qty_in_pieces  }}</td>
+                    <td>{{ intval($item->qty_while_grn_product)  }}</td>
                     <td>Rs. {{ number_format($item->piece_price, 2) }}</td>
                     <td>Rs. {{ number_format($amount, 2) }}</td>
                 </tr>
             @endforeach
             <tr>
-                <td colspan="4" align="right"><strong>Total Product Value:</strong></td>
+                <td colspan="5" align="right"><strong>Total Product Value:</strong></td>
                 <td><strong>Rs. {{ number_format($totalProducts, 2) }}</strong></td>
             </tr>
         </tbody>
@@ -55,28 +133,37 @@
     <div class="section-title">Fabrics</div>
     <table class="table">
         <thead>
-            <tr><th>#</th><th>Name</th><th>Quantity</th><th>Rate</th><th>Amount</th></tr>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Order Quantity</th>
+                <th>GRN Quantity</th>
+                <th>Rate</th>
+                <th>Amount</th>
+            </tr>
         </thead>
         <tbody>
             @php $j = 1; $totalFabrics = 0; @endphp
             @foreach ($purchaseOrder->orderproducts->where('stock_type', 'fabric') as $item)
-                @php $amount = $item->qty_in_meter * $item->piece_price; $totalFabrics += $amount; @endphp
+                @php $amount = $item->qty_while_grn_fabric * $item->piece_price; $totalFabrics += $amount; @endphp
                 <tr>
                     <td>{{ $j++ }}</td>
                     <td>{{ $item->fabric_name }}</td>
-                    <td>{{ $item->qty_in_meter }}</td>
+                    <td>{{ intval($item->qty_in_meter) }}</td>
+                    <td>{{ intval($item->qty_while_grn_fabric) }}</td>
                     <td>Rs. {{ number_format($item->piece_price, 2) }}</td>
                     <td>Rs. {{ number_format($amount, 2) }}</td>
                 </tr>
             @endforeach
             <tr>
-                <td colspan="4" align="right"><strong>Total Fabric Value:</strong></td>
+                <td colspan="5" align="right"><strong>Total Fabric Value:</strong></td>
                 <td><strong>Rs. {{ number_format($totalFabrics, 2) }}</strong></td>
             </tr>
         </tbody>
     </table>
+    <h3 align="right">Grand Total: Rs. {{ number_format($totalProducts + $totalFabrics, 2) }}</h3>
+    @endif
     @endif
     <!-- GRAND TOTAL -->
-    {{-- <h3 align="right">Grand Total: Rs. {{ number_format($totalProducts + $totalFabrics, 2) }}</h3> --}}
 </body>
 </html>

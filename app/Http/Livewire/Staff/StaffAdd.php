@@ -120,7 +120,7 @@ class StaffAdd extends Component
                 'image' =>  $imagePath ?? "",
                 'passport_id_front' =>  $passportIdFrontPath ?? "",
                 'passport_id_back' => $passportIdBackPath ?? "",
-                'passport_expiry_date' => $this->passport_expiry_date ? $this->passport_expiry_date : null,
+                'passport_expiry_date' => !empty($this->passport_expiry_date) ? $this->passport_expiry_date : null,
                 'password'=>'secret',
                 'emergency_contact_person' => $this->emergency_contact_person ?? "",
                 'emergency_mobile' => $this->emergency_mobile ?? "",

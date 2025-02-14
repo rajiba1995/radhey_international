@@ -12,6 +12,7 @@ class StockProduct extends Model
         'stock_id',
         'product_id',
         'qty_in_pieces',
+        'qty_while_grn',
         'piece_price',
         'total_price',
     ];

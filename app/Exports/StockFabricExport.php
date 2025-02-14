@@ -49,7 +49,8 @@ class StockFabricExport implements FromCollection, WithHeadings, WithMapping
         return [
             'ID',
             'Fabric Name',
-            'Quantity (Meters)',
+            'Order Quantity (Meters)',
+            'GRN Quantity (Meters)',
             'Piece Price',
             'Total Price',
             'Entry Date'
@@ -65,6 +66,7 @@ class StockFabricExport implements FromCollection, WithHeadings, WithMapping
             $stock->id,
             $stock->fabric->title ?? 'N/A',
             $stock->qty_in_meter,
+            intval($stock->qty_while_grn),
             number_format($stock->piece_price, 2),
             number_format($stock->total_price, 2),
             // !empty($stock->created_at) ? $stock->created_at->format('d-m-Y') : 'N/A', // Proper Date Format

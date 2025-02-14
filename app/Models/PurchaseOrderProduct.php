@@ -20,9 +20,11 @@ class PurchaseOrderProduct extends Model
         'fabric_id', 
         'fabric_name', 
         'qty_in_meter', 
+        'qty_while_grn_fabric',
         'product_id', 
         'product_name', 
-        'qty_in_pieces'
+        'qty_in_pieces',
+        'qty_while_grn_product'
     ];
 
     // Relationship with PurchaseOrder

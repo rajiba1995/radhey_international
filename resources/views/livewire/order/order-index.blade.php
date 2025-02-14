@@ -1,5 +1,56 @@
-<div class="container-fluid px-2 px-md-4">
-    <div class="card my-4">
+<div class="container">
+    <section class="admin__title">
+        <h5>Order History</h5>
+    </section>
+    <section>
+        <div class="search__filter">
+            <div class="row align-items-center justify-content-end">
+                <div class="col-auto">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto" style="margin-top: -27px;">
+                            <label for="" class="date_lable">Start Date</label>
+                            <input type="date" wire:model="start_date" wire:change="AddStartDate($event.target.value)" class="form-control select-md bg-white" placeholder="Start Date">
+                        </div>
+                        <div class="col-auto" style="margin-top: -27px;">
+                            <label for="" class="date_lable">End date</label>
+                            <input type="date" wire:model="end_date" wire:change="AddEndDate($event.target.value)" class="form-control select-md bg-white" placeholder="End Date">
+                        </div>
+                        <div class="col-md-auto mt-3">
+                            <a href="{{route('admin.order.new')}}" class="btn btn-outline-success select-md">Place New Order</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row align-items-center justify-content-between">
+                <div class="col-auto">
+                    <p class="text-sm font-weight-bold">{{count($orders)}} Items</p>
+                </div>
+                <div class="col-auto">
+                    <div class="row g-3 align-items-center">
+                    <div class="col-auto mt-0">
+                        <input type="text" wire:model="search" class="form-control select-md bg-white" id="customer"
+                            placeholder="Search by customer detail or Order number" value=""
+                            style="width: 350px;"  wire:keyup="FindCustomer($event.target.value)">
+                    </div>
+                    <div class="col-auto mt-0">
+                        <select wire:model="created_by" class="form-control select-md bg-white" wire:change="CollectedBy($event.target.value)">
+                            <option value="" hidden="" selected="">Placed By</option>
+                            @foreach($usersWithOrders  as $user)
+                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-auto mt-3">
+                        <button type="button" wire:click="resetForm" class="btn btn-outline-danger select-md">Clear</button>
+                    </div>
+                    <div class="col-auto">
+                        <a href="javscript:void(0)" wire:click="export" class="btn btn-outline-success select-md"><i class="fas fa-file-csv me-1"></i>Export</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="card my-2">
         <div class="card-header pb-0">
             <div class="row">
                 @if(session()->has('message'))
@@ -18,86 +69,56 @@
                     </div>
                 @endif
             </div>
-            <div class="d-flex justify-content-between mb-3">
-                <div class="d-flex align-items-center">
-                    <!-- Text Search -->
-                    <label for="start_date" class="ms-2">Start Date</label>
-                    <input type="date" name="start_date" wire:model="start_date" class="form-control border border-1 ms-2" id="start_date">
-                    <label for="end_date" class="ms-2">End Date</label>
-                    <input type="date" name="end_date" wire:model="end_date" id="end_date" class="form-control border border-1 ms-2">
-                      <!-- Dropdown for Created By -->
-                      <select 
-                        wire:model="created_by" 
-                        wire:change="$refresh" 
-                        class="form-control border border-2 p-2 ms-2 custom-input-sm">
-                        <option value="" selected hidden>Salesman</option>
-                        @foreach($usersWithOrders  as $user)
-                            <option value="{{ $user->id }}">{{ $user->name }}</option>
-                        @endforeach
-                    </select>
-                    <input 
-                        type="text" 
-                        wire:model.debounce.500ms="search" 
-                        class="form-control border border-2 p-2 custom-input-sm" 
-                        placeholder="Search order">
-                    <!-- Search Button -->
-                    
-                    <button 
-                        type="button" 
-                        wire:click="$refresh" 
-                        class="btn btn-dark text-light mb-0 custom-input-sm ms-2">
-                        <span class="material-icons">search</span>
-                    </button>
-                    <a href=""  class="btn btn-dark text-light mb-0 custom-input-sm ms-2">
-                        <span class="material-icons">refresh</span>
-                   </a>
-                </div>
-                <button wire:click="export" class="btn btn-sm btn-success me-2">
-                    <i class="fas fa-file-export"></i> Export
-                </button>
-                <a href="{{route('admin.order.new')}}" class="btn btn-cta">
-                    <i class="material-icons text-white" style="font-size: 15px;">add</i>Place New Order
-                </a>
-            </div>
             <div class="table-responsive p-0">
-            <!-- Orders Table -->
-            
-                <table class="table align-items-center mb-0">
+                <table class="table table-sm table-hover">
                     <thead>
                         <tr>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Order #</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Customer Name</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Billing Amount</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Remaining Amount</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Customer Details</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Order Amount</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Placed By</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Status</th>
-                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Actions</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10 text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($orders as $order)
                             <tr>
                                 <td class="align-center">
-                                    <span class="text-dark text-sm font-weight-bold mb-0">{{ env('ORDER_PREFIX'). $order->order_number }}</span>
-                                    <span class="badge" style="background:#7b809a;color:#fff;"> {{ $order->created_at->format('Y-m-d H:i') }}</span>
+                                    <span class="text-dark text-sm font-weight-bold mb-0">{{ env('ORDER_PREFIX'). $order->order_number }}</span><br>
+                                    <p class="small text-muted mb-1 badge bg-warning">{{ $order->created_at->format('Y-m-d H:i') }}</p>
                                 </td>
-                                <td><p class="text-xs font-weight-bold mb-0">{{ $order->customer_name }}</p></td>
-                                {{-- <td>{{ $order->billing_address }}</td>
-                                <td>{{ $order->shipping_address }}</td> --}}
+                                <td>
+                                    <p class="small text-muted mb-1">
+                                        <span>Name: <strong>{{$order->customer_name}}</strong> </span>
+                                        <br>
+                                        <span>Mobile : <strong>{{$order->customer->phone}}</strong> </span> <br>
+                                        <span>WhatsApp : <strong>{{$order->customer->whatsapp_no}}</strong> </span>
+                                    </p>
+                                </td>
                                 <td><p class="text-xs font-weight-bold mb-0">{{ $order->total_amount }}</p></td>
-                                <td class="{{$order->remaining_amount>0?"text-danger":""}}"><p class="text-xs font-weight-bold mb-0">{{ $order->remaining_amount }}</p></td>
                                 <td>
-                                    <select name="status" class="form-select" wire:change="updateStatus($event.target.value, {{$order->id}})">
-                                        @foreach (\App\Models\Order::$statuses as $key => $value)
-                                            <option value="{{ $value }}" {{ $order->status == $value ? 'selected' : '' }}>
-                                                {{ $value }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    
-                                    {{-- <button class="badge bg-primary btn-sm">{{$order->status}}</button> --}}
+                                   <p class="small text-muted mb-1 text-uppercase">{{$order->createdBy->name}}</p>
                                 </td>
+                                {{-- <td class="{{$order->remaining_amount>0?"text-danger":""}}"><p class="text-xs font-weight-bold mb-0">{{ $order->remaining_amount }}</p></td> --}}
                                 <td>
-                                     <a href="{{route('admin.order.view',$order->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="View product">
+                                    <span class="badge bg-{{ $order->status_class }}">{{ $order->status_label }}</span>
+                                </td>
+                            <td class="text-center">
+                                    @if($order->status=="Pending")
+                                        @if(empty($order->packingslip))
+                                        <a href="{{route('admin.order.add_order_slip', $order->id)}}" class="btn btn-outline-primary select-md btn_action">Generate Slip</a>
+                                        @else
+                                            <a href="#" class="btn btn-outline-primary select-md btn_action">Edit Slip</a>
+                                        @endif
+                                        <a href="{{route('admin.order.edit', $order->id)}}" class="btn btn-outline-success select-md btn_edit" data-toggle="tooltip">Edit</a>
+                                   
+                                    <a href="" onclick="return confirm('Are you sure want to cancel the order?');"
+                                        class="btn btn-outline-danger select-md btn_cancel">Cancel Order</a>
+                                    @endif
+                                    <a href="{{route('admin.order.view',$order->id)}}" class="btn btn-outline-success select-md btn_action">Details</a>
+
+                                     {{-- <a href="{{route('admin.order.view',$order->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="View product">
                                          <span class="material-icons">visibility</span>
                                     </a>
                                     @if($order->status=="Pending")
@@ -105,8 +126,7 @@
                                         <span class="material-icons">edit</span>
                                     </a>
                                     @endif
-                                      <a href="{{route('admin.order.ledger.view', $order->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">Ledger History</a>
-                                    <a href="{{route('admin.order.invoice', $order->id)}}" target="_blank" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">Invoice</a>
+                                    <a href="{{route('admin.order.invoice', $order->id)}}" target="_blank" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">Invoice</a> --}}
                                 </td>
                             </tr>
                         @endforeach
@@ -120,4 +140,9 @@
             </div>
         </div>
     </div>
+    @if(empty($search))
+    <div class="loader-container" wire:loading>
+        <div class="loader"></div>
+    </div>
+    @endif
 </div>

@@ -106,7 +106,7 @@
                                     @enderror
 
                                     <!-- Image -->
-                                    <label class="form-label">Catalogue Pdf</label>
+                                    <label class="form-label"> Pdf</label>
                                     <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
                                         <input type="file" wire:model="image" class="form-control border border-2 p-2">
                                     </div>

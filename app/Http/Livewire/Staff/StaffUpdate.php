@@ -75,11 +75,11 @@ class StaffUpdate extends Component
             'email' => 'nullable|email',
             'mobile' => [
                 'required',
-                'regex:/^\d{' . env('VALIDATE_MOBILE', 8) . ',}$/',
+                'regex:/^\+?\d{' . env('VALIDATE_MOBILE', 8) . ',}$/',
             ],
             'whatsapp_no' => [
                 'required',
-                'regex:/^\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/',
+                'regex:/^\+?\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/',
             ],
             'aadhaar_number' => $aadhaarValidationRule,
             'image' => 'nullable|max:2048',
@@ -118,7 +118,7 @@ class StaffUpdate extends Component
             'image' => $imagePath ?? '',
             'passport_id_front' => $passportIdFrontPath ?? '',
             'passport_id_back' => $passportIdBackPath ?? '',
-            'passport_expiry_date' => $this->passport_expiry_date ?? '',
+            'passport_expiry_date' => !empty($this->passport_expiry_date) ? $this->passport_expiry_date : null,
         ]);
         // Update bank details
         if ($this->staff->bank) {

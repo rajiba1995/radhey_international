@@ -1,10 +1,17 @@
-<div class="container-fluid py-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="block-heading m-0">Purchase Order Detail</h4>
-        <a href="{{route('purchase_order.index')}}" class="btn btn-cta btn-sm">
-        <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
-        Back</a>
-    </div>
+<div class="container">
+    <section class="admin__title">
+        <h5>Purchase Order Detail</h5>
+    </section>
+    <section>
+        <ul class="breadcrumb_menu">
+            <li>Purchase Order</li>
+            <li><a href="{{route('purchase_order.create')}}">PO</a></li>
+            <li>Purchase Order Detail</li>
+            <li class="back-button">
+                <a href="{{ route('purchase_order.index') }}" class="btn btn-sm btn-danger select-md text-light font-weight-bold mb-0">Back to PO </a>
+            </li>
+          </ul>
+    </section>
 
     <div class="row">
         <!-- Order Information -->
@@ -53,12 +60,13 @@
                     <div class="card-body">
                         <h5 class="card-title">Products Details</h5>
                         <div class="table-responsive">
-                            <table class="table align-items-center">
+                            <table class="table table-sm table-hover">
                                 <thead>
                                     <tr>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder">#</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Product</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Quantity(Pieces)</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder">GRN Quantity(Pieces)</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Piece Price</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Total Amount</th>
                                     </tr>
@@ -75,6 +83,7 @@
                                             <td>{{$index}}</td>
                                             <td>{{ ucwords($item->product_name) }}</td>
                                             <td>{{$item->qty_in_pieces }}</td>
+                                            <td>{{ intval($item->qty_while_grn_product) }}</td>
                                             <td>Rs. {{ number_format($item->piece_price, 2) }}</td>
                                             <td>Rs. {{ number_format($item->total_price, 2) }}</td>
                                         </tr>
@@ -89,7 +98,7 @@
                                     </tr>
                                 @endif
                                     <tr>
-                                        <td colspan="4" class="text-right font-weight-bold">Total PO Price</td>
+                                        <td colspan="5" class="text-right font-weight-bold">Total PO Price</td>
                                         <td>Rs. <strong>{{ number_format($totalProductPrice, 2) }}</strong></td>
                                     </tr>
                                 </tbody>
@@ -105,12 +114,13 @@
                     <div class="card-body">
                         <h5 class="card-title">Fabric Details</h5>
                         <div class="table-responsive">
-                            <table class="table align-items-center">
+                            <table class="table table-sm table-hover">
                                 <thead>
                                     <tr>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder">#</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Fabric Name</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Quantity (meters)</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder">GRN Quantity (meters)</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Unit Price</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Total Price</th>
                                     </tr>
@@ -124,7 +134,8 @@
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $item->fabric_name }}</td>
-                                            <td>{{ $item->qty_in_meter }}</td>
+                                            <td>{{ intval($item->qty_in_meter) }}</td>
+                                            <td>{{ intval($item->qty_while_grn_fabric) }}</td>
                                             <td>Rs. {{ number_format($item->piece_price, 2) }}</td>
                                             <td>Rs. {{ number_format($item->total_price, 2) }}</td>
                                         </tr>
@@ -134,7 +145,7 @@
                                     @endif
                                     @endforeach
                                     <tr>
-                                        <td colspan="4" class="text-right font-weight-bold">Total Fabric Price</td>
+                                        <td colspan="5" class="text-right font-weight-bold">Total Fabric Price</td>
                                         <td>Rs. <strong>{{ number_format($totalFabricPrice, 2) }}</strong></td>
                                     </tr>
                                 </tbody>
