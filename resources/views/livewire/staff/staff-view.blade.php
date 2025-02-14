@@ -43,7 +43,9 @@
                             </div>
                             <p class="mb-1"><i class="fas fa-phone" style="font-size: 14px; color: #6c757d;"></i> {{ $staff->phone }}</p>
                             <p class="mb-1"><i class="fab fa-whatsapp" style="font-size: 14px; color: #25D366;"></i> {{ $staff->whatsapp_no }}</p>
-                            <p class="mb-1"><i class="fas fa-map-marker-alt" style="font-size: 14px; color: #6c757d;"></i> {{ $staff->address->address ?? 'N/A' }}, {{ $staff->address->city ?? 'N/A' }}</p>
+                            @if (isset($staff->address) && ($staff->address->address || $staff->address->city))
+                              <p class="mb-1"><i class="fas fa-map-marker-alt" style="font-size: 14px; color: #6c757d;"></i> {{ $staff->address->address ?? 'N/A' }}, {{ $staff->address->city ?? 'N/A' }}</p>  
+                            @endif
                         </div>
                     </div>
 
