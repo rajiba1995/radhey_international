@@ -86,6 +86,7 @@ class OrderEdit extends Component
             $this->phone = $this->orders->customer->phone;
             $this->whatsapp_no = $this->orders->customer->whatsapp_no;
             $this->items = $this->orders->items->map(function ($item) {
+                $catalogues = Catalogue::with('catalogueTitle')->get()->toArray();
                
                 $selected_titles = OrderMeasurement::where('order_item_id', $item->id)->pluck('measurement_name')->toArray();
                 $selected_values = OrderMeasurement::where('order_item_id', $item->id)->pluck('measurement_value')->toArray();
@@ -98,11 +99,8 @@ class OrderEdit extends Component
                 // $selectedFabric = $fabrics->firstWhere('id', $item->fabrics);
                 $selectedFabric = collect($fabrics)->firstWhere('id', $item->fabrics);
 
-                $catalogues = [];
-                if($item->catalogue_id){
-                    $catalogues = Catalogue::with('catalogueTitle')->get()->toArray();
-                    // dd($catalogues);
-                }
+                
+               
                 // Map measurements with selected values
                 $measurements = Measurement::where('product_id', $item->product_id)->orderBy('position','ASC')->get()
                     ->map(function ($measurement) use ($selected_titles, $selected_values) {
@@ -122,7 +120,7 @@ class OrderEdit extends Component
                 return [
                     'product_id' => $item->product_id,
                     'searchproduct' => $item->product_name,
-                    'price' => $item->price,
+                    'price' => $item->total_price,
                     'selected_collection' => $item->collection,
                     'collection' => Collection::orderBy('title', 'ASC')->get(),
                     'selected_category' => $item->category,
@@ -230,8 +228,9 @@ class OrderEdit extends Component
             'measurements' => [],
             // 'fabrics' => [],
             // 'selected_fabric' => '',
-            // 'selectedCatalogue' => '',
-            // 'page_number' => '',
+            'catalogues' => $this->catalogues,
+            'selectedCatalogue' => '',
+            'page_number' => '',
         ];
         // Ensure catalogues and max pages are initialized
    
@@ -916,7 +915,7 @@ class OrderEdit extends Component
                 if ($orderItem) {
                     // dd('test');
                     $orderItem->product_id = $item['product_id'];
-                    $orderItem->price = $item['price'];
+                    $orderItem->total_price = $item['price'];
                     $orderItem->collection = $item['selected_collection'];
                     $orderItem->category = $item['selected_category'];
                     // $orderItem->sub_category = $item['sub_category'];

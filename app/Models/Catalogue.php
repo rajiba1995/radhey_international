@@ -15,6 +15,6 @@ class Catalogue extends Model
 
     public function catalogueTitle()
     {
-        return $this->belongsTo(CatalogueTitle::class, 'catalogue_title_id', 'id');
+        return $this->belongsTo(CatalogueTitle::class, 'catalogue_title_id');
     }
 }
