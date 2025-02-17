@@ -31,7 +31,7 @@ class OrderNew extends Component
     // public $collectionsType = [];
     public $collections = [];
     public $errorMessage = [];
-    public $activeTab = 1;
+    public $activeTab = 2;
     public $items = [];
     public $FetchProduct = 1;
 
