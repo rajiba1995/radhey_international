@@ -392,9 +392,17 @@ button[disabled] {
     display: none !important;
 }
 .form-control-sm{
-    height: 35px;
-    border-radius: 9px;
-    padding: inherit !important;
+    /* height: 28px; */
+    border-radius: 5px;
+    padding: 1px 7px !important;
+}
+label, .form-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 0px;
+    color: #7b809a;
+    margin-left: 0px;
 }
 #fetch_customer_details {
     position: absolute;
@@ -829,4 +837,10 @@ table td h6.text-sm {
 .btn_cancel{
     font-weight: 600 !important;
     font-size: 10px !important;
+}
+.sale_grn_sl{
+    font-weight: 400;
+    font-size: 11px !important;
+    padding: 1px 7px;
+    margin-right: 5px;
 }

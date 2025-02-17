@@ -28,35 +28,55 @@
                             </div>
                         @endif
                         <div class="row">
-                            <div class="table-responsive">
-                                <table class="table table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Product</th>
-                                            <th>Required Quantity</th>
-                                            <th>Disburse Quantity</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($order->items as $key=>$order_item)
-                                            <tr>
-                                                <td>{{$key+1}}</td>
-                                                <td>
-                                                    <p class="m-0 text-uppercase">{{$order_item->product_name}}</p>
-                                                </td>
-                                                <td>
-                                                    <p class="m-0">{{$order_item->quantity}}</p>
-                                                </td>
-                                                <td>
-                                                    <input type="number" wire:model="order_item.{{$key}}.quantity" class="form-control" oninput="validateNumber(this)" wire:keyup="updateQuantity($event.target.value, {{$key}})">
-                                                    <input type="hidden" wire:model="order_item.{{$key}}.id" class="form-control" value="{{$order_item->id}}">
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
+                            @foreach($order->items as $key=>$order_item)
+                            @php
+                                $magrin = '';
+                                if($key!=0){
+                                    $magrin = "margin-bottom: 20px;";
+                                }
+                            @endphp
+                            <div class="col-sm-6">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <span class="text-sm badge bg-primary sale_grn_sl" style="{{$magrin}}">{{$key+1}}</span>
+                                        </td>
+                                        <td class="w-100"> 
+                                            <div class="form-group mb-3">
+                                            @if($key==0)
+                                                <label>Product</label>
+                                            @endif
+                                            <div class="position-relative">
+                                                <input type="hidden" wire:model="order_item.{{$key}}.price" class="form-control form-control-sm">
+                                                <input type="hidden" wire:model="order_item.{{$key}}.id" class="form-control form-control-sm" value="{{$order_item->id}}">
+                                                <input type="text" value="{{$order_item->product_name}}" class="form-control form-control-sm border border-1 customer_input" {{$readonly}}>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    </tr>
                                 </table>
+                               
                             </div>
+                            <div class="col-sm-3">
+                                <div class="form-group mb-3">
+                                    @if($key==0)
+                                        <label>Required Quantity</label>
+                                    @endif
+                                    <input type="text" class="form-control form-control-sm" value="{{$order_item->quantity}}" disabled {{$readonly}}>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group mb-3">
+                                    @if($key==0)
+                                        <label for="">Disburse Quantity</label>
+                                    @endif
+                                    <input type="number" wire:model="order_item.{{$key}}.quantity" class="form-control form-control-sm" oninput="validateNumber(this)" wire:keyup="updateQuantity($event.target.value, {{$key}}, {{$order_item->price}})">
+                                    @if(isset($errorMessage["order_item.$key.quantity"]))
+                                        <div class="text-danger">{{ $errorMessage["order_item.$key.quantity"] }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -96,7 +116,7 @@
                         <div class="form-group mb-3">
                             <label for="">Voucher No</label>
                             <input type="text" wire:model="voucher_no"
-                                class="form-control" disabled {{$readonly}}>
+                                class="form-control form-control-sm" disabled {{$readonly}}>
                                 @if(isset($errorMessage['voucher_no']))
                                     <div class="text-danger">{{ $errorMessage['voucher_no'] }}</div>
                                 @endif
@@ -106,7 +126,7 @@
                         <div class="form-group mb-3">
                             <label for="">Date <span class="text-danger">*</span></label>
                             <input type="date" wire:model="payment_date" id="payment_date" max="{{date('Y-m-d')}}"
-                                class="form-control" value="{{date('Y-m-d')}}">
+                                class="form-control form-control-sm" value="{{date('Y-m-d')}}">
                                 @if(isset($errorMessage['payment_date']))
                                     <div class="text-danger">{{ $errorMessage['payment_date'] }}</div>
                                 @endif
@@ -117,8 +137,8 @@
                     <div class="col-sm-4">
                         <div class="form-group mb-3">
                             <label for="">Mode of Payment <span class="text-danger">*</span></label>
-                            <select wire:model="payment_mode" class="form-control" id="payment_mode" wire:change="ChangePaymentMode($event.target.value)">
-                                <option value="" selected="" hidden="">Select One</option>
+                            <select wire:model="payment_mode" class="form-control form-control-sm" id="payment_mode" wire:change="ChangePaymentMode($event.target.value)">
+                                <option value="" selected hidden>Select One</option>
                                 <option value="cheque">Cheque</option>
                                 <option value="neft">NEFT</option>
                                 <option value="cash">Cash</option>
@@ -132,7 +152,7 @@
                     <div class="col-sm-4">
                         <div class="form-group mb-3">
                             <label for="">Cheque No / UTR No </label>
-                            <input type="text" value="" wire:model="chq_utr_no" class="form-control"
+                            <input type="text" value="" wire:model="chq_utr_no" class="form-control form-control-sm"
                                 maxlength="100">
                                 @if(isset($errorMessage['chq_utr_no']))
                                     <div class="text-danger">{{ $errorMessage['chq_utr_no'] }}</div>
@@ -145,7 +165,7 @@
                             <div id="bank_search">
                                 <input type="text" id="" placeholder="Search Bank" wire:model="bank_name"
                                     value=""
-                                    class="form-control bank_name" maxlength="200">
+                                    class="form-control bank_name form-control-sm" maxlength="200">
                                     @if(isset($errorMessage['bank_name']))
                                         <div class="text-danger">{{ $errorMessage['bank_name'] }}</div>
                                     @endif
@@ -155,10 +175,19 @@
                     @endif
                 </div>
                 <div class="row justify-content-end">
-                    <div class="col-sm-3">
+                    <div class="col-sm-2">
                         <div class="form-group mb-3">
-                            <label for="">Amount <span class="text-danger">*</span></label>
-                            <input type="text" value="" maxlength="20" wire:model="amount" class="form-control">
+                            <label for="">Actual Amount <span class="text-danger">*</span></label>
+                            <input type="text" value="" maxlength="20" wire:model="amount" class="form-control form-control-sm" {{$readonly}}>
+                            @if(isset($errorMessage['amount']))
+                                <div class="text-danger">{{ $errorMessage['amount'] }}</div>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group mb-3">
+                            <label for="">Paid Amount<span class="text-danger">*</span></label>
+                            <input type="text" value="" maxlength="20" wire:model="paid_amount" class="form-control form-control-sm">
                             @if(isset($errorMessage['amount']))
                                 <div class="text-danger">{{ $errorMessage['amount'] }}</div>
                             @endif
