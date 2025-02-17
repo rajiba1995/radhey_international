@@ -266,7 +266,7 @@
                                     class="form-control border border-2 p-2 form-control-sm">
                                     <option value="" selected hidden>Select collection</option>
                                     @foreach($collections as $citems)
-                                    <option value="{{ $citems->id }}" {{$item['selected_collection']==$citems->title?"selected":""}}>{{ ucwords($citems->title) }} 
+                                    <option value="{{ $citems->id }}" {{$item['selected_collection'] == $citems->title ? "selected" : ""}}>{{ ucwords($citems->title) }} 
                                         @if($citems->short_code)
                                             ({{ $citems->short_code }})
                                         @endif
@@ -328,11 +328,12 @@
                                             class="form-control form-control-sm border border-1 @error('items.'.$index.'.selectedCatalogue') border-danger @enderror" 
                                             wire:change="SelectedCatalogue($event.target.value, {{ $index }})">
                                         <option value="" selected hidden>Select Catalogue</option>
-                                        @foreach($item['catalogues'] ?? [] as $cat_log)
-                                            <option value="{{ $cat_log['id'] }}">
-                                                {{ $cat_log['title'] }} (1 - {{ $cat_log['page_number'] }})
-                                            </option>
-                                        @endforeach
+                                    @foreach($item['catalogues'] ?? [] as $cat_log)
+                                        <option value="{{ $cat_log['id'] }}" 
+                                            {{ (isset($item['selectedCatalogue']) && $item['selectedCatalogue'] == $cat_log['id']) ? 'selected' : '' }}>
+                                            {{ $cat_log['catalogue_title']['title'] ?? 'No Title' }} (1 - {{ $cat_log['page_number'] }})
+                                        </option>
+                                    @endforeach
                                     </select>
                                     @error("items." .$index. ".selectedCatalogue") 
                                         <div class="text-danger">{{ $message }}</div>
@@ -374,8 +375,6 @@
                                              </div>
                                         @endforeach
                                     @endif
-
-                                    
                                     </div>
                                 </div>
                                 <!-- Fabrics -->

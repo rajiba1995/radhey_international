@@ -33,6 +33,7 @@ class AddOrderSlip extends Component
         if($this->order){
             foreach($this->order->items as $key=>$order_item){
                 $this->order_item[$key]['id']= $order_item->id;
+                $this->order_item[$key]['price']= (int)$order_item->price;
                 $this->order_item[$key]['quantity']= $order_item->quantity;
             }
             $this->total_amount = $this->order->total_amount;
@@ -47,20 +48,31 @@ class AddOrderSlip extends Component
         $this->staffs = User::where('user_type', 0)->where('designation', 2)->select('name', 'id')->orderBy('name', 'ASC')->get();
     }
 
-    public function updateQuantity($value, $key){
-        $this->order_item[$key]['quantity']= $value;
+    public function updateQuantity($value, $key,$price){
+        if(!empty($value)){
+            $this->order_item[$key]['quantity']= $value;
+            $this->order_item[$key]['price']= $price*$value;
+            $this->amount = 0;
+            foreach($this->order_item as $key=>$item){
+                $this->amount +=$item['price'];
+            }
+        }
     }
 
-    public function submitForm()
-    {
-        dd($this->all());
+    public function submitForm(){
+       
         $this->reset(['errorMessage']);
         $this->errorMessage = array();
+        foreach ($this->order_item as $key => $item) {
+            if (empty($item['quantity'])) {  // Ensure 'quantity' exists
+                $this->errorMessage["order_item.$key.quantity"] = 'Please enter quantity.';
+            }
+        }
         // Validate customer
         if (empty($this->customer_id)) {
            $this->errorMessage['customer_id'] = 'Please select a customer.';
         }
-
+        
         // Validate collected by
         if (empty($this->staff_id)) {
            $this->errorMessage['staff_id'] = 'Please select a staff member.';
@@ -98,6 +110,7 @@ class AddOrderSlip extends Component
         if(count($this->errorMessage)>0){
             return $this->errorMessage;
         }else{
+            dd($this->all());
             try {
                 DB::beginTransaction();
                 //code...

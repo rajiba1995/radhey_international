@@ -26,7 +26,7 @@ class OrderEdit extends Component
     // public $collectionsType = [];
     public $collections = [];
     public $errorMessage = [];
-    public $activeTab = 1;
+    public $activeTab = 2;
     public $items = [];
     // public $items = [
     //     [
@@ -86,6 +86,7 @@ class OrderEdit extends Component
             $this->phone = $this->orders->customer->phone;
             $this->whatsapp_no = $this->orders->customer->whatsapp_no;
             $this->items = $this->orders->items->map(function ($item) {
+                $catalogues = Catalogue::with('catalogueTitle')->get()->toArray();
                
                 $selected_titles = OrderMeasurement::where('order_item_id', $item->id)->pluck('measurement_name')->toArray();
                 $selected_values = OrderMeasurement::where('order_item_id', $item->id)->pluck('measurement_value')->toArray();
@@ -98,11 +99,8 @@ class OrderEdit extends Component
                 // $selectedFabric = $fabrics->firstWhere('id', $item->fabrics);
                 $selectedFabric = collect($fabrics)->firstWhere('id', $item->fabrics);
 
-                $catalogues = [];
-                if($item->catalogue_id){
-                    $catalogues = Catalogue::with('catalogueTitle')->get()->toArray();
-                    // dd($catalogues);
-                }
+                
+               
                 // Map measurements with selected values
                 $measurements = Measurement::where('product_id', $item->product_id)->orderBy('position','ASC')->get()
                     ->map(function ($measurement) use ($selected_titles, $selected_values) {
@@ -122,7 +120,7 @@ class OrderEdit extends Component
                 return [
                     'product_id' => $item->product_id,
                     'searchproduct' => $item->product_name,
-                    'price' => $item->price,
+                    'price' => $item->total_price,
                     'selected_collection' => $item->collection,
                     'collection' => Collection::orderBy('title', 'ASC')->get(),
                     'selected_category' => $item->category,
@@ -230,8 +228,9 @@ class OrderEdit extends Component
             'measurements' => [],
             // 'fabrics' => [],
             // 'selected_fabric' => '',
-            // 'selectedCatalogue' => '',
-            // 'page_number' => '',
+            'catalogues' => $this->catalogues,
+            'selectedCatalogue' => '',
+            'page_number' => '',
         ];
         // Ensure catalogues and max pages are initialized
    
@@ -300,6 +299,20 @@ class OrderEdit extends Component
         'items.*.page_number' => 'required'
     ];
 
+    protected function messages(){
+        return [
+             'items.*.category.required' => 'Please select a category for the item.',
+             'items.*.searchproduct.required' => 'Please select a product for the item.',
+             'items.*.selectedCatalogue.required' => 'Please select a catalogue for the item.',
+             'items.*.page_number.required' => 'Please select a page for the item.',
+             'items.*.price.required'  => 'Please enter a price for the item.',
+             'items.*.collection.required' =>  'Please enter a collection for the item.',
+             'order_number.required' => 'Order number is required.',
+             'order_number.not_in' => 'Order number "000" is not allowed.',
+             'order_number.unique' => 'Order number already exists, please try again.',
+        ];
+    }
+
     public function removeItem($index)
     {
         unset($this->items[$index]);
@@ -348,11 +361,13 @@ class OrderEdit extends Component
 
     public function GetCategory($value,$index)
     {
+        // Store the currently selected catalogue before resetting
+        $previousCatalogue = $this->items[$index]['selectedCatalogue'] ?? null;
+
         // Reset products, and product_id for the selected item
         $this->items[$index]['product_id'] = null;
         $this->items[$index]['measurements'] = [];
         $this->items[$index]['fabrics'] = [];
-        $this->items[$index]['selectedCatalogue'] = null; // Reset catalogue
 
         // Fetch categories and products based on the selected collection 
         $this->items[$index]['categories'] = Category::orderBy('title', 'ASC')->where('collection_id', $value)->get();
@@ -369,12 +384,21 @@ class OrderEdit extends Component
                     'page_number' => $catalogue->page_number,
                 ];
             })->toArray();
+           
         
             // Fetch max page numbers per catalogue
             $this->maxPages[$index] = [];
             foreach ($catalogues as $catalogue) {
                 $this->maxPages[$index][$catalogue->catalogue_title_id] = $catalogue->page_number;
             }
+            
+            if ($previousCatalogue) {
+                $selectedCatalogue = collect($this->items[$index]['catalogues'])->firstWhere('id', $previousCatalogue);
+                if ($selectedCatalogue) {
+                    $this->items[$index]['selectedCatalogue'] = $selectedCatalogue['id']; 
+                }
+            }
+
         } else {
             $this->items[$index]['catalogues'] = [];
             $this->maxPages[$index] = [];
@@ -428,7 +452,9 @@ class OrderEdit extends Component
         $this->items[$index]['measurements'] = Measurement::where('product_id', $id)
                                                             ->where('status', 1)
                                                             ->orderBy('position','ASC')
-                                                            ->get();
+                                                            ->get()
+                                                            ->toArray();
+
         $this->items[$index]['fabrics'] = Fabric::join('product_fabrics', 'fabrics.id', '=', 'product_fabrics.fabric_id')
                                             ->where('product_fabrics.product_id', $id)
                                             ->where('fabrics.status', 1)
@@ -889,7 +915,7 @@ class OrderEdit extends Component
                 if ($orderItem) {
                     // dd('test');
                     $orderItem->product_id = $item['product_id'];
-                    $orderItem->price = $item['price'];
+                    $orderItem->total_price = $item['price'];
                     $orderItem->collection = $item['selected_collection'];
                     $orderItem->category = $item['selected_category'];
                     // $orderItem->sub_category = $item['sub_category'];

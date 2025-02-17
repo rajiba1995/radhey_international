@@ -59,7 +59,7 @@
                             <div class="col-sm-4">
                                 <div class="form-group mb-3">
                                     <label for="" id="">Collected By <span class="text-danger">*</span></label>
-                                    <select wire:model="staff_id" class="form-control" {{$readonly}}>
+                                    <select wire:model="staff_id" class="form-control form-control-sm" {{$readonly}}>
                                         <option value="">Choose an user</option>
                                         @foreach($staffs as $staff)
                                             <option value="{{$staff->id}}" >{{ucwords($staff->name)}}</option>
@@ -75,7 +75,7 @@
                             <div class="col-sm-4">
                                 <div class="form-group mb-3">
                                     <label for="">Amount <span class="text-danger">*</span></label>
-                                    <input type="text" value="" maxlength="20" wire:model="amount" oninput="validateNumber(this)" class="form-control" {{$readonly}}>
+                                    <input type="text" value="" maxlength="20" wire:model="amount" oninput="validateNumber(this)" class="form-control form-control-sm" {{$readonly}}>
                                     @if(isset($errorMessage['amount']))
                                         <div class="text-danger">{{ $errorMessage['amount'] }}</div>
                                     @endif
@@ -87,7 +87,7 @@
                                 <div class="form-group mb-3">
                                     <label for="">Voucher No</label>
                                     <input type="text" wire:model="voucher_no"
-                                        class="form-control" disabled {{$readonly}}>
+                                        class="form-control form-control-sm" disabled {{$readonly}}>
                                         @if(isset($errorMessage['voucher_no']))
                                             <div class="text-danger">{{ $errorMessage['voucher_no'] }}</div>
                                         @endif
@@ -97,7 +97,7 @@
                                 <div class="form-group mb-3">
                                     <label for="">Date <span class="text-danger">*</span></label>
                                     <input type="date" wire:model="payment_date" id="payment_date" max="{{date('Y-m-d')}}"
-                                        class="form-control" value="" {{$readonly}}>
+                                        class="form-control form-control-sm" value="" {{$readonly}}>
                                         @if(isset($errorMessage['payment_date']))
                                             <div class="text-danger">{{ $errorMessage['payment_date'] }}</div>
                                         @endif
@@ -107,7 +107,7 @@
     
                                 <div class="form-group mb-3">
                                     <label for="">Mode of Payment <span class="text-danger">*</span></label>
-                                    <select wire:model="payment_mode" class="form-control" id="payment_mode" wire:change="ChangePaymentMode($event.target.value)" {{$readonly}}>
+                                    <select wire:model="payment_mode" class="form-control form-control-sm" id="payment_mode" wire:change="ChangePaymentMode($event.target.value)" {{$readonly}}>
                                         <option value="" selected="" hidden="">Select One</option>
                                         <option value="cheque">Cheque</option>
                                         <option value="neft">NEFT</option>
@@ -124,7 +124,7 @@
                                 <div class="col-sm-6">
                                     <div class="form-group mb-3">
                                         <label for="">Cheque No / UTR No </label>
-                                        <input type="text" value="" wire:model="chq_utr_no" class="form-control"
+                                        <input type="text" value="" wire:model="chq_utr_no" class="form-control form-control-sm"
                                             maxlength="100" {{$readonly}}>
                                             @if(isset($errorMessage['chq_utr_no']))
                                                 <div class="text-danger">{{ $errorMessage['chq_utr_no'] }}</div>
@@ -137,7 +137,7 @@
                                         <div id="bank_search">
                                             <input type="text" id="" placeholder="Search Bank" wire:model="bank_name"
                                                 value=""
-                                                class="form-control bank_name" maxlength="200" {{$readonly}}>
+                                                class="form-control form-control-sm bank_name" maxlength="200" {{$readonly}}>
                                                 @if(isset($errorMessage['bank_name']))
                                                     <div class="text-danger">{{ $errorMessage['bank_name'] }}</div>
                                                 @endif
