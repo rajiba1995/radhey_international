@@ -606,30 +606,28 @@
                                                 value="{{ number_format($billing_amount, 2) }}">
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <!-- <tr>
                                         <td class="w-70"><label class="form-label"><strong>Paid Amount</strong></label>
                                         </td>
                                         <td>
-                                            <!-- Amount Paid -->
                                             <input type="text"
                                                 class="form-control border border-2 p-2 form-control-sm text-center @error('paid_amount') border-danger  @enderror"
                                                 wire:keyup="GetRemainingAmount($event.target.value)"
                                                 wire:model="paid_amount" placeholder="0"
                                                 value="{{ number_format($paid_amount, 2) }}">
                                         </td>
-                                    </tr>
-                                    <tr>
+                                    </tr> -->
+                                    <!-- <tr>
                                         <td class="w-70"><label class="form-label"><strong>Remaining
                                                     Amount</strong></label></td>
                                         <td>
-                                            <!-- Remaining Amount -->
                                             <input type="text"
                                                 class="form-control form-control-sm remaining_amount text-center"
                                                 name="remaining_amount" disabled
                                                 value="{{ number_format($remaining_amount, 2) }}">
                                         </td>
-                                    </tr>
-                                    <tr>
+                                    </tr> -->
+                                    <!-- <tr>
                                         <td><label class="form-label"><strong>Payment Mode</strong></label></td>
                                         <td>
                                             <select
@@ -640,7 +638,7 @@
                                                 <option value="Online">Online</option>
                                             </select>
                                         </td>
-                                    </tr>
+                                    </tr> -->
                                     <tr>
                                         <td><label class="form-label"><strong>Ordered By</strong></label></td>
                                         <td>

@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Order;
 use Livewire\Component;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\PaymentCollection;
 use App\Helpers\Helper;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +22,7 @@ class AddOrderSlip extends Component
     public $staffs =[];
     public $payment_collection_id = "";
     public $readonly = "readonly";
-    public $customer,$customer_id, $staff_id,$staff_name, $total_amount, $amount, $voucher_no, $payment_date, $payment_mode, $chq_utr_no, $bank_name, $receipt_for = "Customer";
+    public $customer,$customer_id, $staff_id,$staff_name, $total_amount, $amount, $voucher_no, $payment_date, $payment_mode, $chq_utr_no, $bank_name, $receipt_for = "Customer",$paid_amount;
 
     public function boot(AccountingRepositoryInterface $accountingRepository)
     {
@@ -110,13 +111,17 @@ class AddOrderSlip extends Component
         if(count($this->errorMessage)>0){
             return $this->errorMessage;
         }else{
-            dd($this->all());
+            // dd($this->all());
             try {
                 DB::beginTransaction();
-                //code...
                 $this->accountingRepository->StorePaymentReceipt($this->all());
-                session()->flash('success', 'Payment receipt added successfully.');
+                $this->updateOrder();
+
+                $this->updateOrderItems();
+
                 DB::commit();
+
+                session()->flash('success', 'Payment receipt added successfully.');
                 return redirect()->route('admin.accounting.payment_collection');
             } catch (\Exception $e) {
                 DB::rollBack();
@@ -125,6 +130,35 @@ class AddOrderSlip extends Component
         }
        
     }
+    public function updateOrder()
+    {
+        $this->validate([
+            'total_amount' => 'required|numeric',
+            'customer_id' => 'required|exists:users,id',
+            'staff_id' => 'required|exists:users,id',
+        ]);
+
+        $order = Order::find($this->order->id);
+
+        if ($order) {
+            $order->update([
+                'total_amount' => $this->total_amount,
+                'customer_id' => $this->customer_id,
+                'created_by' => $this->staff_id,
+                'last_payment_date' => $this->payment_date,
+            ]);
+        }
+    }
+    public function updateOrderItems()
+    {
+        foreach ($this->order_item as $item) {
+            OrderItem::where('id', $item['id'])->update([
+                'total_price' => $item['price'],
+                'quantity' => $item['quantity'],
+            ]);
+        }
+    }
+
     public function is_valid_date($date) {
         $timestamp = strtotime($date);
         if ($timestamp !== false) {
