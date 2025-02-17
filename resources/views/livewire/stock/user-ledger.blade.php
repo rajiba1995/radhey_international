@@ -1,13 +1,13 @@
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="block-heading m-0">User Ledger</h4>
+        <h3 class="fw-bold m-0">User Ledger</h3>
         {{-- <button class="btn btn-cta btn-sm">
             <i class="material-icons text-white" style="font-size: 15px;">refresh</i>
             Refresh
         </button> --}}
     </div>
 
-    <div class="row g-3 mb-4">
+    <div class="row g-3 mb-3 align-items-end">
         <div class="col-md-3">
             <label class="form-label text-xs">From Date</label>
             <input type="date" class="form-control border border-2" wire:change="updateDate($event.target.value)" wire:model="from_date" value="{{$from_date}}" placeholder="From" autocomplete="off">

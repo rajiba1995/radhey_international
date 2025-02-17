@@ -65,7 +65,7 @@
             </ul>
             {{-- Stock Management --}}
             <li class="nav-item">
-                <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['stock.index','user.ledger']) ? 'active ' : '' }}"
+                <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['stock.index']) ? 'active ' : '' }}"
                     href="#StockManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['stock.index']) ? 'true' : 'false' }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">inventory</i>
@@ -75,13 +75,25 @@
             </li>
 
             <!-- Submenu -->
-            <ul id="StockManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['stock.index','user.ledger']) ? 'show' : '' }}">
+            <ul id="StockManagementSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['stock.index']) ? 'show' : '' }}">
                 <li class="nav-item">
                     <a class="nav-link text-white {{ Route::currentRouteName() == 'stock.index' ? 'active ' : '' }}"
                         href="{{ route('stock.index') }}">
                          Stock Logs
                     </a>
                 </li>
+            </ul>
+            {{-- Report --}}
+            <li class="nav-item">
+                <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['user.ledger']) ? 'active ' : '' }}"
+                    href="#ReportSubmenu" data-bs-toggle="collapse" aria-expanded="{{ in_array(Route::currentRouteName(), ['user.ledger']) ? 'true' : 'false' }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">inventory</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Report</span>
+                </a>
+            </li>
+            <ul id="ReportSubmenu" class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['user.ledger']) ? 'show' : '' }}">
                 <li class="nav-item">
                     <a class="nav-link text-white {{ Route::currentRouteName() == 'user.ledger' ? 'active ' : '' }}"
                         href="{{ route('user.ledger') }}">
