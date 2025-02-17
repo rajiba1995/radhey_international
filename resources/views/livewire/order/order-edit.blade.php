@@ -254,7 +254,6 @@
                             <h6 class="badge bg-danger custom_danger_badge">Product Information</h6>
                         </div>
                     </div>
-
                     <!-- Loop through items -->
                     @foreach($items as $index => $item)
                         <div class="row align-items-center my-5">
@@ -266,14 +265,14 @@
                                     class="form-control border border-2 p-2 form-control-sm">
                                     <option value="" selected hidden>Select collection</option>
                                     @foreach($collections as $citems)
-                                    <option value="{{ $citems->id }}" {{$item['selected_collection'] == $citems->title ? "selected" : ""}}>{{ ucwords($citems->title) }} 
+                                    <option value="{{ $citems->id }}" {{$item['selected_collection'] == $citems->id  ? "selected" : ""}}>{{ ucwords($citems->title) }} 
                                         @if($citems->short_code)
                                             ({{ $citems->short_code }})
                                         @endif
                                     </option>
                                     @endforeach
                                 </select>
-                                @error("items.$index.selected_collection")
+                                @error("items.".$index.".selected_collection")
                                 <p class='text-danger inputerror'>{{ $message }}</p>
                                 @enderror
                             </div>
@@ -289,8 +288,8 @@
                                     <option value="{{ $category->id }}" {{$item['selected_category']==$category->id?"selected":""}}>{{ $category->title }}</option>
                                     @endforeach
                                 </select>
-                                @error("items.$index.selected_category")
-                                <p class="text-danger">{{ $message }}</p>
+                                @error("items.".$index.".selected_category")
+                                <p class="text-danger inputerror">{{ $message }}</p>
                                 @enderror
                             </div>
                             <!-- Product -->
@@ -304,6 +303,11 @@
                                     wire:model="items.{{ $index }}.searchproduct"
                                     class="form-control form-control-sm border border-1 customer_input"
                                     placeholder="Enter product name" value="{{ $item['searchproduct'] }}">
+
+                                    @error("items.".$index.".searchproduct")
+                                    <p class="text-danger inputerror">{{ $message }}</p>
+                                    @enderror
+
                                 @if (session()->has('errorProduct.' . $index))
                                 <p class="text-danger">{{ session('errorProduct.' . $index) }}</p>
                                 @endif
@@ -336,7 +340,7 @@
                                     @endforeach
                                     </select>
                                     @error("items." .$index. ".selectedCatalogue") 
-                                        <div class="text-danger">{{ $message }}</div>
+                                        <div class="text-danger inputerror">{{ $message }}</div>
                                     @enderror 
                                 </div>
                                 
@@ -344,8 +348,8 @@
                                     <label class="form-label"><strong>Page Number</strong></label>
                                     <input type="number" wire:model="items.{{$index}}.page_number"  wire:keyup="validatePageNumber({{ $index }})" id="page_number" class="form-control form-control-sm border border-2 @error('items.'.$index.'.page_number') border-danger @enderror"  min="1" max="{{ isset($item['selectedCatalogue']) && isset($maxPages[$index][$item['selectedCatalogue']]) ? $maxPages[$index][$item['selectedCatalogue']] : '' }}"
                                     >
-                                    @error("items.$index.page_number") 
-                                        <div class="text-danger">{{ $message }}</div>
+                                    @error("items.".$index.".page_number") 
+                                        <div class="text-danger inputerror">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <!-- </div> -->
@@ -417,27 +421,7 @@
                                 </div>
 
 
-                                <!-- </div> -->
-                                <!-- </div> -->
-                                {{-- <div class="col-12 col-md-6 mb-2 mb-md-0">
-                                    <h6 class="badge bg-danger custom_success_badge">Fabrics</h6>
-                                    <div class="row mx-2">
-                                        @forelse ($item['fabrics'] ?? [] as $fabric)
-                                        <div class="btn-group" style="display: contents !important">
-                                            <input type="radio" class="btn-check" name="fabric_{{ $index }}"
-                                                id="fabric_{{ $index }}_{{ $fabric->id }}"
-                                                wire:model="items.{{ $index }}.selected_fabric" value="{{ $fabric->id }}"
-                                                @checked($item['selected_fabric'] == $fabric->title)>
-                                            <label class="btn btn-outline-success"
-                                                for="fabric_{{ $index }}_{{ $fabric->id }}" data-mdb-ripple-init>
-                                                {{ $fabric->title }}
-                                            </label>
-                                        </div>
-                                        @empty
-                                        <p>No fabrics available for this item.</p>
-                                        @endforelse
-                                    </div>
-                                </div> --}}
+                               
                             </div>
                             @endif
 
@@ -457,7 +441,7 @@
                                     @endif
 
                                     @error('items.' . $index . '.price') 
-                                        <div class="text-danger">{{ $message }}</div>
+                                        <div class="text-danger inputerror">{{ $message }}</div>
                                     @enderror
                             </div>
 

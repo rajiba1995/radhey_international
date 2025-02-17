@@ -884,7 +884,7 @@ class OrderNew extends Component
                 $orderItem->category = $category_data ? $category_data->id : "";
                 $orderItem->sub_category = $sub_category_data ? $sub_category_data->title : "";
                 $orderItem->product_name = $item['searchproduct'];
-                $orderItem->price = $item['price'];
+                $orderItem->total_price = $item['price'];
                 $orderItem->fabrics = $fabric_data ? $fabric_data->id : "";
                 $orderItem->save();
 
@@ -909,7 +909,6 @@ class OrderNew extends Component
             session()->flash('success', 'Order has been generated successfully.');
             return redirect()->route('admin.order.index');
         } catch (\Exception $e) {
-            dd($e);
             DB::rollBack();
             \Log::error('Error saving order: ' . $e->getMessage());
             dd($e->getMessage());
