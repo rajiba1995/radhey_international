@@ -32,9 +32,6 @@ class MasterCatalogue extends Component
         
         'page_number.required' => 'The page number is required.',
         'page_number.numeric' => 'The page number must be a number.',
-    
-        'image.required' => 'An image file is required.',
-        'image.mimes' => 'The image must be in one of the following formats: jpg, jpeg, png, gif, svg.',
     ];
 
     public function mount(){
