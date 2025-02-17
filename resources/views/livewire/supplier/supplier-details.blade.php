@@ -1,29 +1,23 @@
 <div>
     <!-- <h4>Supplier Details</h4> -->
-    <div class="content-wrapper">
+    <div class="container">
+        <section class="admin__title">
+            <h5> Supplier Details</h5>
+        </section>
+        <section>
+            <ul class="breadcrumb_menu">
+                <li><a href="{{ route('suppliers.index') }}">Supplier List</a></li>
+                <li>Supplier Details</li>
+                <li class="back-button">
+                <a class="btn btn-dark btn-sm text-decoration-none text-light font-weight-bold mb-0" href="{{ route('suppliers.index') }}" role="button">
+                    <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
+                    <span class="ms-1">Back</span>
+                </a>
+                </li>
+            </ul>
+        </section>
         <!-- Content -->
         <div class="container-xxl flex-grow-1 container-p-y">
-
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-                <div class="d-flex flex-column justify-content-center">
-                    <div class="d-flex align-items-center mb-1">
-                        <!-- Paid Status -->
-                        @if($supplier->status == 1)
-                        <span class="badge bg-success me-2 ms-2 rounded-pill">Active</span>
-                        @else
-                        <span class="badge bg-warning me-2 ms-2 rounded-pill">Inactive</span>
-                        @endif
-                    </div>
-                    <p class="mt-1 mb-3">
-                       <!-- ccsc</span> -->
-                    </p>
-                </div>
-                <div class="d-flex align-content-center flex-wrap gap-2">
-                    <a href="{{ route('suppliers.index') }}" class="btn btn-cta mt-3"><i
-                            class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
-                        Back</a>
-                </div>
-            </div>
             <div class="row">
                 <div class="col-12 col-lg-8">
                     <div class="card mb-4" style="height: 400px;">

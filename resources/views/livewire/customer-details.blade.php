@@ -1,5 +1,20 @@
 <div>
     <div class="content-wrapper">
+        <section class="admin__title">
+            <h5> Customer Details</h5>
+        </section>
+        <section>
+            <ul class="breadcrumb_menu">
+                <li><a href="{{ route('customers.index') }}">Customers</a></li>
+                <li>Customer Details</li>
+                <li class="back-button">
+                <a class="btn btn-dark btn-sm text-decoration-none text-light font-weight-bold mb-0" href="{{ route('customers.index') }}" role="button">
+                    <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
+                    <span class="ms-1">Back</span>
+                </a>
+                </li>
+            </ul>
+        </section>
         <!-- Content -->
         <div class="container-xxl flex-grow-1 container-p-y">
 
@@ -8,7 +23,6 @@
                 <div class="d-flex flex-column justify-content-center">
                     <div class="d-flex align-items-center mb-1">
                         <!-- Paid Status -->
-                        <span class="badge bg-success me-2 ms-2 rounded-pill">{{$customer->name}}</span>
                         <!-- <span class="badge bg-warning me-2 ms-2 rounded-pill">Pending</span> -->
                         <!-- <span class="badge bg-info rounded-pill">Ready to Pickup</span> -->
                     </div>
@@ -16,11 +30,7 @@
                        <!-- ccsc</span> -->
                     </p>
                 </div>
-                <div class="d-flex align-content-center flex-wrap gap-2">
-                    <a href="{{ route('customers.index') }}" class="btn btn-cta mt-3"><i
-                            class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
-                        Back</a>
-                </div>
+                
             </div>
 
             <!-- Order Details Table -->

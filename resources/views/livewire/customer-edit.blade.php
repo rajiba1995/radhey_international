@@ -256,7 +256,7 @@
                             @enderror
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-cta">Save</button>
+                    <button type="submit" class="btn btn-sm btn-success"><i class="material-icons text-white" style="font-size: 15px;">update</i>Update</button>
                 </form>
             </div>
         </div>

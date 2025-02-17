@@ -1,6 +1,20 @@
-<div class="container-fluid px-2 px-md-4">
+<div class="container">
+    <section class="admin__title">
+        <h5>Update Supplier</h5>
+    </section>
+    <section>
+        <ul class="breadcrumb_menu">
+            <li><a href="{{ route('suppliers.index') }}">Supplier List</a></li>
+            <li>Edit Customer</li>
+            <li class="back-button">
+              <a class="btn btn-dark btn-sm text-decoration-none text-light font-weight-bold mb-0" href="{{ route('suppliers.index') }}" role="button">
+                <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
+                <span class="ms-1">Back</span>
+              </a>
+            </li>
+          </ul>
+    </section>
     <div class="card card-body">
-        <h4 class="m-0">Update Supplier </h4>
         <div class="card card-plain h-100">
             <div class="card-header pb-0 p-3">
                 <div class="row mt-2">
@@ -8,12 +22,7 @@
                      <div class="col-md-8 d-flex align-items-center">
                         <h6 class="badge bg-danger custom_danger_badge">Basic Information</h6>
                     </div>
-                    <div class="col-md-4 text-end">
-                        <a href="{{ route('suppliers.index') }}" class="btn btn-dark btn-sm">
-                            <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i> 
-                            Back
-                        </a>
-                    </div>
+                    
                 </div>
             </div>
             
@@ -150,7 +159,7 @@
                             @enderror
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-dark mt-4">Save</button>
+                    <button type="submit" class="btn btn-sm btn-success"><i class="material-icons text-white" style="font-size: 15px;">update</i>Update</button>
                 </form>
             </div>
         </div>
