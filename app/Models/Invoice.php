@@ -10,7 +10,7 @@ class Invoice extends Model
     use HasFactory;
     protected $table = 'invoices';
     protected $fillable = [
-        'order_id', 'customer_id', 'user_id', 'packingslip_id', 'invoice_no', 'net_price', 'required_payment_amount', 'payment_status', 'is_paid', 'created_by', 'created_at', 'updated_by', 'updated_at'
+        'order_id', 'customer_id', 'user_id', 'packingslip_id', 'invoice_no', 'net_price', 'required_payment_amount', 'payment_status', 'is_paid', 'created_by', 'updated_by',
     ];
 
     public function order()
@@ -30,4 +30,6 @@ class Invoice extends Model
     {
         return $this->belongsTo(PackingSlip::class, 'packingslip_id', 'id');
     }
+
+
 }

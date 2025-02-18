@@ -11,7 +11,7 @@ class PackingSlip extends Model
 
   protected $table = 'packingslips';
     protected $fillable = [
-        'order_id', 'customer_id', 'invoice_id', 'slipno', 'is_disbursed', 'created_by', 'created_at', 'updated_by', 'updated_at', 'disbursed_by', 'disbursed_at'
+        'order_id', 'customer_id', 'slipno', 'is_disbursed', 'created_by', 'created_at', 'updated_by', 'updated_at', 'disbursed_by', 'disbursed_at'
     ];
 
     public function order()

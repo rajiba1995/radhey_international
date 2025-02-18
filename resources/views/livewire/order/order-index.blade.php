@@ -108,13 +108,17 @@
                                     @if($order->status=="Pending")
                                         @if(empty($order->packingslip))
                                         <a href="{{route('admin.order.add_order_slip', $order->id)}}" class="btn btn-outline-primary select-md btn_action">Generate Slip</a>
-                                        @else
-                                            <a href="#" class="btn btn-outline-primary select-md btn_action">Edit Slip</a>
-                                        @endif
                                         <a href="{{route('admin.order.edit', $order->id)}}" class="btn btn-outline-success select-md btn_edit" data-toggle="tooltip">Edit</a>
-                                   
-                                    <a href="" onclick="return confirm('Are you sure want to cancel the order?');"
+                                        <a href="" onclick="return confirm('Are you sure want to cancel the order?');"
                                         class="btn btn-outline-danger select-md btn_cancel">Cancel Order</a>
+                                        @else
+                                            <!-- <a href="#" class="btn btn-outline-primary select-md btn_action">Edit Slip</a> -->
+                                            <a href="#" class="btn btn-outline-primary select-md btn_action">Download Slip</a>
+                                            <button wire:click="downloadInvoice({{ $order->id }})" class="btn btn-outline-primary select-md ">Download Invoice</button>
+                                        @endif
+                                        
+                                   
+                                    
                                     @endif
                                     <a href="{{route('admin.order.view',$order->id)}}" class="btn btn-outline-success select-md btn_action">Details</a>
 
