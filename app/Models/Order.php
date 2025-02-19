@@ -81,5 +81,13 @@ class Order extends Model
         $order_status = $this->attributes['status'] ?? 'Returned'; // Default to "Returned"
         return $this->status_classes[$order_status][1] ?? "muted"; // Default class if not found
     }
+    // In the Order model
+
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class, 'order_id', 'id');
+    }
+    
+
     
 }

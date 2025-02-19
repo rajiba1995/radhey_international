@@ -23,7 +23,12 @@ class SupplierIndex extends Component
         $this->suppliers = Supplier::all();
         session()->flash('success','Supplier status updated successfully');
     }
-
+    public function FindSupplier($keywords){
+        $this->search = $keywords;
+    }
+    public function resetForm(){
+        $this->reset(['search']);
+    }
     public function render()
     {
         $this->suppliers = Supplier::where('deleted_at',NULL)

@@ -205,8 +205,8 @@ class OrderNew extends Component
         'items.*.searchproduct' => 'required|string',
         'items.*.product_id' => 'required|integer',
         'items.*.price' => 'required|numeric|min:1',  // Ensuring that price is a valid number (and greater than or equal to 0).
-        'paid_amount' => 'required|numeric|min:1',   // Ensuring that price is a valid number (and greater than or equal to 0).
-        'payment_mode' => 'required|string',  // Ensuring that price is a valid number (and greater than or equal to 0).
+        // 'paid_amount' => 'required|numeric|min:1',   // Ensuring that price is a valid number (and greater than or equal to 0).
+        // 'payment_mode' => 'required|string',  // Ensuring that price is a valid number (and greater than or equal to 0).
         'items.*.measurements.*' => 'nullable|string',
         // 'order_number' => 'required|numeric|unique:orders,order_number|min:1',
         'order_number' => 'required|string|not_in:000|unique:orders,order_number',
@@ -787,9 +787,9 @@ class OrderNew extends Component
             }
 
             $order->total_amount = $total_amount;
-            $order->paid_amount = $this->paid_amount;
-            $order->remaining_amount = $this->remaining_amount;
-            $order->payment_mode = $this->payment_mode;
+            // $order->paid_amount = $this->paid_amount;
+            // $order->remaining_amount = $this->remaining_amount;
+            // $order->payment_mode = $this->payment_mode;
             $order->last_payment_date = date('Y-m-d H:i:s');
             $order->created_by = (int) $this->salesman; // Explicitly cast to integer
 
@@ -839,6 +839,8 @@ class OrderNew extends Component
                 $orderItem->sub_category = $sub_category_data ? $sub_category_data->title : "";
                 $orderItem->product_name = $item['searchproduct'];
                 $orderItem->total_price = $item['price'];
+                $orderItem->piece_price = $item['price'];
+                $orderItem->quantity = 1;
                 $orderItem->fabrics = $fabric_data ? $fabric_data->id : "";
                 $orderItem->save();
 

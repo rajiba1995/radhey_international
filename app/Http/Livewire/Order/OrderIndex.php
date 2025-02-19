@@ -9,6 +9,12 @@ use App\Helpers\Helper;
 use App\Models\User;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\OrdersExport;
+use App\Models\Invoice;
+// use Barryvdh\DomPDF\Facade as PDF;
+// use Barryvdh\DomPDF\PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
+
+
 
 class OrderIndex extends Component
 {
@@ -16,6 +22,7 @@ class OrderIndex extends Component
     
     public $customer_id;
     public $created_by, $search,$status,$start_date,$end_date; 
+    public $invoiceId;
 
     protected $paginationTheme = 'bootstrap'; // Optional: For Bootstrap styling
     
@@ -93,5 +100,21 @@ class OrderIndex extends Component
             'usersWithOrders' => $this->usersWithOrders, 
         ]);
     }
+
+    public function downloadInvoice($orderId)
+    {
+        $invoice = Invoice::with(['order', 'customer', 'user', 'packing'])
+                    ->where('order_id', $orderId)
+                    ->firstOrFail();
+    
+        // Generate PDF
+        $pdf = PDF::loadView('invoice.pdf', compact('invoice'));
+    
+        // Download the PDF
+        return response()->streamDownload(function () use ($pdf) {
+            echo $pdf->output();
+        }, 'invoice_' . $invoice->invoice_no . '.pdf');
+    }
+    
 
 }

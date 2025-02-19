@@ -70,7 +70,7 @@
                                     @if($key==0)
                                         <label for="">Disburse Quantity</label>
                                     @endif
-                                    <input type="number" wire:model="order_item.{{$key}}.quantity" class="form-control form-control-sm" oninput="validateNumber(this)" wire:keyup="updateQuantity($event.target.value, {{$key}}, {{$order_item->price}})">
+                                    <input type="number" wire:model="order_item.{{$key}}.quantity" class="form-control form-control-sm" oninput="validateNumber(this)" wire:keyup="updateQuantity($event.target.value, {{$key}}, {{$order_item->piece_price}})">
                                     @if(isset($errorMessage["order_item.$key.quantity"]))
                                         <div class="text-danger">{{ $errorMessage["order_item.$key.quantity"] }}</div>
                                     @endif
@@ -178,16 +178,16 @@
                     <div class="col-sm-2">
                         <div class="form-group mb-3">
                             <label for="">Actual Amount <span class="text-danger">*</span></label>
-                            <input type="text" value="" maxlength="20" wire:model="amount" class="form-control form-control-sm" {{$readonly}}>
-                            @if(isset($errorMessage['amount']))
-                                <div class="text-danger">{{ $errorMessage['amount'] }}</div>
+                            <input type="text" value="" maxlength="20" wire:model="actual_amount" class="form-control form-control-sm" {{$readonly}}>
+                            @if(isset($errorMessage['actual_amount']))
+                                <div class="text-danger">{{ $errorMessage['actual_amount'] }}</div>
                             @endif
                         </div>
                     </div>
                     <div class="col-sm-2">
                         <div class="form-group mb-3">
                             <label for="">Paid Amount<span class="text-danger">*</span></label>
-                            <input type="text" value="" maxlength="20" wire:model="paid_amount" class="form-control form-control-sm">
+                            <input type="text" value="" maxlength="20" wire:model="amount" class="form-control form-control-sm">
                             @if(isset($errorMessage['amount']))
                                 <div class="text-danger">{{ $errorMessage['amount'] }}</div>
                             @endif

@@ -34,6 +34,7 @@ use App\Http\Livewire\Measurement\MeasurementIndex;
 use App\Http\Livewire\Fabric\FabricsIndex;
 use App\Http\Livewire\PurchaseOrder\{PurchaseOrderIndex,PurchaseOrderCreate,PurchaseOrderEdit,GenerateGrn,PurchaseOrderDetails,GeneratePdf};
 use App\Http\Livewire\Stock\{StockIndex,UserLedger};
+use App\Http\Livewire\Report\{UserLedgerReport};
 use App\Http\Livewire\BusinessType\BusinessTypeIndex;
 use App\Http\Livewire\Accounting\{AddPaymentReceipt,PaymentCollectionIndex};
 // purchase Order pdf
@@ -184,6 +185,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
         Route::get('/payment-collection', PaymentCollectionIndex::class)->name('admin.accounting.payment_collection');
         Route::get('/add-payment-receipt/{payment_collection_id?}', AddPaymentReceipt::class)->name('admin.accounting.add_payment_receipt');
 
+    });
+
+    Route::prefix('report')->group(function() {
+        Route::get('/user-ledger', UserLedgerReport::class)->name('admin.report.user_ledger');
     });
 
     Route::prefix('daily-collection')->name('daily-collection.')->group(function() {

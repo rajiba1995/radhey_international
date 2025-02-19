@@ -10,6 +10,8 @@ use App\Models\Invoice;
 use App\Models\PaymentCollection;
 use App\Models\InvoicePayment;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+
 
 class AccountingRepository implements AccountingRepositoryInterface
 {
@@ -114,7 +116,7 @@ class AccountingRepository implements AccountingRepositoryInterface
                 'updated_at' => date('Y-m-d H:i:s')
             );
             $payment_collection_id = PaymentCollection::insertGetId($arrPaymentCollection);
-
+           
             $this->invoicePayments($data['voucher_no'],$data['payment_date'],$data['amount'],$data['customer_id'],$payment_collection_id,$data['staff_id']);
 
         }else{
@@ -125,7 +127,8 @@ class AccountingRepository implements AccountingRepositoryInterface
                 'voucher_no' => $data['voucher_no'],
                 'updated_at' => date('Y-m-d H:i:s')
             ]);
-            $this->invoicePayments($data['voucher_no'],$data['payment_date'],$data['amount'],$data['customer_id'],$data['payment_collection_id'],$data['staff_id']);
+           
+             $this->invoicePayments($data['voucher_no'],$data['payment_date'],$data['amount'],$data['customer_id'],$data['payment_collection_id'],$data['staff_id']);
         }
     }
 
@@ -134,12 +137,10 @@ class AccountingRepository implements AccountingRepositoryInterface
        
         if(empty($check_invoice_payments)){
             $amount_after_settlement = $payment_amount;
-
             $invoice = Invoice::where('customer_id', $customer_id)->where('is_paid', 0)->orderBy('id','asc')->get();
             $sum_inv_amount = 0;
             foreach($invoice as $inv){
                 $invoice_date = date('Y-m-d', strtotime($inv->created_at));
-
                 $invoiceOld = date_diff(
                     date_create($invoice_date), 
                     date_create($payment_date)
@@ -154,11 +155,11 @@ class AccountingRepository implements AccountingRepositoryInterface
 
                 $amount = $inv->required_payment_amount;
                 $sum_inv_amount += $amount;
-
+               
                 if($amount == $payment_amount){
                     // die('Full Covered');
                     Invoice::where('id',$inv->id)->update([
-                        'required_payment_amount'=>'',
+                        'required_payment_amount'=>0,
                         'payment_status' => 2,
                         'is_paid'=>1
                     ]);
@@ -171,7 +172,7 @@ class AccountingRepository implements AccountingRepositoryInterface
                         'invoice_amount' => $inv->net_price,
                         'vouchar_amount' => $payment_amount,
                         'paid_amount' => $amount,
-                        'rest_amount' => '',
+                        'rest_amount' => 0,
                         'created_at' => date('Y-m-d H:i:s'),
                         'updated_at' => date('Y-m-d H:i:s')
                     ]);
@@ -181,11 +182,11 @@ class AccountingRepository implements AccountingRepositoryInterface
                 } else{
                     
                     // die('Not Full Covered');
+                  
                     if($amount_after_settlement>$amount && $amount_after_settlement>0){
                         $amount_after_settlement=$amount_after_settlement-$amount;
-                        
                         Invoice::where('id',$inv->id)->update([
-                            'required_payment_amount'=>'',
+                            'required_payment_amount'=>0,
                             'payment_status' => 2,
                             'is_paid'=>1
                         ]);
@@ -198,7 +199,7 @@ class AccountingRepository implements AccountingRepositoryInterface
                             'invoice_amount' => $inv->net_price,
                             'vouchar_amount' => $payment_amount,
                             'paid_amount' => $amount,
-                            'rest_amount' => '',
+                            'rest_amount' => 0,
                             'created_at' => date('Y-m-d H:i:s'),
                             'updated_at' => date('Y-m-d H:i:s')
                         ]);
@@ -218,7 +219,7 @@ class AccountingRepository implements AccountingRepositoryInterface
                             'voucher_no' => $voucher_no,
                             'invoice_amount' => $inv->net_price,
                             'vouchar_amount' => $payment_amount,
-                            'paid_amount' => $amount_after_settlement,
+                            'paid_amount' => $amount_after_settlement, 
                             'rest_amount' => $rest_payment_amount,
                             'created_at' => date('Y-m-d H:i:s'),
                             'updated_at' => date('Y-m-d H:i:s')

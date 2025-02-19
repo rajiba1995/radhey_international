@@ -1,19 +1,39 @@
-    <div class="container-fluid py-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="block-heading m-0">Supplier List</h4> 
+    <div class="container">
+        <section class="admin__title">
+            <h5>Supplier List</h5>
+        </section>
+        <section>
+            <ul class="breadcrumb_menu">
+                <li>Supplier</li>
+                <li></li>
+                <!-- <li>Create Customer</li> -->
+            </ul>
+            <div class="row align-items-center justify-content-between">
+                    <div class="col-auto">
+                        <!-- <p class="text-sm font-weight-bold">Items</p> -->
+                    </div>
+                </div>
+        </section>
+        <section>
+            <div class="search__filter">
+                <div class="row align-items-center justify-content-end">
+                    <div class="col-auto">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-auto mt-0">
+                                <input type="text" wire:model="search" class="form-control select-md bg-white" id="customer"
+                                    placeholder="Search by supplier name or PO number" value=""
+                                    style="width: 350px;"  wire:keyup="FindSupplier($event.target.value)">
+                            </div>
+                            <div class="col-md-auto mt-3">
+                                <a href="{{ route('suppliers.add') }}" class="btn btn-outline-success select-md">Add Supplier</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                
-            <div class="input-group w-50 search-input-group">
-                <input type="text" wire:model.debounce.500ms="search" class="form-control border" placeholder="Search here...">
-                <button type="button" wire:click="$refresh" class="btn btn-outline-primary mb-0">
-                    <span class="material-icons">search</span>
-                </button>
             </div>
-                
-            <a href="{{ route('suppliers.add') }}" class="btn btn-cta btn-sm mb-0">
-                <i class="material-icons text-white" style="font-size:15px;">add</i>
-                Add Supplier
-            </a>
-        </div>
+        </section>
+        
         <div class="row">
             <div class="col-12">
                 <div class="card my-4">

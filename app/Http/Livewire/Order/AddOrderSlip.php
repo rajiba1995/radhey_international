@@ -5,6 +5,9 @@ namespace App\Http\Livewire\Order;
 use Livewire\Component;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\PackingSlip;
+use App\Models\Invoice;
 use App\Models\PaymentCollection;
 use App\Helpers\Helper;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +24,7 @@ class AddOrderSlip extends Component
     public $staffs =[];
     public $payment_collection_id = "";
     public $readonly = "readonly";
-    public $customer,$customer_id, $staff_id,$staff_name, $total_amount, $amount, $voucher_no, $payment_date, $payment_mode, $chq_utr_no, $bank_name, $receipt_for = "Customer";
+    public $customer,$customer_id, $staff_id,$staff_name, $total_amount, $actual_amount, $voucher_no, $payment_date, $payment_mode, $chq_utr_no, $bank_name, $receipt_for = "Customer",$amount;
 
     public function boot(AccountingRepositoryInterface $accountingRepository)
     {
@@ -37,7 +40,7 @@ class AddOrderSlip extends Component
                 $this->order_item[$key]['quantity']= $order_item->quantity;
             }
             $this->total_amount = $this->order->total_amount;
-            $this->amount = $this->order->total_amount;
+            $this->actual_amount = $this->order->total_amount;
             $this->customer = $this->order->customer->name;
             $this->customer_id = $this->order->customer->id;
             $this->staff_id = $this->order->createdBy->id;
@@ -52,15 +55,14 @@ class AddOrderSlip extends Component
         if(!empty($value)){
             $this->order_item[$key]['quantity']= $value;
             $this->order_item[$key]['price']= $price*$value;
-            $this->amount = 0;
+            $this->actual_amount = 0;
             foreach($this->order_item as $key=>$item){
-                $this->amount +=$item['price'];
+                $this->actual_amount +=$item['price'];
             }
         }
     }
 
     public function submitForm(){
-       
         $this->reset(['errorMessage']);
         $this->errorMessage = array();
         foreach ($this->order_item as $key => $item) {
@@ -81,6 +83,10 @@ class AddOrderSlip extends Component
         // Validate amount
         if (empty($this->amount) || !is_numeric($this->amount)) {
            $this->errorMessage['amount'] = 'Please enter a valid amount.';
+        }
+        // Validate amount
+        if (empty($this->actual_amount) || !is_numeric($this->actual_amount)) {
+           $this->errorMessage['actual_amount'] = 'Please enter a valid amount.';
         }
 
         // Validate voucher no
@@ -110,13 +116,20 @@ class AddOrderSlip extends Component
         if(count($this->errorMessage)>0){
             return $this->errorMessage;
         }else{
-            dd($this->all());
             try {
                 DB::beginTransaction();
-                //code...
+                $this->updateOrder();
+
+                $this->updateOrderItems();
+
+                $this->createPackingSlip();
+
                 $this->accountingRepository->StorePaymentReceipt($this->all());
-                session()->flash('success', 'Payment receipt added successfully.');
+              
+
                 DB::commit();
+
+                session()->flash('success', 'Payment receipt added successfully.');
                 return redirect()->route('admin.accounting.payment_collection');
             } catch (\Exception $e) {
                 DB::rollBack();
@@ -125,6 +138,80 @@ class AddOrderSlip extends Component
         }
        
     }
+    public function updateOrder()
+    {
+        $this->validate([
+            'total_amount' => 'required|numeric',
+            'customer_id' => 'required|exists:users,id',
+            'staff_id' => 'required|exists:users,id',
+        ]);
+
+        $order = Order::find($this->order->id);
+
+        if ($order) {
+            // $remaining_amount = $this->total_amount - $this->amount;
+            $order->update([
+                'total_amount' => $this->total_amount,
+                'customer_id' => $this->customer_id,
+                'created_by' => $this->staff_id,
+                'last_payment_date' => $this->payment_date,
+            ]);
+        }
+    }
+    public function updateOrderItems()
+    {
+        foreach ($this->order_item as $item) {
+            OrderItem::where('id', $item['id'])->update([
+                'total_price' => $item['price'],
+                'quantity' => $item['quantity'],
+            ]);
+        }
+    }
+    public function createPackingSlip()
+    {
+        $order = Order::find($this->order->id);
+        $remaining_amount =  $this->amount-$this->amount;
+        // dd( $remaining_amount );
+        $remaining_amount = (is_numeric($this->actual_amount) ? (double) $this->actual_amount : 0) - 
+            (is_numeric($this->amount) ? (double) $this->amount : 0);
+            // $required_payment_amount = is_numeric($remaining_amount) ? $remaining_amount : 0;
+
+        if ($order) {
+            // Calculate the remaining amount
+          
+
+            $packingSlip=PackingSlip::create([
+                'order_id' => $this->order->id,
+                'customer_id' => $this->customer_id,
+                'slipno' => $this->order->order_number, 
+                'is_disbursed' => ($remaining_amount == 0) ? 1 : 0,
+                // 'is_disbursed' => 0,
+                'created_by' => $this->staff_id,
+                'created_at' => now(),
+                'disbursed_by' => $this->staff_id,
+                // 'updated_by' => auth()->id(),
+                // 'updated_at' => now(),
+            ]);
+            $lastInvoice = Invoice::latest()->first();
+            $invoice_no = str_pad(optional($lastInvoice)->id + 1, 10, '0', STR_PAD_LEFT);
+
+            Invoice::create([
+                'order_id' => $this->order->id,
+                'customer_id' => $this->customer_id,
+                'user_id' => $this->staff_id,
+                'packingslip_id' => $packingSlip->id,
+                'invoice_no' => $invoice_no,
+                'net_price' => $order->total_amount,
+                'required_payment_amount' =>$order->total_amount,
+                'created_by' =>  $this->staff_id,
+                'created_at' => now(),
+                // 'updated_by' => auth()->id(),
+                'updated_at' => now(),
+            ]);
+        }  
+    }
+
+
     public function is_valid_date($date) {
         $timestamp = strtotime($date);
         if ($timestamp !== false) {

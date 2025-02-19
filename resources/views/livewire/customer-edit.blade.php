@@ -1,4 +1,19 @@
 <div class="container-fluid px-2 px-md-4">
+    <section class="admin__title">
+        <h5>Edit Customer</h5>
+    </section>
+    <section>
+        <ul class="breadcrumb_menu">
+            <li><a href="{{ route('customers.index') }}">Customers</a></li>
+            <li>Edit Customer</li>
+            <li class="back-button">
+              <a class="btn btn-dark btn-sm text-decoration-none text-light font-weight-bold mb-0" href="{{ route('customers.index') }}" role="button">
+                <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
+                <span class="ms-1">Back</span>
+              </a>
+            </li>
+          </ul>
+    </section>
     <div class="card card-body">
         <div class="card card-plain h-100">
             <div class="card-header pb-0 p-3">
@@ -6,12 +21,6 @@
                     {{-- Customer Details --}}
                     <div class="col-md-8 mb-2 d-flex align-items-center">
                         <h6 class="badge bg-danger custom_danger_badge">Basic Information</h6>
-                    </div>
-                    <div class="col-md-4 text-end">
-                        <a href="{{ route('customers.index') }}" class="btn btn-cta">
-                            <i class="material-icons text-white" style="font-size: 15px">chevron_left</i> 
-                            Back
-                        </a>
                     </div>
                 </div>
             </div>
@@ -247,7 +256,7 @@
                             @enderror
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-cta">Save</button>
+                    <button type="submit" class="btn btn-sm btn-success"><i class="material-icons text-white" style="font-size: 15px;">update</i>Update</button>
                 </form>
             </div>
         </div>
