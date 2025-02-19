@@ -229,6 +229,25 @@
                     </a>
                 </li>
             </ul>
+
+            {{-- Report management --}}
+            <li class="nav-item">
+                <a class="nav-link text-white {{ request()->is('admin/report*') ? 'active bg-gradient-primary' : '' }}"
+                    href="#ReportManagementSubmenu" data-bs-toggle="collapse" aria-expanded="{{ request()->is('admin/report*') ? 'true' : 'false' }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">account_balance</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Report Management</span>
+                </a>
+            </li>
+            <ul id="ReportManagementSubmenu" class="collapse list-unstyled ms-4 {{ request()->is('admin/report*') ? 'show' : '' }}">
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ request()->is('admin/report/user-ledger') ? 'active' : '' }}"
+                    href="{{ route('admin.report.user_ledger') }}">
+                       User Ledger
+                    </a>
+                </li>
+            </ul>
             {{-- Order Management --}}
             <li class="nav-item">
                 <a class="nav-link text-white {{ Request::is('admin/orders*') ? 'active ' : '' }}"
