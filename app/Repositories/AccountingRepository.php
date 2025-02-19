@@ -233,4 +233,77 @@ class AccountingRepository implements AccountingRepositoryInterface
         }
     }
 
+    public function StoreOpeningBalance(array $data){
+        
+        $is_credit = 0;
+        $is_debit = 0;
+
+        if($data['credit_debit'] == 'credit'){
+            $is_credit = 1;
+        }
+        if($data['credit_debit'] == 'debit'){
+            $is_debit = 1;
+        }
+
+        $payment_in = $data['payment_type'];
+        if(!empty($data['customer_id'])){
+            # Check exist opening balance for customer with payment_type
+            $existOB = Ledger::with('payment:p.payment_in,p.bank_cash,p.payment_mode')
+                              ->where('ledger.customer_id',$data['customer_id'])
+                              ->where('ledger.user_type','customer')
+                              ->where('purpose','opening_balance')
+                              ->get()
+                              ->toArray();
+
+            if(!empty($existOB)){
+                 # restrict previous date of existing OB date
+                 if($data['date'] < $existOB[0]->entry_date){
+                    $err_msg_date = "Previous Date (".date('d/m/Y',strtotime($existOB[0]->entry_date)).") of your existing opening balance is not allowed ";
+                    return redirect()->back()->withErrors(['date' => $err_msg_date]);
+                 }
+                   # check bank and cash entry exists
+                foreach ($existOB as $ob) {
+                    if(in_array($data['payment_type'],array("bank","bank_cash")) && $ob->bank_cash == 'bank'){
+                        $err_msg_bank = "Already bank entry exists";
+                        return  redirect()->back()->withErrors(['payment_type'=> $err_msg_bank])->withInput();
+                    }
+                    if(in_array($data['payment_type'],array("cash","bank_cash")) && $ob->bank_cash == 'cash'){
+                        $err_msg_bank = "Already cash entry exists";
+                        return  redirect()->back()->withErrors(['payment_type'=> $err_msg_bank])->withInput();
+                    }
+                }
+            }
+        }
+
+         /* For customer opening balance */
+         $customer_id = $data['customer_id'];   
+         $user_type = "customer";
+         # add OB at the top of the existing transaction of the day
+         if($data['payment_type'] == 'bank_cash'){
+            if($data['bank_amount']){
+                /* Entry in payment */
+                $payment_id = Payment::insertGetId([
+                    'customer_id' => $customer_id,
+                    'credit_debit'=> $data['credit_debit'],
+                    'voucher_no'  => $data['voucher_no'],
+                    'payment_date'=> $data['date'],
+                    'payment_type'=> $data['payment_type'],
+                    'bank_cash'   => 'bank',
+                    'payment_mode'=> $data['payment_mode'],
+                    'amount'      => $data['bank_amount'],
+                    'chq_utr_no'  => $data['transaction_no'],
+                    'bank_name'   => $data['bank_name'],
+                    'narration'   => $data['narration'],
+                    'created_by' => Auth::user()->id,
+                    'created_at'=>date('Y-m-d H:i:s')
+                ]);
+                /* Entry in ledger */
+                Ledger::insert([
+                    
+                ]);
+            }
+         }
+    }
+
+
 }
