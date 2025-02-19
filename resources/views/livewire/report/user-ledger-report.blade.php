@@ -29,12 +29,12 @@
                     {{-- User Type Dropdown --}}
                     <div class="col-auto mt-0">
                         <lable>Chose User Type</lable>
-                    <select wire:change="getUser" wire:model="user_type" wire:key="user_type" class="form-control select-md bg-white">
-                        <option value="" hidden selected>Select User Type</option>
-                        <option value="staff">Staff</option>
-                        <option value="customer">Customer</option>
-                        <option value="supplier">Supplier</option>
-                    </select>
+                        <select wire:change="getUser" wire:model="user_type" wire:key="user_type" class="form-control select-md bg-white">
+                            <option value="" hidden selected>Select User Type</option>
+                            <option value="staff">Staff</option>
+                            <option value="customer">Customer</option>
+                            <option value="supplier">Supplier</option>
+                        </select>
 
                     </div>
 
