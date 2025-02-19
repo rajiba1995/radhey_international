@@ -26,10 +26,10 @@
                 </div>
                 @endif
                 @if ($activeTab==1 && $salesmanBill == null)
-                <div class="badge bg-primary">
-                    <a href="{{ route('salesman.index') }}"> <strong>Error:</strong> Please add a bill for this user
-                        before placing the order.</a>
-                </div>
+                    <div class="badge bg-primary">
+                        <a href="{{ route('salesman.index') }}"> <strong>Error:</strong> Please add a bill for this user
+                            before placing the order.</a>
+                    </div>
                 @endif
             </div>
         </div>
