@@ -31,7 +31,7 @@ class OrderNew extends Component
     // public $collectionsType = [];
     public $collections = [];
     public $errorMessage = [];
-    public $activeTab = 2;
+    public $activeTab = 1;
     public $items = [];
     public $FetchProduct = 1;
 
@@ -73,7 +73,8 @@ class OrderNew extends Component
     public $selectedFabric = null;
 
 
-   
+    
+
     public function mount()
     {
         $user_id = request()->query('user_id');
@@ -862,7 +863,6 @@ class OrderNew extends Component
             session()->flash('success', 'Order has been generated successfully.');
             return redirect()->route('admin.order.index');
         } catch (\Exception $e) {
-            dd($e);
             DB::rollBack();
             \Log::error('Error saving order: ' . $e->getMessage());
             dd($e->getMessage());
