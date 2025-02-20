@@ -37,7 +37,7 @@ class UserLedgerReport extends Component
 
     public $supplierSearchTerm = '';
     public $supplierSearchResults = [];
-public $search;
+    public $search;
     
     public function updatingSelectedCustomer()
     {

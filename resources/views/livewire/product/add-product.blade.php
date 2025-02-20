@@ -1,30 +1,24 @@
 
-<div class="container-fluid px-2 px-md-4">
+<div class="container">
+
+<section class="admin__title">
+        <h5>Create Product</h5>
+    </section>
+    <section>
+        <ul class="breadcrumb_menu">
+            <li><a href="javascript:history.back();">Product</a></li>
+            <li>Create Product</li>
+            <li class="back-button">
+                <a href="javascript:history.back()" class="btn btn-sm btn-danger select-md text-light font-weight-bold mb-0">Back </a>
+            </li>
+          </ul>
+    </section>
+
+
+
+
     <div class="card card-body">
-        <div class="row gx-4 mb-2">
-            {{-- <div class="col-auto">
-                <div class="avatar avatar-xl position-relative">
-                    <img src="{{ asset('assets') }}/img/bruce-mars.jpg" alt="profile_image"
-                        class="w-100 border-radius-lg shadow-sm">
-                </div>
-            </div> --}}
-            <div class="col-auto my-auto">
-                <div class="h-100">
-                    <h5 class="mb-1">
-                       Create Product
-                    </h5>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
-                <div class="nav-wrapper position-relative end text-end">
-                    <!-- Single Button -->
-                    <a class="btn btn-dark btn-sm" href="javascript:history.back();" role="button" >
-                        <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
-                        <span class="ms-1">Back</span>
-                    </a>
-                </div>
-            </div>
-        </div>
+        
         <form wire:submit='create'>
             <div class="row">
                 <div class="col-lg-8">
@@ -39,7 +33,7 @@
                         <div class="card-body p-3">
                         
                                 <div class="row">               
-                                    <div class="mb-3 col-md-2">
+                                    <div class="mb-3 col-md-3">
                                         <label class="form-label">Collection <span class="text-danger">*</span></label>
                                         <select wire:model="collection" wire:change="GetCollection($event.target.value)" class="form-control form-control-sm border border-1 p-2">
                                             <option value="" selected hidden>Select collection</option>
@@ -52,7 +46,7 @@
                                         @enderror
                                     </div>
                                     <!-- Category Dropdown -->
-                                    <div class="mb-3 col-md-4">
+                                    <div class="mb-3 col-md-3">
                                         <label class="form-label">Category <span class="text-danger">*</span></label>
                                         <select wire:model="category_id"  class="form-control form-control-sm border border-1 p-2">
                                             <option value="" selected hidden>Select Category</option>
@@ -68,7 +62,7 @@
                                     </div>
                                     
                                     <!-- Product Name -->
-                                    <div class="mb-3 col-md-4">
+                                    <div class="mb-3 col-md-3">
                                         <label class="form-label">Product Name <span class="text-danger">*</span></label>
                                         <input wire:model="name" type="text" class="form-control form-control-sm border border-1 p-2" placeholder="Product Name" >
                                         @error('name')
@@ -77,7 +71,7 @@
                                     </div>
 
                                     <!-- Product Code -->
-                                    <div class="mb-3 col-md-2">
+                                    <div class="mb-3 col-md-3">
                                         <label class="form-label">Product Code <span class="text-danger">*</span></label>
                                         <input wire:model="product_code" type="text" class="form-control form-control-sm border border-1 p-2" placeholder="Product Code">
                                         @error('product_code')
@@ -105,7 +99,7 @@
                                     </div>
                             
                                     <!-- GST Details -->
-                                    <div class="mb-3 col-md-2">
+                                    <div class="mb-3 col-md-4">
                                         <label class="form-label">GST Details (%)</label>
                                         <input wire:model="gst_details" type="text" class="form-control form-control-sm border border-1 p-2" placeholder="GST Percentage" >
                                         @error('gst_details')
@@ -123,7 +117,7 @@
                                     </div>
 
                                     {{-- Fabrics --}}
-                                    <div class="mb-3 col-md-6">
+                                    <div class="mb-3 col-md-4">
                                         <label class="form-label">Fabrics <span class="text-danger">*</span></label>
                                         <select wire:model="selectedFabrics" id="multiple" class="form-control form-control-sm border border-1 p-2" multiple>
                                             <option value="" hidden>Select Fabrics</option>
@@ -142,7 +136,8 @@
                 <div class="col-lg-4">
                     <div class="card card-plain mb-3">
                         <div class="card-body p-3">
-                            <h6>Product Image</h6>
+                            
+                        <label class="form-label">Product Image</label>
                             <div class="mb-2 mt-2">
                                 @if ($product_image)
                                     <img src="{{ $product_image->temporaryUrl() }}" alt="Preview" width="100">
@@ -157,7 +152,7 @@
                     @if ($showAdditionalImageField)
                     <div class="card card-plain">
                         <div class="card-body p-3">
-                            <h6>Additional Product Images</h6>
+                            <label class="form-label">Additional Product Images</label>
                             <div class="mb-2 mt-2">
                                 <input type="file" wire:model="multipleImages" id="multipleImages" accept="image/*" multiple
                                     class="form-control border border-2 p-2 d-none" onchange="previewMultipleImages(event)">
@@ -181,8 +176,10 @@
                 </div>
             </div>
             <div class="col-12 d-flex justify-content-start align-items-end" style="height: 100%;">
-                <button type="submit" class="btn btn-dark">Submit</button>
+                <!-- <button type="submit" class="btn btn-dark">Submit</button> -->
+                <button type="submit"class="btn btn-sm btn-success"><i class="material-icons text-white" style="font-size: 15px;">add</i>Add</button>
             </div>
+            
         </form>
     </div>
 

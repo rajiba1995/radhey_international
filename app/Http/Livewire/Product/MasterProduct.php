@@ -26,6 +26,7 @@ class MasterProduct extends Component
     public $collection;
     public $searchFilter;
     public $file;
+    public $search;
 
     public function mount(){
         $this->collection = Collection::all();
@@ -71,6 +72,12 @@ class MasterProduct extends Component
         $product->save();
         session()->flash('message', 'Product status updated successfully.');
     }
+    public function FindProduct($keywords){
+        $this->search = $keywords;
+    }
+    public function resetForm(){
+        $this->reset(['search']);
+    }
 
     public function render()
     {
@@ -79,8 +86,11 @@ class MasterProduct extends Component
         if($this->searchFilter){
             $query->where('collection_id',$this->searchFilter);
         }
-
-        $products = $query->latest()->get();
+        
+        $products = $query->when($this->search, function ($query) {
+            $query->where('name', 'like', '%' . $this->search . '%');// Apply search filter if provided
+        })->latest()
+        ->paginate(10);
         return view('livewire.product.master-product',['products'=>$products]);
     }
 }
