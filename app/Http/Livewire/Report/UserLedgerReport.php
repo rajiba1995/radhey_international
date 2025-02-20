@@ -26,6 +26,16 @@ class UserLedgerReport extends Component
     public $customers = [];
     public $suppliers = [];
     public $from_date,$to_date,$bank_cash;
+
+    public $staffSearchTerm = '';
+    public $staffSearchResults = [];
+
+    public $customerSearchTerm = '';
+    public $customerSearchResults = [];
+
+    public $supplierSearchTerm = '';
+    public $supplierSearchResults = [];
+
     
     public function updatingSelectedCustomer()
     {
@@ -95,7 +105,81 @@ class UserLedgerReport extends Component
             session()->flash('success', 'Payment revoked successfully.');
         }
     }
+    public function searchStaff()
+    {
+        if (!empty($this->staffSearchTerm)) {
+        // dd("hhdj");
 
+            $this->staffSearchResults = User::where('user_type', 0) // 0 for staff
+                ->where(function ($query) {
+                    $query->where('name', 'like', '%' . $this->staffSearchTerm . '%')
+                        ->orWhere('phone', 'like', '%' . $this->staffSearchTerm . '%');
+                })
+                ->take(10)
+                ->get();
+        } else {
+            $this->staffSearchResults = [];
+        }
+    }
+
+    public function selectStaff($staffId)
+    {
+        $staff = User::find($staffId);
+        if ($staff) {
+            $this->staff_id = $staff->id;
+            $this->staffSearchTerm = $staff->name; // Show selected staff name
+        }
+        $this->staffSearchResults = []; // Hide dropdown after selection
+        $this->getUserLedger(); // Refresh ledger data
+    }
+    public function searchCustomer()
+    {
+        if (!empty($this->customerSearchTerm)) {
+            $this->customerSearchResults = User::where('user_type', 1) // 1 for customers
+                ->where(function ($query) {
+                    $query->where('name', 'like', '%' . $this->customerSearchTerm . '%')
+                        ->orWhere('phone', 'like', '%' . $this->customerSearchTerm . '%');
+                })
+                ->take(10)
+                ->get();
+        } else {
+            $this->customerSearchResults = [];
+        }
+    }
+
+    public function selectCustomers($customerId)
+    {
+        $customer = User::find($customerId);
+        if ($customer) {
+            $this->customer_id = $customer->id;
+            $this->customerSearchTerm = $customer->name; // Display selected name
+        }
+        $this->customerSearchResults = []; // Hide dropdown
+        $this->getUserLedger(); // Refresh ledger data
+    }
+
+    public function searchSupplier()
+    {
+        if (!empty($this->supplierSearchTerm)) {
+            $this->supplierSearchResults = Supplier::where('name', 'like', '%' . $this->supplierSearchTerm . '%')
+                ->take(10)
+                ->get();
+        } else {
+            $this->supplierSearchResults = [];
+        }
+    }
+
+    public function selectSupplier($supplierId)
+    {
+        $supplier = Supplier::find($supplierId);
+        if ($supplier) {
+            $this->supplier_id = $supplier->id;
+            $this->supplierSearchTerm = $supplier->name; // Display selected name
+        }
+        $this->supplierSearchResults = []; // Hide dropdown
+        $this->getUserLedger(); // Refresh ledger data
+    }
+ 
    
     public function getUser()
     {
