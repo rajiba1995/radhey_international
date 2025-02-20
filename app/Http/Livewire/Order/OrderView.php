@@ -29,11 +29,10 @@ class OrderView extends Component
          // Fetch product details for each order item
         $orderItems = $order->items->map(function ($item) use($order) {
             $product = Product::find($item->product_id);
-           
             return [
                 'product_name' => $item->product_name ?? $product->name,
-                'price' => $item->price ,
-                // 'quantity' => $item->quantity,
+                'price' => $item->piece_price ,
+                'quantity' => $item->quantity,
                 'product_image' => $product ? $product->product_image : null,
             ];
         });

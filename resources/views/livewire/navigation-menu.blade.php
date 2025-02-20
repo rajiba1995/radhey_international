@@ -303,6 +303,10 @@
                     href="{{route('admin.order.new')}}">
                     Place Order
                 </a>
+                <a class="nav-link text-white {{ Request::is('admin/orders/invoice') ? 'active ' : '' }}"
+                    href="{{route('admin.order.invoice.index')}}">
+                    Invoices
+                </a>
             </ul>
 
         </ul>

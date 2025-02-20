@@ -617,7 +617,6 @@ class OrderNew extends Component
 
     public function save()
     {
-        // dd($this->all());
         $this->validate();
         DB::beginTransaction(); // Begin transaction
         

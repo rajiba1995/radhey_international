@@ -5,7 +5,7 @@
     <section>
         <ul class="breadcrumb_menu">
             <li><a href="{{route('admin.order.index')}}">Orders</a></li>
-            <li>Order No:- <span>#AGNI420998527</span></li>
+            <li>Order No:- <span>#{{$order->order_number}}</span></li>
             <li class="back-button">
                 <a href="{{route('admin.order.index')}}" class="btn btn-sm btn-danger select-md text-light font-weight-bold mb-0">Back </a>
             </li>

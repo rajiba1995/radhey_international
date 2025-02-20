@@ -9,14 +9,17 @@
                     <div class="row g-3 align-items-center">
                         <div class="col-auto" style="margin-top: -27px;">
                             <label for="" class="date_lable">Start Date</label>
-                            <input type="date" wire:model="start_date" wire:change="AddStartDate($event.target.value)" class="form-control select-md bg-white" placeholder="Start Date">
+                            <input type="date" wire:model="start_date" wire:change="AddStartDate($event.target.value)"
+                                class="form-control select-md bg-white" placeholder="Start Date">
                         </div>
                         <div class="col-auto" style="margin-top: -27px;">
                             <label for="" class="date_lable">End date</label>
-                            <input type="date" wire:model="end_date" wire:change="AddEndDate($event.target.value)" class="form-control select-md bg-white" placeholder="End Date">
+                            <input type="date" wire:model="end_date" wire:change="AddEndDate($event.target.value)"
+                                class="form-control select-md bg-white" placeholder="End Date">
                         </div>
                         <div class="col-md-auto mt-3">
-                            <a href="{{route('admin.order.new')}}" class="btn btn-outline-success select-md">Place New Order</a>
+                            <a href="{{route('admin.order.new')}}" class="btn btn-outline-success select-md">Place New
+                                Order</a>
                         </div>
                     </div>
                 </div>
@@ -27,24 +30,28 @@
                 </div>
                 <div class="col-auto">
                     <div class="row g-3 align-items-center">
-                    <div class="col-auto mt-0">
-                        <input type="text" wire:model="search" class="form-control select-md bg-white" id="customer"
-                            placeholder="Search by customer detail or Order number" value=""
-                            style="width: 350px;"  wire:keyup="FindCustomer($event.target.value)">
-                    </div>
-                    <div class="col-auto mt-0">
-                        <select wire:model="created_by" class="form-control select-md bg-white" wire:change="CollectedBy($event.target.value)">
-                            <option value="" hidden="" selected="">Placed By</option>
-                            @foreach($usersWithOrders  as $user)
+                        <div class="col-auto mt-0">
+                            <input type="text" wire:model="search" class="form-control select-md bg-white" id="customer"
+                                placeholder="Search by customer detail or Order number" value="" style="width: 350px;"
+                                wire:keyup="FindCustomer($event.target.value)">
+                        </div>
+                        <div class="col-auto mt-0">
+                            <select wire:model="created_by" class="form-control select-md bg-white"
+                                wire:change="CollectedBy($event.target.value)">
+                                <option value="" hidden="" selected="">Placed By</option>
+                                @foreach($usersWithOrders as $user)
                                 <option value="{{ $user->id }}">{{ $user->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-auto mt-3">
-                        <button type="button" wire:click="resetForm" class="btn btn-outline-danger select-md">Clear</button>
-                    </div>
-                    <div class="col-auto">
-                        <a href="javscript:void(0)" wire:click="export" class="btn btn-outline-success select-md"><i class="fas fa-file-csv me-1"></i>Export</a>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-auto mt-3">
+                            <button type="button" wire:click="resetForm"
+                                class="btn btn-outline-danger select-md">Clear</button>
+                        </div>
+                        <div class="col-auto">
+                            <a href="javscript:void(0)" wire:click="export" class="btn btn-outline-success select-md"><i
+                                    class="fas fa-file-csv me-1"></i>Export</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -105,22 +112,17 @@
                                     <span class="badge bg-{{ $order->status_class }}">{{ $order->status_label }}</span>
                                 </td>
                             <td class="text-center">
-                                    @if($order->status=="Pending")
                                         @if(empty($order->packingslip))
-                                        <a href="{{route('admin.order.add_order_slip', $order->id)}}" class="btn btn-outline-primary select-md btn_action">Generate Slip</a>
-                                        <a href="{{route('admin.order.edit', $order->id)}}" class="btn btn-outline-success select-md btn_edit" data-toggle="tooltip">Edit</a>
+                                        <a href="{{route('admin.order.add_order_slip', $order->id)}}" class="btn btn-outline-primary select-md btn_action btn_outline">Generate Slip</a>
+                                        <a href="{{route('admin.order.edit', $order->id)}}" class="btn btn-outline-success select-md btn_outline" data-toggle="tooltip">Edit</a>
                                         <a href="" onclick="return confirm('Are you sure want to cancel the order?');"
-                                        class="btn btn-outline-danger select-md btn_cancel">Cancel Order</a>
+                                        class="btn btn-outline-danger select-md btn_outline">Cancel Order</a>
                                         @else
                                             <!-- <a href="#" class="btn btn-outline-primary select-md btn_action">Edit Slip</a> -->
-                                            <a href="#" class="btn btn-outline-primary select-md btn_action">Download Slip</a>
-                                            <button wire:click="downloadInvoice({{ $order->id }})" class="btn btn-outline-primary select-md ">Download Invoice</button>
+                                            <a href="#" class="btn btn-outline-success select-md btn_outline">Download Slip</a>
+                                            <button wire:click="downloadInvoice({{ $order->id }})" class="btn btn-outline-primary select-md btn_outline">Download Invoice</button>
                                         @endif
-                                        
-                                   
-                                    
-                                    @endif
-                                    <a href="{{route('admin.order.view',$order->id)}}" class="btn btn-outline-success select-md btn_action">Details</a>
+                                    <a href="{{route('admin.order.view',$order->id)}}" class="btn btn-outline-success select-md btn_action btn_outline">Details</a>
 
                                      {{-- <a href="{{route('admin.order.view',$order->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="View product">
                                          <span class="material-icons">visibility</span>

@@ -7,6 +7,7 @@ use App\Models\Payment;
 use App\Models\Ledger;
 use App\Models\Journal;
 use App\Models\Invoice;
+use App\Models\Order;
 use App\Models\PaymentCollection;
 use App\Models\InvoicePayment;
 use Illuminate\Support\Facades\Auth;
@@ -155,7 +156,23 @@ class AccountingRepository implements AccountingRepositoryInterface
 
                 $amount = $inv->required_payment_amount;
                 $sum_inv_amount += $amount;
-               
+
+                $order = Order::find($inv->order_id);
+                if ($order) {
+                    $total_paid_amount = $order->paid_amount+$payment_amount;
+                    // dd($total_paid_amount,$order->total_amount);
+                    if($total_paid_amount>=$order->total_amount){
+                        $amount_after_settlement=$total_paid_amount-$order->total_amount;
+                        $remaining_amount = 0;
+                    }else{
+                        $amount_after_settlement=$order->paid_amount+$payment_amount;
+                        $remaining_amount = max($order->total_amount - $total_paid_amount, 0);
+                    }
+                    $order->update([
+                        'paid_amount' => $amount_after_settlement,
+                        'remaining_amount' => $remaining_amount,
+                    ]);
+                }
                 if($amount == $payment_amount){
                     // die('Full Covered');
                     Invoice::where('id',$inv->id)->update([

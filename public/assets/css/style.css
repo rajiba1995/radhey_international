@@ -744,6 +744,11 @@ table td h6.text-sm {
     padding: 3px 6px;
     line-height: 1.2;
 }
+.btn_outline{
+    font-size: 10px;
+    font-weight: 500;
+    margin-bottom: 0px;
+}
 .btn-outline-success {
     color: #198754;
     border-color: #198754;
@@ -789,13 +794,31 @@ table td h6.text-sm {
 }
   
 .btn-outline-success:hover:not(.active) {
-    background-color: #198754;
+    background-color: #077a45;
     opacity: .75;
     box-shadow: none;
     color: #ffffff;
 }
 .btn-outline-danger:hover:not(.active) {
     background-color: #F44335;
+    opacity: .75;
+    box-shadow: none;
+    color: #fff;
+}
+.btn-outline-secondary:hover:not(.active){
+    background-color: #fff;
+    opacity: .75;
+    box-shadow: none;
+    color: #000;
+}
+.btn-outline-warning:hover:not(.active){
+    background-color: #fb8c00;
+    opacity: .75;
+    box-shadow: none;
+    color: #fff;
+}
+.btn-outline-primary:hover:not(.active){
+    background-color: #e91e63;
     opacity: .75;
     box-shadow: none;
     color: #fff;
