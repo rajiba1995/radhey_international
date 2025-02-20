@@ -501,16 +501,16 @@
                                         @endif
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-3">
+                                <div class="col-12 col-md-2">
                                     <label class="form-label"><strong>Fabric</strong></label>
                                     <input type="text" wire:model.defer="items.{{ $index }}.searchTerm"
                                         wire:keyup="searchFabrics({{ $index }})" class="form-control form-control-sm"
-                                        placeholder="Search by fabric name" id="searchFabric_{{ $index }}">
+                                        placeholder="Search by fabric name" id="searchFabric_{{ $index }}" style="width: 187px;">
 
                                     @if(!empty($items[$index]['searchResults']))
-                                    <div class="dropdown-menu show w-100" style="max-height: 200px; overflow-y: auto;">
+                                    <div class="dropdown-menu show w-100" style="max-height: 187px; overflow-y: auto;">
                                         @foreach ($items[$index]['searchResults'] as $fabric)
-                                        <button class="dropdown-item" type="button"
+                                        <button class="dropdown-item fabric_dropdown_item" type="button"
                                             wire:click="selectFabric({{ $fabric->id }}, {{ $index }})">
                                             {{ $fabric->title }}
                                         </button>
@@ -518,7 +518,8 @@
                                     </div>
                                     @endif
                                 </div>
-                                <div class="col-12 col-md-3">
+                                <div class="col-12 col-md-2"></div>
+                                <div class="col-12 col-md-2">
                                     <div class="d-flex align-items-center gap-2 justify-content-end">
                                         <!-- Price Input -->
                                         <div>
@@ -550,7 +551,7 @@
                                 </div>
                             </div>
                             @else
-                            <div class="col-12 col-md-3 offset-md-9">
+                            <div class="col-12 col-md-2 offset-md-10">
                                 <div class="d-flex align-items-center gap-2 justify-content-end">
                                     <div>
                                         <!-- Price Input -->
@@ -703,13 +704,13 @@
 
                     <div class="d-flex justify-content-end align-items-center mb-3">
                         @if($activeTab>1)
-                        <button type="button" class="btn btn-black mx-2" wire:click="TabChange({{$activeTab-1}})"><i
+                        <button type="button" class="btn btn-sm btn-black mx-2" wire:click="TabChange({{$activeTab-1}})"><i
                                 class="material-icons text-white">chevron_left</i>Previous</button>
-                        <button type="submit" class="btn btn-cta mx-2"><i
+                        <button type="submit" class="btn btn-sm btn-cta mx-2"><i
                                 class="material-icons text-white">add</i>Generate Order</button>
                         @endif
                         @if($activeTab==1)
-                        <button type="button" class="btn btn-cta mx-2" wire:click="TabChange({{$activeTab+1}})">Next<i
+                        <button type="button" class="btn btn-sm btn-cta mx-2" wire:click="TabChange({{$activeTab+1}})">Next<i
                                 class="material-icons text-white">chevron_right</i></button>
                         @endif
 

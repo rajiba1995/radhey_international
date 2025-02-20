@@ -622,6 +622,7 @@ class OrderNew extends Component
         DB::beginTransaction(); // Begin transaction
         
         try{ 
+          
             // Calculate the total amount
             $total_amount = array_sum(array_column($this->items, 'price'));
             if ($this->paid_amount > $total_amount) {

@@ -875,3 +875,11 @@ table td h6.text-sm {
     height: 29px;
     margin-bottom: -18px;
 }
+.fabric_dropdown_item{
+    width: 187px;
+    background: #f6f6f6;
+}
+.fabric_dropdown_item:hover{
+    color: #000;
+    background: #DF6;
+}

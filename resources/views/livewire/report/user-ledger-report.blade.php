@@ -18,17 +18,17 @@
                     
                     {{-- Search by Date Range --}}
                     <div class="col-auto mt-0">
-                        <lable>From Date</lable>
+                        <x-form-lable>From Date</x-form-label>
                         <input type="date"  wire:change="getUserLedger" wire:model="from_date" wire:key="from_date" class="form-control select-md bg-white" placeholder="From Date">
                     </div>
                     <div class="col-auto mt-0">
-                    <lable>To Date</lable>
+                    <x-form-lable>To Date</x-form-label>
                         <input type="date"  wire:change="getUserLedger" wire:model="to_date" wire:key="to_date" class="form-control select-md bg-white" placeholder="To Date">
                     </div>
 
                     {{-- User Type Dropdown --}}
                     <div class="col-auto mt-0">
-                        <lable>Chose User Type</lable>
+                        <x-form-lable>Chose User Type</x-form-label>
                         <select wire:change="getUser" wire:model="user_type" wire:key="user_type" class="form-control select-md bg-white">
                             <option value="" hidden selected>Select User Type</option>
                             <option value="staff">Staff</option>
@@ -42,7 +42,7 @@
                     <div class="col-auto mt-0">
                     
                         @if($user_type === 'staff')  {{-- Staff --}}
-                            <lable>Search Staff</lable>
+                            <x-form-lable>Search Staff</x-form-label>
                             <select wire:change="getUserLedger" wire:model="staff_id" wire:key="staff_id" class="form-control select-md bg-white">
                                 <option value="" hidden selected>Select User</option>
                                 @foreach($staffs as $staff)
@@ -50,7 +50,7 @@
                                 @endforeach
                             </select>
                         @elseif($user_type === 'customer') {{-- Customer --}}
-                        <lable>Search Customer</lable>
+                        <x-form-lable>Search Customer</x-form-label>
                         <select  wire:change="getUserLedger" wire:model="customer_id" wire:key="customer_id" class="form-control select-md bg-white">
                             <option value="" hidden selected>Select User</option>
                             @foreach($customers as $customer)
@@ -59,7 +59,7 @@
                         </select>
 
                         @elseif($user_type === 'supplier') {{-- Supplier --}}
-                            <lable>Search Supplier</lable>
+                            <x-form-lable>Search Supplier</x-form-label>
                             <select  wire:change="getUserLedger" wire:model="supplier_id" wire:key="supplier_id" class="form-control select-md bg-white">
                                 <option value="" hidden selected>Select User</option>
                                 @foreach($suppliers as $supplier)
@@ -70,7 +70,7 @@
                     </div>
                     {{-- Payment Type Dropdown --}}
                     <div class="col-auto mt-0">
-                        <lable>Bank/Cash</lable>
+                        <x-form-lable>Bank/Cash</x-form-label>
                         <select wire:change="getUserLedger" wire:key="bank_cash"  wire:model="bank_cash" class="form-control select-md bg-white">
                             <option value="" hidden selected>Select Payment Mode</option>
                             <option value="bank">Bank</option>
@@ -80,7 +80,7 @@
 
                     {{-- Reset Button --}}
                     <div class="col-auto mt-5">
-                        <!-- <lable></lable> -->
+                        <!-- <x-form-lable></x-form-label> -->
                         <button type="button"  wire:click="resetForm" class="btn btn-outline-danger select-md">Clear</button>
                     </div>
 
@@ -137,36 +137,30 @@
                                 @forelse($paymentData as $index => $payment)
                                     <tr class="store_details_row cursor-pointer {{$active_details == $payment->id ? 'tr_active' : ''}}" wire:click="customerDetails({{ $payment->id }})">
                                         
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>{{ date('d/m/Y', strtotime($payment->updated_at)) }}</td>
-                                        <td>{{ date('d/m/Y', strtotime($payment->created_at)) }}</td>
-                                        <td>{{ $payment->transaction_id }}</td>
-                                        <td><strong>{{ ucwords(str_replace('_', ' ', $payment->purpose)) }}
+                                        <td class="text-xs font-weight-bold mb-0">{{ $index + 1 }}</td>
+                                        <td class="text-xs font-weight-bold mb-0">{{ $payment->updated_at?date('d-m-Y', strtotime($payment->updated_at)):"" }}</td>
+                                        <td class="text-xs font-weight-bold mb-0">{{ date('d-m-Y', strtotime($payment->created_at)) }}</td>
+                                        <td class="text-xs font-weight-bold mb-0">{{ $payment->transaction_id }}</td>
+                                        <td class="text-xs font-weight-bold mb-0"><strong>{{ ucwords(str_replace('_', ' ', $payment->purpose)) }}
                                         </strong></td>
-                                        @if($payment->is_debit==1)
-                                        <td>{{ number_format((float)$payment->transaction_amount) }}</td>
-                                        <td></td>
-                                        @else
-                                        <td></td>
-                                        <td>{{ number_format((float)$payment->transaction_amount) }}</td>
-                                        @endif
+                                        <td class="text-xs font-weight-bold mb-0 text-danger">{{ $payment->is_debit==1?number_format((float)$payment->transaction_amount):"" }}</td>
+                                        <td class="text-xs font-weight-bold mb-0 ">{{ $payment->is_credit==1?number_format((float)$payment->transaction_amount):"" }}</td>
                                         
-                                        <td><span class="badge bg-success">{{ ucwords($payment->bank_cash) }}</span></td>
-                                        <td>{{ date('d/m/Y', strtotime($payment->entry_date)) }}</td>
+                                        <td class="text-xs font-weight-bold mb-0"><span class="badge bg-success">{{ ucwords($payment->bank_cash) }}</span></td>
+                                        <td class="text-xs font-weight-bold mb-0">{{ date('d/m/Y', strtotime($payment->entry_date)) }}</td>
 
-                                        <td>
+                                        <td class="text-xs font-weight-bold mb-0">
                                             @if (!empty($payment->status==0))
                                                 <span class="badge bg-success">pending</span>
                                             @else
                                                 <span class="badge bg-danger">Not Approved</span>
                                             @endif
                                         </td>
-                                        <td>
+                                        <td class="text-xs font-weight-bold mb-0">
                                             @if (empty($payment->is_credit))
                                                 <a href="{{ route('admin.report.user_ledger', $payment->id) }}" class="btn btn-md btn-warning">Approve</a>
                                                 <a href="#" onclick="return confirm('Are you sure want to remove?');" class="btn btn-outline-danger">Remove</a>
                                             @endif
-                                           
                                         </td>
                                         
 
@@ -200,49 +194,49 @@
                                                     <tr>
                                                     @if($payment->customer)
 
-                                                        <td>
+                                                        <td class="text-xs font-weight-bold mb-0">
                                                             <span>Customer Name: <strong>{{$payment->customer->name}} </strong> </span> 
 
                                                         </td>
                                                         @if (!empty($payment->customer->name))
-                                                        <td>
+                                                        <td class="text-xs font-weight-bold mb-0">
                                                             <span>Company Name: <strong>{{$payment->customer->company_name}} </strong> </span> 
                                                         </td> 
                                                         @endif  
                                                         @if (!empty($payment->customer->phone))
-                                                        <td>                                            
-                                                            <span>Phone: <strong>{{$payment->customer->phone}} </strong> </span>  
-                                                        </td>  
+                                                            <td class="text-xs font-weight-bold mb-0">                                            
+                                                                <span>Phone: <strong>{{$payment->customer->phone}} </strong> </span>  
+                                                            </td>  
                                                         @endif    
                                                     @elseif($payment->staff)
 
-                                                        <td>
+                                                        <td class="text-xs font-weight-bold mb-0">
                                                             <span>Staff Name: <strong>{{$payment->staff->name}} </strong> </span> 
 
                                                         </td>
                                                         @if (!empty($payment->staff->name))
-                                                        <td>
+                                                        <td class="text-xs font-weight-bold mb-0">
                                                             <span>Company Name: <strong>{{$payment->staff->company_name}} </strong> </span> 
                                                         </td> 
                                                         @endif  
                                                         @if (!empty($payment->staff->phone))
-                                                        <td>                                            
+                                                        <td class="text-xs font-weight-bold mb-0">                                            
                                                             <span>Phone: <strong>{{$payment->staff->phone}} </strong> </span>  
                                                         </td>  
                                                         @endif    
                                                         @elseif ($payment->supplier)
 
-                                                    <td>
+                                                    <td class="text-xs font-weight-bold mb-0">
                                                         <span>Supplier Name: <strong>{{$payment->supplier->name}} </strong> </span> 
 
                                                     </td>
                                                     @if (!empty($payment->supplier->name))
-                                                    <td>
+                                                    <td class="text-xs font-weight-bold mb-0">
                                                         <span>Company Name: <strong>{{$payment->supplier->company_name}} </strong> </span> 
                                                     </td> 
                                                     @endif  
                                                     @if (!empty($payment->supplier->phone))
-                                                    <td>                                            
+                                                    <td class="text-xs font-weight-bold mb-0">                                            
                                                         <span>Phone: <strong>{{$payment->supplier->phone}} </strong> </span>  
                                                     </td>  
                                                     @endif    
@@ -250,19 +244,19 @@
                                                     </tr>                                    
                                                     <tr>   
                                                         @if (!empty($payment->bank_name))
-                                                        <td><span>Bank: <strong>{{ ($payment->bank_name)}}</strong></span></td>    
+                                                        <td class="text-xs font-weight-bold mb-0"><span>Bank: <strong>{{ ($payment->bank_name)}}</strong></span></td>    
                                                         @endif
                                                         @if (!empty($payment->payment_type))
-                                                        <td><span>Bank: <strong>{{ ucwords($payment->payment_type)}}</strong></span></td>    
+                                                        <td class="text-xs font-weight-bold mb-0"><span>Bank: <strong>{{ ucwords($payment->payment_type)}}</strong></span></td>    
                                                         @endif
                                                         @if (!empty($payment->chq_utr_no))
-                                                        <td><span>Cheque / UTR No: <strong>{{ ucwords($payment->cheque_number)}}</strong></span></td>    
+                                                        <td class="text-xs font-weight-bold mb-0"><span>Cheque / UTR No: <strong>{{ ucwords($payment->cheque_number)}}</strong></span></td>    
                                                         @endif
                                                         @if (!empty($payment->cheque_date))
-                                                        <td><span>Payment Date: <strong>{{ date('d/m/Y', strtotime($payment->cheque_date))}}</strong></span></td>    
+                                                        <td class="text-xs font-weight-bold mb-0"><span>Payment Date: <strong>{{ date('d/m/Y', strtotime($payment->cheque_date))}}</strong></span></td>    
                                                         @endif
                                                         @if (!empty($payment->vouchar_no))
-                                                        <td><span>Voucher No: <strong>{{ ($payment->vouchar_no)}}</strong></span></td>    
+                                                        <td class="text-xs font-weight-bold mb-0"><span>Voucher No: <strong>{{ ($payment->vouchar_no)}}</strong></span></td>    
                                                         @endif
                                                     </tr>
                                                 </table>

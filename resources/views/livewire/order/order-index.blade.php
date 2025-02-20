@@ -139,7 +139,7 @@
 
                 <!-- Pagination -->
                 <div class="mt-4">
-                    {{ $orders->links() }}/
+                    {{ $orders->links() }}
                 </div>
             </div>
         </div>

@@ -130,7 +130,7 @@ class AddOrderSlip extends Component
                 DB::commit();
 
                 session()->flash('success', 'Payment receipt added successfully.');
-                return redirect()->route('admin.accounting.payment_collection');
+                return redirect()->route('admin.order.index');
             } catch (\Exception $e) {
                 DB::rollBack();
                 session()->flash('error', $e->getMessage());
@@ -149,9 +149,16 @@ class AddOrderSlip extends Component
         $order = Order::find($this->order->id);
 
         if ($order) {
-            // $remaining_amount = $this->total_amount - $this->amount;
+            $total_paid_amount = $order->paid_amount+$this->amount;
+            if($total_paid_amount>=$this->actual_amount){
+                $remaining_amount = 0;
+            }else{
+                $remaining_amount = max($this->actual_amount - $total_paid_amount, 0);
+            }
             $order->update([
-                'total_amount' => $this->total_amount,
+                'total_amount' => $this->actual_amount,
+                'paid_amount' => $order->paid_amount+$this->amount,
+                'remaining_amount' => $remaining_amount,
                 'customer_id' => $this->customer_id,
                 'created_by' => $this->staff_id,
                 'last_payment_date' => $this->payment_date,

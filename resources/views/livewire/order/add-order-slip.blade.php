@@ -70,7 +70,7 @@
                                     @if($key==0)
                                         <label for="">Disburse Quantity</label>
                                     @endif
-                                    <input type="number" wire:model="order_item.{{$key}}.quantity" class="form-control form-control-sm" oninput="validateNumber(this)" wire:keyup="updateQuantity($event.target.value, {{$key}}, {{$order_item->piece_price}})">
+                                    <input type="text" wire:model="order_item.{{$key}}.quantity" class="form-control form-control-sm" oninput="validateNumber(this)" wire:keyup="updateQuantity($event.target.value, {{$key}}, {{$order_item->piece_price}})">
                                     @if(isset($errorMessage["order_item.$key.quantity"]))
                                         <div class="text-danger">{{ $errorMessage["order_item.$key.quantity"] }}</div>
                                     @endif
