@@ -248,9 +248,9 @@ class AccountingRepository implements AccountingRepositoryInterface
         $payment_in = $data['payment_type'];
         if(!empty($data['customer_id'])){
             # Check exist opening balance for customer with payment_type
-            $existOB = Ledger::with('payment:p.payment_in,p.bank_cash,p.payment_mode')
-                              ->where('ledger.customer_id',$data['customer_id'])
-                              ->where('ledger.user_type','customer')
+            $existOB = Ledger::with('payment')
+                              ->where('customer_id',$data['customer_id'])
+                              ->where('user_type','customer')
                               ->where('purpose','opening_balance')
                               ->get()
                               ->toArray();
@@ -280,14 +280,14 @@ class AccountingRepository implements AccountingRepositoryInterface
          $user_type = "customer";
          # add OB at the top of the existing transaction of the day
          if($data['payment_type'] == 'bank_cash'){
-            if($data['bank_amount']){
+            if(isset($data['bank_amount'])){
                 /* Entry in payment */
                 $payment_id = Payment::insertGetId([
                     'customer_id' => $customer_id,
-                    'credit_debit'=> $data['credit_debit'],
+                    'payment_for'=> $data['credit_debit'],
                     'voucher_no'  => $data['voucher_no'],
                     'payment_date'=> $data['date'],
-                    'payment_type'=> $data['payment_type'],
+                    'payment_in'=> $data['payment_type'],
                     'bank_cash'   => 'bank',
                     'payment_mode'=> $data['payment_mode'],
                     'amount'      => $data['bank_amount'],
@@ -299,10 +299,126 @@ class AccountingRepository implements AccountingRepositoryInterface
                 ]);
                 /* Entry in ledger */
                 Ledger::insert([
-                    
+                    'user_type'=> $user_type,
+                    'customer_id'=> $customer_id,
+                    'transaction_id'=> $data['voucher_no'],
+                    'transaction_amount'=> $data['bank_amount'],
+                    'payment_id'=> $payment_id,
+                    'bank_cash'=> 'bank',
+                    'is_credit'=> $is_credit,
+                    'is_debit'=> $is_debit,
+                    'entry_date'=> $data['date'],
+                    'purpose'=> 'opening_balance',
+                    'purpose_description'=> $user_type.' opening balance',
+                    'created_at'=> date('Y-m-d H:i:s')
+                ]);
+                /* Entry in journal */
+                Journal::insert([
+                    'transaction_amount'=> $data['bank_amount'],
+                    'is_credit'=> $is_credit,
+                    'is_debit'=> $is_debit,
+                    'entry_date'=> $data['date'],
+                    'payment_id'=> $payment_id,
+                    'bank_cash'=> 'bank',
+                    'purpose'=> 'opening_balance',
+                    'purpose_description'=> $user_type.' opening balance',
+                    'purpose_id'=> $data['voucher_no'],
+                    'created_at'=> date('Y-m-d H:i:s')
                 ]);
             }
+            if(isset($data['cash_amount'])){
+                /* Entry in payment */
+                $payment_id = Payment::insertGetId([
+                    'customer_id'=> $customer_id,
+                    'payment_for'=> $data['credit_debit'],
+                    'voucher_no'=> $data['voucher_no'],
+                    'payment_date'=> $data['date'],
+                    'payment_in'=> $data['payment_type'],
+                    'bank_cash'=> 'cash',
+                    'payment_mode'=> $data['payment_mode'],
+                    'amount'=> $data['cash_amount'],
+                    'chq_utr_no'=> '',
+                    'bank_name'=> '',
+                    'narration'=> $data['narration'],
+                    'created_by'=> Auth::user()->id,
+                    'created_at'=> date('Y-m-d H:i:s')
+                ]);
+                /* Entry in ledger */
+                Ledger::insert([
+                    'user_type'=> $user_type,
+                    'customer_id'=> $customer_id,
+                    'transaction_id'=> $data['voucher_no'],
+                    'transaction_amount'=> $data['cash_amount'],
+                    'payment_id'=> $payment_id,
+                    'bank_cash'=> 'cash',
+                    'is_credit'=> $is_credit,
+                    'is_debit'=> $is_debit,
+                    'entry_date'=> $data['date'],
+                    'purpose'=> 'opening_balance',
+                    'purpose_description'=> $user_type.' opening balance',
+                    'created_at'=> date('Y-m-d H:i:s')
+                ]);
+                /* Entry in journal */
+                Journal::insert([
+                    'transaction_amount'=> $data['cash_amount'],
+                    'is_credit'=> $is_credit,
+                    'is_debit'=> $is_debit,
+                    'entry_date'=> $data['date'],
+                    'payment_id'=> $payment_id,
+                    'bank_cash'=> 'cash',
+                    'purpose'=> 'opening_balance',
+                    'purpose_description'=> $user_type.' opening balance',
+                    'purpose_id'=> $data['voucher_no'],
+                    'created_at'=> date('Y-m-d H:i:s')
+                ]);
+            }
+         }else{
+             /* Entry in payment */      
+            $payment_id = Payment::insertGetId([
+                'customer_id'=> $customer_id,
+                'payment_for'=> $data['credit_debit'],
+                'voucher_no'=> $data['voucher_no'],
+                'payment_date'=> $data['date'],
+                'payment_in'=> $data['payment_type'],
+                'bank_cash'=> ($data['payment_type'] != 'bank') ? 'cash' : $data['payment_type'],
+                'payment_mode'=> $data['payment_mode'],
+                'amount'=> $data['amount'],
+                'chq_utr_no'=> $data['transaction_no'],
+                'bank_name'=> $data['bank_name'],
+                'narration'=> $data['narration'],
+                'created_by'=> Auth::user()->id,
+                'created_at'=> date('Y-m-d H:i:s')
+            ]);
+            /* Entry in ledger */
+            Ledger::insert([
+                'user_type'=> $user_type,
+                'customer_id'=> $customer_id,
+                'transaction_id'=> $data['voucher_no'],
+                'transaction_amount'=> $data['amount'],
+                'payment_id'=> $payment_id,
+                'bank_cash'=> ($data['payment_type'] != 'bank') ? 'cash' : $data['payment_type'],
+                'is_credit'=> $is_credit,
+                'is_debit'=> $is_debit,
+                'entry_date'=> $data['date'],
+                'purpose'=> 'opening_balance',
+                'purpose_description'=> $user_type.' opening balance',
+                'created_at'=> date('Y-m-d H:i:s')
+            ]);
+            /* Entry in journal */
+            Journal::insert([
+                'transaction_amount'=> $data['amount'],
+                'is_credit'=> $is_credit,
+                'is_debit'=> $is_debit,
+                'entry_date'=> $data['date'],
+                'payment_id'=> $payment_id,
+                'bank_cash'=> ($data['payment_type'] != 'bank') ? 'cash' : $data['payment_type'],
+                'purpose'=> 'opening_balance',
+                'purpose_description'=> $user_type.' opening balance',
+                'purpose_id'=> $data['voucher_no'],
+                'created_at'=> date('Y-m-d H:i:s')
+            ]);
          }
+        
     }
 
 

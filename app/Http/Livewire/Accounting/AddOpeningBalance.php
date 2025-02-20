@@ -87,19 +87,19 @@ class AddOpeningBalance extends Component
             $this->errorMessage['voucher_no'] = 'Voucher number is required';
         }
 
-        if(empty($this->amount)){
-            $this->errorMessage['amount'] = 'Please enter an amount';
-        }
-
-        if(empty($this->amount) && $this->payment_type === 'bank'){
+        //  Only validate `amount` for `bank` or `cash`, NOT `bank_cash`
+        if(empty($this->amount) && ($this->payment_type === 'bank' || $this->payment_type === 'cash')){
             $this->errorMessage['amount'] = 'Please enter the amount';
         }
-        if(empty($this->amount) && $this->payment_type === 'cash'){
-            $this->errorMessage['amount'] = 'Please enter amount';
-        }
-        if(empty($this->cash_amount) && empty($this->bank_amount) && $this->payment_type === 'bank_cash'){
-            $this->errorMessage['cash_amount'] = 'Please enter the cash amount';
-            $this->errorMessage['bank_amount'] = 'Please enter the bank amount';
+        
+        //Validate Bank + Cash amounts separately
+        if($this->payment_type === 'bank_cash'){
+            if(empty($this->bank_amount)){
+                $this->errorMessage['bank_amount'] = 'Please enter the bank amount';
+            }
+            if(empty($this->cash_amount)){
+                $this->errorMessage['cash_amount'] = 'Please enter the cash amount';
+            }
         }
 
         if(empty($this->payment_mode) && $this->payment_type === 'bank'){
@@ -109,6 +109,7 @@ class AddOpeningBalance extends Component
         if(count($this->errorMessage)> 0){
             return $this->errorMessage;
         }
+
             $data = [
                 'customer_id'=> $this->customer_id,
                 'credit_debit'  => $this->credit_debit,
@@ -127,11 +128,10 @@ class AddOpeningBalance extends Component
             
             try {
                 DB::beginTransaction();
-                //code...
-                $this->accountingRepository->StoreOpeningBalance($data);
-                session()->flash('success', 'Payment receipt added successfully.');
+                $this->accountingRepository->StoreOpeningBalance($this->all());
+                session()->flash('success', 'Opening balance for customer added successfully.');
                 DB::commit();
-                return redirect()->route('admin.accounting.payment_collection');
+                return redirect()->route('admin.accounting.list_opening_balance');
             } catch (\Exception $e) {
                 dd($e->getMessage());
                 DB::rollBack();

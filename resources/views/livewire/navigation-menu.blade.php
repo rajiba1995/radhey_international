@@ -253,11 +253,17 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link text-white {{ request()->is('admin/accounting/list-opening-balance') ? 'active' : '' }}"
+                        href="{{ route('admin.accounting.list_opening_balance') }}">
+                        Customer Opening Balance
+                    </a>
+                </li>
+                {{-- <li class="nav-item">
                     <a class="nav-link text-white {{ request()->is('admin/accounting/add-opening-balance') ? 'active' : '' }}"
                         href="{{ route('admin.accounting.add_opening_balance') }}">
                         Add Opening Balance
                     </a>
-                </li>
+                </li> --}}
             </ul>
             {{-- Order Management --}}
             <li class="nav-item">

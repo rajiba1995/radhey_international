@@ -97,7 +97,7 @@ class OrderNew extends Component
                 $this->dob = $customer->dob;
                 $this->phone = $customer->phone;
                 $this->whatsapp_no = $customer->whatsapp_no;
-
+                $this->is_wa_same = $customer->phone == $customer->whatsapp_no ? 1 : 0;
                 // Assign Billing Address (if exists)
                 if ($billing = $customer->billingAddress) {
                     $this->billing_address = $billing->address;
@@ -174,6 +174,7 @@ class OrderNew extends Component
                 ->where('fabrics.status', 1)
                 ->where('fabrics.title', 'LIKE', "%{$searchTerm}%")
                 ->select('fabrics.id', 'fabrics.title')
+                ->distinct()
                 ->limit(10)
                 ->get();
         } else {
@@ -208,20 +209,22 @@ class OrderNew extends Component
         'paid_amount' => 'required|numeric|min:1',   // Ensuring that price is a valid number (and greater than or equal to 0).
         'payment_mode' => 'required|string',  // Ensuring that price is a valid number (and greater than or equal to 0).
         'items.*.measurements.*' => 'nullable|string',
+        'items.*.searchTerm' => 'required_if:items.*.selected_collection,1',
         // 'order_number' => 'required|numeric|unique:orders,order_number|min:1',
         'order_number' => 'required|string|not_in:000|unique:orders,order_number',
-        'items.*.selectedCatalogue' => 'required', 
-        'items.*.page_number' => 'required'
+        'items.*.selectedCatalogue' => 'required_if:items.*.selected_collection,1',
+        'items.*.page_number' => 'required_if:items.*.selected_collection,1'
     ];
 
     protected function messages(){
         return [
              'items.*.category.required' => 'Please select a category for the item.',
              'items.*.searchproduct.required' => 'Please select a product for the item.',
-             'items.*.selectedCatalogue.required' => 'Please select a catalogue for the item.',
-             'items.*.page_number.required' => 'Please select a page for the item.',
+             'items.*.selectedCatalogue.required_if' => 'Please select a catalogue for the item.',
+             'items.*.page_number.required_if' => 'Please select a page for the item.',
              'items.*.price.required'  => 'Please enter a price for the item.',
              'items.*.collection.required' =>  'Please enter a collection for the item.',
+             'items.*.searchTerm.required_if' =>  'Please enter a Fabric for the item.',
              'order_number.required' => 'Order number is required.',
              'order_number.not_in' => 'Order number "000" is not allowed.',
              'order_number.unique' => 'Order number already exists, please try again.',
@@ -303,7 +306,9 @@ class OrderNew extends Component
             'products' => [],
             'product_id' => null,
             'price' => '',
-            // 'searchTerm' => '', // Ensure search field is empty
+            'selectedCatalogue' => '',
+            'page_number' => '',
+            'searchTerm' => '', // Ensure search field is empty
             // 'searchResults' => [], // Clear previous search results
         ];
     }
@@ -806,18 +811,7 @@ class OrderNew extends Component
                 'paid_amount' => $this->paid_amount
             ]);
 
-            // Ledger::create([
-            //     'order_id' => $order->id,
-            //     'user_id' => $user->id,
-            //     'transaction_date' => now(),
-            //     'transaction_type' => 'Debit', // or 'Credit' depending on your business logic
-            //     'payment_method' => $this->payment_mode,
-            //     'paid_amount' => $this->paid_amount,
-            //     'purpose' => 'Payment Receipt',
-            //     'purpose_description' => 'Order Payment',
-            //     // 'remaining_amount' => $this->remaining_amount,
-            //     'remarks' => 'Initial Payment for Order #' . $order->order_number,
-            // ]);
+           
             
 
            
@@ -836,7 +830,7 @@ class OrderNew extends Component
                 $orderItem->product_id = $item['product_id'];
                 $orderItem->collection = $collection_data ? $collection_data->id : "";
                 $orderItem->category = $category_data ? $category_data->id : "";
-                $orderItem->sub_category = $sub_category_data ? $sub_category_data->title : "";
+                // $orderItem->sub_category = $sub_category_data ? $sub_category_data->title : "";
                 $orderItem->product_name = $item['searchproduct'];
                 $orderItem->total_price = $item['price'];
                 $orderItem->fabrics = $fabric_data ? $fabric_data->id : "";

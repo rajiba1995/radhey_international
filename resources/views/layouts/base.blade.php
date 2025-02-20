@@ -54,6 +54,9 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="{{ asset('assets') }}/js/material-dashboard.min.js?v=3.0.0"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script> --}}
+    {{-- <script src="{{ asset('vendor/livewire/livewire.js') }}"></script> --}}
+
    
 </body>
 

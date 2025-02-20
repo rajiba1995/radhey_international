@@ -151,7 +151,7 @@
 
                         <div class="mb-2 col-md-3">
                             <label for="dob" class="form-label">Date Of Birth <span class="text-danger">*</span></label>
-                            <input type="date" wire:model="dob" id="dob" max="{{date('Y-m-d')}}"
+                            <input type="date" autocomplete="bday" wire:model="dob" id="dob" max="{{ \Carbon\Carbon::today()->format('Y-m-d') }}"
                                 class="form-control form-control-sm border border-1 p-2 {{ $errorClass['dob'] ?? '' }}">
                             @if(isset($errorMessage['dob']))
                             <div class="text-danger">{{ $errorMessage['dob'] }}</div>
@@ -178,7 +178,7 @@
                             @endif
                             <div class="form-check ps-0">
                                 <input type="checkbox" id="is_wa_same" wire:change="SameAsMobile"
-                                    class="form-check-input" value="0" @if($is_wa_same) checked @endif>
+                                    class="form-check-input" value="0" wire:model="is_wa_same" @if($is_wa_same) checked @endif>
                                 <label for="is_wa_same" class="form-check-label font-sm text-danger"><small>Same as
                                         Phone Number</small></label>
                             </div>
@@ -379,7 +379,7 @@
                                     @if($citems->short_code)({{ $citems->short_code }})@endif</option>
                                 @endforeach
                             </select>
-                            @error("items.$index.collection")
+                            @error("items.".$index.".collection")
                             <div class='text-danger'>{{ $message }}</div>
                             @enderror
                         </div>
@@ -400,7 +400,7 @@
                                 <option value="" disabled>No categories available</option>
                                 @endif
                             </select>
-                            @error("items.$index.category")
+                            @error("items.".$index.".category")
                             <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
@@ -463,7 +463,7 @@
                                     class="form-control form-control-sm border border-2 @error('items.'.$index.'.page_number') border-danger @enderror"
                                     min="1"
                                     max="{{ isset($items[$index]['selectedCatalogue']) && isset($maxPages[$index][$items[$index]['selectedCatalogue']]) ? $maxPages[$index][$items[$index]['selectedCatalogue']] : '' }}">
-                                @error("items.$index.page_number")
+                                @error("items.".$index.".page_number")
                                 <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -503,10 +503,12 @@
                                 </div>
                                 <div class="col-12 col-md-3">
                                     <label class="form-label"><strong>Fabric</strong></label>
-                                    <input type="text" wire:model.defer="items.{{ $index }}.searchTerm"
+                                    <input type="text" wire:model="items.{{ $index }}.searchTerm"
                                         wire:keyup="searchFabrics({{ $index }})" class="form-control form-control-sm"
                                         placeholder="Search by fabric name" id="searchFabric_{{ $index }}">
-
+                                    @error("items. $index .searchTerm")
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                     @if(!empty($items[$index]['searchResults']))
                                     <div class="dropdown-menu show w-100" style="max-height: 200px; overflow-y: auto;">
                                         @foreach ($items[$index]['searchResults'] as $fabric)
