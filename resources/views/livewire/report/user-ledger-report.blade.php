@@ -15,38 +15,80 @@
         <div class="row align-items-center justify-content-end">
             <div class="col-auto">
                 <div class="row g-3 align-items-center">
+                    
+                    {{-- Search by Date Range --}}
                     <div class="col-auto mt-0">
-                        <input type="text" wire:model="selected_customer" class="form-control select-md bg-white"
-                            placeholder="Search customer by name or order number"
-                            wire:keyup="FindCustomer($event.target.value)" style="width: 350px;">
-                        @if(!empty($searchResults))
-                            <div id="fetch_customer_details" class="dropdown-menu show" style="max-height: 200px; width: 350px; overflow-y: auto;">
-                                @foreach ($searchResults as $customer_item)
-                                    <button class="dropdown-item" type="button" wire:click="selectCustomer({{ $customer_item->id }})">
-                                        <img src="{{ asset($customer_item->profile_image ?: 'assets/img/user.png') }}" alt=""> 
-                                        {{ $customer_item->name }} ({{ $customer_item->phone }})
-                                    </button>
-                                @endforeach
-                            </div>
-                        @endif
+                        <lable>From Date</lable>
+                        <input type="date"  wire:change="getUserLedger" wire:model="from_date" wire:key="from_date" class="form-control select-md bg-white" placeholder="From Date">
+                    </div>
+                    <div class="col-auto mt-0">
+                    <lable>To Date</lable>
+                        <input type="date"  wire:change="getUserLedger" wire:model="to_date" wire:key="to_date" class="form-control select-md bg-white" placeholder="To Date">
                     </div>
 
+                    {{-- User Type Dropdown --}}
                     <div class="col-auto mt-0">
-                        <select wire:model="staff_id" class="form-control select-md bg-white">
-                            <option value="" hidden selected>Collected By</option>
-                            @foreach($staffs as $staff)
-                                <option value="{{$staff->id}}">{{ ucwords($staff->name) }}</option>
+                        <lable>Chose User Type</lable>
+                        <select wire:change="getUser" wire:model="user_type" wire:key="user_type" class="form-control select-md bg-white">
+                            <option value="" hidden selected>Select User Type</option>
+                            <option value="staff">Staff</option>
+                            <option value="customer">Customer</option>
+                            <option value="supplier">Supplier</option>
+                        </select>
+
+                    </div>
+
+                    {{-- User Name Dropdown (Changes Based on User Type Selection) --}}
+                    <div class="col-auto mt-0">
+                    
+                        @if($user_type === 'staff')  {{-- Staff --}}
+                            <lable>Search Staff</lable>
+                            <select wire:change="getUserLedger" wire:model="staff_id" wire:key="staff_id" class="form-control select-md bg-white">
+                                <option value="" hidden selected>Select User</option>
+                                @foreach($staffs as $staff)
+                                    <option value="{{ $staff->id }}">{{ ucwords($staff->name) }}</option>
+                                @endforeach
+                            </select>
+                        @elseif($user_type === 'customer') {{-- Customer --}}
+                        <lable>Search Customer</lable>
+                        <select  wire:change="getUserLedger" wire:model="customer_id" wire:key="customer_id" class="form-control select-md bg-white">
+                            <option value="" hidden selected>Select User</option>
+                            @foreach($customers as $customer)
+                                <option value="{{ $customer->id }}">{{ ucwords($customer->name) }}</option>
                             @endforeach
+                        </select>
+
+                        @elseif($user_type === 'supplier') {{-- Supplier --}}
+                            <lable>Search Supplier</lable>
+                            <select  wire:change="getUserLedger" wire:model="supplier_id" wire:key="supplier_id" class="form-control select-md bg-white">
+                                <option value="" hidden selected>Select User</option>
+                                @foreach($suppliers as $supplier)
+                                    <option value="{{ $supplier->id }}">{{ ucwords($supplier->name) }}</option>
+                                @endforeach
+                            </select>
+                        @endif
+                    </div>
+                    {{-- Payment Type Dropdown --}}
+                    <div class="col-auto mt-0">
+                        <lable>Bank/Cash</lable>
+                        <select wire:change="getUserLedger" wire:key="bank_cash"  wire:model="bank_cash" class="form-control select-md bg-white">
+                            <option value="" hidden selected>Select Payment Mode</option>
+                            <option value="bank">Bank</option>
+                            <option value="cash">Cash</option>
                         </select>
                     </div>
 
-                    <div class="col-auto mt-3">
-                        <button type="button" wire:click="resetForm" class="btn btn-outline-danger select-md">Clear</button>
+                    {{-- Reset Button --}}
+                    <div class="col-auto mt-5">
+                        <!-- <lable></lable> -->
+                        <button type="button"  wire:click="resetForm" class="btn btn-outline-danger select-md">Clear</button>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
+
 
     <div class="filter">
         <div class="row align-items-center justify-content-end">
@@ -70,25 +112,48 @@
                         <table class="table table-sm table-hover ledger">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <!-- <th>#</th>
                                     <th>Payment Date</th>
                                     <th>Collected By</th>
                                     <th>Customer</th>
                                     <th>Collection Amount</th>
                                     <th>Collected From</th>
                                     <th>Status</th>
+                                    <th>Entered at</th> -->
+
+                                    <th>#</th>
+                                    <th>Updated Date</th>
+                                    <th>Date</th>
+                                    <th>Transaction Id / Voucher No</th>
+                                    <th>Purpose</th>
+                                    <th>Debit</th>
+                                    <th>Credit</th>
+                                    <th>Bank/Cash</th>
                                     <th>Entered at</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($paymentData as $index => $payment)
                                     <tr class="store_details_row cursor-pointer {{$active_details == $payment->id ? 'tr_active' : ''}}" wire:click="customerDetails({{ $payment->id }})">
+                                        
                                         <td>{{ $index + 1 }}</td>
-                                        <td>{{ date('d/m/Y', strtotime($payment->cheque_date)) }}</td>
-                                        <td>{{ $payment->staff->name ?? '' }}</td>
-                                        <td><strong>{{ $payment->customer->name ?? '' }}</strong></td>
-                                        <td>Rs. {{ number_format((float)$payment->transaction_amount, 2, '.', '') }} ({{ ucwords($payment->purpose) }})</td>
+                                        <td>{{ date('d/m/Y', strtotime($payment->updated_at)) }}</td>
+                                        <td>{{ date('d/m/Y', strtotime($payment->created_at)) }}</td>
+                                        <td>{{ $payment->transaction_id }}</td>
+                                        <td><strong>{{ ucwords(str_replace('_', ' ', $payment->purpose)) }}
+                                        </strong></td>
+                                        @if($payment->is_debit==1)
+                                        <td>{{ number_format((float)$payment->transaction_amount) }}</td>
+                                        <td></td>
+                                        @else
+                                        <td></td>
+                                        <td>{{ number_format((float)$payment->transaction_amount) }}</td>
+                                        @endif
+                                        
                                         <td><span class="badge bg-success">{{ ucwords($payment->bank_cash) }}</span></td>
+                                        <td>{{ date('d/m/Y', strtotime($payment->entry_date)) }}</td>
+
                                         <td>
                                             @if (!empty($payment->status==0))
                                                 <span class="badge bg-success">pending</span>
@@ -103,7 +168,29 @@
                                             @endif
                                            
                                         </td>
-                                        <td>{{ date('d/m/Y H:i A', strtotime($payment->created_at)) }}</td>
+                                        
+
+
+                                         {{-- <td>{{ date('d/m/Y', strtotime(payment->cheque_date)) }}</td>
+                                        <td>{{ payment->staff->name ?? '' }}</td>
+                                        <td><strong>{{ payment->customer->name ?? '' }}</strong></td>
+                                        <td>Rs. {{ number_format((float)payment->transaction_amount, 2, '.', '') }} ({{ ucwords($payment->purpose) }})</td>
+                                        <td><span class="badge bg-success">{{ ucwords(payment->bank_cash) }}</span></td>
+                                        <td>
+                                            if (!empty(payment->status==0))
+                                                <span class="badge bg-success">pending</span>
+                                            else
+                                                <span class="badge bg-danger">Not Approved</span>
+                                            endif
+                                        </td>
+                                        <td>
+                                            if (empty(payment->is_credit))
+                                                <a href="{{ route('admin.report.user_ledger', $payment->id) }}" class="btn btn-md btn-warning">Approve</a>
+                                                <a href="#" onclick="return confirm('Are you sure want to remove?');" class="btn btn-outline-danger">Remove</a>
+                                            endif
+                                           
+                                        </td>
+                                        <td>{{ date('d/m/Y H:i A', strtotime(payment->created_at)) }}</td> --}}
                                     </tr>
                                     @if($active_details==$payment->id) 
                                     <tr>                        
@@ -111,8 +198,11 @@
                                             <div class="store_details">
                                                 <table class="table">
                                                     <tr>
+                                                    @if($payment->customer)
+
                                                         <td>
                                                             <span>Customer Name: <strong>{{$payment->customer->name}} </strong> </span> 
+
                                                         </td>
                                                         @if (!empty($payment->customer->name))
                                                         <td>
@@ -124,6 +214,39 @@
                                                             <span>Phone: <strong>{{$payment->customer->phone}} </strong> </span>  
                                                         </td>  
                                                         @endif    
+                                                    @elseif($payment->staff)
+
+                                                        <td>
+                                                            <span>Staff Name: <strong>{{$payment->staff->name}} </strong> </span> 
+
+                                                        </td>
+                                                        @if (!empty($payment->staff->name))
+                                                        <td>
+                                                            <span>Company Name: <strong>{{$payment->staff->company_name}} </strong> </span> 
+                                                        </td> 
+                                                        @endif  
+                                                        @if (!empty($payment->staff->phone))
+                                                        <td>                                            
+                                                            <span>Phone: <strong>{{$payment->staff->phone}} </strong> </span>  
+                                                        </td>  
+                                                        @endif    
+                                                        @elseif ($payment->supplier)
+
+                                                    <td>
+                                                        <span>Supplier Name: <strong>{{$payment->supplier->name}} </strong> </span> 
+
+                                                    </td>
+                                                    @if (!empty($payment->supplier->name))
+                                                    <td>
+                                                        <span>Company Name: <strong>{{$payment->supplier->company_name}} </strong> </span> 
+                                                    </td> 
+                                                    @endif  
+                                                    @if (!empty($payment->supplier->phone))
+                                                    <td>                                            
+                                                        <span>Phone: <strong>{{$payment->supplier->phone}} </strong> </span>  
+                                                    </td>  
+                                                    @endif    
+                                                    @endif     
                                                     </tr>                                    
                                                     <tr>   
                                                         @if (!empty($payment->bank_name))
