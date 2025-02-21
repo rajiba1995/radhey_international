@@ -147,7 +147,7 @@
             </tr> -->
             <!-- <tr>
                 <td class="bold">GVOWN</td>
-                <td class="text-end">3000.00</td>
+                <td class="text-end">3000.00</td>       
             </tr> -->
             <tr>
                 <td class="bold">BALANCE DUE</td>

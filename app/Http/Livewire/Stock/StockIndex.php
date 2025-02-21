@@ -24,7 +24,7 @@ class StockIndex extends Component
     public $endDateFabric;
     public $searchProduct  = '';
     public $searchFabric  = '';
- 
+   
     
     public function setActiveTab($tab)
     {
@@ -54,6 +54,21 @@ class StockIndex extends Component
     {
         $fileName = 'fabric_stock_' . Carbon::now()->format('Ymd_His') . '.csv';
         return Excel::download(new StockFabricExport($this->searchFabric, $this->startDateFabric, $this->endDateFabric), $fileName);
+    }
+    public function resetForm(){
+        $this->reset(['searchProduct','searchFabric', 'startDateProduct','endDateProduct','startDateFabric','endDateFabric']);
+    }
+
+    public function FindCustomer($keywords){
+        $this->searchFabric = $keywords;
+    }
+
+    public function AddStartDate($date){
+        $this->start_date = $date;
+    }
+
+    public function AddEndDate($date){
+        $this->end_date = $date;
     }
 
     public function render()
