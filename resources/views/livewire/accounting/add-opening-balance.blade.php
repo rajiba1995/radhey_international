@@ -6,18 +6,27 @@
         <ul class="breadcrumb_menu">
             <li><a href="{{ route('admin.accounting.add_opening_balance') }}">Opening Balance</a></li>
             <li>Add Opening Balance</li>
-            <li class="back-button">
-                <a class="btn btn-dark btn-sm text-decoration-none text-light font-weight-bold mb-0"
-                    href="{{ route('admin.accounting.add_opening_balance') }}" role="button">
+            <li class="back-button btn btn-dark btn-sm text-decoration-none text-light font-weight-bold mb-0">
+                <a href="{{route('admin.accounting.list_opening_balance')}}" class="text-white">
                     <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
-                    <span class="ms-1">Back</span>
-                </a>
+                    Back</a>
             </li>
         </ul>
     </section>
     <div class="card">
         <div class="card-body">
             <form wire:submit.prevent="submitForm">
+                @if (session()->has('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+                @endif
+
+                @if (session()->has('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+                @endif
                 <div class="row">
                     <div class="col-sm-3">
                         <div class="form-group mb-3">

@@ -36,7 +36,7 @@ use App\Http\Livewire\PurchaseOrder\{PurchaseOrderIndex,PurchaseOrderCreate,Purc
 use App\Http\Livewire\Stock\{StockIndex,UserLedger};
 use App\Http\Livewire\Report\{UserLedgerReport};
 use App\Http\Livewire\BusinessType\BusinessTypeIndex;
-use App\Http\Livewire\Accounting\{AddPaymentReceipt,PaymentCollectionIndex,AddOpeningBalance};
+use App\Http\Livewire\Accounting\{AddPaymentReceipt,PaymentCollectionIndex,AddOpeningBalance,ListOpeningBalance};
 // purchase Order pdf
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\PurchaseOrder;
@@ -185,6 +185,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
         Route::get('/payment-collection', PaymentCollectionIndex::class)->name('admin.accounting.payment_collection');
         Route::get('/add-payment-receipt/{payment_collection_id?}', AddPaymentReceipt::class)->name('admin.accounting.add_payment_receipt');
         Route::get('/add-opening-balance', AddOpeningBalance::class)->name('admin.accounting.add_opening_balance');
+        Route::get('/list-opening-balance', ListOpeningBalance::class)->name('admin.accounting.list_opening_balance');
     });
 
     Route::prefix('report')->group(function() {
