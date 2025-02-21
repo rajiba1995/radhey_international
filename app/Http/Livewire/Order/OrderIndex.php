@@ -23,6 +23,8 @@ class OrderIndex extends Component
     public $customer_id;
     public $created_by, $search,$status,$start_date,$end_date; 
     public $invoiceId;
+    // protected $listeners = ['cancelOrder'];
+
 
     protected $paginationTheme = 'bootstrap'; // Optional: For Bootstrap styling
     
@@ -116,5 +118,15 @@ class OrderIndex extends Component
         }, 'invoice_' . $invoice->invoice_no . '.pdf');
     }
     
+
+    // Cancelled Orders
+    public function confirmCancelOrder($id){
+        $this->dispatchBrowserEvent('confirmCancel', ['orderId' => $id]);
+    }
+
+    public function cancelOrder($id)
+    {
+        dd("Order ID: " . $id);
+    }
 
 }

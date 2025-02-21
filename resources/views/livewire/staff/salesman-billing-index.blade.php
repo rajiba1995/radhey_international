@@ -61,8 +61,8 @@
                                             <ul>
                                                <li>   Start No: {{ $billing->start_no}}</li>
                                               <li>    End No:{{ $billing->end_no}}</li>
-                                               <li>   Total Bill:  {{ $billing->total_count}}</li>
-                                                <li>  No Of Used Bill: {{ $billing->no_of_used}}</li>
+                                               <li>   Total Bill:  <span class="text-success">{{ $billing->total_count}}</span></li>
+                                                <li>  No Of Used Bill: <span class="text-danger">{{ $billing->no_of_used}}</span></li>
                                             </ul>
                                          
                                         </td>

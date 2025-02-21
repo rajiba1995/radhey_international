@@ -97,7 +97,12 @@ class OrderNew extends Component
                 $this->dob = $customer->dob;
                 $this->phone = $customer->phone;
                 $this->whatsapp_no = $customer->whatsapp_no;
-                $this->is_wa_same = $customer->phone == $customer->whatsapp_no ? 1 : 0;
+                if($customer->phone == $customer->whatsapp_no){
+                    $this->is_wa_same = 1;
+                    $this->whatsapp_no = $this->phone;
+                }else{
+                    $this->is_wa_same = 0;
+                }
                 // Assign Billing Address (if exists)
                 if ($billing = $customer->billingAddress) {
                     $this->billing_address = $billing->address;
@@ -209,11 +214,11 @@ class OrderNew extends Component
         // 'paid_amount' => 'required|numeric|min:1',   // Ensuring that price is a valid number (and greater than or equal to 0).
         // 'payment_mode' => 'required|string',  // Ensuring that price is a valid number (and greater than or equal to 0).
         'items.*.measurements.*' => 'nullable|string',
-        'items.*.searchTerm' => 'required_if:items.*.selected_collection,1',
+        'items.*.searchTerm' => 'required_if:items.*.collection,1',
         // 'order_number' => 'required|numeric|unique:orders,order_number|min:1',
         'order_number' => 'required|string|not_in:000|unique:orders,order_number',
-        'items.*.selectedCatalogue' => 'required_if:items.*.selected_collection,1',
-        'items.*.page_number' => 'required_if:items.*.selected_collection,1'
+        'items.*.selectedCatalogue' => 'required_if:items.*.collection,1',
+        'items.*.page_number' => 'required_if:items.*.collection,1'
     ];
 
     protected function messages(){
@@ -806,16 +811,6 @@ class OrderNew extends Component
                 $update_bill_book->save();
             }
 
-            Payment::create([
-                'order_id'=> $order->id,
-                'paid_amount' => $this->paid_amount
-            ]);
-
-           
-            
-
-           
-
             // Save order items and measurements
             foreach ($this->items as $k => $item) {
                 $collection_data = Collection::find($item['collection']);
@@ -913,12 +908,10 @@ class OrderNew extends Component
         $this->searchTerm = '';
     }
     public function SameAsMobile(){
-        if($this->is_wa_same == 0){
+        if($this->is_wa_same){
             $this->whatsapp_no = $this->phone;
-            $this->is_wa_same = 1;
         }else{
             $this->whatsapp_no = '';
-            $this->is_wa_same = 0;
         }
     }
     public function toggleShippingAddress()

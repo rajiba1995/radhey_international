@@ -112,16 +112,16 @@
                                     <span class="badge bg-{{ $order->status_class }}">{{ $order->status_label }}</span>
                                 </td>
                             <td class="text-center">
-                                        @if(empty($order->packingslip))
+                                    @if(empty($order->packingslip))
                                         <a href="{{route('admin.order.add_order_slip', $order->id)}}" class="btn btn-outline-primary select-md btn_action btn_outline">Generate Slip</a>
                                         <a href="{{route('admin.order.edit', $order->id)}}" class="btn btn-outline-success select-md btn_outline" data-toggle="tooltip">Edit</a>
-                                        <a href="" onclick="return confirm('Are you sure want to cancel the order?');"
+                                        <a href=""  wire:click="confirmCancelOrder({{ $order->id }})"
                                         class="btn btn-outline-danger select-md btn_outline">Cancel Order</a>
-                                        @else
-                                            <!-- <a href="#" class="btn btn-outline-primary select-md btn_action">Edit Slip</a> -->
-                                            <a href="#" class="btn btn-outline-success select-md btn_outline">Download Slip</a>
-                                            <button wire:click="downloadInvoice({{ $order->id }})" class="btn btn-outline-primary select-md btn_outline">Download Invoice</button>
-                                        @endif
+                                    @else
+                                        <!-- <a href="#" class="btn btn-outline-primary select-md btn_action">Edit Slip</a> -->
+                                        <a href="#" class="btn btn-outline-success select-md btn_outline">Download Slip</a>
+                                        <button wire:click="downloadInvoice({{ $order->id }})" class="btn btn-outline-primary select-md btn_outline">Download Invoice</button>
+                                    @endif
                                     <a href="{{route('admin.order.view',$order->id)}}" class="btn btn-outline-success select-md btn_action btn_outline">Details</a>
 
                                      {{-- <a href="{{route('admin.order.view',$order->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="View product">
@@ -151,4 +151,14 @@
         <div class="loader"></div>
     </div>
     @endif
+    
 </div>
+@push('js')
+<script>
+    window.addEventListener('confirmCancel', event => {
+        if (confirm('Are you sure you want to cancel the order?')) {
+            Livewire.emit('cancelOrder', event.detail.orderId);
+        }
+    });
+</script>
+@endpush
