@@ -157,7 +157,7 @@
 
         <div class="dotted-line"></div>
 
-        <p class="text-center">Your mobile number has been registered with <br>Big Bazaar.</p>
+        <p class="text-center">Your mobile number has been registered with <br>Radhey Intrtnational.</p>
 
         <p class="bold">PIECES PURCHASED: {{ $totalQuantity }}</p>
 
