@@ -24,7 +24,7 @@ class OrderIndex extends Component
     public $created_by, $search,$status,$start_date,$end_date; 
     public $invoiceId;
     // protected $listeners = ['cancelOrder'];
-
+    public $totalQuantity;
 
     protected $paginationTheme = 'bootstrap'; // Optional: For Bootstrap styling
     

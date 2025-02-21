@@ -99,10 +99,10 @@
                     </tr>
                 </table>
             </div>
-        </div>
-        <p><strong>Co/Ins Name:</strong> {{ $invoice->customer->company_name }}</p>
-        <p><strong>Address:</strong> 123 Main Street</p>
-
+        </div> 
+        <p><strong>Co/Ins Name:</strong> {{ $invoice->customer?$invoice->customer->company_name :" " }}</p>
+        <p><strong>Address:</strong> {{ $invoice->order?$invoice->order->billing_address:" "}}</p>
+        
         <div class="dotted-line"></div>
 
         <table class="table table-sm table-bordered mt-3">
@@ -115,15 +115,22 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($invoice->order->items as $item)
-                    <tr>
-                    {{ number_format($invoice->net_price/$item->quantity, 2) }}
-                        <td>{{ $item->product_name }}</td>
-                        <td>{{ $item->quantity }}</td>
-                        <!-- <td>3960.00</td> -->
-                        <td>{{ number_format( ($item->piece_price) *($item->quantity) , 2) }}</td>
-                    </tr>
-                @endforeach
+                @php
+                    $totalQuantity = 0;
+                @endphp
+                @if($invoice->order)
+                    @foreach($invoice->order->items as $item)
+                        @php
+                            $totalQuantity += $item->quantity;
+                        @endphp
+                        <tr>
+                            <td>{{ $item->product_name }}</td>
+                            <td>{{ $item->quantity }}</td>
+                            <!-- <td>3960.00</td> -->
+                            <td>{{ number_format( $item->total_price , 2) }}</td>
+                        </tr>
+                    @endforeach
+                @endif
             </tbody>
         </table>
 
@@ -152,7 +159,7 @@
 
         <p class="text-center">Your mobile number has been registered with <br>Big Bazaar.</p>
 
-        <p class="bold">PIECES PURCHASED: {{count($invoice->order->items)}}</p>
+        <p class="bold">PIECES PURCHASED: {{ $totalQuantity }}</p>
 
         <div class="dotted-line"></div>
 
