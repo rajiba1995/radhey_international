@@ -85,6 +85,64 @@ class SalesmanBillingIndex extends Component
     }
     
 
+    // public function submit(){
+    //     $this->validate([
+    //         'salesman_id' => [
+    //             'required',
+    //             'exists:users,id',
+    //         ],
+    //         'start_no' => [
+    //             'required',
+    //             function ($attribute, $value, $fail) {
+    //                 $overlap = SalesmanBilling::where(function ($query) {
+    //                     $query->whereBetween('start_no', [$this->start_no, $this->end_no])
+    //                           ->orWhereBetween('end_no', [$this->start_no, $this->end_no])
+    //                           ->orWhere(function ($query) {
+    //                               $query->where('start_no', '<=', $this->start_no)
+    //                                     ->where('end_no', '>=', $this->end_no);
+    //                           });
+    //                 })->first();
+    
+    //                 if ($overlap) {
+    //                     $salesmanName = $overlap->salesman ? $overlap->salesman->name : 'Unknown';
+    //                     $fail("The start or end number overlaps with the existing range of salesman '{$salesmanName}' (Range: {$overlap->start_no} to {$overlap->end_no}).");
+    //                 }
+    //             },
+    //         ],
+    //         'end_no' => [
+    //             'required',
+    //             function ($attribute, $value, $fail) {
+    //                 if ((int)$value <= (int)$this->start_no) {
+    //                     $fail('The end number must be greater than the start number.');
+    //                 }
+    //             },
+    //         ],
+    //     ]);
+
+    //     $this->numberLength = strlen((string)$this->end_no);
+    //     // Normalize the start and end numbers to match the length
+    //     $normalizedStartNo = str_pad($this->start_no, $this->numberLength, '0', STR_PAD_LEFT);
+    //     $normalizedEndNo = str_pad($this->end_no, $this->numberLength, '0', STR_PAD_LEFT);
+
+    //     $totalCount = ((int)$this->end_no - (int)$this->start_no + 1);
+    //     // Calculate no_of_used
+    //     $usedCount = SalesmanBilling::whereBetween('start_no', [$this->start_no, $this->end_no])
+    //                                     ->orWhereBetween('end_no', [$this->start_no, $this->end_no])
+    //                                     ->where('no_of_used', '>', 0)
+    //                                     ->count();
+
+    //     SalesmanBilling::create([
+    //         'salesman_id' => $this->salesman_id,
+    //         'start_no' => $normalizedStartNo,
+    //         'end_no' => $normalizedEndNo,
+    //         'total_count'=> $totalCount,
+    //         'no_of_used' => $usedCount,
+    //     ]);
+
+    //     $this->reset(['salesman_id', 'start_no', 'end_no']);
+    //     session()->flash('message', 'Salesman billing number added successfully!');
+    // }
+
     public function submit(){
         $this->validate([
             'salesman_id' => [
@@ -94,12 +152,15 @@ class SalesmanBillingIndex extends Component
             'start_no' => [
                 'required',
                 function ($attribute, $value, $fail) {
-                    $overlap = SalesmanBilling::where(function ($query) {
-                        $query->whereBetween('start_no', [$this->start_no, $this->end_no])
-                              ->orWhereBetween('end_no', [$this->start_no, $this->end_no])
-                              ->orWhere(function ($query) {
-                                  $query->where('start_no', '<=', $this->start_no)
-                                        ->where('end_no', '>=', $this->end_no);
+                    $startNo = (int) $this->start_no; // Convert to integer
+                    $endNo = (int) $this->end_no; // Convert to integer
+    
+                    $overlap = SalesmanBilling::where(function ($query) use ($startNo, $endNo) {
+                        $query->whereBetween('start_no', [$startNo, $endNo])
+                              ->orWhereBetween('end_no', [$startNo, $endNo])
+                              ->orWhere(function ($query) use ($startNo, $endNo) {
+                                  $query->where('start_no', '<=', $startNo)
+                                        ->where('end_no', '>=', $endNo);
                               });
                     })->first();
     
@@ -118,27 +179,29 @@ class SalesmanBillingIndex extends Component
                 },
             ],
         ]);
-
-        $this->numberLength = strlen((string)$this->end_no);
-        // Normalize the start and end numbers to match the length
+    
+        // Ensure consistent number length by padding numbers
+        $this->numberLength = strlen((string) $this->end_no);
         $normalizedStartNo = str_pad($this->start_no, $this->numberLength, '0', STR_PAD_LEFT);
         $normalizedEndNo = str_pad($this->end_no, $this->numberLength, '0', STR_PAD_LEFT);
-
+    
         $totalCount = ((int)$this->end_no - (int)$this->start_no + 1);
-        // Calculate no_of_used
-        $usedCount = SalesmanBilling::whereBetween('start_no', [$this->start_no, $this->end_no])
-                                        ->orWhereBetween('end_no', [$this->start_no, $this->end_no])
-                                        ->where('no_of_used', '>', 0)
-                                        ->count();
-
+    
+        // Calculate used numbers count
+        $usedCount = SalesmanBilling::where(function ($query) use ($normalizedStartNo, $normalizedEndNo) {
+            $query->whereBetween('start_no', [$normalizedStartNo, $normalizedEndNo])
+                  ->orWhereBetween('end_no', [$normalizedStartNo, $normalizedEndNo]);
+        })->where('no_of_used', '>', 0)->count();
+    
+        // Insert into SalesmanBilling
         SalesmanBilling::create([
             'salesman_id' => $this->salesman_id,
             'start_no' => $normalizedStartNo,
             'end_no' => $normalizedEndNo,
-            'total_count'=> $totalCount,
+            'total_count' => $totalCount,
             'no_of_used' => $usedCount,
         ]);
-
+    
         $this->reset(['salesman_id', 'start_no', 'end_no']);
         session()->flash('message', 'Salesman billing number added successfully!');
     }

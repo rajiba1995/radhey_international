@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Order;
 use App\Models\Order;
 use \App\Models\Product;
+use \App\Models\Invoice;
 use Livewire\Component;
 
 class OrderView extends Component
@@ -14,6 +15,13 @@ class OrderView extends Component
     public function mount($id){
         $this->orderId = $id;
         $this->order = Order::with('items')->findOrFail($this->orderId);
+        // dd($this->order);
+        $invoicePayment = Invoice::where('order_id', $this->order->id)->orderBy('id','desc')->first(); 
+        if($invoicePayment){
+            $this->order->total_amount = $invoicePayment->net_price;
+            $this->order->paid_amount = $invoicePayment->net_price - $invoicePayment->required_payment_amount;
+            $this->order->remaining_amount = $invoicePayment->required_payment_amount;
+        }
          // Fetch the latest 5 orders for the user (customer)
          $this->latestOrders = Order::where('customer_id',$this->order->customer_id)
                                      ->latest()
@@ -27,7 +35,7 @@ class OrderView extends Component
          // Fetch the order and its related items
          $order = Order::with('items')->findOrFail($this->orderId);
          // Fetch product details for each order item
-        $orderItems = $order->items->map(function ($item) use($order) {
+         $orderItems = $order->items->map(function ($item) use($order) {
             $product = Product::find($item->product_id);
             return [
                 'product_name' => $item->product_name ?? $product->name,

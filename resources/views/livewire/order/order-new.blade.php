@@ -87,7 +87,6 @@
                                 <th>Order Number</th>
                                 <th>Customer Name</th>
                                 <th>Billing Amount</th>
-                                <th>Remaining Amount</th>
                                 <th>Billing Date</th>
                                 <th>Action</th>
                             </tr>
@@ -98,7 +97,6 @@
                                 <td>{{ $order->order_number }}</td>
                                 <td>{{ $order->customer->name }}</td>
                                 <td>{{ $order->total_amount }}</td>
-                                <td>{{ $order->remaining_amount }}</td>
                                 <td>{{ $order->last_payment_date }}</td>
                                 <td>
                                     <a href="{{ route('admin.order.invoice', $order->id) }}"
@@ -506,10 +504,9 @@
                                     <input type="text" wire:model="items.{{ $index }}.searchTerm"
                                         wire:keyup="searchFabrics({{ $index }})" class="form-control form-control-sm"
                                         placeholder="Search by fabric name" id="searchFabric_{{ $index }}">
-                                    @error("items. $index .searchTerm")
+                                    @error("items.". $index .".searchTerm")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
-                                        placeholder="Search by fabric name" id="searchFabric_{{ $index }}" style="width: 187px;">
 
                                     @if(!empty($items[$index]['searchResults']))
                                     <div class="dropdown-menu show w-100" style="max-height: 187px; overflow-y: auto;">

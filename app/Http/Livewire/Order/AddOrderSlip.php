@@ -36,7 +36,7 @@ class AddOrderSlip extends Component
         if($this->order){
             foreach($this->order->items as $key=>$order_item){
                 $this->order_item[$key]['id']= $order_item->id;
-                $this->order_item[$key]['price']= (int)$order_item->price;
+                $this->order_item[$key]['price']= (int)$order_item->piece_price;
                 $this->order_item[$key]['quantity']= $order_item->quantity;
             }
             $this->total_amount = $this->order->total_amount;
@@ -159,10 +159,19 @@ class AddOrderSlip extends Component
     }
     public function updateOrderItems()
     {
+        $total_amount = 0;
         foreach ($this->order_item as $item) {
+            $total_amount += $item['price'];
             OrderItem::where('id', $item['id'])->update([
                 'total_price' => $item['price'],
                 'quantity' => $item['quantity'],
+            ]);
+
+        }
+        $order = Order::find($this->order->id);
+        if ($order) {
+            $order->update([
+                'total_amount' => $total_amount,
             ]);
         }
     }
