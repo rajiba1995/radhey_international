@@ -110,7 +110,7 @@
                 <tr>
                     <th>ITEM DESC</th>
                     <th>QTY</th>
-                    <!-- <th>DISC</th> -->
+                    <th>PAMT</th>
                     <th>NET AMT</th>
                 </tr>
             </thead>
@@ -126,7 +126,7 @@
                         <tr>
                             <td>{{ $item->product_name }}</td>
                             <td>{{ $item->quantity }}</td>
-                            <!-- <td>3960.00</td> -->
+                            <td>{{ number_format( ($item->total_price)/($item->quantity) , 2) }}</td>
                             <td>{{ number_format( $item->total_price , 2) }}</td>
                         </tr>
                     @endforeach
