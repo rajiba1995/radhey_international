@@ -115,7 +115,8 @@
                                     @if(empty($order->packingslip))
                                         <a href="{{route('admin.order.add_order_slip', $order->id)}}" class="btn btn-outline-primary select-md btn_action btn_outline">Generate Slip</a>
                                         <a href="{{route('admin.order.edit', $order->id)}}" class="btn btn-outline-success select-md btn_outline" data-toggle="tooltip">Edit</a>
-                                        <a href=""  wire:click="confirmCancelOrder({{ $order->id }})"
+                                        
+                                        <a href="javascript:void(0);" wire:click="confirmCancelOrder({{ $order->id }})"
                                         class="btn btn-outline-danger select-md btn_outline">Cancel Order</a>
                                     @else
                                         <!-- <a href="#" class="btn btn-outline-primary select-md btn_action">Edit Slip</a> -->
@@ -155,10 +156,34 @@
 </div>
 @push('js')
 <script>
-    window.addEventListener('confirmCancel', event => {
+//    document.addEventListener('DOMContentLoaded', function () {
+//     window.addEventListener('confirmCancel', function(event) {
+//         console.log("Received confirmCancel Event:", event.detail); // Debugging log
+
+//         if (confirm('Are you sure you want to cancel the order?')) {
+//             Livewire.dispatch('cancelOrder', { orderId: event.detail.orderId });
+//         }
+//     });
+// });
+document.addEventListener('DOMContentLoaded', function () {
+    window.addEventListener('confirmCancel', function(event) {
+        console.log("Received confirmCancel Event:", event.detail);
+
+        if (event.detail && event.detail.orderId) {
+            console.log("Order ID from Event:", event.detail.orderId);
+        } else {
+            console.error("Order ID is missing in the event.");
+        }
+
         if (confirm('Are you sure you want to cancel the order?')) {
-            Livewire.emit('cancelOrder', event.detail.orderId);
+            Livewire.dispatch('cancelOrder', event.detail.orderId);
         }
     });
-</script>
+});
+
+
+
+
+
+    </script>
 @endpush

@@ -97,7 +97,7 @@
                                     </p>
                                 </x-table-td>
                                 <x-table-td>
-                                    <button type="button" class="btn btn-outline-success select-md btn_outline" data-bs-toggle="modal" data-bs-target="#exampleModal{{$item->id}}"> View Items ({{count($item->order->items)}}) </button>
+                                    <button type="button" class="btn btn-outline-success select-md btn_outline" data-bs-toggle="modal" data-bs-target="#ViewProductModal{{$item->id}}"> View Items ({{count($item->order->items)}}) </button>
                                 </x-table-td>
                                 <x-table-td>{{number_format($item->net_price,2)}} </x-table-td>  
                                 <x-table-td>
@@ -106,6 +106,39 @@
                                     <a href="#" class="btn select-md btn-outline-warning btn_outline" onclick="return confirm('Are you sure want to revoke?');">Revoke</a>
                                 </x-table-td>  
                             </tr>
+
+                            {{-- View Product Modal --}}
+                            <div class="modal fade" id="ViewProductModal{{$item->id}}" tabindex="-1" aria-labelledby="ViewProductModalLabel{{$item->id}}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="ViewProductModalLabel{{$item->id}}">Invoice</h5>
+                                            <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">
+                                                Close
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                           
+                                            {{-- <table class="table table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Product</th>
+                                                        <th>Total Ctns</th>
+                                                        <th>Total Pcs</th>
+                                                        <th>Rate</th>
+                                                        <th>Amount</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="modal-items">
+                                                    <!-- Dynamic content will be inserted here -->
+                                                </tbody>
+                                            </table> --}}
+                                               
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @endforeach
                     </tbody>
                 </table>
