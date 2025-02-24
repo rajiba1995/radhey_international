@@ -29,7 +29,7 @@
         .table th {
             text-align: center;
             vertical-align: middle;
-            font-size: 48px;
+            font-size: 30px;
         }
 
         p,
@@ -61,7 +61,9 @@
         p {
             margin-bottom: 0px;
         }
-
+        .text-center {
+            text-align: center;
+        }
     </style>
 </head>
 
