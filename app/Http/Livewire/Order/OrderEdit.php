@@ -262,8 +262,8 @@ class OrderEdit extends Component
         'items.*.searchproduct' => 'required',
         // 'items.*.product_id' => 'required|integer',
         'items.*.price' => 'required|numeric|min:1',  // Ensuring that price is a valid number (and greater than or equal to 0).
-        'paid_amount' => 'required|numeric|min:1',   // Ensuring that price is a valid number (and greater than or equal to 0).
-        'payment_mode' => 'required|string',  // Ensuring that price is a valid number (and greater than or equal to 0).
+        // 'paid_amount' => 'required|numeric|min:1',   // Ensuring that price is a valid number (and greater than or equal to 0).
+        // 'payment_mode' => 'required|string',  // Ensuring that price is a valid number (and greater than or equal to 0).
         'items.*.measurements.*' => 'nullable',
         'items.*.selectedCatalogue' => 'required_if:items.*.selected_collection,1', 
         'items.*.page_number' => 'required_if:items.*.selected_collection,1'
@@ -698,9 +698,9 @@ class OrderEdit extends Component
     public function update()
     {
         // dd($this->items);
-        $this->validate();
         DB::beginTransaction();
         try {
+            $this->validate();
             $total_amount = array_sum(array_column($this->items, 'price'));
 
             // Retrieve user details

@@ -1,5 +1,5 @@
 <div class="container">
-    <section class="admin__title">                
+    <section class="admin__title">
         <h5>Invoices</h5>
         <span class="badge bg-info" id="timeout-span"></span>
     </section>
@@ -37,14 +37,14 @@
         <div class="card-header pb-0">
             <div class="row">
                 @if (session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
                 @endif
                 @if (session('error'))
-                    <div class="alert alert-danger">
-                        {{ session('error') }}
-                    </div>
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
                 @endif
             </div>
             <div class="table-responsive p-0">
@@ -63,49 +63,89 @@
                     <tbody>
                         @foreach ($invoices as $key=> $item)
                         @php
-                             $payment_status = 'Not Paid';
-                            $payment_class = 'danger';
-                            if($item->payment_status == 0){
-                                $payment_status = 'Not Paid';
-                                $payment_class = 'danger';
-                            }else if($item->payment_status == 1){
-                                $payment_status = 'Half Paid';
-                                $payment_class = 'warning';
-                            }else if($item->payment_status == 2){
-                                $payment_status = 'Full Paid';
-                                $payment_class = 'success';
-                            }
+                        $payment_status = 'Not Paid';
+                        $payment_class = 'danger';
+                        if($item->payment_status == 0){
+                        $payment_status = 'Not Paid';
+                        $payment_class = 'danger';
+                        }else if($item->payment_status == 1){
+                        $payment_status = 'Half Paid';
+                        $payment_class = 'warning';
+                        }else if($item->payment_status == 2){
+                        $payment_status = 'Full Paid';
+                        $payment_class = 'success';
+                        }
                         @endphp
-                            <tr>
-                                <x-table-td>
-                                    <p class="small text-muted mb-1 badge bg-warning">
-                                        Created At:- {{date('d/m/Y H:i A', strtotime($item->created_at))}}
-                                    </p>
-                                    @if (!empty($item->updated_by))
-                                    <p class="small text-muted mb-1 badge bg-warning">
-                                        Updated At:- {{date('d/m/Y H:i A', strtotime($item->updated_at))}}
-                                    </p>
-                                    @endif    
-                                </x-table-td>  
-                                <x-table-td>{{$item->invoice_no}} </x-table-td>  
-                                <x-table-td> 
-                                    <a href="{{ route('admin.order.view', $item->order_id) }}" class="btn btn-outline-secondary select-md btn_outline">{{$item->order->order_number}}</a> 
-                                </x-table-td>  
-                                <x-table-td>
-                                    <p class="small text-muted mb-1">
-                                        <span><strong>{{$item->customer->name}}</strong> </span>                     
-                                    </p>
-                                </x-table-td>
-                                <x-table-td>
-                                    <button type="button" class="btn btn-outline-success select-md btn_outline" data-bs-toggle="modal" data-bs-target="#exampleModal{{$item->id}}"> View Items ({{count($item->order->items)}}) </button>
-                                </x-table-td>
-                                <x-table-td>{{number_format($item->net_price,2)}} </x-table-td>  
-                                <x-table-td>
-                                    <a href="#" class="btn btn-outline-success select-md btn_outline">Edit</a>
-                                    <a href="#" class="btn select-md btn-outline-success btn_outline">Download</a>
-                                    <a href="#" class="btn select-md btn-outline-warning btn_outline" onclick="return confirm('Are you sure want to revoke?');">Revoke</a>
-                                </x-table-td>  
-                            </tr>
+                        <tr>
+                            <x-table-td>
+                                <p class="small text-muted mb-1 badge bg-warning">
+                                    Created At:- {{date('d/m/Y H:i A', strtotime($item->created_at))}}
+                                </p>
+                                @if (!empty($item->updated_by))
+                                <p class="small text-muted mb-1 badge bg-warning">
+                                    Updated At:- {{date('d/m/Y H:i A', strtotime($item->updated_at))}}
+                                </p>
+                                @endif
+                            </x-table-td>
+                            <x-table-td>{{$item->invoice_no}} </x-table-td>
+                            <x-table-td>
+                                <a href="{{ route('admin.order.view', $item->order_id) }}"
+                                    class="btn btn-outline-secondary select-md btn_outline">{{$item->order->order_number}}</a>
+                            </x-table-td>
+                            <x-table-td>
+                                <p class="small text-muted mb-1">
+                                    <span><strong>{{$item->customer->name}}</strong> </span>
+                                </p>
+                            </x-table-td>
+                            <x-table-td>
+                                <button type="button" class="btn btn-outline-success select-md btn_outline"
+                                    data-bs-toggle="modal" data-bs-target="#ViewProductModal{{$item->id}}"> View Items
+                                    ({{count($item->order->items)}}) </button>
+                            </x-table-td>
+                            <x-table-td>{{number_format($item->net_price,2)}} </x-table-td>
+                            <x-table-td>
+                                <a href="#" class="btn btn-outline-success select-md btn_outline">Edit</a>
+                                <a href="#" class="btn select-md btn-outline-success btn_outline">Download</a>
+                                <a href="#" class="btn select-md btn-outline-warning btn_outline"
+                                    onclick="return confirm('Are you sure want to revoke?');">Revoke</a>
+                            </x-table-td>
+                        </tr>
+
+                        {{-- View Product Modal --}}
+                        <tr>
+                            <td colspan="7">
+                        <div class="modal fade" id="ViewProductModal{{$item->id}}" tabindex="-1"
+                            aria-labelledby="ViewProductModalLabel{{$item->id}}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="ViewProductModalLabel{{$item->id}}">Invoice</h5>
+                                        <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">
+                                            Close
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Product</th>
+                                                    <th>Total Ctns</th>
+                                                    <th>Total Pcs</th>
+                                                    <th>Rate</th>
+                                                    <th>Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="modal-items">
+                                                <!-- Dynamic content will be inserted here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            </td>
+                        </tr>
                         @endforeach
                     </tbody>
                 </table>
@@ -117,8 +157,8 @@
         </div>
     </div>
     @if(empty($search))
-        <div class="loader-container" wire:loading>
-            <div class="loader"></div>
-        </div>
+    <div class="loader-container" wire:loading>
+        <div class="loader"></div>
+    </div>
     @endif
 </div>
