@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\PackingSlip;
 use App\Models\Invoice;
+use App\Models\InvoiceProduct;
 use App\Models\PaymentCollection;
 use App\Helpers\Helper;
 use Illuminate\Support\Facades\DB;
@@ -203,7 +204,7 @@ class AddOrderSlip extends Component
             $lastInvoice = Invoice::latest()->first();
             $invoice_no = str_pad(optional($lastInvoice)->id + 1, 10, '0', STR_PAD_LEFT);
 
-            Invoice::create([
+    $invoice = Invoice::create([
                 'order_id' => $this->order->id,
                 'customer_id' => $this->customer_id,
                 'user_id' => $this->staff_id,
@@ -216,6 +217,23 @@ class AddOrderSlip extends Component
                 // 'updated_by' => auth()->id(),
                 'updated_at' => now(),
             ]);
+
+            // Fetch Products from Order Items
+            $orderItems = $order->items;
+             // Insert Invoice Products
+             foreach ($orderItems as $key => $item) {
+                InvoiceProduct::create([
+                    'invoice_id' =>  $invoice->id,
+                    'product_id' => $item->product_id,
+                    'product_name'=> $item->product? $item->product->name : "",
+                    'quantity' => $item->quantity,
+                    'single_product_price'=> $item->piece_price,
+                    'total_price' => $item->total_price,
+                    'is_store_address_outstation' => 0,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+             }
         }  
     }
 

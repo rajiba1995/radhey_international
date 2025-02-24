@@ -104,7 +104,7 @@
                             </x-table-td>
                             <x-table-td>{{number_format($item->net_price,2)}} </x-table-td>
                             <x-table-td>
-                                <a href="#" class="btn btn-outline-success select-md btn_outline">Edit</a>
+                                <a href="{{route('admin.order.invoice.edit',$item->id)}}" class="btn btn-outline-success select-md btn_outline">Edit</a>
                                 <a href="#" class="btn select-md btn-outline-success btn_outline">Download</a>
                                 <a href="#" class="btn select-md btn-outline-warning btn_outline"
                                     onclick="return confirm('Are you sure want to revoke?');">Revoke</a>
@@ -119,7 +119,7 @@
                             <div class="modal-dialog modal-dialog-centered modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="ViewProductModalLabel{{$item->id}}">Invoice</h5>
+                                        <h5 class="modal-title" id="ViewProductModalLabel{{$item->id}}"># {{$item->invoice_no}} / {{$item->customer?$item->customer->name : ""}}</h5>
                                         <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">
                                             Close
                                         </button>
@@ -130,14 +130,21 @@
                                                 <tr>
                                                     <th>#</th>
                                                     <th>Product</th>
-                                                    <th>Total Ctns</th>
-                                                    <th>Total Pcs</th>
-                                                    <th>Rate</th>
-                                                    <th>Amount</th>
+                                                    <th>Quantity</th>
+                                                    <th>Piece Price</th>
+                                                    <th>Total Amount</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="modal-items">
-                                                <!-- Dynamic content will be inserted here -->
+                                                @foreach ($item->order->items as $key => $product)
+                                                    <tr>
+                                                        <td>{{$key + 1}}</td>
+                                                        <td>{{$product->product_name}}</td>
+                                                        <td>{{$product->quantity}}</td>
+                                                        <td>{{number_format($product->piece_price,2)}}</td>
+                                                        <td>{{number_format($product->total_price,2)}}</td>
+                                                    </tr>
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>
