@@ -64,6 +64,7 @@
         .text-center {
             text-align: center;
         }
+        
     </style>
 </head>
 
@@ -86,20 +87,24 @@
 
             <!-- Right Column (Amount Details) -->
             <div class="col-4">
-                <table class="table table-sm table-bordered amount-box">
-                    <tr>
-                        <td>Amount:</td>
-                        <td class="fw-bold">{{ number_format($invoice->net_price, 2) }}</td>
-                    </tr>
-                    <tr>
-                        <td>Deposit:</td>
-                        <td class="fw-bold">{{ number_format($invoice->net_price-$invoice->required_payment_amount, 2) }}</td>
-                    </tr>
-                    <tr>
-                        <td>Balance:</td>
-                        <td class="fw-bold">{{ number_format($invoice->required_payment_amount, 2) }}</td>
-                    </tr>
-                </table>
+                <div style="text-align: right;">
+                    <table class="table table-sm table-bordered amount-box">
+                        <tbody>
+                            <tr>
+                                <td>Amount:</td>
+                                <td class="fw-bold">{{ number_format($invoice->net_price, 2) }}</td>
+                            </tr>
+                            <tr>
+                                <td>Deposit:</td>
+                                <td class="fw-bold">{{ number_format($invoice->net_price - $invoice->required_payment_amount, 2) }}</td>
+                            </tr>
+                            <tr>
+                                <td>Balance:</td>
+                                <td class="fw-bold">{{ number_format($invoice->required_payment_amount, 2) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div> 
         <p><strong>Co/Ins Name:</strong> {{ $invoice->customer?$invoice->customer->company_name :" " }}</p>
