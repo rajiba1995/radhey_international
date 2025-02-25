@@ -906,3 +906,9 @@ table td h6.text-sm {
     color: #000;
     background: #DF6;
 }
+.btn.btn-sm i, .btn-group-sm > .btn i{
+    font-size:small;
+}
+.order-item{
+    border-bottom: 1px solid #344767;
+}

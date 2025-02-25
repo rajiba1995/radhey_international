@@ -106,7 +106,7 @@ class OrderEdit extends Component
                     'searchproduct' => $item->product_name,
                     'price' => round($item->total_price),
                     'selected_collection' => $item->collection,
-                    'collection' => Collection::orderBy('title', 'ASC')->get(),
+                    'collection' => Collection::orderBy('title', 'ASC')->whereIn('id',[1,2])->get(),
                     'selected_category' => $item->category,
                     'categories' =>Category::orderBy('title', 'ASC')->where('collection_id', $item->collection)->get(),
                     'searchTerm' => optional($selectedFabric)->title, // Set default search value
@@ -176,7 +176,7 @@ class OrderEdit extends Component
 
         $this->customers = User::where('user_type', 1)->where('status', 1)->orderBy('name', 'ASC')->get();
         $this->categories = Category::where('status', 1)->orderBy('title', 'ASC')->get();
-        $this->collections = Collection::orderBy('title', 'ASC')->get();
+        $this->collections = Collection::orderBy('title', 'ASC')->whereIn('id',[1,2])->get();
 
         $this->paid_amount = $this->orders->paid_amount;
         $this->billing_amount =  $this->orders->total_amount;
@@ -194,7 +194,7 @@ class OrderEdit extends Component
            
             'selected_collection' => '',
             'selected_category' => '',
-            'collection' =>  Collection::orderBy('title', 'ASC')->get(),
+            'collection' =>  Collection::orderBy('title', 'ASC')->whereIn('id',[1,2])->get(),
             'categories' => [],
             'searchproduct' => '',
             'selected_fabric' => null,
@@ -697,10 +697,11 @@ class OrderEdit extends Component
 
     public function update()
     {
+        $this->validate();
         // dd($this->items);
         DB::beginTransaction();
         try {
-            $this->validate();
+            
             $total_amount = array_sum(array_column($this->items, 'price'));
 
             // Retrieve user details
@@ -874,7 +875,8 @@ class OrderEdit extends Component
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::error('Error updating order: ' . $e->getMessage());
-            dd($e->getMessage());
+            session()->flash('error', $e->getMessage());
+            // dd($e->getMessage());
             session()->flash('error', '🚨 Something went wrong. The operation has been rolled back.');
         }
     }

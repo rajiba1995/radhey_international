@@ -212,7 +212,7 @@
                         </div>
                     </div>
 
-                    <h6 class="badge bg-danger custom_danger_badge mb-3">Account Information</h6>
+                    {{-- <h6 class="badge bg-danger custom_danger_badge mb-3">Account Information</h6>
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label for="gst_number" class="form-label">GST Number</label>
@@ -243,7 +243,7 @@
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                    </div>
+                    </div> --}}
                     <button type="submit"class="btn btn-sm btn-success"><i class="material-icons text-white" style="font-size: 15px;">add</i>Add</button>
                 </form>
             </div>

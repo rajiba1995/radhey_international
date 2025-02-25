@@ -15,7 +15,6 @@
             <div class="row align-items-center justify-content-end">
                 <div class="col-auto">
                     <div class="row g-3 align-items-center">
-                        
                         {{-- Search by Date Range --}}
                         <div class="col-auto mt-0">
                             <label class="form-label"><strong>From Date</strong></label>
@@ -28,7 +27,7 @@
 
                         {{-- User Type Dropdown --}}
                         <div class="col-auto mt-0">
-                            <label class="form-label"><strong>Chose User Type</strong></label>
+                            <label class="form-label"><strong>User Type</strong></label>
                             <select wire:change="getUser" wire:model="user_type" wire:key="user_type" class="form-control select-md bg-white">
                                 <option value="" hidden selected>Select User Type</option>
                                 <option value="staff">Staff</option>
@@ -58,9 +57,9 @@
                             @endif
 
                             @elseif($user_type === 'customer') {{-- Customer --}}
-                            <label class="form-label"><strong>Search Customer</strong></label>
+                            <label class="form-label"><strong>Customer</strong></label>
                             <input type="text" wire:model.defer="customerSearchTerm"
-                                wire:keyup="searchCustomer" class="form-control form-control-sm"
+                                wire:keyup="searchCustomer" class="form-control form-control-sm bg-white"
                                 placeholder="Search by customer name" id="searchCustomer">
 
                             @if(!empty($customerSearchResults))

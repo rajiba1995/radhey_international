@@ -40,12 +40,15 @@ class UserLedgerReport extends Component
     public $search;
     public $showList = false; 
     public $ledgerData = [];
+    public function mount(){
+        $this->from_date = date('Y-m-01'); // First day of the current month
+        $this->to_date = date('Y-m-d'); 
+        $this->bank_cash = 'cash'; 
+    }
     public function updatingSelectedCustomer()
     {
         $this->resetPage();
     }
-
-  
 
     public function FindCustomer($searchTerm)
     {
@@ -63,8 +66,8 @@ class UserLedgerReport extends Component
 
     public function resetForm()
     {
-        $this->from_date = '';
-        $this->to_date = '';
+        // $this->from_date = '';
+        // $this->to_date = '';
         $this->user_type = '';
         $this->user_id = '';
         $this->payment_type = '';
@@ -231,8 +234,7 @@ class UserLedgerReport extends Component
         $this->showList = true;
     }
 
-    public function render()
-    {
+    public function render(){
         $staffs = User::where('user_type', 'staff')->get();
         $customers = User::where('user_type', 'customer')->get();
         $suppliers = Supplier::all();

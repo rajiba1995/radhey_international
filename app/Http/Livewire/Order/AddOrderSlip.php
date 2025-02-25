@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\PackingSlip;
 use App\Models\Invoice;
+use App\Models\Ledger;
 use App\Models\InvoiceProduct;
 use App\Models\PaymentCollection;
 use App\Helpers\Helper;
@@ -23,6 +24,8 @@ class AddOrderSlip extends Component
     public $order_item = [];
     public $activePayementMode = 'cash';
     public $staffs =[];
+    public $from_date;
+    public $to_date;
     public $payment_collection_id = "";
     public $readonly = "readonly";
     public $customer,$customer_id, $staff_id,$staff_name, $total_amount, $actual_amount, $voucher_no, $payment_date, $payment_mode, $chq_utr_no, $bank_name, $receipt_for = "Customer",$amount;
@@ -47,6 +50,8 @@ class AddOrderSlip extends Component
             $this->staff_id = $this->order->createdBy->id;
             $this->staff_name = $this->order->createdBy->name;
             $this->payment_date = date('Y-m-d');
+            $this->from_date = date('Y-m-01'); // First day of the current month
+            $this->to_date = date('Y-m-d'); 
         }
         $this->voucher_no = 'PAYRECEIPT'.time();
         $this->staffs = User::where('user_type', 0)->where('designation', 2)->select('name', 'id')->orderBy('name', 'ASC')->get();
@@ -179,16 +184,12 @@ class AddOrderSlip extends Component
     public function createPackingSlip()
     {
         $order = Order::find($this->order->id);
-        $remaining_amount =  $this->amount-$this->amount;
-        // dd( $remaining_amount );
         $remaining_amount = (is_numeric($this->actual_amount) ? (double) $this->actual_amount : 0) - 
             (is_numeric($this->amount) ? (double) $this->amount : 0);
             // $required_payment_amount = is_numeric($remaining_amount) ? $remaining_amount : 0;
 
         if ($order) {
             // Calculate the remaining amount
-          
-
             $packingSlip=PackingSlip::create([
                 'order_id' => $this->order->id,
                 'customer_id' => $this->customer_id,
@@ -201,10 +202,12 @@ class AddOrderSlip extends Component
                 // 'updated_by' => auth()->id(),
                 // 'updated_at' => now(),
             ]);
-            $lastInvoice = Invoice::latest()->first();
+
+            
+            $lastInvoice = Invoice::orderBy('id','DESC')->first();
             $invoice_no = str_pad(optional($lastInvoice)->id + 1, 10, '0', STR_PAD_LEFT);
 
-    $invoice = Invoice::create([
+        $invoice = Invoice::create([
                 'order_id' => $this->order->id,
                 'customer_id' => $this->customer_id,
                 'user_id' => $this->staff_id,
@@ -234,6 +237,21 @@ class AddOrderSlip extends Component
                     'updated_at' => now(),
                 ]);
              }
+
+            Ledger::insert([
+                'user_type' => 'customer',
+                'transaction_id' => $invoice_no,
+                'customer_id' => $order->customer_id,
+                'transaction_amount' => $order->total_amount,
+                'bank_cash' => 'cash',
+                'is_credit' => 0,
+                'is_debit' => 1,
+                'entry_date' => date('Y-m-d H:i:s'),
+                'purpose' => 'invoice',
+                'purpose_description' => 'invoice raised of sales order for customer',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ]);
         }  
     }
 
