@@ -33,7 +33,9 @@ class OrderIndex extends Component
     public function resetForm(){
         $this->reset(['search', 'start_date','end_date','created_by']);
     }
-    public function mount(){
+    public function mount($customer_id = null)
+    {
+        $this->customer_id = $customer_id; // Store the customer_id if provided
     }
     public function FindCustomer($keywords){
         $this->search = $keywords;
@@ -79,6 +81,9 @@ class OrderIndex extends Component
         $this->usersWithOrders = User::whereHas('orders')->get();
         $orders = Order::query()
         ->where('status', '!=' , 'Cancelled')
+        ->when($this->customer_id, function ($query) { // If customer_id is set, filter orders
+            $query->where('customer_id', $this->customer_id);
+        })
         ->when($this->search, function ($query) {
             $query->where('order_number', 'like', '%' . $this->search . '%')
                   ->orWhereHas('customer', function ($q) {
@@ -98,7 +103,6 @@ class OrderIndex extends Component
         })
         ->orderBy('created_at', 'desc')
         ->paginate(20);
-    
 
         return view('livewire.order.order-index', [
             'orders' => $orders,
