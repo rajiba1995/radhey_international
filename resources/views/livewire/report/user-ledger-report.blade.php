@@ -285,8 +285,6 @@
         </div>
     </div>
     @endif
-
-
     <div class="loader-container" wire:loading>
         <div class="loader"></div>
     </div>
