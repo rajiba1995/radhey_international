@@ -1,28 +1,17 @@
-<div class="container-fluid py-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="block-heading m-0">Stock Overview</h4>
-        <!-- <div class="input-group w-50 search-input-group">
-            <input
-                type="text"
-                wire:model.debounce.500ms="search"
-                class="form-control border"
-                placeholder="Search here..."
-            />
-            <button type="button" wire:click="$refresh" class="btn btn-outline-primary mb-0">
-                <span class="material-icons">search</span>
-            </button>
-        </div> -->
-    </div>
+<div class="container">
+    <section class="admin__title">
+        <h5>Stock Overview</h5>
+    </section>
 
     <div class="d-flex justify-start gap-4 mb-4">
-        <button
-            class="btn btn-sm px-4 py-2 {{ $activeTab === 'product' ? 'btn-primary' : 'btn-outline-secondary' }}"
+    <button
+            class="btn btn-outline-denger select-md btn_outline {{ $activeTab === 'product' ? 'btn-primary' : 'btn-outline-secondary' }}"
             wire:click="setActiveTab('product')"
         >
             Product Stock
         </button>
         <button
-            class="btn btn-sm px-4 py-2 {{ $activeTab === 'fabric' ? 'btn-primary' : 'btn-outline-secondary' }}"
+            class="btn btn-outline-success select-md btn_outline {{ $activeTab === 'fabric' ? 'btn-primary' : 'btn-outline-secondary' }}"
             wire:click="setActiveTab('fabric')"
         >
             Fabric Stock
@@ -47,23 +36,42 @@
                         </button>
                     </div> -->
 
-                    <div class="d-flex justify-content-end gap-2 mb-3">
-                        <div class="position-relative">
-                            <input type="text" wire:model="searchProduct"  class="searchInput form-control w-auto" placeholder="Search by Product Name" />
+
+                    <div class="search__filter">
+                        <div class="row align-items-center justify-content-end">
+                            <div class="col-auto">
+                                <div class="row g-3 align-items-center">
+                                    <div class="col-auto" style="margin-top: -27px;">
+                                        <label for="" class="date_lable">Start Date</label>
+                                        <input type="date" wire:model="startDateProduct" wire:change="AddStartDate($event.target.value)"
+                                            class="form-control select-md bg-white" placeholder="Start Date">
+                                    </div>
+                                    <div class="col-auto" style="margin-top: -27px;">
+                                        <label for="" class="date_lable">End date</label>
+                                        <input type="date" wire:model="endDateProduct" wire:change="AddEndDate($event.target.value)"
+                                            class="form-control select-md bg-white" placeholder="End Date">
+                                    </div>
+                                    <div class="col-auto mt-0">
+                                        <input type="text" wire:model="searchProduct" class="form-control select-md bg-white" id="customer"
+                                            placeholder="Search by product name" value="" style="width: 100px;"
+                                            wire:keyup="FindCustomer($event.target.value)">
+                                    </div>
+                                    
+                                    <div class="col-auto mt-3">
+                                        <button type="button" wire:click="resetForm"
+                                            class="btn btn-outline-danger select-md">Clear</button>
+                                    </div>
+                                    <div class="col-auto">
+                                        <a href="javscript:void(0)" wire:click="exportStockProduct" class="btn btn-outline-success select-md"><i
+                                                class="fas fa-file-csv me-1"></i>Export Product CSV</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <input type="date" wire:model="startDateProduct" class="form-control w-auto" />
-                        <input type="date" wire:model="endDateProduct" class="form-control w-auto" />
-                        <button type="button" wire:click="$refresh" class="btn btn-outline-primary mb-0">
-                            <span class="material-icons">search</span>
-                        </button>
-                        <button type="button" class="btn btn-outline-primary mb-0"
-                            wire:click="clearProductFilters">
-                            ✖
-                        </button>
-                        <button wire:click="exportStockProduct" class="btn btn-success btn-sm">
-                            Export Product CSV
-                        </button>
                     </div>
+
+
+                   
 
                     <h5 class="mb-3">Product Stock</h5>
                     
@@ -108,22 +116,38 @@
         @elseif ($activeTab === 'fabric')
             <div class="card">
                 <div class="card-body">
-                    <div class="d-flex justify-content-end gap-2 mb-3">
-                        <input type="text" wire:model="searchFabric" class="form-control w-auto" placeholder="Search by Fabric Name" />
-                        <input type="date" wire:model="startDateFabric" class="form-control w-auto" />
-                        <input type="date" wire:model="endDateFabric" class="form-control w-auto" />
-                        <button type="button" wire:click="$refresh" class="btn btn-outline-primary mb-0">
-                            <span class="material-icons">search</span>
-                        </button>
-                        <button type="button" class="btn btn-outline-primary mb-0"
-                            wire:click="clearFabricFilters">
-                            ✖
-                        </button>
-                        <button wire:click="exportStockFabric" class="btn btn-success btn-sm">
-                            Export Fabric CSV
-                        </button>
+                <div class="search__filter">
+                        <div class="row align-items-center justify-content-end">
+                            <div class="col-auto">
+                                <div class="row g-3 align-items-center">
+                                    <div class="col-auto" style="margin-top: -27px;">
+                                        <label for="" class="date_lable">Start Date</label>
+                                        <input type="date" wire:model="startDateFabric" wire:change="AddStartDate($event.target.value)"
+                                            class="form-control select-md bg-white" placeholder="Start Date">
+                                    </div>
+                                    <div class="col-auto" style="margin-top: -27px;">
+                                        <label for="" class="date_lable">End date</label>
+                                        <input type="date" wire:model="endDateFabric" wire:change="AddEndDate($event.target.value)"
+                                            class="form-control select-md bg-white" placeholder="End Date">
+                                    </div>
+                                    <div class="col-auto mt-0">
+                                        <input type="text" wire:model="searchFabric" class="form-control select-md bg-white" id="customer"
+                                            placeholder="Search by product name" value="" style="width: 100px;"
+                                            wire:keyup="FindCustomer($event.target.value)">
+                                    </div>
+                                    
+                                    <div class="col-auto mt-3">
+                                        <button type="button" wire:click="resetForm"
+                                            class="btn btn-outline-danger select-md">Clear</button>
+                                    </div>
+                                    <div class="col-auto">
+                                        <a href="javscript:void(0)" wire:click="exportStockFabric" class="btn btn-outline-success select-md"><i
+                                                class="fas fa-file-csv me-1"></i>Export Fabric CSV</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
 
                     <h5 class="mb-3">Fabric Stock</h5>
                     <div class="table-responsive">

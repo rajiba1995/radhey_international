@@ -38,7 +38,8 @@ class UserLedgerReport extends Component
     public $supplierSearchTerm = '';
     public $supplierSearchResults = [];
     public $search;
-    
+    public $showList = false; 
+    public $ledgerData = [];
     public function updatingSelectedCustomer()
     {
         $this->resetPage();
@@ -169,11 +170,43 @@ class UserLedgerReport extends Component
             $this->suppliers = Supplier::all();  // Fetch supplier data
         }
     }
+    // public function getUserLedger()
+    // {
+    //     $this->validate([
+    //         'from_date' => 'required|date',
+    //         'to_date' => 'required|date|after_or_equal:from_date',
+    //     ]);
+    //     $query = Ledger::query();
+
+    //     // Apply filters based on selected criteria
+    //     if ($this->from_date) {
+    //         $query->whereDate('entry_date', '>=', $this->from_date);
+    //     }
+    //     if ($this->to_date) {
+    //         $query->whereDate('entry_date', '<=', $this->to_date);
+    //     }
+    //     if ($this->user_type) {
+    //         if ($this->user_type === 'staff' && $this->staff_id) {
+    //             $query->where('staff_id', $this->staff_id);
+    //         } elseif ($this->user_type === 'customer' && $this->customer_id) {
+    //             $query->where('customer_id', $this->customer_id);
+    //         } elseif ($this->user_type === 'supplier' && $this->supplier_id) {
+    //             $query->where('supplier_id', $this->supplier_id);
+    //         }
+    //     }
+    //     if ($this->bank_cash) {
+    //         $query->where('bank_cash', $this->bank_cash);
+    //     }
+
+    //     // Eager load related models and paginate
+    //     $paymentData = $query->with(['staff', 'customer', 'supplier'])->orderBy('entry_date', 'desc')->paginate(10);
+    //     $this->showList = true;
+    //     return $paymentData;
+    // }
     public function getUserLedger()
     {
         $query = Ledger::query();
 
-        // Apply filters based on selected criteria
         if ($this->from_date) {
             $query->whereDate('entry_date', '>=', $this->from_date);
         }
@@ -193,24 +226,26 @@ class UserLedgerReport extends Component
             $query->where('bank_cash', $this->bank_cash);
         }
 
-        // Eager load related models and paginate
-        $paymentData = $query->with(['staff', 'customer', 'supplier'])->orderBy('entry_date', 'desc')->paginate(10);
-
-        return $paymentData;
+        // Fetch data and update visibility
+        $this->ledgerData = $query->get(); // Store data in property
+        $this->showList = true;
     }
-    
+
     public function render()
     {
-        // Fetch user lists
         $staffs = User::where('user_type', 'staff')->get();
         $customers = User::where('user_type', 'customer')->get();
         $suppliers = Supplier::all();
 
-        // Get the filtered ledger data
-        $paymentData = $this->getUserLedger(); 
-
-        return view('livewire.report.user-ledger-report', compact('paymentData', 'staffs', 'customers', 'suppliers'));
+        return view('livewire.report.user-ledger-report', [
+            'staffs' => $staffs,
+            'customers' => $customers,
+            'suppliers' => $suppliers,
+            'ledgerData' => $this->ledgerData // Use the property
+        ]);
     }
+
+    
     public function exportLedger()
     {
         // Call the LedgerExport with dynamic filters
