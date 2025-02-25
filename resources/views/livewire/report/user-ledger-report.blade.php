@@ -129,12 +129,6 @@
                     <i class="fas fa-file-pdf"> </i> Download Pdf
                 </button>
                 </div>
-
-                <!-- <div class="col-auto">
-                    <button wire:click="generatePDF" class="btn btn-outline-primary select-md btn_outline">Download Invoice</button>
-                </div> -->
-
-
                
                 <div class="row g-3 align-items-center">
                     <div class="col-auto">
