@@ -100,7 +100,7 @@
                 <th>Credit</th>
                 <th>Bank/Cash</th>
                 <th>Entered Date</th>
-                <th>Amount</th>
+                <!-- <th>Amount</th> -->
             </tr>
         </thead>
         <tbody>
@@ -111,11 +111,11 @@
                     <td>{{ date('d/m/Y', strtotime($entry->created_at)) }}</td>
                     <td>{{ $entry->transaction_id }}</td>
                     <td>{{ ucwords(str_replace('_', ' ',$entry->purpose)) }}</td>
-                    <td>{{ number_format($entry->debit, 2) }}</td>
-                    <td>{{ number_format($entry->credit, 2) }}</td>
+                    <td>  @if($entry->is_debit == 1){{ number_format((float)$entry->transaction_amount) }}@endif</td>
+                    <td> @if($entry->is_credit == 1){{ number_format((float)$entry->transaction_amount) }}@endif</td>
                     <td>{{ $entry->bank_cash }}</td>
                     <td>{{ date('d/m/Y', strtotime($entry->entered_date)) }}</td>
-                    <td>{{ number_format($entry->amount, 2) }}</td>
+                    <!-- <td>{{ number_format($entry->amount, 2) }}</td> -->
                 </tr>
             @endforeach
         </tbody>

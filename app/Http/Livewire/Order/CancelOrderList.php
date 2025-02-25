@@ -24,8 +24,6 @@ class CancelOrderList extends Component
    
     public function render()
     {
-        // Fetch users for the dropdown
-        // $users = User::all();
         $this->usersWithOrders = User::whereHas('orders')->get();
         $orders = Order::query()
         ->where('status', 'Cancelled')
@@ -55,8 +53,5 @@ class CancelOrderList extends Component
             'usersWithOrders' => $this->usersWithOrders, 
         ]);
     }
-    // public function render()
-    // {
-    //     return view();
-    // }
+   
 }
