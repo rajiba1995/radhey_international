@@ -50,8 +50,6 @@ class AddOrderSlip extends Component
             $this->staff_id = $this->order->createdBy->id;
             $this->staff_name = $this->order->createdBy->name;
             $this->payment_date = date('Y-m-d');
-            $this->from_date = date('Y-m-01'); // First day of the current month
-            $this->to_date = date('Y-m-d'); 
         }
         $this->voucher_no = 'PAYRECEIPT'.time();
         $this->staffs = User::where('user_type', 0)->where('designation', 2)->select('name', 'id')->orderBy('name', 'ASC')->get();
