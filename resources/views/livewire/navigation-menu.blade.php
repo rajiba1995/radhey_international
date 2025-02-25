@@ -91,7 +91,7 @@
                 </li>
             </ul>
             {{-- Report --}}
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['user.ledger']) ? 'active ' : '' }}"
                     href="#ReportSubmenu" data-bs-toggle="collapse"
                     aria-expanded="{{ in_array(Route::currentRouteName(), ['user.ledger']) ? 'true' : 'false' }}">
@@ -109,7 +109,7 @@
                         User Ledger
                     </a>
                 </li>
-            </ul>
+            </ul> --}}
             {{-- Product Management --}}
             <li class="nav-item">
                 <a class="nav-link text-white {{ Request::is('admin/products*') || in_array(Route::currentRouteName(), ['product.view', 'product.gallery', 'product.add', 'product.update', 'admin.categories', 'admin.subcategories', 'measurements.index', 'product.fabrics','admin.collections.index']) ? 'active ' : '' }}"
