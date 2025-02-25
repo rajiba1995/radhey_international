@@ -121,8 +121,20 @@
         <div class="row align-items-center justify-content-end">
             <div class="col-auto">
                 <div class="col-auto">
-                    <button wire:click="exportLedger" class="btn btn-outline-success select-md"><i class="fas fa-file-csv me-1"></i>Export CSV</button>
+                <button wire:click="exportLedger" class="btn btn-outline-success select-md">
+                    <i class="fas fa-file-export"></i> Export CSV
+                </button>
+                <button wire:click="generatePDF" class="btn btn-outline-success select-md">
+                    <i class="fas fa-file-pdf"> </i> Download Pdf
+                </button>
                 </div>
+
+                <!-- <div class="col-auto">
+                    <button wire:click="generatePDF" class="btn btn-outline-primary select-md btn_outline">Download Invoice</button>
+                </div> -->
+
+
+               
                 <div class="row g-3 align-items-center">
                     <div class="col-auto">
                     </div>
@@ -142,49 +154,129 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-responsive">
-                                <table class="table table-sm table-hover ledger">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Updated Date</th>
-                                            <th>Date</th>
-                                            <th>Transaction Id / Voucher No</th>
-                                            <th>Purpose</th>
-                                            <th>Debit</th>
-                                            <th>Credit</th>
-                                            <th>Bank/Cash</th>
-                                            <th>Entered at</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($ledgerData as $index => $payment)
-                                            <tr>
-                                                <td>{{ $index + 1 }}</td>
-                                                <td>{{ date('d/m/Y', strtotime($payment->updated_at)) }}</td>
-                                                <td>{{ date('d/m/Y', strtotime($payment->created_at)) }}</td>
-                                                <td>{{ $payment->transaction_id }}</td>
-                                                <td><strong>{{ ucwords(str_replace('_', ' ', $payment->purpose)) }}</strong></td>
-                                                @if($payment->is_debit == 1)
-                                                    <td>{{ number_format((float)$payment->transaction_amount) }}</td>
-                                                    <td></td>
-                                                @else
-                                                    <td></td>
-                                                    <td>{{ number_format((float)$payment->transaction_amount) }}</td>
-                                                @endif
-                                                <td><span class="badge bg-success">{{ ucwords($payment->bank_cash) }}</span></td>
-                                                <td>{{ date('d/m/Y', strtotime($payment->entry_date)) }}</td>
-                                                <td>
-                                                    @if ($payment->status == 0)
-                                                        <span class="badge bg-success">Pending</span>
-                                                    @else
-                                                        <span class="badge bg-danger">Not Approved</span>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                        <table class="table table-sm table-hover ledger">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Updated Date</th>
+                                    <th>Date</th>
+                                    <th>Transaction Id / Voucher No</th>
+                                    <th>Purpose</th>
+                                    <th>Debit</th>
+                                    <th>Credit</th>
+                                    <th>Bank/Cash</th>
+                                    <th>Entered at</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($ledgerData as $index => $payment)
+                                    <tr  class="store_details_row cursor-pointer {{$active_details==$payment->id?"tr_active":""}}" wire:click="customerDetails({{$payment->id}})">
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ date('d/m/Y', strtotime($payment->updated_at)) }}</td>
+                                        <td>{{ date('d/m/Y', strtotime($payment->created_at)) }}</td>
+                                        <td>{{ $payment->transaction_id }}</td>
+                                        <td><strong>{{ ucwords(str_replace('_', ' ', $payment->purpose)) }}</strong></td>
+                                        @if($payment->is_debit == 1)
+                                            <td>{{ number_format((float)$payment->transaction_amount) }}</td>
+                                            <td></td>
+                                        @else
+                                            <td></td>
+                                            <td>{{ number_format((float)$payment->transaction_amount) }}</td>
+                                        @endif
+                                        <td><span class="badge bg-success">{{ ucwords($payment->bank_cash) }}</span></td>
+                                        <td>{{ date('d/m/Y', strtotime($payment->entry_date)) }}</td>
+                                        <td>
+                                            @if ($payment->status == 0)
+                                                <span class="badge bg-success">Pending</span>
+                                            @else
+                                                <span class="badge bg-danger">Not Approved</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+
+                                    @if($active_details == $payment->id)
+                                        <tr>                        
+                                            <td colspan="5" class="store_details_column">
+                                                <div class="store_details">
+                                                    <table class="table">
+                                                        <tr>
+                                                        @if($payment->customer)
+
+                                                            <td>
+                                                                <span>Customer Name: <strong>{{$payment->customer->name}} </strong> </span> 
+
+                                                            </td>
+                                                            @if (!empty($payment->customer->name))
+                                                            <td>
+                                                                <span>Company Name: <strong>{{$payment->customer->company_name}} </strong> </span> 
+                                                            </td> 
+                                                            @endif  
+                                                            @if (!empty($payment->customer->phone))
+                                                            <td>                                            
+                                                                <span>Phone: <strong>{{$payment->customer->phone}} </strong> </span>  
+                                                            </td>  
+                                                            @endif    
+                                                        @elseif($payment->staff)
+
+                                                            <td>
+                                                                <span>Staff Name: <strong>{{$payment->staff->name}} </strong> </span> 
+
+                                                            </td>
+                                                            @if (!empty($payment->staff->name))
+                                                            <td>
+                                                                <span>Company Name: <strong>{{$payment->staff->company_name}} </strong> </span> 
+                                                            </td> 
+                                                            @endif  
+                                                            @if (!empty($payment->staff->phone))
+                                                            <td>                                            
+                                                                <span>Phone: <strong>{{$payment->staff->phone}} </strong> </span>  
+                                                            </td>  
+                                                            @endif    
+                                                            @elseif ($payment->supplier)
+
+                                                        <td>
+                                                            <span>Supplier Name: <strong>{{$payment->supplier->name}} </strong> </span> 
+
+                                                        </td>
+                                                        @if (!empty($payment->supplier->name))
+                                                        <td>
+                                                            <span>Company Name: <strong>{{$payment->supplier->company_name}} </strong> </span> 
+                                                        </td> 
+                                                        @endif  
+                                                        @if (!empty($payment->supplier->phone))
+                                                        <td>                                            
+                                                            <span>Phone: <strong>{{$payment->supplier->phone}} </strong> </span>  
+                                                        </td>  
+                                                        @endif    
+                                                        @endif     
+                                                        </tr>                                    
+                                                        <tr>   
+                                                            @if (!empty($payment->bank_name))
+                                                            <td><span>Bank: <strong>{{ ($payment->bank_name)}}</strong></span></td>    
+                                                            @endif
+                                                            @if (!empty($payment->payment_type))
+                                                            <td><span>Bank: <strong>{{ ucwords($payment->payment_type)}}</strong></span></td>    
+                                                            @endif
+                                                            @if (!empty($payment->chq_utr_no))
+                                                            <td><span>Cheque / UTR No: <strong>{{ ucwords($payment->cheque_number)}}</strong></span></td>    
+                                                            @endif
+                                                            @if (!empty($payment->cheque_date))
+                                                            <td><span>Payment Date: <strong>{{ date('d/m/Y', strtotime($payment->cheque_date))}}</strong></span></td>    
+                                                            @endif
+                                                            @if (!empty($payment->vouchar_no))
+                                                            <td><span>Voucher No: <strong>{{ ($payment->vouchar_no)}}</strong></span></td>    
+                                                            @endif
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>  
+                                    @endif  
+                        
+                                @endforeach
+                            </tbody>
+                        </table>
                         
                     </div>
                 </div>
@@ -192,8 +284,6 @@
         </div>
     </div>
     @endif
-
-
     <div class="loader-container" wire:loading>
         <div class="loader"></div>
     </div>

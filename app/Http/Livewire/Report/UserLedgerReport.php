@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\LedgerExport; 
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class UserLedgerReport extends Component
 {
@@ -45,6 +47,8 @@ class UserLedgerReport extends Component
         $this->to_date = date('Y-m-d'); 
         $this->bank_cash = 'cash'; 
     }
+    // public $type;
+   
     public function updatingSelectedCustomer()
     {
         $this->resetPage();
@@ -233,6 +237,38 @@ class UserLedgerReport extends Component
         $this->ledgerData = $query->get(); // Store data in property
         $this->showList = true;
     }
+    public function generatePDF()
+    {
+        $selectUserName = 'All'; // Default value
+
+        if ($this->user_type === 'staff' && $this->staff_id) {
+            $staff = User::find($this->staff_id);
+            $selectUserName = $staff ? $staff->name : 'Unknown Staff';
+        } elseif ($this->user_type === 'customer' && $this->customer_id) {
+            $customer = User::find($this->customer_id);
+            $selectUserName = $customer ? $customer->name : 'Unknown Customer';
+        } elseif ($this->user_type === 'supplier' && $this->supplier_id) {
+            $supplier = Supplier::find($this->supplier_id);
+            $selectUserName = $supplier ? $supplier->name : 'Unknown Supplier';
+        }
+        $data = [
+            'user_type' => $this->user_type,
+            'select_user_name' => $selectUserName,
+            'from_date' => $this->from_date,
+            'to_date' => $this->to_date,
+            'data' => $this->ledgerData,
+            'day_opening_amount' => 0,
+            'is_opening_bal_showable' => true,
+        ];
+
+        // dd($data);
+        $pdf = Pdf::loadView('ledger.pdf', $data)->setPaper('a4', 'portrait');
+
+        return response()->streamDownload(function () use ($pdf) {
+            echo $pdf->output();
+        }, 'ledger_report.pdf');
+    }
+
 
     public function render(){
         $staffs = User::where('user_type', 'staff')->get();
@@ -265,5 +301,42 @@ class UserLedgerReport extends Component
             'ledger.xlsx'
         );
     }
+
+    // public function generatePDF(Request $request)
+    // {
+    //     $data = [
+    //         'user_type' => $request->user_type,
+    //         'select_user_name' => $request->select_user_name,
+    //         'from_date' => $request->from_date,
+    //         'to_date' => $request->to_date,
+    //         'data' => $this->ledgerData, // Use existing property instead of calling method
+    //         'day_opening_amount' => 0, // Adjust as per your logic
+    //         'is_opening_bal_showable' => true,
+    //     ];
+    
+    //     $pdf = Pdf::loadView('ledger.pdf', $data);
+    //     return $pdf->download('ledger_report.pdf');
+    // }
+    // public function generatePDF(Request $request)
+    //     {
+    //         $data = [
+    //             'user_type' => utf8_encode($request->user_type),
+    //             'select_user_name' => utf8_encode($request->select_user_name),
+    //             'from_date' => $request->from_date,
+    //             'to_date' => $request->to_date,
+    //             'data' => $this->getUserLedger(),
+    //             'day_opening_amount' => 0,
+    //             'is_opening_bal_showable' => true,
+    //         ];
+
+    //         $pdf = Pdf::loadView('ledger.pdf', $data, [], [
+    //             'mode' => 'utf-8',
+    //             'default_font' => 'sans-serif' // Use a UTF-8 compatible font
+    //         ]);
+
+    //         // return $pdf->download('ledger_report.pdf');
+    //     }
+
+    
 }
 

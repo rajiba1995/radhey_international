@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Invoice;
 use App\Models\User;
 use Livewire\WithPagination;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class InvoiceList extends Component
 {
@@ -13,7 +14,22 @@ class InvoiceList extends Component
     protected $paginationTheme = 'bootstrap'; // Optional: For Bootstrap styling
     public $search ="";
     public $created_by;
+
+    public function downloadInvoice($orderId)
+    {
+        $invoice = Invoice::with(['order', 'customer', 'user', 'packing'])
+                    ->where('order_id', $orderId)
+                    ->firstOrFail();
     
+        // Generate PDF
+        $pdf = PDF::loadView('invoice.pdf', compact('invoice'));
+    
+        // Download the PDF
+        return response()->streamDownload(function () use ($pdf) {
+            echo $pdf->output();
+        }, 'invoice_' . $invoice->invoice_no . '.pdf');
+    } 
+
     public function render()
     {
         $this->usersWithOrders = User::whereHas('orders')->get();

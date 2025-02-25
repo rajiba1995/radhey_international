@@ -313,6 +313,10 @@
                     href="{{route('admin.order.invoice.index')}}">
                     Invoices
                 </a>
+                <a class="nav-link text-white {{ Request::is('admin/orders/cancel-order') ? 'active ' : '' }}"
+                    href="{{route('admin.order.cancel-order.index')}}">
+                    Cancel Order
+                </a>
             </ul>
 
         </ul>
