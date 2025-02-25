@@ -19,7 +19,7 @@ use App\Http\Livewire\StaticSignUp;
 use App\Http\Livewire\Tables;
 use App\Http\Livewire\{VirtualReality,CustomerIndex};
 use GuzzleHttp\Middleware;
-use App\Http\Livewire\Order\{OrderIndex, OrderNew, OrderInvoice,OrderEdit,OrderView,LedgerView,AddOrderSlip,InvoiceList};
+use App\Http\Livewire\Order\{OrderIndex, OrderNew, OrderInvoice,OrderEdit,OrderView,LedgerView,AddOrderSlip,InvoiceList,CancelOrderList};
 use App\Http\Livewire\Product\{MasterProduct,AddProduct,UpdateProduct,MasterCategory,MasterSubCategory,FabricIndex,CollectionIndex,GalleryIndex,MasterCatalogue};
 use App\Http\Livewire\Staff\{DesignationIndex,StaffIndex,StaffAdd,StaffUpdate,StaffView,StaffTask,StaffTaskAdd,StaffCities,SalesmanBillingIndex,MasterBranch};
 use App\Http\Livewire\Expense\{ExpenseIndex,DepotExpanse,DailyExpenses,DailyCollection};
@@ -212,5 +212,6 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
         Route::get('/view/{id}', OrderView::class)->name('admin.order.view');
         Route::get('/ledger/{id}', LedgerView::class)->name('admin.order.ledger.view');
         Route::get('/invoice', InvoiceList::class)->name('admin.order.invoice.index');
+        Route::get('/cancel-order', CancelOrderList::class)->name('admin.order.cancel-order.index');
     });
 });

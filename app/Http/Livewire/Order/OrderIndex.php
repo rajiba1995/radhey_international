@@ -78,6 +78,7 @@ class OrderIndex extends Component
         // $users = User::all();
         $this->usersWithOrders = User::whereHas('orders')->get();
         $orders = Order::query()
+        ->where('status', '!=' , 'Cancelled')
         ->when($this->search, function ($query) {
             $query->where('order_number', 'like', '%' . $this->search . '%')
                   ->orWhereHas('customer', function ($q) {
@@ -122,24 +123,47 @@ class OrderIndex extends Component
     
 
     // Cancelled Orders
+    // public function confirmCancelOrder($id = null)
+    // {
+    //     // dd($orderId);
+    //     if (!$id) {
+    //         throw new \Exception("Order ID is missing in confirmCancelOrder.");
+    //     }
+    
+    //     $this->dispatch('confirmCancel', ['orderId' => $id]);
+    // }
+    
+
+    // public function cancelOrder($orderId = null)
+    // {
+    //     if (!$orderId) {
+    //         throw new \Exception("Order ID is required but received null.");
+    //     }
+        
+    //     dd("Order ID: " . $orderId);
+    // }
+
     public function confirmCancelOrder($id = null)
     {
-        // dd($orderId);
         if (!$id) {
             throw new \Exception("Order ID is missing in confirmCancelOrder.");
         }
-    
-        $this->dispatch('confirmCancel', ['orderId' => $id]);
+
+        $this->dispatch('confirmCancel', orderId: $id);
     }
-    
 
     public function cancelOrder($orderId = null)
     {
+        \Log::info("cancelOrder method triggered with Order ID: " . ($orderId ?? 'NULL'));
+
         if (!$orderId) {
             throw new \Exception("Order ID is required but received null.");
         }
-        
-        dd("Order ID: " . $orderId);
+
+        // Perform order cancellation logic here
+         Order::where('id', $orderId)->update(['status' => 'Cancelled']);
+
+        session()->flash('message', 'Order has been cancelled successfully.');
     }
 
 }
