@@ -16,6 +16,151 @@
             </ul>
         </section>
         <!-- Content -->
+
+
+
+        <div class="card shadow-sm mb-2">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <p class="small m-0">
+                                <h6 class="mb-1">
+                                  <a href="{{ route('admin.customers.edit', ['id' => $customer->id]) }}" class="btn btn-outline-info custom-btn-sm">Edit</a>
+                                </h6>
+                                </p>
+                            </div>
+                        </div>
+                        <h6>Customer Details</h6>
+                        
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <!-- <p class="small m-0"><strong>{{$customer->name}}</strong></p> -->
+                            
+                            <h6 class="text-nowrap mb-0">{{$customer->name}}</h6>
+                            <h6 class="text-nowrap mb-0">{{$customer->ordersAsCustomer->count()}} Orders</h6>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <h6 class="mb-1">Contact info</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                        <div class="col-sm-4">
+                                <p class="small m-0"><strong>Order Time :</strong></p>
+                            </div>
+                            <div class="col-sm-8">
+                                <p class="small m-0">d</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                                <p class="small m-0"><strong>Order Time :</strong></p>
+                            </div>
+                            <div class="col-sm-8">
+                                <p class="small m-0">d</p>
+                            </div>
+                        </div>
+                        <div>
+                        <p class="mb-1"><i class="fas fa-envelope" style="font-size: 14px; color: #6c757d;"></i>
+                                {{$customer->email}}
+                            </p>
+                            <p class="mb-0"> <i class="fa fa-building" style="font-size: 14px; color: #6c757d;"></i>
+                            {{$customer->company_name}}
+                            </p>
+                            <p class="mb-0"><i class="fas fa-phone" style="font-size: 14px; color: #6c757d;"></i>
+                            {{$customer->phone}}
+                            </p>
+                            <p class="mb-0"> <i class="fab fa-whatsapp" style="font-size: 14px; color: #25D366;"></i>
+                            {{$customer->whatsapp_no}}
+                            </p>
+                            <p class="mb-0"> <i class="fa fa-birthday-cake" style="font-size: 14px; color: #6c757d;"></i>
+                            {{$customer->dob}}
+                            </p>
+                            <p class="mb-0"> <i class="fa fa-trophy" style="font-size: 14px; color: #6c757d;"></i>
+                            {{$customer->employee_rank}}
+                            </p>
+                            
+                        </div>
+                       
+    
+    
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group mb-3">
+                        <h6>Shipping Address</h6>
+                        <div class="row">
+                        @if($customer->shippingAddressLatest)
+                                <p>{{ $customer->shippingAddressLatest->address }},{{ $customer->shippingAddressLatest->landmark }},{{ $customer->shippingAddressLatest->city }}, {{ $customer->shippingAddressLatest->state }},{{ $customer->shippingAddressLatest->country }} - {{ $customer->shippingAddressLatest->zip_code }}</p>
+                            @else
+                                <p>No shipping address available.</p>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <h6>Billing Address</h6>
+                        <div class="row">
+                        @if($customer->shippingAddressLatest)
+                                <p>{{ $customer->shippingAddressLatest->address }},{{ $customer->shippingAddressLatest->landmark }},{{ $customer->shippingAddressLatest->city }}, {{ $customer->shippingAddressLatest->state }},{{ $customer->shippingAddressLatest->country }} - {{ $customer->shippingAddressLatest->zip_code }}</p>
+                            @else
+                                <p>No shipping address available.</p>
+                            @endif
+                        </div>
+                      
+    
+                    </div>
+
+                    <div class="form-group mb-3">
+                    <h5 class="card-title">Account Information</h5>
+                         @if($customer->gst_certificate_image !=""||$customer->gst_number !=""||$customer->credit_limit !=""||$customer->credit_days !="")
+                            <div class="avatar me-3">
+                                @if ($customer->gst_certificate_image)
+                                <img src="{{asset($customer->gst_certificate_image)}}" alt="Avatar"
+                                    class="rounded-circle">
+                                @endif
+                            </div>
+                                @if($customer->gst_number)
+                            <p class="mb-1"><i class="fas fa-id-card" style="font-size: 14px; color: #6c757d;"></i>
+                                {{$customer->gst_number}}
+                            </p>
+                                @endif 
+                                @if($customer->credit_limit)
+                            <p class="mb-1"><i class="fas fa-credit-card" style="font-size: 14px; color: #6c757d;"></i>
+                                {{$customer->credit_limit}}
+                            </p>
+                            @endif 
+                            @if($customer->credit_days)
+                            <p class="mb-1"><i class="fas fa-calendar-day" style="font-size: 14px; color: #6c757d;"></i>
+                                {{$customer->credit_days}}
+                            </p>
+                            @endif 
+
+                            @else
+                        <div class="card-body">
+                            <p class="mb-1 text-muted">
+                                <i class="fas fa-info-circle" style="font-size: 14px; color: #6c757d;"></i>
+                                No information found.
+                            </p>
+                        </div>
+                        @endif
+                      
+    
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
         <div class="container-xxl flex-grow-1 container-p-y">
 
             <div
