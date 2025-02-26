@@ -26,9 +26,6 @@ class UserLedgerReport extends Component
     public $customer_id;
 
     public $supplier_id;
-    public $staffs = [];
-    public $customers = [];
-    public $suppliers = [];
     public $from_date,$to_date,$bank_cash;
 
     public $staffSearchTerm = '';
@@ -40,18 +37,23 @@ class UserLedgerReport extends Component
     public $supplierSearchTerm = '';
     public $supplierSearchResults = [];
     public $search;
-    public $showList = false; 
+    public $errorMessage = [];
     public $ledgerData = [];
+
+    public $day_opening_amount = 0;
+    public $is_opening_bal = 0;
+    public $is_opening_bal_showable = 1;
+    public $opening_bal_date = "";
+    public $non_tr_day_opening_amount = 0;
+    public $isTransactionFound = false;
 
     public function mount(){
         $this->from_date = date('Y-m-01'); // First day of the current month
         $this->to_date = date('Y-m-d'); 
     }
-    public function updatingSelectedCustomer()
-    {
-        $this->resetPage();
+    public function ResetOpeningBalanceField(){
+        $this->reset(['day_opening_amount','is_opening_bal','is_opening_bal_showable','opening_bal_date','non_tr_day_opening_amount','isTransactionFound']);
     }
-
     public function FindCustomer($searchTerm)
     {
         $this->searchResults = User::where('name', 'like', '%' . $searchTerm . '%')
@@ -59,7 +61,21 @@ class UserLedgerReport extends Component
             ->take(10)
             ->get();
     }
-
+    
+    public function getUser($value){
+        $this->user_type = $value;
+        $this->reset(['customerSearchTerm','supplierSearchTerm','staffSearchTerm']);
+    }
+    public function PaymentMode($value){
+        $this->bank_cash = $value;
+    }
+    public function updateFromDate($value){
+        $this->from_date = $value;
+    }
+    public function updateToDate($value){
+        $this->to_date = $value;
+    }
+    
     public function selectCustomer($customerId)
     {
         $this->selected_customer = $customerId;
@@ -68,25 +84,13 @@ class UserLedgerReport extends Component
 
     public function resetForm()
     {
-        // $this->from_date = '';
-        // $this->to_date = '';
-        $this->user_type = '';
-        $this->user_id = '';
-        $this->payment_type = '';
-        $this->selected_customer = '';
-        $this->staff_id = '';
+        $this->reset(['user_type','selected_customer','staff_id','customer_id','supplier_id']);
     }
     
     public function customerDetails($id)
     {
         $this->active_details = $id;
     }
-
-    public function updatedUserType()
-    {
-        $this->user_id = null; // Reset user selection when user type changes
-    }
-
     public function searchStaff()
     {
         if (!empty($this->staffSearchTerm)) {
@@ -107,9 +111,10 @@ class UserLedgerReport extends Component
         if ($staff) {
             $this->staff_id = $staff->id;
             $this->staffSearchTerm = $staff->name; // Show selected staff name
+            $this->reset(['customer_id','supplier_id']);
         }
         $this->staffSearchResults = []; // Hide dropdown after selection
-        $this->getUserLedger(); // Refresh ledger data
+        $this->reset(['errorMessage']);
     }
     public function searchCustomer()
     {
@@ -130,9 +135,10 @@ class UserLedgerReport extends Component
         if ($customer) {
             $this->customer_id = $customer->id;
             $this->customerSearchTerm = $customer->name; // Display selected name
+            $this->reset(['staff_id','supplier_id']);
         }
         $this->customerSearchResults = []; // Hide dropdown
-        $this->getUserLedger(); // Refresh ledger data
+        $this->reset(['errorMessage']);
     }
 
     public function searchSupplier()
@@ -151,49 +157,13 @@ class UserLedgerReport extends Component
         if ($supplier) {
             $this->supplier_id = $supplier->id;
             $this->supplierSearchTerm = $supplier->name; // Display selected name
+            $this->reset(['customer_id','staff_id']);
+            
         }
+        $this->reset(['errorMessage']);
         $this->supplierSearchResults = []; // Hide dropdown
-        $this->getUserLedger(); // Refresh ledger data
     }
    
-    public function getUser()
-    {
-        if ($this->user_type === 'staff') {
-            $this->staffs = User::where('user_type', 0)->get();  // Fetch staff data
-        } elseif ($this->user_type === 'customer') {
-            $this->customers = User::where('user_type', 1)->get();   // Fetch customer data
-        } elseif ($this->user_type === 'supplier') {
-            $this->suppliers = Supplier::all();  // Fetch supplier data
-        }
-    }
-    
-    public function getUserLedger()
-    {
-        $query = Ledger::query();
-
-        if ($this->from_date) {
-            $query->whereDate('entry_date', '>=', $this->from_date);
-        }
-        if ($this->to_date) {
-            $query->whereDate('entry_date', '<=', $this->to_date);
-        }
-        if ($this->user_type) {
-            if ($this->user_type === 'staff' && $this->staff_id) {
-                $query->where('staff_id', $this->staff_id);
-            } elseif ($this->user_type === 'customer' && $this->customer_id) {
-                $query->where('customer_id', $this->customer_id);
-            } elseif ($this->user_type === 'supplier' && $this->supplier_id) {
-                $query->where('supplier_id', $this->supplier_id);
-            }
-        }
-        if ($this->bank_cash) {
-            $query->where('bank_cash', $this->bank_cash);
-        }
-
-        // Fetch data and update visibility
-        $this->ledgerData = $query->get(); // Store data in property
-        $this->showList = true;
-    }
     public function generatePDF()
     {
         $selectUserName = 'All'; // Default value
@@ -226,20 +196,105 @@ class UserLedgerReport extends Component
         }, 'ledger_report.pdf');
     }
 
+    public function LedgerUserData() {
+        $this->ResetOpeningBalanceField();
+        if (!empty($this->user_type)) {
+            $opening_bal = Ledger::query();
+            $query = Ledger::query();
+    
+            // Filter by date range
+            if (!empty($this->from_date)) {
+                $query->whereDate('entry_date', '>=', $this->from_date);
+            }
+            if (!empty($this->to_date)) {
+                $query->whereDate('entry_date', '<=', $this->to_date);
+            }
+    
+            // Filter based on user type
+            if ($this->user_type === 'staff') {
+                if (!empty($this->staff_id)) {
+                    $query->where('staff_id', $this->staff_id);
+                    $opening_bal->where('staff_id', $this->staff_id);
+                } else {
+                    $this->ledgerData = collect(); // Empty collection
+                    $this->errorMessage['staff'] = 'Please type staff name';
+                    return;
+                }
+            } elseif ($this->user_type === 'customer') {
+                if (!empty($this->customer_id)) {
+                    $query->where('customer_id', $this->customer_id);
+                    $opening_bal->where('customer_id', $this->customer_id);
+                } else {
+                    $this->ledgerData = collect();
+                    $this->errorMessage['customer'] = 'Please type customer name';
+                    return;
+                }
+            } elseif ($this->user_type === 'supplier') {
+                if (!empty($this->supplier_id)) {
+                    $query->where('supplier_id', $this->supplier_id);
+                    $opening_bal->where('supplier_id', $this->supplier_id);
+                } else {
+                    $this->ledgerData = collect();
+                    $this->errorMessage['supplier'] = 'Please type supplier name';
+                    return;
+                }
+            }
 
-    public function render(){
-        $staffs = User::where('user_type', 'staff')->get();
-        $customers = User::where('user_type', 'customer')->get();
-        $suppliers = Supplier::all();
+            $check_ob_exist_customer = Ledger::where('purpose','opening_balance')->where('user_type', 'customer')->where('customer_id',$this->customer_id)->orderBy('id','asc')->first();
 
+            if(!empty($check_ob_exist_customer)){
+                $from_date = ($this->from_date < $check_ob_exist_customer->entry_date) ? $check_ob_exist_customer->entry_date : $this->from_date;
+                // dd($check_ob_exist_customer,$from_date);
+                $this->is_opening_bal = 1;
+                $this->opening_bal_date = $check_ob_exist_customer->entry_date;
+                // $this->from_date = $check_ob_exist_customer->entry_date;
+                if($from_date == $check_ob_exist_customer->entry_date){                    
+                    $this->is_opening_bal_showable = 0;  
+                } else {
+                    $opening_bal = $opening_bal->whereRaw(" entry_date BETWEEN '".$check_ob_exist_customer->entry_date."' AND '".date('Y-m-d', strtotime('-1 day', strtotime($from_date)))."'  ");
+                  
+                }                
+                
+            } else {
+                $opening_bal = $opening_bal->whereRaw(" entry_date <= '".date('Y-m-d', strtotime('-1 day', strtotime($this->from_date)))."'  ");
+            } 
+
+            /* +++++++++++++++++++ */
+            $opening_bal = $opening_bal->orderBy('entry_date','ASC');  
+            $opening_bal = $opening_bal->orderBy('updated_at','ASC');  
+            $opening_bal = $opening_bal->get();
+            $day_opening_amount = 0;
+            foreach($opening_bal as $ob){
+                if(!empty($ob->is_credit)){
+                    $day_opening_amount += $ob->transaction_amount;
+                }
+                if(!empty($ob->is_debit)){
+                    $day_opening_amount -= $ob->transaction_amount;
+                }
+            }
+            $this->day_opening_amount = $day_opening_amount;
+
+            // Filter by bank or cash type
+            if (!empty($this->bank_cash)) {
+                $query->where('bank_cash', $this->bank_cash);
+            }
+    
+            // Fetch and store data
+            $this->reset(['errorMessage']);
+            $this->ledgerData = $query->orderBy('entry_date','ASC')->get();
+        }else{
+            $this->reset('ledgerData');
+        }
+    }
+    
+    public function render() {
+        $this->LedgerUserData(); // Call data fetching function
+    
         return view('livewire.report.user-ledger-report', [
-            'staffs' => $staffs,
-            'customers' => $customers,
-            'suppliers' => $suppliers,
             'ledgerData' => $this->ledgerData // Use the property
         ]);
     }
-
+    
     
     public function exportLedger()
     {

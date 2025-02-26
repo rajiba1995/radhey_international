@@ -137,5 +137,18 @@ class Helper
             return [];
         }
     }
+    public static function getCrDr($amount){
+        if($amount > 0){
+            return "Cr"; # if postive +
+        } else if($amount < 0) {
+            return "Dr"; # if negative -
+        } else {
+            return "";
+        }
+    }
+    
+    public static function replaceMinusSign($number){
+        return str_replace("-","",$number);
+    }
 
 }
