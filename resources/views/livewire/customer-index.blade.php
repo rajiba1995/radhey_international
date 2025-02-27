@@ -179,14 +179,14 @@
                                                         <i class="fas fa-shopping-cart"></i>
                                                     </a>
                                                       <!-- Purchase History (Ledger) Button -->
-                                                    <a href="{{route('admin.order.index',['customer_id' => $user->id])}}" class="btn btn-outline-secondary custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="Purchase History" title="Purchase History">
+                                                    {{-- <a href="{{route('admin.order.index',['customer_id' => $user->id])}}" class="btn btn-outline-secondary custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="Purchase History" title="Purchase History">
                                                         <i class="fas fa-file-invoice"></i>
                                                     </a>
 
                                                     <!-- Add Payment Button -->
                                                     <a href="" class="btn btn-outline-success custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="Add Payment" title="Add Payment">
                                                         <i class="fas fa-credit-card"></i>
-                                                    </a>
+                                                    </a> --}}
                                                 </td>
                                             </tr>
                                         @endif

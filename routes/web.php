@@ -157,7 +157,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
     });
     
      // Salesman
-    Route::prefix('salesman')->name('salesman.')->group(function() {
+    Route::prefix('salesman/bill-books')->name('salesman.')->group(function() {
         Route::get('/',SalesmanBillingIndex::class)->name('index');
     });
     

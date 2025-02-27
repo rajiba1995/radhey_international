@@ -20,6 +20,7 @@ class SalesmanBillingIndex extends Component
         $staff_id = request()->query('staff_id');
         if($staff_id){
             $this->staff_id = $staff_id;
+            $this->salesman_id = $staff_id;
         }
     }
 
@@ -301,7 +302,7 @@ class SalesmanBillingIndex extends Component
         $billings = SalesmanBilling::with('salesman')
                     ->when($this->staff_id, function($query){
                         $query->where('salesman_id',$this->staff_id);
-                    })
+                    })->orderBy('id','DESC')
                     ->get();
 
         return view('livewire.staff.salesman-billing-index',['salesmans'=>$salesman, 'billings' => $billings,]);

@@ -18,124 +18,146 @@ class AccountingRepository implements AccountingRepositoryInterface
 {
     public function StorePaymentReceipt(array $data)
     {
-        
-        $admin_id = Auth::user()->id;  
-        if(empty($data['payment_collection_id'])){
-            $check_store_unpaid_invoices = Invoice::where('customer_id', $data['customer_id'])->where('is_paid', 0)->get()->toarray();
-         
-            $check_outstanding_amount = Invoice::where('customer_id',$data['customer_id'])->where('is_paid',0)->sum('required_payment_amount');
+   
+    $admin_id = Auth::user()->id;
+    if(empty($data['payment_collection_id'])){
+        $check_store_unpaid_invoices = Invoice::where('customer_id', $data['customer_id'])->where('is_paid',
+        0)->get()->toarray();
 
-            $check_not_receipt_payment_amount = PaymentCollection::where('customer_id',$data['customer_id'])->where('is_ledger_added',0)->first();
+        $check_outstanding_amount =
+        Invoice::where('customer_id',$data['customer_id'])->where('is_paid',0)->sum('required_payment_amount');
 
-            /*if($request->amount > $check_outstanding_amount){
+        $check_not_receipt_payment_amount =
+        PaymentCollection::where('customer_id',$data['customer_id'])->where('is_ledger_added',0)->first();
 
-                return  redirect()->back()->withErrors(['amount' => 'Please decrease your amount value. Unpaid outstanding amount is '.$check_outstanding_amount ])->withInput();
+        /*if($request->amount > $check_outstanding_amount){
 
-            }*/
+        return redirect()->back()->withErrors(['amount' => 'Please decrease your amount value. Unpaid outstanding amount is
+        '.$check_outstanding_amount ])->withInput();
+
+        }*/
+    
+
+        $paymentData = array(
+        'payment_for' => 'credit',
+        'voucher_no' => $data['voucher_no'],
+        'payment_date' => $data['payment_date'],
+        'payment_mode' => $data['payment_mode'],
+        'payment_in' => ($data['payment_mode'] != 'cash') ? 'bank' : 'cash' ,
+        'bank_cash' => ($data['payment_mode'] == 'cash') ? 'cash' : 'bank',
+        'amount' => $data['amount'],
+        'chq_utr_no' => !empty($data['chq_utr_no'])?$data['chq_utr_no']:'',
+        'bank_name' => !empty($data['bank_name'])?$data['bank_name']:'',
+        'created_by' => Auth::user()->id
+        );
+
+        // Receipt for Customer
+        if($data['receipt_for']=="Customer"){
+            $user_type = "customer";
+            $paymentStore = array('customer_id' => $data['customer_id']);
+            $paymentData = array_merge($paymentData,$paymentStore);
         }
 
-            $paymentData = array(
-                'payment_for' => 'credit',
-                'voucher_no' => $data['voucher_no'],
-                'payment_date' => $data['payment_date'],
-                'payment_mode' => $data['payment_mode'],
-                'payment_in' => ($data['payment_mode'] != 'cash') ? 'bank' : 'cash' ,
-                'bank_cash' => ($data['payment_mode'] == 'cash') ? 'cash' : 'bank', 
-                'amount' => $data['amount'],
-                'chq_utr_no' => !empty($data['chq_utr_no'])?$data['chq_utr_no']:'',
-                'bank_name' => !empty($data['bank_name'])?$data['bank_name']:'',
-                'created_by' => Auth::user()->id
-            );
+        $payment_id = Payment::insertGetId($paymentData);
 
-            // Receipt for Customer
-            if($data['receipt_for']=="Customer"){
-                $user_type = "customer";
-                $paymentStore = array('customer_id' => $data['customer_id']);
-                $paymentData = array_merge($paymentData,$paymentStore);
-            }
+        $is_credit = 1;
 
-            $payment_id = Payment::insertGetId($paymentData);
+        $is_debit = 0;
 
-            $is_credit = 1;        
+        $ledgerData = array(
+        'user_type' => $user_type,
+        'transaction_id' => $data['voucher_no'],
+        'transaction_amount' => $data['amount'],
+        'payment_id' => $payment_id,
+        'bank_cash' => ($data['payment_mode'] == 'cash') ? 'cash' : 'bank',
+        'is_credit' => $is_credit,
+        'is_debit' => $is_debit,
+        'entry_date' => $data['payment_date'],
+        'purpose' => 'payment_receipt',
+        'purpose_description' => 'customer payment',
+        'created_at' => date('Y-m-d H:i:s'),
+        );
 
-            $is_debit = 0;
+        // Receipt for Customer
+        if($data['receipt_for']=="Customer"){
+            $ledgerStore = array('customer_id' => $data['customer_id']);
+            $ledgerData = array_merge($ledgerData,$ledgerStore);
+        }
 
-            $ledgerData = array(
-                'user_type' => $user_type,
-                'transaction_id' => $data['voucher_no'],
-                'transaction_amount' => $data['amount'],
-                'payment_id' => $payment_id,
-                'bank_cash' => ($data['payment_mode'] == 'cash') ? 'cash' : 'bank',
-                'is_credit' => $is_credit,
-                'is_debit' => $is_debit,
-                'entry_date' => $data['payment_date'],
-                'purpose' => 'payment_receipt',
-                'purpose_description' => 'customer payment',
-                'created_at' => date('Y-m-d H:i:s'),
-            );
+        Ledger::insert($ledgerData);
 
-             // Receipt for Customer
-            if($data['receipt_for']=="Customer"){
-                $ledgerStore = array('customer_id' => $data['customer_id']);
-                $ledgerData = array_merge($ledgerData,$ledgerStore);
-            }
-
-            Ledger::insert($ledgerData);
-
-            /* Entry in journal */
-            Journal::insert([
-                'transaction_amount' => $data['amount'],
-                'is_credit' => $is_credit,
-                'is_debit' => $is_debit,
-                'entry_date' => $data['payment_date'],
-                'payment_id' => $payment_id,
-                'bank_cash' => ($data['payment_mode'] == 'cash') ? 'cash' : 'bank',
-                'purpose' => 'payment_receipt',
-                'purpose_description' => 'customer payment',
-                'purpose_id' => $data['voucher_no']
-            ]);
-
+        /* Entry in journal */
+        Journal::insert([
+        'transaction_amount' => $data['amount'],
+        'is_credit' => $is_credit,
+        'is_debit' => $is_debit,
+        'entry_date' => $data['payment_date'],
+        'payment_id' => $payment_id,
+        'bank_cash' => ($data['payment_mode'] == 'cash') ? 'cash' : 'bank',
+        'purpose' => 'payment_receipt',
+        'purpose_description' => 'customer payment',
+        'purpose_id' => $data['voucher_no']
+        ]);
+    }
         /* Payment Collection Entry */
 
         if(empty($data['payment_collection_id'])){
-           
+
             $arrPaymentCollection = array(
-                'customer_id' => $data['customer_id'],
-                'user_id' => $data['staff_id'],
-                'admin_id' => $admin_id,
-                'payment_id' => $payment_id,
-                'collection_amount' => $data['amount'],
-                'bank_name' => !empty($data['bank_name'])?$data['bank_name']:'',
-                'cheque_number' => !empty($data['chq_utr_no'])?$data['chq_utr_no']:'',
-                'cheque_date' => $data['payment_date'],
-                'payment_type' => $data['payment_mode'],
-                'voucher_no' => $data['voucher_no'],
-                'is_ledger_added' => 1,
-                'is_approve' => 1,
-                'created_from' => 'web',
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s')
+            'customer_id' => $data['customer_id'],
+            'user_id' => $data['staff_id'],
+            'admin_id' => $admin_id,
+            'payment_id' => $payment_id,
+            'collection_amount' => $data['amount'],
+            'bank_name' => !empty($data['bank_name'])?$data['bank_name']:'',
+            'cheque_number' => !empty($data['chq_utr_no'])?$data['chq_utr_no']:'',
+            'cheque_date' => $data['payment_date'],
+            'payment_type' => $data['payment_mode'],
+            'voucher_no' => $data['voucher_no'],
+            'is_ledger_added' => 1,
+            'is_approve' => 1,
+            'created_from' => 'web',
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s')
             );
             $payment_collection_id = PaymentCollection::insertGetId($arrPaymentCollection);
-           
+
             $this->invoicePayments($data['voucher_no'],$data['payment_date'],$data['amount'],$data['customer_id'],$payment_collection_id,$data['staff_id']);
 
         }else{
-           # From App End
-           PaymentCollection::where('id',$data['payment_collection_id'])->update([
-                'payment_id' => $payment_id,
+            // Update in Payment
+            $payment = Payment::find($data['payment_id']);
+            $payment->amount = $data['amount'];
+            $payment->updated_by = $admin_id;
+            $payment->updated_at = date('Y-m-d H:i:s');
+            $payment->save();
+
+            // Update in Ledger
+            Ledger::where('payment_id', $data['payment_id'])->update([
+                'transaction_amount' =>$data['amount'],
+                'updated_at' =>date('Y-m-d H:i:s'),
+            ]);
+
+            // Update in Journal
+            Journal::where('payment_id', $data['payment_id'])->update([
+                'transaction_amount' =>$data['amount'],
+                'updated_at' =>date('Y-m-d H:i:s'),
+            ]);
+
+            # From App End
+            PaymentCollection::where('id',$data['payment_collection_id'])->update([
+                'payment_id' => $data['payment_id'],
                 'is_ledger_added' => 1,
                 'voucher_no' => $data['voucher_no'],
                 'updated_at' => date('Y-m-d H:i:s')
             ]);
-           
-             $this->invoicePayments($data['voucher_no'],$data['payment_date'],$data['amount'],$data['customer_id'],$data['payment_collection_id'],$data['staff_id']);
+
+            $this->invoicePayments($data['voucher_no'],$data['payment_date'],$data['amount'],$data['customer_id'],$data['payment_collection_id'],$data['staff_id']);
         }
     }
 
     private function invoicePayments($voucher_no,$payment_date,$payment_amount,$customer_id,$payment_collection_id,$staff_id){
         $check_invoice_payments = InvoicePayment::where('voucher_no', $voucher_no)->get()->toArray();
-       
         if(empty($check_invoice_payments)){
             $amount_after_settlement = $payment_amount;
             $invoice = Invoice::where('customer_id', $customer_id)->where('is_paid', 0)->orderBy('id','asc')->get();
@@ -191,7 +213,6 @@ class AccountingRepository implements AccountingRepositoryInterface
                             'payment_status' => 2,
                             'is_paid'=>1
                         ]);
-
                         InvoicePayment::insert([
                             'invoice_id' => $inv->id,
                             'payment_collection_id' => $payment_collection_id,

@@ -31,8 +31,9 @@
             vertical-align: middle;
             font-size: 30px;
         }
-
-        p,
+        p{
+           font-size: 40px; 
+        }
         h5 {
             font-size: 50px;
         }
@@ -72,50 +73,51 @@
 
     <div class="receipt">
         <div class="text-center">
-            <p class="mb-1">🕉️ Jai Shree Ganesh 🕉️<br>Jai Shree Krishna</p>
-            <h5 class="fw-bold">STANNY'S</h5>
+            <p>Jai Shree Ganesh</p>
+            <p>Jai Shree Krishna</p>
+            <h5 class="fw-bold" style="font-size: 60px;">STANNY'S</h5>
             <p>LE MONDE DU LUXE</p>
         </div>
 
         <div class="dotted-line"></div>
         <div class="d-flex justify-content-between align-items-start">
             <!-- Left Column (Personal Info) -->
-            <div class="col-8">
+            <div class="col-12">
                 <p><strong>Mr/Mrs:</strong> {{ $invoice->customer->name }}</p>
                 <p><strong>Rank:</strong> {{ $invoice->customer->employee_rank }}</p>
             </div>
 
             <!-- Right Column (Amount Details) -->
-            <div class="col-4">
+            {{-- <div class="col-4">
                 <div style="text-align: right;">
                     <table class="table table-sm table-bordered amount-box">
                         <tbody>
                             <tr>
                                 <td>Amount:</td>
-                                <td class="fw-bold">{{ number_format($invoice->net_price, 2) }}</td>
+                                <td class="fw-bold">{{ number_format($invoice->net_price) }}</td>
                             </tr>
                             <tr>
                                 <td>Deposit:</td>
-                                <td class="fw-bold">{{ number_format($invoice->net_price - $invoice->required_payment_amount, 2) }}</td>
+                                <td class="fw-bold">{{ number_format($invoice->net_price - $invoice->required_payment_amount) }}</td>
                             </tr>
                             <tr>
                                 <td>Balance:</td>
-                                <td class="fw-bold">{{ number_format($invoice->required_payment_amount, 2) }}</td>
+                                <td class="fw-bold">{{ number_format($invoice->required_payment_amount) }}</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </div> --}}
         </div> 
         <p><strong>Co/Ins Name:</strong> {{ $invoice->customer?$invoice->customer->company_name :" " }}</p>
-        <p><strong>Address:</strong> {{ $invoice->order?$invoice->order->billing_address:" "}}</p>
+        <p style="text-align: justify;"><strong>Address:</strong> {{ $invoice->order?$invoice->order->billing_address:" "}}</p>
         
         <div class="dotted-line"></div>
 
         <table class="table table-sm table-bordered mt-3">
             <thead>
                 <tr>
-                    <th>ITEM DESC</th>
+                    <th style="text-align: left !important;">ITEM DESC</th>
                     <th>QTY</th>
                     <th>PAMT</th>
                     <th>NET AMT</th>
@@ -131,48 +133,43 @@
                             $totalQuantity += $item->quantity;
                         @endphp
                         <tr>
-                            <td>{{ $item->product_name }}</td>
+                            <td style="text-align: left !important;">{{ $item->product_name }}</td>
                             <td>{{ $item->quantity }}</td>
-                            <td>{{ number_format( ($item->total_price)/($item->quantity) , 2) }}</td>
-                            <td>{{ number_format( $item->total_price , 2) }}</td>
+                            <td>{{ number_format( ($item->total_price)/($item->quantity) ) }}</td>
+                            <td>{{ number_format( $item->total_price ) }}</td>
                         </tr>
                     @endforeach
                 @endif
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td class="bold" style="text-align: center;">SUBTOTAL</td>
+                    <td class="text-center bold">{{ number_format($invoice->net_price) }}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td class="bold" style="text-align: center;">DEPOSIT</td>
+                    <td class="text-center bold">{{ number_format($invoice->net_price - $invoice->required_payment_amount) }}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td class="bold" style="text-align: center;">BALANCE DUE</td>
+                    <td class="text-center bold">{{ number_format($invoice->required_payment_amount) }}</td>
+                </tr>
             </tbody>
         </table>
+        <div class="dotted-line"></div>
+        <p class="text-center">Your mobile number has been successfully registered with STANNY'S.</p>
+
+        {{-- <p class="bold">PIECES PURCHASED: {{ $totalQuantity }}</p> --}}
 
         <div class="dotted-line"></div>
 
-        <table class="table table-sm">
-            <tr>
-                <td class="bold">SUBTOTAL</td>
-                <td class="text-end">{{ number_format($invoice->net_price, 2) }}</td>
-            </tr>
-            <!-- <tr>
-                <td class="bold">TOTAL</td>
-                <td class="text-end">3240.00</td>
-            </tr> -->
-            <!-- <tr>
-                <td class="bold">GVOWN</td>
-                <td class="text-end">3000.00</td>       
-            </tr> -->
-            <tr>
-                <td class="bold">BALANCE DUE</td>
-                <td class="text-end">{{ number_format($invoice->required_payment_amount, 2) }}</td>
-            </tr>
-        </table>
-
-        <div class="dotted-line"></div>
-
-        <p class="text-center">Your mobile number has been registered with <br>Radhey Intrtnational.</p>
-
-        <p class="bold">PIECES PURCHASED: {{ $totalQuantity }}</p>
-
-        <div class="dotted-line"></div>
-
-        <p class="text-center">Thank you for shopping with us! 😊</p>
+        <p class="text-center">Thank you for shopping with us! </p>
     </div>
-
+    {{-- {{dd('here')}} --}}
 </body>
 
 </html>

@@ -33,6 +33,7 @@ class PurchaseOrderIndex extends Component
                         ->orWhere('mobile', 'like', '%' . $this->search . '%');
                 });
         })
+        ->orderBy('id','DESC')
         ->paginate(20);
 
         return view('livewire.purchase-order.purchase-order-index', [

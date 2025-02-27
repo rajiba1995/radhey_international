@@ -87,10 +87,11 @@
                                                 <span class ="badge bg-warning"><span>Pending</span></span>
                                             @elseif ($purchaseOrder->status == 1)
                                                 <span class ="badge bg-success"><span>Received</span></span>    
-                                                <a href="{{route('purchase_order.generate_pdf',['purchase_order_id'=>$purchaseOrder->id])}}" target="_blank" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">
-                                                    PDF
-                                                </a>
+                                                
                                             @endif
+                                            <a href="{{route('purchase_order.generate_pdf',['purchase_order_id'=>$purchaseOrder->id])}}" target="_blank" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">
+                                                PDF
+                                            </a>
                                         <!-- </td>
                                         
                                         <td class="align-middle action_tab"> -->

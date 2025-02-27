@@ -58,7 +58,7 @@
                                             <td>{{ intval($orderProduct->qty_in_meter) }}</td>
                                             <td>
                                                 <button type="button" wire:click="decrementGrnQuantity({{ $orderProduct->id }})">-</button>
-                                                <input type="number"  wire:model="grnQuantities.{{ $orderProduct->id }}" value="{{ $orderProduct->qty_in_meter }}" min="0" disabled>
+                                                <input type="number"  wire:model="grnQuantities.{{ $orderProduct->id }}" value="{{ round($orderProduct->qty_in_meter) }}" min="0" disabled>
                                                 <button type="button" wire:click="incrementGrnQuantity({{ $orderProduct->id }})">+</button>
                                             </td>
                                             <td>
