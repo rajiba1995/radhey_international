@@ -24,6 +24,7 @@
         </tr>
     </table>
     @if ($purchaseOrder->status == 0)
+    
         @if ($purchaseOrder->orderproducts->where('stock_type', 'product')->count() > 0)
         <!-- PRODUCTS TABLE -->
         <div class="section-title">Products</div>
@@ -39,6 +40,7 @@
             </thead>
             <tbody>
                 @php $i = 1; $totalProducts = 0; @endphp
+
                 @foreach ($purchaseOrder->orderproducts->where('stock_type', 'product') as $item)
                     @php $amount = $item->qty_in_pieces * $item->piece_price; $totalProducts += $amount; @endphp
                     <tr>
@@ -94,6 +96,7 @@
         {{-- after generate the grn else part will work --}}
     @else
     @if ($purchaseOrder->orderproducts->where('stock_type', 'product')->count() > 0)
+
     <!-- PRODUCTS TABLE -->
     <div class="section-title">Products</div>
     <table class="table">
@@ -129,6 +132,7 @@
     @endif
 
     @if ($purchaseOrder->orderproducts->where('stock_type', 'fabric')->count() > 0 )
+
     <!-- FABRICS TABLE -->
     <div class="section-title">Fabrics</div>
     <table class="table">
@@ -143,7 +147,10 @@
             </tr>
         </thead>
         <tbody>
-            @php $j = 1; $totalFabrics = 0; @endphp
+            
+            @php $j = 1; $totalFabrics = 0;
+                 $i = 1; $totalProducts = 0;
+            @endphp
             @foreach ($purchaseOrder->orderproducts->where('stock_type', 'fabric') as $item)
                 @php $amount = $item->qty_while_grn_fabric * $item->piece_price; $totalFabrics += $amount; @endphp
                 <tr>
