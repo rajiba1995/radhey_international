@@ -87,10 +87,13 @@
                                                 <span class ="badge bg-warning"><span>Pending</span></span>
                                             @elseif ($purchaseOrder->status == 1)
                                                 <span class ="badge bg-success"><span>Received</span></span>    
+                                                <a href="{{route('purchase_order.generate_pdf',['purchase_order_id'=>$purchaseOrder->id])}}" target="_blank" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">
+                                                    PDF
+                                                </a>
                                             @endif
-                                        </td>
+                                        <!-- </td>
                                         
-                                        <td class="align-middle action_tab">
+                                        <td class="align-middle action_tab"> -->
                                             @if($purchaseOrder->status == 0)
                                                 <a href="{{route('purchase_order.edit',$purchaseOrder->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="Edit product">
                                                     Edit 
@@ -104,9 +107,7 @@
                                                 <a href="{{route('purchase_order.details',['purchase_order_id'=>$purchaseOrder->id])}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">
                                                     Details
                                                 </a>
-                                                <a href="{{route('purchase_order.generate_pdf',['purchase_order_id'=>$purchaseOrder->id])}}" target="_blank" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">
-                                                    PDF
-                                                </a>
+                                               
                                         </td>
                                     </tr>
                                     @empty
