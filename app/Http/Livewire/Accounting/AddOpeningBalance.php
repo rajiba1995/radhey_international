@@ -128,12 +128,17 @@ class AddOpeningBalance extends Component
             
             try {
                 DB::beginTransaction();
-                $this->accountingRepository->StoreOpeningBalance($this->all());
-                session()->flash('success', 'Opening balance for customer added successfully.');
-                DB::commit();
-                return redirect()->route('admin.accounting.list_opening_balance');
+                $data = $this->accountingRepository->StoreOpeningBalance($this->all());
+                if($data['status']==false){
+                    session()->flash('error', $data['message']);
+                }else{
+                    DB::commit();
+                    session()->flash('success', 'Opening balance for customer added successfully.');
+                    return redirect()->route('admin.accounting.list_opening_balance');
+                }
+                
             } catch (\Exception $e) {
-                dd($e->getMessage());
+                // dd($e->getMessage());
                 DB::rollBack();
                 session()->flash('error', $e->getMessage());
             }

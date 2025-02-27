@@ -17,14 +17,19 @@
             margin-top: 10px;
             
         }
-        th, td {
+        td {
             border: 1px solid black;
             padding: 5px;
-            text-align: left;
-            font-size: 8px; /* Adjust font size for PDF */
+            text-align: center;
+            font-size: 12px; /* Adjust font size for PDF */
         }
         th {
             background-color: #f2f2f2;
+            border: 1px solid black;
+            padding: 5px;
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 13px;
         }
         /* Page setup for PDF */
         @page {
@@ -41,13 +46,13 @@
 
         /* Styling for headers and page breaks */
         h2 {
-            text-align: center;
-            font-size: 20px;
+            text-align: left;
+            font-size: 16px;
             margin-bottom: 8px;
         }
 
         p {
-            font-size: 10px;
+            font-size: 12px;
         }
 
         /* Ensuring long text is wrapped properly */
@@ -63,63 +68,40 @@
             bottom: 10mm;
             width: 100%;
         }
-          /* Optional: Column Width Adjustments */
-            /* th:nth-child(1), td:nth-child(1) { width: 15%; }
-            th:nth-child(2), td:nth-child(2) { width: 15%; }
-            th:nth-child(3), td:nth-child(3) { width: 20%; }
-            th:nth-child(4), td:nth-child(4) { width: 20%; }
-            th:nth-child(5), td:nth-child(5) { width: 10%; }
-            th:nth-child(6), td:nth-child(6) { width: 10%; }
-            th:nth-child(7), td:nth-child(7) { width: 10%; } */
     </style>
 
 </head>
 <body>
   
-    <p>
-        @if($select_user_name != 'All')
-        {{ucfirst($user_type) }} Name: {{  strtoupper($select_user_name ?? 'All') }} <br>
-        @endif
-        Date Range: {{ $from_date }} to {{ $to_date }}
-    </p>
-    @php
-        $groupedData = $data->groupBy('user_type');
-    @endphp
-    @foreach($groupedData as $type => $entries)
-    @if($select_user_name == 'All')
-    <p>{{ strtoupper($type) }} LEDGER</p>
-    @endif
+    <h2>
+        <strong>
+            {{ucfirst($user_type) }} Name: {{  strtoupper($select_user_name ?? '........') }}
+        </strong>
+    </h2>
+    <p><strong> Date Range: {{ date('d-m-Y', strtotime($from_date)) }} to {{ date('d-m-Y', strtotime($to_date)) }}</strong></p>
     <table>
         <thead>
             <tr>
-                <th>Update Date</th>
                 <th>Date</th>
-                <th>Transaction ID/ Voucher No</th>
                 <th>Purpose</th>
+                <th>Description</th>
                 <th>Debit</th>
                 <th>Credit</th>
-                <th>Bank/Cash</th>
-                <th>Entered Date</th>
-                <!-- <th>Amount</th> -->
+                <th>Closing</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($data as $entry)
+            @foreach($ledgers as $item)
                 <tr>
-                    <!-- Assuming 'entry_date', 'description', 'transaction_id', 'purpose', 'debit', 'credit', 'bank_cash', 'entered_date', and 'amount' exist in your Ledger model -->
-                    <td>{{ date('d/m/Y', strtotime($entry->entry_date)) }}</td>
-                    <td>{{ date('d/m/Y', strtotime($entry->created_at)) }}</td>
-                    <td>{{ $entry->transaction_id }}</td>
-                    <td>{{ ucwords(str_replace('_', ' ',$entry->purpose)) }}</td>
-                    <td>  @if($entry->is_debit == 1){{ number_format((float)$entry->transaction_amount) }}@endif</td>
-                    <td> @if($entry->is_credit == 1){{ number_format((float)$entry->transaction_amount) }}@endif</td>
-                    <td>{{ $entry->bank_cash }}</td>
-                    <td>{{ date('d/m/Y', strtotime($entry->entered_date)) }}</td>
-                    <!-- <td>{{ number_format($entry->amount, 2) }}</td> -->
+                    <td>{{$item['Date']}}</td>
+                    <td>{{$item['purpose']}}</td>
+                    <td>{{$item['purpose_desc']}}</td>
+                    <td>{{$item['debit']}}</td>
+                    <td>{{$item['credit']}}</td>
+                    <td>{{$item['closing']}}</td>
                 </tr>
             @endforeach
         </tbody>
     </table>
-    @endforeach
 </body>
 </html>

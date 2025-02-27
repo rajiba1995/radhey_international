@@ -34,25 +34,25 @@ class AccountingRepository implements AccountingRepositoryInterface
             }*/
         }
 
-        $paymentData = array(
-            'payment_for' => 'credit',
-            'voucher_no' => $data['voucher_no'],
-            'payment_date' => $data['payment_date'],
-            'payment_mode' => $data['payment_mode'],
-            'payment_in' => ($data['payment_mode'] != 'cash') ? 'bank' : 'cash' ,
-            'bank_cash' => ($data['payment_mode'] == 'cash') ? 'cash' : 'bank', 
-            'amount' => $data['amount'],
-            'chq_utr_no' => !empty($data['chq_utr_no'])?$data['chq_utr_no']:'',
-            'bank_name' => !empty($data['bank_name'])?$data['bank_name']:'',
-            'created_by' => Auth::user()->id
-        );
+            $paymentData = array(
+                'payment_for' => 'credit',
+                'voucher_no' => $data['voucher_no'],
+                'payment_date' => $data['payment_date'],
+                'payment_mode' => $data['payment_mode'],
+                'payment_in' => ($data['payment_mode'] != 'cash') ? 'bank' : 'cash' ,
+                'bank_cash' => ($data['payment_mode'] == 'cash') ? 'cash' : 'bank', 
+                'amount' => $data['amount'],
+                'chq_utr_no' => !empty($data['chq_utr_no'])?$data['chq_utr_no']:'',
+                'bank_name' => !empty($data['bank_name'])?$data['bank_name']:'',
+                'created_by' => Auth::user()->id
+            );
 
-        // Receipt for Customer
-        if($data['receipt_for']=="Customer"){
-            $user_type = "customer";
-            $paymentStore = array('customer_id' => $data['customer_id']);
-            $paymentData = array_merge($paymentData,$paymentStore);
-        }
+            // Receipt for Customer
+            if($data['receipt_for']=="Customer"){
+                $user_type = "customer";
+                $paymentStore = array('customer_id' => $data['customer_id']);
+                $paymentData = array_merge($paymentData,$paymentStore);
+            }
 
             $payment_id = Payment::insertGetId($paymentData);
 
@@ -256,30 +256,31 @@ class AccountingRepository implements AccountingRepositoryInterface
                               ->where('purpose','opening_balance')
                               ->get()
                               ->toArray();
-
+                            //   dd($existOB[0]['entry_date']);
             if(!empty($existOB)){
                  # restrict previous date of existing OB date
-                 if($data['date'] < $existOB[0]->entry_date){
-                    $err_msg_date = "Previous Date (".date('d/m/Y',strtotime($existOB[0]->entry_date)).") of your existing opening balance is not allowed ";
-                    return redirect()->back()->withErrors(['date' => $err_msg_date]);
+                 if($data['date'] < $existOB[0]['entry_date']){
+                    $err_msg_date = "Previous Date (".date('d/m/Y',strtotime($existOB[0]['entry_date'])).") of your existing opening balance is not allowed ";
+                    return ['status' => false, 'message' => $err_msg_date];
                  }
                    # check bank and cash entry exists
                 foreach ($existOB as $ob) {
-                    if(in_array($data['payment_type'],array("bank","bank_cash")) && $ob->bank_cash == 'bank'){
+                    if(in_array($data['payment_type'],array("bank","bank_cash")) && $ob['bank_cash'] == 'bank'){
                         $err_msg_bank = "Already bank entry exists";
-                        return  redirect()->back()->withErrors(['payment_type'=> $err_msg_bank])->withInput();
+                        return ['status' => false, 'message' => $err_msg_bank];
                     }
-                    if(in_array($data['payment_type'],array("cash","bank_cash")) && $ob->bank_cash == 'cash'){
+                    if(in_array($data['payment_type'],array("cash","bank_cash")) && $ob['bank_cash'] == 'cash'){
                         $err_msg_bank = "Already cash entry exists";
-                        return  redirect()->back()->withErrors(['payment_type'=> $err_msg_bank])->withInput();
+                        return ['status' => false, 'message' => $err_msg_bank];
                     }
                 }
             }
+           
         }
-
          /* For customer opening balance */
          $customer_id = $data['customer_id'];   
          $user_type = "customer";
+        
          # add OB at the top of the existing transaction of the day
          if($data['payment_type'] == 'bank_cash'){
             if(isset($data['bank_amount'])){
@@ -391,8 +392,9 @@ class AccountingRepository implements AccountingRepositoryInterface
                 'created_by'=> Auth::user()->id,
                 'created_at'=> date('Y-m-d H:i:s')
             ]);
+          
             /* Entry in ledger */
-            Ledger::insert([
+           $ledger= Ledger::insert([
                 'user_type'=> $user_type,
                 'customer_id'=> $customer_id,
                 'transaction_id'=> $data['voucher_no'],
@@ -406,8 +408,9 @@ class AccountingRepository implements AccountingRepositoryInterface
                 'purpose_description'=> $user_type.' opening balance',
                 'created_at'=> date('Y-m-d H:i:s')
             ]);
+           
             /* Entry in journal */
-            Journal::insert([
+           $journal =Journal::insert([
                 'transaction_amount'=> $data['amount'],
                 'is_credit'=> $is_credit,
                 'is_debit'=> $is_debit,

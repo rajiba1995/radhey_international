@@ -18,7 +18,7 @@ class AddPaymentReceipt extends Component
     public $errorMessage = [];
     public $activePayementMode = 'cash';
     public $staffs =[];
-    public $payment_collection_id;
+    public $payment_voucher_no;
     public $readonly = "readonly";
     public $customer,$customer_id, $staff_id, $amount, $voucher_no, $payment_date, $payment_mode, $chq_utr_no, $bank_name, $receipt_for = "Customer";
 
@@ -26,11 +26,18 @@ class AddPaymentReceipt extends Component
     {
         $this->accountingRepository = $accountingRepository;
     }
-    public function mount($payment_collection_id = ""){
-        $this->payment_collection_id = $payment_collection_id;
+    public function mount($payment_voucher_no = ""){
+        $payment_collection = PaymentCollection::with('customer', 'user')->where('voucher_no',$payment_voucher_no)->first();
+        if(!empty($payment_voucher_no)){
+            if(!$payment_collection){
+                abort(404);
+                return false;
+            }
+        }
+     
+        $this->payment_voucher_no = $payment_voucher_no;
         $this->voucher_no = 'PAYRECEIPT'.time();
         $this->staffs = User::where('user_type', 0)->where('designation', 2)->select('name', 'id')->orderBy('name', 'ASC')->get();
-        $payment_collection = PaymentCollection::with('customer', 'user')->where('id',$payment_collection_id)->first();
         if($payment_collection){
             $this->customer = $payment_collection->customer->name;
             $this->customer_id = $payment_collection->customer_id;
@@ -41,8 +48,9 @@ class AddPaymentReceipt extends Component
             $this->payment_mode = $payment_collection->payment_type;
             $this->chq_utr_no = $payment_collection->cheque_number;
             $this->bank_name = $payment_collection->bank_name;
+            $this->activePayementMode = $payment_collection->payment_type;
         }
-        if(empty($payment_collection_id)){
+        if(empty($payment_voucher_no)){
             $this->readonly = "";
         }
     }

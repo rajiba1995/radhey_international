@@ -1,98 +1,113 @@
 <?php
-
 namespace App\Exports;
 
-use App\Models\Ledger;
-use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Carbon\Carbon;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Log;
 
-class LedgerExport implements FromQuery, WithHeadings, WithMapping
+class LedgerExport implements FromCollection, WithHeadings, WithMapping
 {
-    public $from_date, $to_date, $user_type, $staff_id, $customer_id, $supplier_id, $bank_cash, $search;
+    public $collection;
+    public $day_opening_amount;
+    public $is_opening_bal_showable;
+    public $from_date;
+    public $to_date;
 
-    public function __construct($from_date = null, $to_date = null, $user_type = null, $staff_id = null, $customer_id = null, $supplier_id = null, $bank_cash = null, $search = null)
+    public function __construct($collection,$day_opening_amount,$is_opening_bal_showable,$from_date,$to_date)
     {
-        // Assigning the parameters to class properties
+        $this->collection = $collection;
+        $this->day_opening_amount = $day_opening_amount;
+        $this->is_opening_bal_showable = $is_opening_bal_showable;
         $this->from_date = $from_date;
         $this->to_date = $to_date;
-        $this->user_type = $user_type;
-        $this->staff_id = $staff_id;
-        $this->customer_id = $customer_id;
-        $this->supplier_id = $supplier_id;
-        $this->bank_cash = $bank_cash;
-        $this->search = $search;  // Make sure search is assigned
     }
 
-    public function query()
+    public function collection()
     {
-        return Ledger::query()
-            // Apply 'search' filter if provided
-            ->when($this->search, function ($query) {
-                $query->where('transaction_id', 'like', '%' . $this->search . '%')
-                    ->orWhere('purpose', 'like', '%' . $this->search . '%')
-                    ->orWhereHas('staff', function($q) {
-                        $q->where('name', 'like', '%' . $this->search . '%');
-                    })
-                    ->orWhereHas('customer', function($q) {
-                        $q->where('name', 'like', '%' . $this->search . '%');
-                    })
-                    ->orWhereHas('supplier', function($q) {
-                        $q->where('name', 'like', '%' . $this->search . '%');
-                    });
-            })
-            // Apply other filters dynamically
-            ->when($this->from_date, function ($query) {
-                $query->whereDate('entry_date', '>=', $this->from_date);
-            })
-            ->when($this->to_date, function ($query) {
-                $query->whereDate('entry_date', '<=', $this->to_date);
-            })
-            ->when($this->user_type, function ($query) {
-                if ($this->user_type === 'staff' && $this->staff_id) {
-                    $query->where('staff_id', $this->staff_id);
-                } elseif ($this->user_type === 'customer' && $this->customer_id) {
-                    $query->where('customer_id', $this->customer_id);
-                } elseif ($this->user_type === 'supplier' && $this->supplier_id) {
-                    $query->where('supplier_id', $this->supplier_id);
-                }
-            })
-            ->when($this->bank_cash, function ($query) {
-                $query->where('bank_cash', $this->bank_cash);
-            })
-            // Apply sorting
-            ->with(['staff', 'customer', 'supplier'])
-            ->orderBy('entry_date', 'desc');
+        $net_value = $cred_value = $deb_value = 0;
+        $cred_ob_amount = $deb_ob_amount = "";
+        $data = [];
+    
+        // Calculate opening balance
+        $getCrDrOB = Helper::getCrDr($this->day_opening_amount);
+        if ($getCrDrOB == 'Cr') {
+            $cred_ob_amount = $this->day_opening_amount;
+            $cred_value += $cred_ob_amount;
+        } elseif ($getCrDrOB == 'Dr') {
+            $deb_ob_amount = Helper::replaceMinusSign($this->day_opening_amount);
+            $deb_value += $deb_ob_amount;
+        }
+    
+        if (!empty($this->is_opening_bal_showable)) {
+            $net_value += $this->day_opening_amount;
+        }
+    
+        // Add Opening Balance Row if required
+        if (!empty($this->collection) && $this->is_opening_bal_showable == 1) {
+            $data[] = [
+                'Date' => date('d-m-Y', strtotime($this->from_date)),
+                'transaction_id' => "",
+                'purpose' => "Opening Balance",
+                'debit' => Helper::replaceMinusSign($deb_ob_amount),
+                'credit' => $cred_ob_amount,
+                'closing' => Helper::replaceMinusSign(number_format($this->day_opening_amount)) .' '. Helper::getCrDr($this->day_opening_amount),
+            ];
+        }
+    
+        // Process transactions
+        foreach ($this->collection as $item) {
+            $debit_amount = $credit_amount = '';
+    
+            if (!empty($item->is_credit)) {
+                $credit_amount = number_format((float) $item->transaction_amount);
+                $net_value += $item->transaction_amount;
+                $cred_value += $item->transaction_amount;
+            }
+    
+            if (!empty($item->is_debit)) {
+                $debit_amount = number_format((float) $item->transaction_amount);
+                $net_value -= $item->transaction_amount;
+                $deb_value += $item->transaction_amount;
+            }
+    
+            $data[] = [
+                'Date' => date('d-m-Y', strtotime($item->created_at)),
+                'transaction_id' => $item->transaction_id,
+                'purpose' => ucwords(str_replace('_', ' ', $item->purpose)) . '(' . ucwords($item->bank_cash).')',
+                'debit' => $debit_amount,
+                'credit' => $credit_amount,
+                'closing' => Helper::replaceMinusSign(number_format($net_value)) .' '. Helper::getCrDr($net_value),
+            ];
+        }
+        return collect($data);
     }
+    
 
     public function headings(): array
     {
         return [
-            'ID', 'User Type', 'Staff Name', 'Customer Name', 'Supplier Name',
-            'Transaction ID', 'Amount', 'Debit', 'Credit', 'Bank/Cash',
-            'Entry Date', 'Purpose', 'Date', 'Updated Date'
+            'Date', 
+            'Transaction Id / Voucher No', 
+            'Purpose', 
+            'Debit', 
+            'Credit', 
+            'Closing Balance'
         ];
     }
 
     public function map($ledger): array
     {
         return [
-            $ledger->id,
-            ucfirst($ledger->user_type),
-            $ledger->staff ? $ledger->staff->name : '',
-            $ledger->customer ? $ledger->customer->name : '',
-            $ledger->supplier ? $ledger->supplier->name : '',
-            $ledger->transaction_id ?? '',
-            number_format($ledger->transaction_amount, 2),
-            $ledger->is_debit ? number_format($ledger->transaction_amount, 2) : '',
-            $ledger->is_credit ? number_format($ledger->transaction_amount, 2) : '',
-            ucfirst($ledger->bank_cash),
-            $ledger->entry_date ? Carbon::parse($ledger->entry_date)->format('d-m-Y') : '',
-            // $ledger->purpose ?? 'N/A',
-            ucwords(str_replace('_', ' ', $ledger->purpose))?? '',
-            $ledger->created_at ? Carbon::parse($ledger->created_at)->format('d-m-Y H:i:s') : '',
-            $ledger->updated_at ? Carbon::parse($ledger->updated_at)->format('d-m-Y H:i:s') : ''
+            $ledger['Date'],
+            $ledger['transaction_id'],
+            $ledger['purpose'],
+            $ledger['debit'],
+            $ledger['credit'],
+            $ledger['closing'],
         ];
     }
 }
+

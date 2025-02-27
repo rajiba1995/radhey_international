@@ -80,8 +80,7 @@
                                 <div class="form-group mb-3">
                                     <label for="">Amount <span class="text-danger">*</span></label>
                                     <input type="text" value="" maxlength="20" wire:model="amount"
-                                        oninput="validateNumber(this)" class="form-control form-control-sm"
-                                        {{$readonly}}>
+                                        oninput="validateNumber(this)" class="form-control form-control-sm">
                                     @if(isset($errorMessage['amount']))
                                     <div class="text-danger">{{ $errorMessage['amount'] }}</div>
                                     @endif

@@ -196,7 +196,7 @@
                                 <tr class="cursor-pointer">
                                     <td></td>
                                     <td></td>
-                                    <td>{{ date('d/m/Y', strtotime($from_date)) }}</td>
+                                    <td>{{ date('d-m-Y', strtotime($from_date)) }}</td>
                                     <td></td>
                                     <td>Opening Balance</td>
                                     <td>
@@ -246,11 +246,17 @@
                                             @endif
                                         </td>
 
-                                        <td></td>
+                                        <td>
+                                            {{ App\Helpers\Helper::replaceMinusSign($net_value) }} 
+                                            <span class="{{ App\Helpers\Helper::getCrDr($net_value)==="Dr"?"text-danger":"text-success"}}">
+                                                {{ App\Helpers\Helper::getCrDr($net_value) }}
+                                            </span>
+                                            
+                                        </td>
                                         <td>{{ date('d-m-Y', strtotime($item->entry_date)) }}</td>
                                         <td>
                                             @if($item->is_credit == 1 && $item->customer_id && $item->purpose=='payment_receipt')
-                                            <a href="#" class="btn btn-outline-success select-md btn_outline">Edit Payment</a>
+                                            <a href="{{route('admin.accounting.add_payment_receipt',$item->transaction_id)}}" class="btn btn-outline-success select-md btn_outline">Edit Payment</a>
                                             @endif
                                         </td>
                                     </tr>

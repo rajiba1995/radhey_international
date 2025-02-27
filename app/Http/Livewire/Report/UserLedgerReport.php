@@ -11,6 +11,7 @@ use App\Models\Supplier;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\LedgerExport; 
+use App\Helpers\Helper;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -166,8 +167,7 @@ class UserLedgerReport extends Component
    
     public function generatePDF()
     {
-        $selectUserName = 'All'; // Default value
-
+        $selectUserName = ''; // Default value
         if ($this->user_type === 'staff' && $this->staff_id) {
             $staff = User::find($this->staff_id);
             $selectUserName = $staff ? $staff->name : 'Unknown Staff';
@@ -178,18 +178,70 @@ class UserLedgerReport extends Component
             $supplier = Supplier::find($this->supplier_id);
             $selectUserName = $supplier ? $supplier->name : 'Unknown Supplier';
         }
-        $data = [
+        $net_value = $cred_value = $deb_value = 0;
+        $cred_ob_amount = $deb_ob_amount = "";
+        $data = [];
+    
+        // Calculate opening balance
+        $getCrDrOB = Helper::getCrDr($this->day_opening_amount);
+        if ($getCrDrOB == 'Cr') {
+            $cred_ob_amount = $this->day_opening_amount;
+            $cred_value += $cred_ob_amount;
+        } elseif ($getCrDrOB == 'Dr') {
+            $deb_ob_amount = Helper::replaceMinusSign($this->day_opening_amount);
+            $deb_value += $deb_ob_amount;
+        }
+    
+        if (!empty($this->is_opening_bal_showable)) {
+            $net_value += $this->day_opening_amount;
+        }
+    
+        // Add Opening Balance Row if required
+        if (!empty($this->ledgerData) && $this->is_opening_bal_showable == 1) {
+            $data[] = [
+                'Date' => date('d-m-Y', strtotime($this->from_date)),
+                'purpose' =>"Opening Balance",
+                'purpose_desc' => ucfirst($this->user_type).' Opening Balance',
+                'debit' => Helper::replaceMinusSign($deb_ob_amount),
+                'credit' => $cred_ob_amount,
+                'closing' => Helper::replaceMinusSign(number_format($this->day_opening_amount)) .' '. Helper::getCrDr($this->day_opening_amount),
+            ];
+        }
+    
+        // Process transactions
+        foreach ($this->ledgerData as $item) {
+            $debit_amount = $credit_amount = '';
+    
+            if (!empty($item->is_credit)) {
+                $credit_amount = number_format((float) $item->transaction_amount);
+                $net_value += $item->transaction_amount;
+                $cred_value += $item->transaction_amount;
+            }
+    
+            if (!empty($item->is_debit)) {
+                $debit_amount = number_format((float) $item->transaction_amount);
+                $net_value -= $item->transaction_amount;
+                $deb_value += $item->transaction_amount;
+            }
+    
+            $data[] = [
+                'Date' => date('d-m-Y', strtotime($item->created_at)),
+                'purpose' => ucwords(str_replace('_', ' ', $item->purpose)) . '(' . ucwords($item->bank_cash).')',
+                'purpose_desc' =>$item->purpose_description,
+                'debit' => $debit_amount,
+                'credit' => $credit_amount,
+                'closing' => Helper::replaceMinusSign(number_format($net_value)) .' '. Helper::getCrDr($net_value),
+            ];
+        }
+        $report = [
             'user_type' => $this->user_type,
             'select_user_name' => $selectUserName,
             'from_date' => $this->from_date,
             'to_date' => $this->to_date,
-            'data' => $this->ledgerData,
-            'day_opening_amount' => 0,
-            'is_opening_bal_showable' => true,
+            'ledgers' => $data,
         ];
 
-        // dd($data);
-        $pdf = Pdf::loadView('ledger.pdf', $data)->setPaper('a4', 'portrait');
+        $pdf = Pdf::loadView('ledger.pdf', $report)->setPaper('a4', 'portrait');
 
         return response()->streamDownload(function () use ($pdf) {
             echo $pdf->output();
@@ -201,7 +253,6 @@ class UserLedgerReport extends Component
         if (!empty($this->user_type)) {
             $opening_bal = Ledger::query();
             $query = Ledger::query();
-    
             // Filter by date range
             if (!empty($this->from_date)) {
                 $query->whereDate('entry_date', '>=', $this->from_date);
@@ -295,22 +346,18 @@ class UserLedgerReport extends Component
         ]);
     }
     
-    
     public function exportLedger()
     {
         // Call the LedgerExport with dynamic filters
         return Excel::download(
             new LedgerExport(
-                $this->from_date, 
-                $this->to_date, 
-                $this->user_type, 
-                $this->staff_id, 
-                $this->customer_id, 
-                $this->supplier_id, 
-                $this->bank_cash, 
-                $this->search
+                $this->ledgerData,
+                $this->day_opening_amount,
+                $this->is_opening_bal_showable,
+                $this->from_date,
+                $this->to_date,
             ),
-            'ledger.xlsx'
+            'ledger.csv'
         );
     }
     

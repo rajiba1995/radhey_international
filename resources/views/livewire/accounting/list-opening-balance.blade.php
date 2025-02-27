@@ -101,7 +101,8 @@
     </script>
     <script>
         window.addEventListener('showDeleteConfirm', function (event) {
-            let itemId = event.detail.itemId;
+            // console.log(event);
+            let itemId = event.detail[0].itemId; // Assign itemId correctly
             Swal.fire({
                 title: "Are you sure?",
                 text: "This action cannot be undone!",

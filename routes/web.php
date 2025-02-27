@@ -183,7 +183,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
         Route::get('/collection-and-expenses', DepotExpanse::class)->name('admin.accounting.collection_and_expenses');
         Route::get('/daily/expenses', DailyExpenses::class)->name('admin.accounting.daily.expenses');
         Route::get('/payment-collection', PaymentCollectionIndex::class)->name('admin.accounting.payment_collection');
-        Route::get('/add-payment-receipt/{payment_collection_id?}', AddPaymentReceipt::class)->name('admin.accounting.add_payment_receipt');
+        Route::get('/add-payment-receipt/{payment_voucher_no?}', AddPaymentReceipt::class)->name('admin.accounting.add_payment_receipt');
         Route::get('/add-opening-balance', AddOpeningBalance::class)->name('admin.accounting.add_opening_balance');
         Route::get('/list-opening-balance', ListOpeningBalance::class)->name('admin.accounting.list_opening_balance');
     });

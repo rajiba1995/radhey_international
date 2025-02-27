@@ -22,7 +22,7 @@ class ListOpeningBalance extends Component
         Ledger::where('id',$id)->delete();  
         Payment::where('id',$payment_id)->delete();
         Journal::where('payment_id',$payment_id)->delete();
-        $this->mount();
+        // $this->mount();
         session()->flash('success','Opening balance deleted successfully.');
        
     }
