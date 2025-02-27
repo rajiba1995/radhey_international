@@ -204,7 +204,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
     // Route::get('/measurements/details/{id}', MeasurementDetails::class)->name('measurements.details');
 
     Route::group(['prefix' => 'orders'], function () {
-        Route::get('/list', OrderIndex::class)->name('admin.order.index');
+        Route::get('/list/{customer_id?}', OrderIndex::class)->name('admin.order.index');
         Route::get('/add-slip/{id}', AddOrderSlip::class)->name('admin.order.add_order_slip');
         Route::get('/invoice/{id}', OrderInvoice::class)->name('admin.order.invoice');
         Route::get('/new', OrderNew::class)->name('admin.order.new');
