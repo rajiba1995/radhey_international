@@ -45,22 +45,24 @@ class AddExpense extends Component
             $this->supplierOptions = Supplier::pluck('name', 'id')->toArray();
             $this->stuffOptions = [];   // Clear stuff options
             $this->stuff_id = null;     // Reset stuff selection
-            $this->supplierExpenseTitles = Expense::where('for_partner', 1)->where('for_debit',1)->get();
+            $this->supplierExpenseTitles = Expense::where('for_supplier', 1)->where('for_debit',1)->get();
             $this->stuffExpenseTitles = [];
         }   elseif ($this->user_type == 'customer') {
             // Fetch Supplier list 
-            $this->supplierOptions = Supplier::pluck('name', 'id')->toArray();
+            $this->customerOptions = User::where('user_type', 1)->pluck('name', 'id')->toArray();
             $this->stuffOptions = [];   // Clear stuff options
             $this->stuff_id = null;     // Reset stuff selection
             $this->supplierExpenseTitles = [];
-            $this->customerExpenseTitles = Expense::where('for_store', 1)->where('for_debit',1)->get();
+            $this->customerExpenseTitles = Expense::where('for_customer', 1)->where('for_debit',1)->get();
         } 
         else {
             // If nothing is selected, reset both options
             $this->stuffOptions = [];
             $this->supplierOptions = [];
+            $this->customerOptions = [];
             $this->stuff_id = null;
             $this->supplier_id = null;
+            $this->customer_id = null;
             $this->stuffExpenseTitles = [];
             $this->supplierExpenseTitles = [];
             $this->customerExpenseTitles = [];
@@ -247,11 +249,31 @@ class AddExpense extends Component
     {
         // Validate input data
         $this->validate([
+            'amount' => 'required|numeric',
+            'payment_date' => 'required', 
             'payment_mode' => 'required',
-            // Add additional validation rules here
+            'expense_id' => 'required',
+            'user_type' => 'required',
+            'staff_id' => 'nullable|required_if:user_type,staff|exists:users,id',
+            'customer_id' => 'nullable|required_if:user_type,customer|exists:users,id',
+            'supplier_id' => 'nullable|required_if:user_type,supplier|exists:suppliers,id',
+        ], [
+            'payment_date.required' => "Please add date of payment",
+            'payment_mode.required' => "Please mention mode of payment",
+            'amount.required' => "Please add amount",
+            'amount.numeric' => "Amount must be a number",
+            'user_type.required' => "Please mention expense at",
+            
+            'expense_id.required' => "Please add expense type",
+
+            'staff_id.required_if' => 'Please select a valid staff member.',
+            'staff_id.exists' => 'Selected staff does not exist.',
+            'customer_id.required_if' => 'Please select a valid customer.',
+            'customer_id.exists' => 'Selected customer does not exist.',
+            'supplier_id.required_if' => 'Please select a valid supplier.',
+            'supplier_id.exists' => 'Selected supplier does not exist.',
         ]);
 
-        // Determine the user ID based on user type
         $userId = $this->user_type === 'staff' ? $this->staff_id :
             ($this->user_type === 'customer' ? $this->customer_id :
             ($this->user_type === 'supplier' ? $this->supplier_id : null));
@@ -261,12 +283,11 @@ class AddExpense extends Component
             return;
         }
 
-        // Start a database transaction
         DB::beginTransaction();
 
         try {
-            // Prepare payment data
             $paymentData = [
+                'expense_id' => $this->expense_id,
                 'payment_for' => 'debit',
                 'voucher_no' => $this->voucher_no,
                 'payment_date' => $this->payment_date,
@@ -281,19 +302,16 @@ class AddExpense extends Component
                 'created_at' => now()
             ];
 
-            // Conditionally add the appropriate user ID to the payment data
             if ($this->user_type == 'staff') {
-                $paymentData['stuff_id'] = $this->staff_id; // Keep stuff_id as it is in the table
+                $paymentData['stuff_id'] = $this->staff_id; 
             } elseif ($this->user_type == 'supplier') {
                 $paymentData['supplier_id'] = $this->supplier_id;
             } elseif ($this->user_type == 'customer') {
                 $paymentData['customer_id'] = $this->customer_id;
             }
 
-            // Insert payment data and get the inserted ID
             $payment_id = Payment::insertGetId($paymentData);
 
-            // Prepare ledger data
             $ledgerData = [
                 'user_type' => $this->user_type,
                 'transaction_id' => $this->voucher_no,
@@ -308,10 +326,15 @@ class AddExpense extends Component
                 'created_at' => now()
             ];
 
-            // Insert ledger data
+            if ($this->user_type == 'staff') {
+                $ledgerData['stuff_id'] = $this->staff_id; 
+            } elseif ($this->user_type == 'supplier') {
+                $ledgerData['supplier_id'] = $this->supplier_id;
+            } elseif ($this->user_type == 'customer') {
+                $ledgerData['customer_id'] = $this->customer_id;
+            }
             Ledger::insert($ledgerData);
 
-            // Prepare journal entry data
             Journal::insert([
                 'transaction_amount' => $this->amount,
                 'is_credit' => 0,
@@ -325,26 +348,14 @@ class AddExpense extends Component
                 'created_at' => now()
             ]);
 
-            // Create expense record
-            Expense::create([
-                'user_id' => $userId,
-                'amount' => $this->amount,
-                'voucher_no' => $this->voucher_no,
-                'payment_date' => $this->payment_date,
-                'payment_mode' => $this->payment_mode,
-                'chq_utr_no' => $this->chq_utr_no,
-                'bank_name' => $this->bank_name,
-                'receipt_for' => $this->receipt_for,
-            ]);
-
-            // Commit the transaction
+          
             DB::commit();
 
             // Flash success message and redirect
             Session::flash('message', "Expense added successfully for " . $this->user_type);
             return redirect()->route('admin.accounting.add_depot_expense');
         } catch (\Exception $e) {
-            dd($e);
+            // dd($e);
             // Rollback the transaction in case of an error
             DB::rollBack();
 

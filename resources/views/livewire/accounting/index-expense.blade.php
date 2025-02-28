@@ -24,9 +24,14 @@
                     <div class="col-auto">
                         <div class="row g-3 align-items-center">
                             <div class="col-auto mt-0">
+                                <!-- <label for="" class="date_lable">Payment Date</label> -->
+                                <input type="date" wire:model="paymentDate" wire:change="AddPaymentDate($event.target.value)"
+                                    class="form-control select-md bg-white">
+                            </div>
+                            <div class="col-auto mt-0">
                                 <input type="text" wire:model="search" class="form-control select-md bg-white" id="customer"
-                                    placeholder="Search Customers" value=""
-                                    style="width: 350px;"  wire:keyup="FindCustomer($event.target.value)">
+                                    placeholder="Search Expense by Transaction ID or Amount" value=""
+                                    style="width: 250px;"  wire:keyup="FindExpense($event.target.value)">
                             </div>
                     
                             <div class="col-auto mt-3">
@@ -89,77 +94,57 @@
             </div>
         </section>
         <div class="row">
-            <div class="col-12">
-                <div class="card my-4">
-                    <div class="card-body pb-0">
-                        <div class="table-responsive p-0">
-                            <table class="table align-items-center mb-0">
-                                @if (session()->has('success'))
-                                    <div class="alert alert-success">
-                                        {{ session('success') }}
-                                    </div>
-                                @endif
+        <div class="col-md-12">           
+            <div class="table-responsive"> 
+                <table class="table table-sm table-hover ledger">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Expense Date</th>
+                            <th>Transaction ID</th>
+                            <th>Amount</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php
+                            $i = empty(Request::get('page')) || Request::get('page') == 1 ? 1 : (((Request::get('page')-1)*$paginate)+1);
+                        @endphp
+                        @forelse ($expenses as $key=>$item)
+                        @php
+                            $ExpenseAt = "";
+                            $ExpenseType = "";
 
-                                @if (session()->has('error'))
-                                    <div class="alert alert-danger">
-                                        {{ session('error') }}
-                                    </div>
-                                @endif
+                            $expenseData =($item->staff_id ? DB::table('users')->where('id', $item->staff_id)->first() :
+                                          ($item->customer_id ? DB::table('users')->where('id', $item->customer_id)->first() :
+                                          ($item->supplier_id ? DB::table('suppliers')->where('id', $item->supplier_id)->first() : null)));
 
-                                <thead>
-                                    <tr>
-                                        <!-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">
-                                           
-                                        </th> -->
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">
-                                        Expense Date
-                                        </th>
-                                        
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">
-                                            Transaction ID
-                                        </th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">
-                                          Amount
-                                        </th>
-                                        <!-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">
-                                          Status
-                                        </th> -->
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">
-                                           Action
-                                        </th>
-                                        <th class="text-secondary opacity-10"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                            <tr>
-                                                <td>
-                                                    <p class="text-xs font-weight-bold mb-0">aa</p>
-                                                </td>
-                                                <td>
-                                                    <p class="text-xs font-weight-bold mb-0">aa</p>
-                                                </td>
-                                                <td>
-                                                    <p class="text-xs font-weight-bold mb-0">aa</p>
-                                                </td>
-                                                <td class="align-middle">
-                                                    <a href="" class="btn btn-outline-info custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="Edit user" title="Edit Customer">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                </tbody>
-
-                            </table>
-                        </div>
-                        <div class="mt-3">
-                            <nav aria-label="Page navigation">
-                             
-                            </nav>
-                        </div>
-                    </div>
-                </div>
+                           
+                            
+                            $expenseType = $item->expense_id ? DB::table('expences')->where('id', $item->expense_id)->first() : null;
+                            $ExpenseType = $expenseType ? $expenseType->title : "";
+                        @endphp
+                        <tr class="store_details_row">  
+                            <td>{{$i}}</td>
+                            <td>@if($item->payment_date){{date('d/m/Y', strtotime($item->payment_date))}}@endif</td>    
+                            <td>{{ $item->voucher_no }}</td>
+                            <td>Rs. {{number_format((float)$item->amount, 2, '.', '')}} ( {{ucwords($item->bank_cash)}} )</td>    
+                            <td>
+                                <a href="" class="btn btn-outline-success select-md">Edit</a>
+                            </td>                                   
+                        </tr>
+                        @php $i++; @endphp
+                        @empty
+                        <tr>
+                            <td colspan="5">No records found</td>
+                        </tr>    
+                        @endforelse
+                    </tbody>
+                </table>   
             </div>
+            {{$expenses->links()}}
         </div>
+    </div>
     </div>
     <script>
         window.addEventListener('close-import-modal', event => {
