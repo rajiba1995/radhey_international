@@ -130,7 +130,7 @@
                             <td>{{ $item->voucher_no }}</td>
                             <td>Rs. {{number_format((float)$item->amount, 2, '.', '')}} ( {{ucwords($item->bank_cash)}} )</td>    
                             <td>
-                                <a href="" class="btn btn-outline-success select-md">Edit</a>
+                                <a href="{{ route('admin.accounting.edit_depot_expense', $item->id) }}" class="btn btn-outline-success select-md">Edit</a>
                             </td>                                   
                         </tr>
                         @php $i++; @endphp

@@ -17,7 +17,7 @@ class AddExpense extends Component
 {
     public $user_id, $user_name, $expense_id, $voucher_no, $payment_date, $payment_mode, $amount, $user_type, $receipt_for = "Customer";
     public $bank_name, $chq_utr_no, $narration;
-    public $activePayementMode = 'cash';
+    public $activePayementMode = 'Cash';
     public $readonly = "readonly";
     public $staffSearchTerm = '', $customerSearchTerm = '', $supplierSearchTerm = '';
     public $staffSearchResults = [], $customerSearchResults = [], $supplierSearchResults = [];
@@ -146,105 +146,7 @@ class AddExpense extends Component
         $this->activePayementMode = $value;
     }
 
-    // public function saveExpenses()
-    // {
-    //     // dd("juj");
-    //     $this->validate([
-    //         // 'payment_date' => 'required', 
-    //         'payment_mode' => 'required', 
-    //         // 'amount' => 'required|numeric', 
-    //         // 'user_type' => 'required',
-    //         // 'user_id' => 'rename' => 'required',
-    //         // 'expense_quired',
-    //         // 'user_id' => 'required'
-    //     // ], [
-    //         // 'payment_date.required' => "Please add date of payment",
-    //         // 'payment_mode.required' => "Please mention mode of payment",
-    //         // 'amount.required' => "Please add amount",
-    //         // 'amount.numeric' => "Amount must be a number",
-    //         // 'user_type.required' => "Please mention expense at",
-    //         // // 'user_id.required' => "Please specify which user",
-    //         // 'expense_id.required' => "Please add expense type"
-    //     ]);
-    //     $userId = $this->user_type === 'staff' ? $this->staff_id :
-    //     ($this->user_type === 'customer' ? $this->customer_id :
-    //     ($this->user_type === 'supplier' ? $this->supplier_id : null));
-    //     // dd($userId);
-    //     if (!$userId) {
-    //     $this->errorMessage['user'] = 'Please select a valid user.';
-    //     return;
-    //     }
-
-    //     $paymentData = [
-    //         'payment_for' => 'debit',
-    //         'voucher_no' => $this->voucher_no,
-    //         'payment_date' => $this->payment_date,
-    //         'payment_mode' => $this->payment_mode,
-    //         'payment_in' => ($this->payment_mode != 'cash') ? 'bank' : 'cash',
-    //         'bank_cash' => ($this->payment_mode == 'cash') ? 'cash' : 'bank',
-    //         'amount' => $this->amount,
-    //         'bank_name' => $this->bank_name,
-    //         'chq_utr_no' => $this->chq_utr_no,
-    //         'narration' => $this->narration,
-    //         'created_by' => Auth::user()->id,
-    //         'created_at' => now()
-    //     ];
-
-    //     if ($this->user_type == 'staff') {
-    //         $paymentData['staff_id'] = $this->staff_id;
-    //     } elseif ($this->user_type == 'supplier') {
-    //         $paymentData['supplier_id'] = $this->supplier_id;
-    //     } elseif ($this->user_type == 'customer') {
-    //         $paymentData['customer_id'] = $this->customer_id;
-    //     }
-
-    //     if (!empty($this->expense_id)) {
-    //         $paymentData['expense_id'] = $this->expense_id;
-    //     }
-
-    //     $payment_id = Payment::insertGetId($paymentData);
-
-    //     $ledgerData = [
-    //         'user_type' => $this->user_type,
-    //         'transaction_id' => $this->voucher_no,
-    //         'transaction_amount' => $this->amount,
-    //         'payment_id' => $payment_id,
-    //         'bank_cash' => ($this->payment_mode == 'cash') ? 'cash' : 'bank',
-    //         'is_credit' => 0,
-    //         'is_debit' => 1,
-    //         'entry_date' => $this->payment_date,
-    //         'purpose' => 'expense',
-    //         'purpose_description' => "Expense for " . $this->user_type,
-    //         'created_at' => now()
-    //     ];
-
-    //     Ledger::insert($ledgerData);
-
-    //     Journal::insert([
-    //         'transaction_amount' => $this->amount,
-    //         'is_credit' => 0,
-    //         'is_debit' => 1,
-    //         'entry_date' => $this->payment_date,
-    //         'payment_id' => $payment_id,
-    //         'bank_cash' => ($this->payment_mode == 'cash') ? 'cash' : 'bank',
-    //         'purpose' => 'expense',
-    //         'purpose_description' => "Journal Entry for expense",
-    //         'purpose_id' => $this->voucher_no,
-    //         'created_at' => now()
-    //     ]);
-    //     Expense::create([
-    //         'user_id' => $userId,
-    //         'amount' => $this->amount,
-    //         'voucher_no' => $this->voucher_no,
-    //         'payment_date' => $this->payment_date,
-    //         'payment_mode' => $this->payment_mode,
-    //         'chq_utr_no' => $this->chq_utr_no,
-    //         'bank_name' => $this->bank_name,
-    //         'receipt_for' => $this->receipt_for,
-    //     ]);
-    //     Session::flash('message', "Expense added successfully for " . $this->user_type);
-    //     return redirect()->route('admin.accounting.add_expenses');
-    // }
+    
     public function saveExpenses()
     {
         // Validate input data
@@ -292,8 +194,8 @@ class AddExpense extends Component
                 'voucher_no' => $this->voucher_no,
                 'payment_date' => $this->payment_date,
                 'payment_mode' => $this->payment_mode,
-                'payment_in' => ($this->payment_mode != 'cash') ? 'bank' : 'cash',
-                'bank_cash' => ($this->payment_mode == 'cash') ? 'cash' : 'bank',
+                'payment_in' => ($this->payment_mode != 'Cash') ? 'bank' : 'Cash',
+                'bank_cash' => ($this->payment_mode == 'Cash') ? 'Cash' : 'bank',
                 'amount' => $this->amount,
                 'bank_name' => $this->bank_name,
                 'chq_utr_no' => $this->chq_utr_no,
@@ -317,7 +219,7 @@ class AddExpense extends Component
                 'transaction_id' => $this->voucher_no,
                 'transaction_amount' => $this->amount,
                 'payment_id' => $payment_id,
-                'bank_cash' => ($this->payment_mode == 'cash') ? 'cash' : 'bank',
+                'bank_cash' => ($this->payment_mode == 'Cash') ? 'Cash' : 'bank',
                 'is_credit' => 0,
                 'is_debit' => 1,
                 'entry_date' => $this->payment_date,
@@ -327,7 +229,7 @@ class AddExpense extends Component
             ];
 
             if ($this->user_type == 'staff') {
-                $ledgerData['stuff_id'] = $this->staff_id; 
+                $ledgerData['staff_id'] = $this->staff_id; 
             } elseif ($this->user_type == 'supplier') {
                 $ledgerData['supplier_id'] = $this->supplier_id;
             } elseif ($this->user_type == 'customer') {
@@ -341,7 +243,7 @@ class AddExpense extends Component
                 'is_debit' => 1,
                 'entry_date' => $this->payment_date,
                 'payment_id' => $payment_id,
-                'bank_cash' => ($this->payment_mode == 'cash') ? 'cash' : 'bank',
+                'bank_cash' => ($this->payment_mode == 'Cash') ? 'Cash' : 'bank',
                 'purpose' => 'expense',
                 'purpose_description' => "Journal Entry for expense",
                 'purpose_id' => $this->voucher_no,
@@ -355,7 +257,7 @@ class AddExpense extends Component
             Session::flash('message', "Expense added successfully for " . $this->user_type);
             return redirect()->route('admin.accounting.add_depot_expense');
         } catch (\Exception $e) {
-            // dd($e);
+            dd($e);
             // Rollback the transaction in case of an error
             DB::rollBack();
 

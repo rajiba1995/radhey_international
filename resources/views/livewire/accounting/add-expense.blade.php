@@ -147,12 +147,12 @@
                                 <option value="" hidden>Select One</option>
                                 <option value="cheque">Cheque</option>
                                 <option value="neft">NEFT</option>
-                                <option value="cash">Cash</option>
+                                <option value="Cash">Cash</option>
                             </select>
                             @error('payment_mode') <div class="text-danger">{{ $message }}</div> @enderror
                         </div>
 
-                        @if($activePayementMode !== "cash")
+                        @if($activePayementMode !== "Cash")
                             <!-- Cheque / UTR No -->
                             <div class="col-sm-4">
                                 <label class="form-label"><strong>Cheque No / UTR No</strong></label>
@@ -177,9 +177,11 @@
                     </div>
 
                     <!-- Submit Button -->
-                    <button type="submit" class="btn btn-sm btn-success d-flex align-items-center">
-                        <i class="material-icons text-white me-1" style="font-size: 15px;">add</i> Add Expense
-                    </button>
+                    <div class="col-sm-12 mt-2">
+                        <button type="submit" class="btn btn-sm btn-success d-flex align-items-center">
+                            <i class="material-icons text-white me-1" style="font-size: 15px;">add</i> Add Expense
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
