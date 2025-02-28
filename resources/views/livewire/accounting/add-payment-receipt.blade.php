@@ -1,11 +1,11 @@
 <div class="container">
     <section class="admin__title">
-        <h5>Add Payment Receipt</h5>
+        <h5>{{$payment_voucher_no?"Edit Payment Receipt":"Add Payment Receipt"}}</h5>
     </section>
     <section>
         <ul class="breadcrumb_menu">
             <li><a href="{{route('admin.accounting.payment_collection')}}">Payment Collection</a></li>
-            <li>Add Payment Receipt</li>
+            <li>{{$payment_voucher_no?"Edit Payment Receipt":"Add Payment Receipt"}}</li>
             <li class="back-button">
                 <a class="btn btn-dark btn-sm text-decoration-none text-light font-weight-bold mb-0"
                     href="{{route('admin.accounting.payment_collection')}}" role="button">
@@ -114,12 +114,18 @@
                                 <div class="form-group mb-3">
                                     <label for="">Mode of Payment <span class="text-danger">*</span></label>
                                     <select wire:model="payment_mode" class="form-control form-control-sm"
-                                        id="payment_mode" wire:change="ChangePaymentMode($event.target.value)"
+                                        id="payment_mode" @if($readonly) @else wire:change="ChangePaymentMode($event.target.value)" @endif
                                         {{$readonly}}>
-                                        <option value="" selected="" hidden="">Select One</option>
-                                        <option value="cheque">Cheque</option>
-                                        <option value="neft">NEFT</option>
-                                        <option value="cash">Cash</option>
+                                        @if($readonly)
+                                        <option value="cheque" {{$payment_mode=="cheque"?"selected":"hidden"}}>Cheque</option>
+                                        <option value="neft" {{$payment_mode=="neft"?"selected":"hidden"}}>NEFT</option>
+                                        <option value="cash" {{$payment_mode=="cash"?"selected":"hidden"}}>Cash</option>
+                                        @else
+                                            <option value="" selected="" hidden="">Select One</option>
+                                            <option value="cheque">Cheque</option>
+                                            <option value="neft">NEFT</option>
+                                            <option value="cash">Cash</option>
+                                        @endif
                                     </select>
                                     @if(isset($errorMessage['payment_mode']))
                                     <div class="text-danger">{{ $errorMessage['payment_mode'] }}</div>
@@ -158,7 +164,7 @@
                         <div class="row">
                             <div class="form-group text-end">
                                 <button type="submit" id="submit_btn" class="btn btn-sm btn-success"><i
-                                        class="material-icons text-white" style="font-size: 15px;">add</i>Add</button>
+                                        class="material-icons text-white" style="font-size: 15px;">add</i>{{$payment_voucher_no?"Update":"Add"}}</button>
                             </div>
                         </div>
                     </form>

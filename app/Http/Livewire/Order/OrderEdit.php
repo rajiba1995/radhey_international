@@ -836,6 +836,7 @@ class OrderEdit extends Component
                     foreach ($item['measurements'] as $measurement) {
                         $measurementValue = $measurement['value'] ?? null;
                         $measurementName = $measurement['title'] ?? null;
+                        $measurementShortCode = $measurement['short_code'] ?? null;
                         // Manually check if the OrderMeasurement exists
                         $orderMeasurement = OrderMeasurement::where('order_item_id', $orderItem->id)
                                                             ->where('measurement_name', $measurementName)
@@ -851,18 +852,21 @@ class OrderEdit extends Component
                             $orderMeasurement->update([
                                 'measurement_value' => $measurementValue,
                             ]);
-                        }
-                        else {
+                        } else {
+
                             // If the OrderMeasurement doesn't exist, create a new one
-                           $data= OrderMeasurement::create([
-                                'order_item_id' => $orderItem->id,
-                                'measurement_name' =>  $measurementName,
-                                'measurement_value' =>  $measurementValue,
-                            ]);
+                            if(!empty($measurementValue)){
+                                $data= OrderMeasurement::create([
+                                    'order_item_id' => $orderItem->id,
+                                    'measurement_name' =>  $measurementName,
+                                    'measurement_title_prefix' =>  $measurementShortCode,
+                                    'measurement_value' =>  $measurementValue,
+                                ]);
+                            }
+                           
                         }
                     }
                     $orderItem = OrderItem::where('order_id', $order->id)->where('product_id', $item['product_id'])->first();
-
                         $orderItem->update([
                             'selected_fabric' => $item['selected_fabric'], // Save selected fabric ID
                         ]);

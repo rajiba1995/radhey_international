@@ -39,7 +39,14 @@ class OrderView extends Component
             $product = Product::find($item->product_id);
             return [
                 'product_name' => $item->product_name ?? $product->name,
-                'price' => $item->piece_price ,
+                'collection_id' => $item->collection,
+                'collection_title' => $item->collectionType->title,
+                'fabrics' => $item->fabric,
+                'measurements' => $item->measurements,
+                'catalogue' => $item->catalogue_id?$item->catalogue:"",
+                'catalogue_id' => $item->catalogue_id,
+                'cat_page_number' => $item->cat_page_number,
+                'price' => $item->piece_price,
                 'quantity' => $item->quantity,
                 'product_image' => $product ? $product->product_image : null,
             ];

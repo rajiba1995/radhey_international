@@ -147,6 +147,7 @@ class AccountingRepository implements AccountingRepositoryInterface
             # From App End
             PaymentCollection::where('id',$data['payment_collection_id'])->update([
                 'payment_id' => $data['payment_id'],
+                'collection_amount' => $data['amount'],
                 'is_ledger_added' => 1,
                 'voucher_no' => $data['voucher_no'],
                 'updated_at' => date('Y-m-d H:i:s')
@@ -158,6 +159,7 @@ class AccountingRepository implements AccountingRepositoryInterface
 
     private function invoicePayments($voucher_no,$payment_date,$payment_amount,$customer_id,$payment_collection_id,$staff_id){
         $check_invoice_payments = InvoicePayment::where('voucher_no', $voucher_no)->get()->toArray();
+      
         if(empty($check_invoice_payments)){
             $amount_after_settlement = $payment_amount;
             $invoice = Invoice::where('customer_id', $customer_id)->where('is_paid', 0)->orderBy('id','asc')->get();
@@ -253,6 +255,218 @@ class AccountingRepository implements AccountingRepositoryInterface
                     }
                 }
             }
+        }else{
+            $invoice_payment = InvoicePayment::where('voucher_no', $voucher_no)->first();
+           
+            $payment_amount = (float) $payment_amount;
+           
+            if($invoice_payment->vouchar_amount<$payment_amount){
+                $payment_amount = $payment_amount-$invoice_payment->vouchar_amount;
+                $amount_after_settlement = $payment_amount;
+                $invoice = Invoice::where('customer_id', $customer_id)->where('is_paid', 0)->orderBy('id','asc')->get();
+                $sum_inv_amount = 0;
+                foreach($invoice as $inv){
+                    $invoice_date = date('Y-m-d', strtotime($inv->created_at));
+                    $invoiceOld = date_diff(
+                        date_create($invoice_date), 
+                        date_create($payment_date)
+                    )->format('%a');
+    
+                    $year_val = date('Y', strtotime($payment_date));
+                    $month_val = date('m', strtotime($payment_date));
+                    
+                    $payment_collection = PaymentCollection::find($payment_collection_id);
+                    $payment_id = $payment_collection->payment_id;
+                    $store = User::find($customer_id);
+    
+                    $amount = $inv->required_payment_amount;
+                    $sum_inv_amount += $amount;
+    
+                    if($amount == $payment_amount){
+                        // die('Full Covered');
+                        Invoice::where('id',$inv->id)->update([
+                            'required_payment_amount'=>0,
+                            'payment_status' => 2,
+                            'is_paid'=>1
+                        ]);
+    
+                        InvoicePayment::insert([
+                            'invoice_id' => $inv->id,
+                            'payment_collection_id' => $payment_collection_id,
+                            'invoice_no' => $inv->invoice_no,
+                            'voucher_no' => $voucher_no,
+                            'invoice_amount' => $inv->net_price,
+                            'vouchar_amount' => $payment_amount,
+                            'paid_amount' => $amount,
+                            'rest_amount' => 0,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ]);
+    
+                        $amount_after_settlement = 0;
+    
+                    } else{
+                        
+                        // die('Not Full Covered');
+                      
+                        if($amount_after_settlement>$amount && $amount_after_settlement>0){
+                            $amount_after_settlement=$amount_after_settlement-$amount;
+                            Invoice::where('id',$inv->id)->update([
+                                'required_payment_amount'=>0,
+                                'payment_status' => 2,
+                                'is_paid'=>1
+                            ]);
+                            InvoicePayment::insert([
+                                'invoice_id' => $inv->id,
+                                'payment_collection_id' => $payment_collection_id,
+                                'invoice_no' => $inv->invoice_no,
+                                'voucher_no' => $voucher_no,
+                                'invoice_amount' => $inv->net_price,
+                                'vouchar_amount' => $payment_amount,
+                                'paid_amount' => $amount,
+                                'rest_amount' => 0,
+                                'created_at' => date('Y-m-d H:i:s'),
+                                'updated_at' => date('Y-m-d H:i:s')
+                            ]);
+    
+                        }else if($amount_after_settlement<$amount && $amount_after_settlement>0){
+                            $rest_payment_amount = ($amount - $amount_after_settlement);
+                            Invoice::where('id',$inv->id)->update([
+                                'required_payment_amount'=>$rest_payment_amount,
+                                'payment_status' => 1,
+                                'is_paid'=>0
+                            ]);
+    
+                            InvoicePayment::insert([
+                                'invoice_id' => $inv->id,
+                                'payment_collection_id' => $payment_collection_id,
+                                'invoice_no' => $inv->invoice_no,
+                                'voucher_no' => $voucher_no,
+                                'invoice_amount' => $inv->net_price,
+                                'vouchar_amount' => $payment_amount,
+                                'paid_amount' => $amount_after_settlement, 
+                                'rest_amount' => $rest_payment_amount,
+                                'created_at' => date('Y-m-d H:i:s'),
+                                'updated_at' => date('Y-m-d H:i:s')
+                            ]);
+    
+                            $amount_after_settlement = 0;
+                        }else if($amount_after_settlement==0){
+    
+                        }
+                    }
+                }
+
+            }elseif($invoice_payment->vouchar_amount>$payment_amount){
+              
+                foreach($check_invoice_payments as $k=>$item){
+                    $invoice = Invoice::find($item['invoice_id']);
+                    $invoice->required_payment_amount = $invoice->required_payment_amount==0?$item['paid_amount']:($invoice->required_payment_amount+$item['paid_amount']);
+                    $invoice->payment_status =1;
+                    $invoice->is_paid =0;
+                    $invoice->save();
+                    // Remove Invoice Payment
+                    InvoicePayment::where('id', $item['id'])->delete();
+                }
+    
+                $amount_after_settlement = $payment_amount;
+                $invoice = Invoice::where('customer_id', $customer_id)->where('is_paid', 0)->orderBy('id','asc')->get();
+                $sum_inv_amount = 0;
+                foreach($invoice as $inv){
+                    $invoice_date = date('Y-m-d', strtotime($inv->created_at));
+                    $invoiceOld = date_diff(
+                        date_create($invoice_date), 
+                        date_create($payment_date)
+                    )->format('%a');
+    
+                    $year_val = date('Y', strtotime($payment_date));
+                    $month_val = date('m', strtotime($payment_date));
+                    
+                    $payment_collection = PaymentCollection::find($payment_collection_id);
+                    $payment_id = $payment_collection->payment_id;
+                    $store = User::find($customer_id);
+    
+                    $amount = $inv->required_payment_amount;
+                    $sum_inv_amount += $amount;
+    
+                    if($amount == $payment_amount){
+                        // die('Full Covered');
+                        Invoice::where('id',$inv->id)->update([
+                            'required_payment_amount'=>0,
+                            'payment_status' => 2,
+                            'is_paid'=>1
+                        ]);
+    
+                        InvoicePayment::insert([
+                            'invoice_id' => $inv->id,
+                            'payment_collection_id' => $payment_collection_id,
+                            'invoice_no' => $inv->invoice_no,
+                            'voucher_no' => $voucher_no,
+                            'invoice_amount' => $inv->net_price,
+                            'vouchar_amount' => $payment_amount,
+                            'paid_amount' => $amount,
+                            'rest_amount' => 0,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ]);
+    
+                        $amount_after_settlement = 0;
+    
+                    } else{
+                        
+                        // die('Not Full Covered');
+                      
+                        if($amount_after_settlement>$amount && $amount_after_settlement>0){
+                            $amount_after_settlement=$amount_after_settlement-$amount;
+                            Invoice::where('id',$inv->id)->update([
+                                'required_payment_amount'=>0,
+                                'payment_status' => 2,
+                                'is_paid'=>1
+                            ]);
+                            InvoicePayment::insert([
+                                'invoice_id' => $inv->id,
+                                'payment_collection_id' => $payment_collection_id,
+                                'invoice_no' => $inv->invoice_no,
+                                'voucher_no' => $voucher_no,
+                                'invoice_amount' => $inv->net_price,
+                                'vouchar_amount' => $payment_amount,
+                                'paid_amount' => $amount,
+                                'rest_amount' => 0,
+                                'created_at' => date('Y-m-d H:i:s'),
+                                'updated_at' => date('Y-m-d H:i:s')
+                            ]);
+    
+                        }else if($amount_after_settlement<$amount && $amount_after_settlement>0){
+                            $rest_payment_amount = ($amount - $amount_after_settlement);
+                            Invoice::where('id',$inv->id)->update([
+                                'required_payment_amount'=>$rest_payment_amount,
+                                'payment_status' => 1,
+                                'is_paid'=>0
+                            ]);
+    
+                            InvoicePayment::insert([
+                                'invoice_id' => $inv->id,
+                                'payment_collection_id' => $payment_collection_id,
+                                'invoice_no' => $inv->invoice_no,
+                                'voucher_no' => $voucher_no,
+                                'invoice_amount' => $inv->net_price,
+                                'vouchar_amount' => $payment_amount,
+                                'paid_amount' => $amount_after_settlement, 
+                                'rest_amount' => $rest_payment_amount,
+                                'created_at' => date('Y-m-d H:i:s'),
+                                'updated_at' => date('Y-m-d H:i:s')
+                            ]);
+    
+                            $amount_after_settlement = 0;
+                        }else if($amount_after_settlement==0){
+    
+                        }
+                    }
+                }
+            }else{
+
+            }
+            
         }
     }
 

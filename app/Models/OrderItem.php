@@ -26,6 +26,10 @@ class OrderItem extends Model
         'quantity',
     ];
 
+    public function catalogue()
+    {
+        return $this->belongsTo(Catalogue::class, 'catalogue_id');
+    }
     public function order()
     {
         return $this->belongsTo(Order::class);

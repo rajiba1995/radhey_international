@@ -238,9 +238,11 @@ class OrderNew extends Component
     public function FindCustomer($term)
     {
         $this->searchTerm = $term;
+        $this->reset('searchResults');
 
         if (!empty($this->searchTerm)) {
-            $this->searchResults = User::where('user_type', 1)
+            // Fetch users based on search term
+            $users = User::where('user_type', 1)
                 ->where('status', 1)
                 ->where(function ($query) {
                     $query->where('name', 'like', '%' . $this->searchTerm . '%')
@@ -250,36 +252,41 @@ class OrderNew extends Component
                 })
                 ->take(20)
                 ->get();
-                $orders = Order::where('order_number', 'like', '%' . $this->searchTerm . '%')
-                    ->orWhereHas('customer', function ($query) {
-                        $query->where('name', 'like', '%' . $this->searchTerm . '%');
-                    })
-                    ->latest()
-                    ->take(1)
-                    ->get();
 
-                if ($orders->count()) {
-                    // If orders are found, show the customer name, phone, and email in search results
-                    $this->orders = $orders;
-        // dd($orders);
-                    // Prepend customer details from the first order into search results
-                    $customerFromOrder = $orders->first()->customer;
-                    // dd($customerFromOrder);
-                    $this->searchResults->prepend($customerFromOrder);
-                    session()->flash('orders-found', 'Orders found for this customer.');
-                } else {
-                    $this->orders = collect(); // No orders found
-                    session()->flash('no-orders-found', 'No orders found for this customer.');
-                }
+            // Fetch orders based on search term
+            $orders = Order::where('order_number', 'like', '%' . $this->searchTerm . '%')
+                ->orWhereHas('customer', function ($query) {
+                    $query->where('name', 'like', '%' . $this->searchTerm . '%');
+                })
+                ->latest()
+                ->take(1)
+                ->get();
 
-                 // If no orders are found, flash a session message
-            // if ($this->orders->isEmpty()) {
-            // }
+            if ($orders->count()) {
+                // Store orders in the class property
+                $this->orders = $orders;
+
+                // Extract customer from the first order
+                $customerFromOrder = $orders->first()->customer;
+
+                // Add the customer to search results
+                $users->prepend($customerFromOrder);
+
+                session()->flash('orders-found', 'Orders found for this customer.');
+            } else {
+                $this->orders = collect(); // No orders found
+                session()->flash('no-orders-found', 'No orders found for this customer.');
+            }
+
+            // Remove duplicate users by `id`
+            $this->searchResults = $users->unique('id')->values();
+
         } else {
             // Reset results when the search term is empty
             $this->searchResults = [];
-            $this->orders = collect(); 
+            $this->orders = collect();
         }
+
       }
 
     // public function addItem()
@@ -840,6 +847,7 @@ class OrderNew extends Component
                         $orderMeasurement = new OrderMeasurement();
                         $orderMeasurement->order_item_id = $orderItem->id;
                         $orderMeasurement->measurement_name = $measurement_data ? $measurement_data->title : "";
+                        $orderMeasurement->measurement_title_prefix = $measurement_data ? $measurement_data->short_code : "";
                         $orderMeasurement->measurement_value = $measurement['value'];
                         $orderMeasurement->save();
                     }
