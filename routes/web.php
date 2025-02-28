@@ -36,7 +36,7 @@ use App\Http\Livewire\PurchaseOrder\{PurchaseOrderIndex,PurchaseOrderCreate,Purc
 use App\Http\Livewire\Stock\{StockIndex,UserLedger};
 use App\Http\Livewire\Report\{UserLedgerReport};
 use App\Http\Livewire\BusinessType\BusinessTypeIndex;
-use App\Http\Livewire\Accounting\{AddPaymentReceipt,PaymentCollectionIndex,AddOpeningBalance,ListOpeningBalance};
+use App\Http\Livewire\Accounting\{AddPaymentReceipt,PaymentCollectionIndex,AddOpeningBalance,ListOpeningBalance,IndexExpense,AddExpense};
 // purchase Order pdf
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\PurchaseOrder;
@@ -186,6 +186,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
         Route::get('/add-payment-receipt/{payment_voucher_no?}', AddPaymentReceipt::class)->name('admin.accounting.add_payment_receipt');
         Route::get('/add-opening-balance', AddOpeningBalance::class)->name('admin.accounting.add_opening_balance');
         Route::get('/list-opening-balance', ListOpeningBalance::class)->name('admin.accounting.list_opening_balance');
+        Route::get('/list/depot-expense', IndexExpense::class)->name('admin.accounting.list.depot_expense');
+        Route::get('/add-depot-expense', AddExpense::class)->name('admin.accounting.add_depot_expense');
     });
 
     Route::prefix('report')->group(function() {
