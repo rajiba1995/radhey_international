@@ -24,9 +24,9 @@
                     <div class="row">
                         <!-- User Type Selection -->
                         <div class="mb-3 col-md-6">
-                            <label class="form-label"><strong>User Type</strong></label>
+                            <label class="form-label"><strong>Expense At <span class="text-danger">*</span></strong></label>
                             <select wire:model="user_type" wire:change="getUser($event.target.value)"  class="form-control form-control bg-white">
-                                <option value="" hidden>Select User Type</option>
+                                <option value="" hidden>Select Expense At</option>
                                 <option value="staff">Staff</option>
                                 <option value="customer">Customer</option>
                                 <option value="supplier">Supplier</option>
@@ -36,9 +36,11 @@
                         <!-- User Selection Based on Type -->
                         <div class="mb-3 col-md-6">
                             @if($user_type === 'staff')
-                                <label class="form-label"><strong>Search Staff</strong></label>
+                                <label class="form-label"><strong>Staff Name <span class="text-danger">*</span></strong></label>
                                 <input type="text" wire:model.defer="staffSearchTerm" wire:keyup="searchStaff" class="form-control form-control bg-white" placeholder="Search by staff name">
-                                @error('staffSearchTerm') <div class="text-danger text-sm">{{ $message }}</div> @enderror
+                                <!-- <input type="hidden" wire:model="stuff_id"> -->
+                                <input type="hidden" wire:model="staff_id">
+                                @error('staff_id') <div class="text-danger text-sm">{{ $message }}</div> @enderror
 
                                 @if(!empty($staffSearchResults))
                                     <div class="dropdown-menu show">
@@ -50,9 +52,10 @@
                                     </div>
                                 @endif
                             @elseif($user_type === 'customer')
-                                <label class="form-label"><strong>Search Customer</strong></label>
+                                <label class="form-label"><strong>Customer Name <span class="text-danger">*</span></strong></label>
                                 <input type="text" wire:model.defer="customerSearchTerm" wire:keyup="searchCustomer" class="form-control form-control bg-white" placeholder="Search by customer name">
-                                @error('customerSearchTerm') <div class="text-danger text-sm">{{ $message }}</div> @enderror
+                                <input type="hidden" wire:model="customer_id">
+                                @error('customer_id') <div class="text-danger text-sm">{{ $message }}</div> @enderror
 
                                 @if(!empty($customerSearchResults))
                                     <div class="dropdown-menu show">
@@ -64,9 +67,10 @@
                                     </div>
                                 @endif
                             @elseif($user_type === 'supplier')
-                                <label class="form-label"><strong>Search Supplier</strong></label>
+                                <label class="form-label"><strong>Supplier Name <span class="text-danger">*</span></strong></label>
                                 <input type="text" wire:model.defer="supplierSearchTerm" wire:keyup="searchSupplier" class="form-control form-control bg-white" placeholder="Search by supplier name">
-                                @error('supplierSearchTerm') <div class="text-danger text-sm">{{ $message }}</div> @enderror
+                                <input type="hidden" wire:model="supplier_id">
+                                @error('supplier_id') <div class="text-danger text-sm">{{ $message }}</div> @enderror
 
                                 @if(!empty($supplierSearchResults))
                                     <div class="dropdown-menu show">
@@ -81,46 +85,46 @@
                         </div>
                         @if($user_type == 'staff')
                             <div class="mb-3 col-md-4">
-                                <label for="expense_title" class="form-label">Expense Title</label>
-                                <select wire:model="expense_title" id="expense_title" class="form-control form-control-sm">
-                                    <option value="" disabled selected>Select Expense Title</option>
+                                <label for="expense_id" class="form-label"><strong>Expense<span class="text-danger">*</span></strong> </label>
+                                <select wire:model="expense_id" id="expense_id" class="form-control form-control-sm">
+                                    <option value="">Select Expense</option>
                                     @foreach($stuffExpenseTitles as $expense)
                                         <option value="{{ $expense->id }}">{{ $expense->title }}</option>
                                     @endforeach
                                 </select>
-                                @error('expense_title') <span class="text-danger">{{ $message }}</span> @enderror
+                                @error('expense_id') <span class="text-danger">{{ $message }}</span> @enderror
                             </div>
                         @endif
 
                         @if($user_type == 'supplier')
                             <div class="mb-3 col-md-4">
-                                <label for="expense_title" class="form-label">Expense Title</label>
-                                <select wire:model="expense_title" id="expense_title" class="form-control form-control-sm">
-                                    <option value="" disabled selected>Select Expense Title</option>
+                                <label for="expense_id" class="form-label"><strong>Expense<span class="text-danger">*</span></strong> </label>
+                                <select wire:model="expense_id" id="expense_id" class="form-control form-control-sm">
+                                    <option value="">Select Expense</option>
                                     @foreach($supplierExpenseTitles as $expense)
                                         <option value="{{ $expense->id }}">{{ $expense->title }}</option>
                                     @endforeach
                                 </select>
-                                @error('expense_title') <span class="text-danger">{{ $message }}</span> @enderror
+                                @error('expense_id') <span class="text-danger">{{ $message }}</span> @enderror
                             </div>
                         @endif
                         @if($user_type == 'customer')
                             <div class="mb-3 col-md-4">
-                                <label for="expense_title" class="form-label">Expense Title</label>
-                                <select wire:model="expense_title" id="expense_title" class="form-control form-control-sm">
-                                    <option value="" disabled selected>Select Expense Title</option>
+                                <label for="expense_id" class="form-label"><strong>Expense<span class="text-danger">*</span></strong></label>
+                                <select wire:model="expense_id" id="expense_id" class="form-control form-control-sm">
+                                    <option value="">Select Expense</option>
                                     @foreach($customerExpenseTitles as $expense)
                                         <option value="{{ $expense->id }}">{{ $expense->title }}</option>
                                     @endforeach
                                 </select>
-                                @error('expense_title') <span class="text-danger">{{ $message }}</span> @enderror
+                                @error('expense_id') <span class="text-danger">{{ $message }}</span> @enderror
                             </div>
                         @endif
                         <!-- Date -->
                         <div class="mb-3 col-md-4">
-                            <label class="form-label"><strong>Date</strong></label>
-                            <input type="date" wire:model="date" class="form-control bg-white" placeholder="Select Date">
-                            @error('date') <div class="text-danger">{{ $message }}</div> @enderror
+                            <label class="form-label"><strong>Date <span class="text-danger">*</span></strong></label>
+                            <input type="date" wire:model="payment_date" class="form-control bg-white" placeholder="Select Date">
+                            @error('payment_date') <div class="text-danger">{{ $message }}</div> @enderror
                         </div>
 
                         <!-- Voucher No -->
@@ -143,12 +147,12 @@
                                 <option value="" hidden>Select One</option>
                                 <option value="cheque">Cheque</option>
                                 <option value="neft">NEFT</option>
-                                <option value="cash">Cash</option>
+                                <option value="Cash">Cash</option>
                             </select>
                             @error('payment_mode') <div class="text-danger">{{ $message }}</div> @enderror
                         </div>
 
-                        @if($activePayementMode !== "cash")
+                        @if($activePayementMode !== "Cash")
                             <!-- Cheque / UTR No -->
                             <div class="col-sm-4">
                                 <label class="form-label"><strong>Cheque No / UTR No</strong></label>
@@ -173,9 +177,11 @@
                     </div>
 
                     <!-- Submit Button -->
-                    <button type="submit" class="btn btn-sm btn-success d-flex align-items-center">
-                        <i class="material-icons text-white me-1" style="font-size: 15px;">add</i> Add Expense
-                    </button>
+                    <div class="col-sm-12 mt-2">
+                        <button type="submit" class="btn btn-sm btn-success d-flex align-items-center">
+                            <i class="material-icons text-white me-1" style="font-size: 15px;">add</i> Add Expense
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
