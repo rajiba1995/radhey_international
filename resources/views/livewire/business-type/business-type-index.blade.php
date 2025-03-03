@@ -30,7 +30,6 @@
                     </div>
                 </div>
             </div>
-            
         </div>
     </section>
     <div class="row mb-4">

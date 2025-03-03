@@ -53,8 +53,8 @@
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="importModalLabel">Import CSV File</h5>
-                                        <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">
-                                            Close
+                                        <button type="button" class="btn btn-outline-danger custom-btn-sm" data-bs-dismiss="modal">
+                                            <i class="fas fa-times"></i>
                                         </button>
                                     </div>
                                     <div class="modal-body">
@@ -74,10 +74,6 @@
                                             </div>
                                             <div class="d-flex justify-content-end  ">
                                                 <div class="col-md-auto select-md">
-                                                    <button type="button" class="btn-sm btn-danger" data-bs-dismiss="modal">
-                                                        Close
-                                                    </button>
-                                                    
                                                     <button type="submit" class="btn-sm btn-success">
                                                         <i class="fas fa-file-csv me-1"></i> Import
                                                     </button>

@@ -41,9 +41,7 @@
                                     </button>
                                 </div>
                               
-                                <div class="col-auto">
-                                    <button wire:click="sampleExport" class="btn btn-outline-success select-md"><i class="fas fa-file-csv me-1"></i>Sample CSV Download</button>
-                                </div>
+                                
                                 <div class="col-auto">
                                     <button wire:click="export" class="btn btn-outline-success select-md"><i class="fas fa-file-csv me-1"></i>Export</button>
                                 </div>
@@ -72,10 +70,16 @@
                                                         <input type="file" wire:model="file" class="form-control">
                                                         @error('file') <span class="text-danger">{{ $message }}</span> @enderror
                                                     </div>
-                                                    <div class="d-flex justify-content-end">
-                                                        <button type="submit" class="btn btn-primary btn-outline-primary select-md">
-                                                            <i class="fas fa-file-csv me-1"></i> Import
-                                                        </button>
+                                                   
+                                                    <div class="d-flex justify-content-end  ">
+                                                        <div class="col-md-auto select-md">
+                                                            <button type="submit" class="btn-sm btn-success">
+                                                                <i class="fas fa-file-csv me-1"></i> Import
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <button wire:click="sampleExport" class="btn btn-outline-success select-md"><i class="fas fa-file-csv me-1"></i>Sample CSV Download</button>
                                                     </div>
                                                 </form>
                                             </div>

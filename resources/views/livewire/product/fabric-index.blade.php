@@ -1,4 +1,19 @@
-<div class="container-fluid py-4">
+<div class="container">
+    <section class="admin__title">
+        <h5>Fabrics</h5>
+    </section>
+    <section>
+        <ul class="breadcrumb_menu">
+            <li>Fabrics</li>
+            <li></li>
+            <!-- <li>Create Customer</li> -->
+        </ul>
+        <div class="row align-items-center justify-content-between">
+                <div class="col-auto">
+                    <!-- <p class="text-sm font-weight-bold">Items</p> -->
+                </div>
+            </div>
+    </section>
     <div class="row mb-4">
         <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
             <div class="row">
@@ -12,46 +27,77 @@
                                     </div>
                                 @endif
                             </div>
-                            <div class="row">
-                                <div class="col-lg-6 col-7">
-                                    <h6>Fabrics</h6>
-                                </div>
-                                <div class="col-lg-6 col-5 my-auto text-end">
-                                    <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-                                   
-                                            <!-- Optionally, add a search icon button -->
-                                        
+                            
+                        </div>
+                        <div class="card-body pb-2">
+                        <section>
+                            <div class="search__filter">
+                                <div class="row align-items-center justify-content-end">
+                                    <div class="col-auto">
+                                        <div class="row g-3 align-items-center">
+                                            <div class="col-auto">
+                                                <button type="button" class="btn btn-outline-primary select-md" data-bs-toggle="modal" data-bs-target="#importModal">
+                                                    <i class="fas fa-file-csv me-1"></i> Import
+                                                </button>
+                                            </div>
+                                            <div class="col-auto">
+                                                <button wire:click="export" class="btn btn-outline-success select-md"><i class="fas fa-file-csv me-1"></i>Export</button>
+                                            </div>
+                                            <!-- Import Modal -->
+                                            <div wire:ignore.self class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="importModalLabel">Import CSV File</h5>
+                                                            <button type="button" class="btn btn-outline-danger custom-btn-sm" data-bs-dismiss="modal">
+                                                                <i class="fas fa-times"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <!-- Display Success/Error Messages -->
+                                                            @if (session()->has('success'))
+                                                                <div class="alert alert-success">{{ session('success') }}</div>
+                                                            @endif
+                                                            @if (session()->has('error'))
+                                                                <div class="alert alert-danger">{{ session('error') }}</div>
+                                                            @endif
+                                                            
+                                                            <form wire:submit.prevent="import" enctype="multipart/form-data">
+                                                                <div class="mb-3">
+                                                                    <label for="file" class="form-label">Upload CSV File</label>
+                                                                    <input type="file" wire:model="file" class="form-control">
+                                                                    @error('file') <span class="text-danger">{{ $message }}</span> @enderror
+                                                                </div>
+                                                            
+                                                                <div class="d-flex justify-content-end  ">
+                                                                    <div class="col-md-auto select-md">
+                                                                        <button type="submit" class="btn-sm btn-success">
+                                                                            <i class="fas fa-file-csv me-1"></i> Import
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-auto">
+                                                                    <button wire:click="sampleExport" class="btn btn-outline-success select-md"><i class="fas fa-file-csv me-1"></i>Sample CSV Download</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-body pb-2">
+                        </section>
                             <div class="d-flex justify-content-between mb-3">
                                 <!-- Import Form -->
-                                <form wire:submit.prevent="import" class="d-flex align-items-center me-2">
-                                    <input type="file" wire:model="file" class="form-control form-control-sm" />
-                                    @error('file') <span class="text-danger">{{ $message }}</span> @enderror
-
                                     @if(session()->has('error'))
                                         <span class="text-danger">{{ session('error') }}</span>
                                     @endif
                                     @if(session()->has('success'))
                                         <span class="text-success">{{ session('success') }}</span>
                                     @endif
-
-                                    <button type="submit" class="btn btn-outline-primary select-md">
-                                    <i class="fas fa-file-csv me-1"></i> Import
-                                    </button>
-                                </form>
-
-
-                                <!-- Export Button -->
-                                <button wire:click="export" class="btn btn-outline-success select-md">
-                                    <i class="fas fa-file-export me-1"></i> Export
-                                </button>
-                                <button wire:click="sampleExport" class="btn btn-outline-success select-md">
-                                    <i class="fas fa-file-export me-1"></i>Sample Export
-                                </button>
                             </div>
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0" >
