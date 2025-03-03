@@ -34,7 +34,7 @@
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">SL</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Collection</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Short Code</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Image</th>
+                                            {{-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Image</th> --}}
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Title</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Status</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Actions</th>
@@ -46,13 +46,13 @@
                                                 <td><h6 class="mb-0 text-sm">{{ $k + 1 }}</h6></td>
                                                 <td><p class="text-xs font-weight-bold mb-0">{{ $category->collection?$category->collection->title : "" }}</p></td>
                                                 <td><p class="text-xs font-weight-bold mb-0">{{ $category->short_code}}</p></td>
-                                                <td class="align-middle">
+                                                {{-- <td class="align-middle">
                                                     @if($category->image)
                                                         <img src="{{ asset($category->image) }}"  class="img-thumbnail" width="50">
                                                     @else
                                                         <span class="text-xs font-weight-bold mb-0">No Image</span>
                                                     @endif
-                                                </td>
+                                                </td> --}}
                                                 <td><p class="text-xs font-weight-bold mb-0">{{ ucwords($category->title) }}</p></td>
                                                 <td class="align-middle text-sm text-center">
                                                     <div class="form-check form-switch">
@@ -66,11 +66,9 @@
                                                     </div>
                                                 </td>
                                                 <td class="align-middle text-end px-4">
-                                                    <button wire:click="edit({{ $category->id }})" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" title="Edit">
-                                                        <span class="material-icons">edit</span>
+                                                    <button wire:click="edit({{ $category->id }})" class="btn btn-outline-primary select-md btn_action btn_outline" title="Edit">Edit
                                                     </button>
-                                                    <button wire:click="destroy({{ $category->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm mb-0" title="Delete">
-                                                        <span class="material-icons">delete</span>
+                                                    <button wire:click="destroy({{ $category->id }})" class="btn btn-outline-danger select-md btn_outline" title="Delete">Delete
                                                     </button>
                                                 </td>
                                             </tr>
@@ -100,7 +98,7 @@
     
                                     <label class="form-label mt-3">Collection</label>
                                     <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
-                                        <select wire:model="collection_id" class="form-control border border-2 p-2">
+                                        <select wire:model="collection_id" class="form-control form-control-sm border border-2 p-2">
                                             <option value="" selected hidden>Select Collection</option>
                                             @foreach ($collections as $id=> $title)
                                                 <option value="{{$id}}">{{$title}}</option>
@@ -114,7 +112,7 @@
                                     {{-- short code --}}
                                     <label class="form-label">Short Code</label>
                                     <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
-                                        <input type="text" wire:model="short_code" class="form-control border border-2 p-2" placeholder="Enter short_code">
+                                        <input type="text" wire:model="short_code" class="form-control form-control-sm border border-2 p-2" placeholder="Enter short_code">
                                     </div>
                                     @error('short_code')
                                         <p class='text-danger inputerror'>{{ $message }}</p>
@@ -122,13 +120,13 @@
     
                                     <label class="form-label">Category Title</label>
                                     <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
-                                        <input type="text" wire:model="title" class="form-control border border-2 p-2" placeholder="Enter Title">
+                                        <input type="text" wire:model="title" class="form-control form-control-sm border border-2 p-2" placeholder="Enter Title">
                                     </div>
                                     @error('title')
                                         <p class='text-danger inputerror'>{{ $message }}</p>
                                     @enderror
     
-                                    <label class="form-label mt-3">Category Image</label>
+                                    {{-- <label class="form-label mt-3">Category Image</label>
                                     <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
                                         <input type="file" wire:model="image" class="form-control border border-2 p-2">
                                     </div>
@@ -141,11 +139,11 @@
                                     </div>
                                     @error('image')
                                         <p class='text-danger inputerror'>{{ $message }}</p>
-                                    @enderror
+                                    @enderror --}}
                                     <div class="mb-2 text-end mt-4">
-                                        <a href="" class="btn btn-cta btn-sm mt-1"><i class="material-icons text-white" style="font-size: 15px;">refresh</i>Refresh</a>
-                                        <button type="submit" class="btn btn-cta btn-sm mt-1" wire:loading.attr="disabled">
-                                            <span>{{ $categoryId ? 'Update Category' : 'Create Category' }}</span>
+                                        <a href="" class="btn btn-sm btn-danger select-md">Clear</a>
+                                        <button type="submit" class="btn btn-sm btn-success select-md" wire:loading.attr="disabled">
+                                           <span>{{ $categoryId ? 'Update Category' : 'Create Category' }}</span>
                                         </button>
                                     </div>
                                 </div>

@@ -46,8 +46,7 @@
                                                 <td><p class="text-xs font-weight-bold mb-0">{{ $branchName->email }}</p></td>
                                                 <td><p class="text-xs font-weight-bold mb-0">{{ $branchName->mobile }}</p></td>
                                                 <td class="align-middle">
-                                                    <button wire:click="edit({{ $branchName->id }})" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" title="Edit">
-                                                        <span class="material-icons">edit</span>
+                                                    <button wire:click="edit({{ $branchName->id }})" class="btn btn-outline-primary select-md btn_action btn_outline" title="Edit">Edit
                                                     </button>
                                                 </td>
                                             </tr>
@@ -73,7 +72,7 @@
                                 <div class="row">
                                     <label class="form-label"> Branch Name</label>
                                     <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
-                                        <input type="text" wire:model="name" class="form-control border border-2 p-2" placeholder="Enter Branch Name">
+                                        <input type="text" wire:model="name" class="form-control form-control-sm border border-2 p-2" placeholder="Enter Branch Name">
                                     </div>
                                     @error('name')
                                         <p class='text-danger inputerror'>{{ $message }}</p>
@@ -81,7 +80,7 @@
                                      <!-- Email -->
                                     <label class="form-label mt-3">Email</label>
                                     <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
-                                        <input type="email" wire:model="email" class="form-control border border-2 p-2" placeholder="Enter Email">
+                                        <input type="email" wire:model="email" class="form-control form-control-sm border border-2 p-2" placeholder="Enter Email">
                                     </div>
                                     @error('email')
                                         <p class='text-danger inputerror'>{{ $message }}</p>
@@ -90,7 +89,7 @@
                                     <!-- Mobile -->
                                     <label class="form-label mt-3">Mobile</label>
                                     <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
-                                        <input type="number" wire:model="mobile" class="form-control border border-2 p-2" placeholder="Enter Mobile Number">
+                                        <input type="number" wire:model="mobile" class="form-control form-control-sm border border-2 p-2" placeholder="Enter Mobile Number">
                                     </div>
                                     @error('mobile')
                                         <p class='text-danger inputerror'>{{ $message }}</p>
@@ -99,7 +98,7 @@
                                     <!-- WhatsApp -->
                                     <label class="form-label mt-3">WhatsApp</label>
                                     <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
-                                        <input type="number" wire:model="whatsapp" class="form-control border border-2 p-2" placeholder="Enter WhatsApp Number">
+                                        <input type="number" wire:model="whatsapp" class="form-control form-control-sm border border-2 p-2" placeholder="Enter WhatsApp Number">
                                     </div>
                                     @error('whatsapp')
                                         <p class='text-danger inputerror'>{{ $message }}</p>
@@ -108,7 +107,7 @@
                                     <!-- City -->
                                     <label class="form-label mt-3">City</label>
                                     <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
-                                        <input type="text" wire:model="city" class="form-control border border-2 p-2" placeholder="Enter City">
+                                        <input type="text" wire:model="city" class="form-control form-control-sm border border-2 p-2" placeholder="Enter City">
                                     </div>
                                     @error('city')
                                         <p class='text-danger inputerror'>{{ $message }}</p>
@@ -117,7 +116,7 @@
                                     <!-- Address -->
                                     <label class="form-label mt-3">Address</label>
                                     <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
-                                        <textarea type="text" wire:model="address" class="form-control border border-2 p-2" placeholder="Enter Address"></textarea>
+                                        <textarea type="text" wire:model="address" class="form-control form-control-sm border border-2 p-2" placeholder="Enter Address"></textarea>
                                     </div>
                                     @error('address')
                                         <p class='text-danger inputerror'>{{ $message }}</p>

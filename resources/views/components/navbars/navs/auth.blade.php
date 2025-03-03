@@ -20,13 +20,21 @@
                 @csrf
             </form>
             <ul class="navbar-nav  justify-content-end">
-                <li class="nav-item d-flex align-items-center">
-                    <a href="javascript:;" class="nav-link text-body font-weight-bold px-0">
-                        <p class="d-sm-inline d-none"> <i class="fa fa-user me-sm-1"></i>{{Auth::user()->name}} </p>
-                        @if(Auth::user()->designationDetails)
-                            <p>{{ Auth::user()->designationDetails['name'] }}</p> 
-                        @endif
+                <li class="nav-item d-flex align-items-center dropdown">
+                    <a href="javascript:;" class="nav-link text-body font-weight-bold px-0 dropdown-toggle custom-profile-box" data-bs-toggle="dropdown">
+                        <figure><i class="fa fa-user"></i></figure>
+                        <div class="name-details">
+                            <p>{{Auth::user()->name}} </p>
+                            @if(Auth::user()->designationDetails)
+                                <span>{{ Auth::user()->designationDetails['name'] }}</span> 
+                            @endif
+                        </div>
                     </a>
+
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Logout</a></li>
+                    </ul>
+
                 </li>
                 <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
                     <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">

@@ -83,8 +83,10 @@
                             <label for="whatsapp_no" class="form-label">WhatsApp Number <span class="text-danger">*</span></label>
                             <input type="text" wire:model="whatsapp_no" id="whatsapp_no" class="form-control form-control-sm border border-1 p-2" @if($is_wa_same) disabled @endif placeholder="Enter Whatsapp Number">
 
-                            <input type="checkbox" id="is_wa_same" wire:change="SameAsMobile" value="0" @if($is_wa_same) checked @endif>
-                            <label for="is_wa_same" class="form-check-label ms-2">Same as Phone Number</label>
+                            <div class="custon-input-group">
+                                <input type="checkbox" id="is_wa_same" wire:change="SameAsMobile" value="0" @if($is_wa_same) checked @endif>
+                                <label for="is_wa_same" class="form-check-label ms-2">Same as Phone Number</label>
+                            </div>
                             @error('whatsapp_no')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -167,9 +169,10 @@
                     </div>
                     <div class="d-flex justify-content-between mt-4">
                         <h6 class="badge bg-danger custom_danger_badge mb-3">Shipping Address</h6>
-                        <div class="d-flex align-items-center">
+                        <div class="d-flex align-items-center custom-checkbox">
                             <input type="checkbox"  wire:change="toggleShippingAddress" wire:model="is_billing_shipping_same" id="isBillingShippingSame" class="form-check-input border border-1" @if ($is_billing_shipping_same) checked @endif>
-                            <label for="isBillingShippingSame" class="form-check-label"><span class="badge bg-secondary">Shipping address same as billing</span></label>
+                            <i></i>
+                            <label for="isBillingShippingSame" class="form-check-label">Shipping address same as billing</label>
                         </div>
                     </div>
                     <!-- Shipping Address -->
@@ -256,7 +259,7 @@
                             @enderror
                         </div>
                     </div> --}}
-                    <button type="submit" class="btn btn-sm btn-success"><i class="material-icons text-white" style="font-size: 15px;">update</i>Update</button>
+                    <button type="submit" class="btn btn-outline-success select-md"><i class="material-icons me-1" >update</i>Update</button>
                 </form>
             </div>
         </div>

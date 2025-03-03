@@ -12,7 +12,7 @@
                                 </div>
                             @endif
                         </div>
-                        <div class="row">
+                        <div class="row align-items-center">
                             <div class="col-lg-6 col-7">
                                 <h5>{{$parent_id == 1 ?'Recurring Expense' : 'Non Recurring Expense'}}</h5>
                             </div>
@@ -100,7 +100,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="card my-4">
-                    <div class="card-body px-0 pb-2 mx-4">
+                    <div class="card-body px-0 pb-2 mx-4 asibe-bar">
                         <form wire:submit.prevent="saveExpense">
                             @csrf
                                 <h4 class="page__subtitle">{{ $expenseId ? 'Edit Expense' : 'Add New Expense' }}</h4>
@@ -115,11 +115,12 @@
                                     <textarea wire:model="description" placeholder="Enter Expense Description" class="form-control border border-2 p-2" rows="5">{{old('description')}}</textarea>
                                     @error('description') <p class="small text-danger">{{ $message }}</p> @enderror
                                 </div> 
-                                <div class="row">
+                                <div class="row mb-3">
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <div class="form-check ps-0">
+                                            <div class="form-check ps-0 custom-checkbox">
                                                 <input wire:model="for_debit" class="form-check-input" type="checkbox" value="1"  id="for_debit">
+                                                <i></i>
                                                 <label class="form-check-label" for="for_debit">
                                                   Debit Purpose
                                                 </label>
@@ -129,8 +130,9 @@
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <div class="form-check ps-0">
+                                            <div class="form-check ps-0 custom-checkbox">
                                                 <input wire:model="for_credit" class="form-check-input" type="checkbox" value="1" id="for_credit">
+                                                <i></i>
                                                 <label class="form-check-label" for="for_credit">
                                                   Credit Purpose
                                                 </label>
@@ -138,12 +140,11 @@
                                             @error('for_credit') <p class="small text-danger">{{ $message }}</p> @enderror
                                         </div> 
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <div class="form-check ps-0">
+                                            <div class="form-check ps-0 custom-checkbox">
                                                 <input wire:model="for_staff" class="form-check-input" type="checkbox" value="1"  id="for_staff">
+                                                <i></i>
                                                 <label class="form-check-label" for="for_staff">
                                                   For Staff
                                                 </label>
@@ -153,8 +154,9 @@
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <div class="form-check ps-0">
+                                            <div class="form-check ps-0 custom-checkbox">
                                                 <input wire:model="for_store" class="form-check-input" type="checkbox" value="1"  id="for_store">
+                                                <i></i>
                                                 <label class="form-check-label" for="for_store">
                                                   For Store
                                                 </label>
@@ -164,11 +166,10 @@
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <div class="form-check ps-0">
+                                            <div class="form-check ps-0 custom-checkbox">
                                                 <input wire:model="for_partner" class="form-check-input" type="checkbox" value="1"  id="for_partner">
-                                                <label class="form-check-label" for="for_partner">
-                                                  For Partner
-                                                </label>
+                                                <i></i>
+                                                <label class="form-check-label" for="for_partner">For Partner</label>
                                             </div>
                                             @error('for_partner') <p class="small text-danger">{{ $message }}</p> @enderror
                                         </div>  

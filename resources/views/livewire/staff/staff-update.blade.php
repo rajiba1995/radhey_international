@@ -3,21 +3,24 @@
         <h4 class="m-0">Update Staff</h4>
         <div class="card-header pb-0 p-3">
             <div class="row">
-                <div class="col-md-8 d-flex align-items-center">
+                <div class="col-md-6 d-flex align-items-center">
                     <h6 class="badge bg-danger custom_danger_badge">Basic Information</h6>
                   </div>
-                <div class="col-md-4 d-flex justify-content-end align-items-center">
-                    <div class="d-flex">
-                        <select wire:change="SelectedCountry"  wire:model="selectedCountryId"   class="form-select me-2" aria-label="Default select example">
-                            <option selected hidden>Select Country</option>
-                           @foreach($Selectcountry as $countries)
-                            <option value="{{$countries->id}}">{{$countries->title}}</option>
-                           @endforeach
-                        </select>
-                       
-                        <a href="{{ route('staff.index') }}" class="btn btn-cta btn-sm">
-                            <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i> Back
-                        </a>
+                <div class="col-md-6 align-items-center">
+                    <div class="row">
+                        <div class="col-9">
+                            <select wire:change="SelectedCountry"  wire:model="selectedCountryId"   class="form-select form-control me-2" aria-label="Default select example">
+                                <option selected hidden>Select Country</option>
+                            @foreach($Selectcountry as $countries)
+                                <option value="{{$countries->id}}">{{$countries->title}}</option>
+                            @endforeach
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <a href="{{ route('staff.index') }}" class="btn btn-cta btn-sm">
+                                <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i> Back
+                            </a>
+                        </div>
                     </div>
                  </div>
             </div>
@@ -80,10 +83,12 @@
 
                     <div class="mb-3 col-md-4">
                         <label for="whatsapp_no" class="form-label">WhatsApp <span class="text-danger">*</span></label>
-                        <div class="d-flex align-items-center">
+                        <div class="align-items-center">
                             <input type="text" wire:model="whatsapp_no" id="whatsapp_no" class="form-control form-control-sm border border-1 p-2 me-2" placeholder="Staff WhatsApp No" @if($is_wa_same) disabled @endif>
-                            <input type="checkbox" id="is_wa_same" wire:change="SameAsMobile" value="0" @if($is_wa_same) checked @endif>
-                            <label for="is_wa_same" class="form-check-label ms-2">Same as Phone Number</label>
+                            <div class="custon-input-group">
+                                <input type="checkbox" id="is_wa_same" wire:change="SameAsMobile" value="0" @if($is_wa_same) checked @endif>
+                                <label for="is_wa_same" class="form-check-label ms-2">Same as Phone Number</label>
+                            </div>
                         </div>
                         @error('whatsapp_no')
                             <div class="text-danger">{{ $message }}</div>
@@ -151,10 +156,12 @@
                         
                         <div class="col-md-4">
                             <label class="form-label">WhatsApp Number</label>
-                            <div class="d-flex align-items-center">
+                            <div class="align-items-center">
                             <input type="number" wire:model="emergency_whatsapp" id="emergency_whatsapp" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Whatsapp Number">
-                                <input type="checkbox" wire:model="same_as_contact" id="same_as_contact" class="me-2">
-                            <label for="same_as_contact" class="form-label">Same as Contact Number</label>
+                                <div class="custon-input-group">
+                                    <input type="checkbox" wire:model="same_as_contact" id="same_as_contact" class="me-2">
+                                    <label for="same_as_contact" class="form-check-label">Same as Contact Number</label>
+                                </div>
                             </div>
                         </div>
                         

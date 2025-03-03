@@ -113,7 +113,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'web'], function () {
 
         Route::get('/collections', CollectionIndex::class)->name('admin.collections.index');
         Route::get('/gallery/{product_id}', GalleryIndex::class)->name('product.gallery');
-        Route::get('/catalog', MasterCatalogue::class)->name('product.catalogue');
+        Route::get('/catalogue', MasterCatalogue::class)->name('product.catalogue');
 
     });
 

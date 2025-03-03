@@ -2,14 +2,13 @@
 
 namespace App\Http\Livewire\Measurement;
 
-
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Validation\Rule;
 use App\Models\Measurement;
 use App\Models\Product;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Log;
 
 class MeasurementIndex extends Component
 {
@@ -20,15 +19,12 @@ class MeasurementIndex extends Component
     public function mount($product_id)
     {
         $this->product_id = $product_id; // Initialize with the passed product
-        $this->measurements = Measurement::where('product_id', $product_id) ->orderBy('position', 'asc')->get();
-    }
-    public function rules()
-    {
-        return [
-            
-        ];
     }
 
+    public function rules()
+    {
+        return [];
+    }
 
     public function store()
     {
@@ -57,12 +53,12 @@ class MeasurementIndex extends Component
             'short_code' => $this->short_code,
             'status' => $this->status,
         ]);
-        $this->filterData();
-        session()->flash('message', 'Measurement created successfully!');
-        // return redirect()->route('measurements.index', ['product' => $this->product_id]);
+
+        session()->flash('success', 'Measurement created successfully!');
+        $this->FilterData();
+        $this->resetFields();
     }
 
-    // Edit Measurement
     public function edit($id)
     {
         $measurement = Measurement::findOrFail($id);
@@ -72,7 +68,7 @@ class MeasurementIndex extends Component
         $this->short_code = $measurement->short_code;
         $this->status = $measurement->status;
     }
-    // Update Measurement
+
     public function update()
     {
         $this->validate([
@@ -93,6 +89,7 @@ class MeasurementIndex extends Component
                 })->ignore($this->measurementId),
             ],
         ]);
+
         $measurement = Measurement::findOrFail($this->measurementId);
         $measurement->update([
             'product_id' => $this->product_id,
@@ -100,20 +97,19 @@ class MeasurementIndex extends Component
             'short_code' => $this->short_code,
             'status' => $this->status,
         ]);
-        $this->filterData();
-        session()->flash('message', 'Measurement updated successfully!');
-        // return redirect()->route('measurements.index', ['product_id' => $this->product_id]);
+
+        session()->flash('success', 'Measurement updated successfully!');
+        $this->FilterData();
+        $this->resetFields();
     }
 
-    // Delete Measurement
     public function destroy($id)
     {
         Measurement::findOrFail($id)->delete();
-        session()->flash('message', 'Measurement deleted successfully!');
-        $this->filterData();
+        $this->FilterData();
+        session()->flash('success', 'Measurement deleted successfully!');
     }
 
-    // Toggle Status
     public function toggleStatus($id)
     {
         $measurement = Measurement::findOrFail($id);
@@ -121,65 +117,54 @@ class MeasurementIndex extends Component
         session()->flash('success', 'Measurement status updated successfully!');
     }
 
-    // Reset Form Fields
     public function resetFields()
     {
-        $this->measurementId = null;
-        $this->product_id = null;
-        $this->title = '';
-        $this->short_code = '';
-        $this->status = 1;
+        $this->reset(['measurementId','title','short_code']);
     }
-  
+
     public function updatePositions(Request $request)
     {
         try {
-            $sortOrder = $request->sortOrder;
-    
-            // Check if sortOrder is a string, then decode it; otherwise, use it directly
+            $sortOrder = $request->input('sortOrder');
+
             if (is_string($sortOrder)) {
                 $sortOrder = json_decode($sortOrder, true);
             }
-    
+
             if (!is_array($sortOrder)) {
                 return response()->json(['error' => 'Invalid data format'], 400);
             }
-    
+
             foreach ($sortOrder as $item) {
                 Measurement::where('id', $item['id'])->update(['position' => $item['position']]);
             }
-    
-            // Flash message after successful update
-            session()->flash('message', 'Positions updated successfully!');
-    
-            // Redirect to the index route with the product_id
-            $this->filterData();
+
+            session()->flash('success', 'Positions updated successfully!');
+            $this->FilterData();
         } catch (\Exception $e) {
             Log::error('Error updating positions: ' . $e->getMessage());
             return response()->json(['error' => 'Something went wrong.'], 500);
         }
     }
-    
-
-   public function filterData(){
-        return Measurement::where('product_id', $this->product_id)->orderBy('position', 'asc')->paginate(10);
-        $this->short_code = null;
-        $this->title = null;
+    public function FilterData(){
+        return Measurement::where('product_id', $this->product_id)
+            ->where(function ($query) {
+                $query->where('title', 'like', "%{$this->search}%")
+                      ->orWhere('short_code', 'like', "%{$this->search}%");
+            })
+            ->orderBy('position', 'asc')
+            ->get();
     }
 
-    
-    // Render Method with Search and Pagination
     public function render()
     {
+        $this->measurements = $this->FilterData();
         $subCat = Product::select('name')->find($this->product_id);
-        $measurements = Measurement::where('title', 'like', "%{$this->search}%")
-            ->orWhere('short_code', 'like', "%{$this->search}%")
-            ->orderBy('id', 'desc')
-            ->paginate(10);
+        
 
         return view('livewire.measurement.measurement-index', [
-            'measurements' => $measurements,
-            'products' => $subCat->name,
+            'measurements' =>  $this->measurements,
+            'products' => optional($subCat)->name,
         ]);
     }
 }

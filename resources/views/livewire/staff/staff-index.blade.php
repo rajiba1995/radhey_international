@@ -65,23 +65,21 @@
                                                 </div>
                                             </td>
                                             <td class="align-middle">
-                                                 <a href="{{route('staff.update',$member->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="Edit Staff" title="Edit">
-                                                    <span class="material-icons">edit</span>
+                                                 <a href="{{route('staff.update',$member->id)}}" class="btn btn-outline-primary select-md btn_action btn_outline" data-toggle="tooltip" data-original-title="Edit Staff" title="Edit">Edit
                                                 </a>
-                                                 <a href="{{route('staff.view',$member->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="View Staff" title="View">
-                                                    <span class="material-icons">visibility</span>
+                                                 <a href="{{route('staff.view',$member->id)}}" class="btn btn-outline-primary select-md btn_action btn_outline" data-toggle="tooltip" data-original-title="View Staff" title="View">View
                                                 </a>
-                                                 <a href="{{route('staff.task',$member->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="Staff Task" title="Task">
+                                                 {{-- <a href="{{route('staff.task',$member->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="Staff Task" title="Task">
                                                     <span class="material-icons">assignment</span>
-                                                </a>
+                                                </a> --}}
                                                 @if ($member->designationDetails && $member->designationDetails->id == 2)
-                                                    <a href="{{route('staff.cities.add',$member->id)}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" data-toggle="tooltip" data-original-title="Staff City" title="City">
+                                                    <a href="{{route('staff.cities.add',$member->id)}}" class="btn btn-outline-primary select-md btn_action btn_outline" data-toggle="tooltip" data-original-title="Staff City" title="City">
                                                         <span class="material-icons">place</span>
                                                     </a>
                                                 @endif
                                                  @if ($member->designationDetails && $member->designationDetails->id == 2)
-                                                    <a href="{{route('salesman.index',['staff_id'=>$member->id])}}" class="btn btn-outline-info btn-sm custom-btn-sm mb-0">
-                                                        Bill
+                                                    <a href="{{route('salesman.index',['staff_id'=>$member->id])}}" class="btn btn-outline-primary select-md btn_action btn_outline">
+                                                    Bill Books
                                                     </a>
                                                 @endif
                                                

@@ -36,8 +36,8 @@
                                     <thead>
                                         <tr>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Name</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Roles</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Count Staff</th>
+                                            {{-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Roles</th> --}}
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">No. of Staff</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Status</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Action</th>
                                         </tr>
@@ -47,8 +47,7 @@
                                         {{-- @dd($designation) --}}
                                             <tr>
                                                 <td><h6 class="mb-0 text-sm">{{ucwords($designation->name)}}</h6></td>
-                                                <td><p class="text-xs font-weight-bold mb-0">{{ $designation->role_names }}</p></td>
-                                                <td><p class="text-xs font-weight-bold mb-0">{{ $designation->users_count > 0 ? $designation->users_count : 'No Roles Assigned' }}</p></td>
+                                                <td><p class="text-xs font-weight-bold mb-0">{{ $designation->users_count > 0 ? $designation->users_count : '0' }}</p></td>
                                                 <td class="align-middle text-sm" style="text-align: center;">
                                                     <div class="form-check form-switch">
                                                         <input 
@@ -61,7 +60,8 @@
                                                     </div>
                                                 </td>
                                                 <td class="align-middle text-end px-4"> 
-                                                    <button wire:click="edit({{$designation->id}})" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" title="Edit"><span class="material-icons">edit</span></button>
+                                                    <button wire:click="edit({{$designation->id}})" class="btn btn-outline-primary select-md btn_action btn_outline" title="Edit">Edit</button>
+                                                    <a href="#" class="btn btn-outline-danger select-md btn_outline">Permissions</a>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -79,7 +79,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card my-4">
-                        <div class="card-body px-0 pb-2 mx-4">
+                        <div class="card-body px-0 pb-2 mx-4 asibe-bar">
                             <form wire:submit.prevent="storeOrUpdate">
                                 <div class="row">
                                     <h5>{{ $designationId ? 'Update Designation' : 'Add New Designation' }}</h5>
@@ -91,13 +91,14 @@
                                         <p class='text-danger inputerror'>{{ $message }} </p>
                                     @enderror
                                     <!-- Roles Section -->
-                                    <div class="mb-3">
+                                    {{-- <div class="mb-3">
                                         <label class="form-label">Roles</label>
                                         <div class="row">
                                             @foreach ($roleList as $role)
                                                 <div class="col-md-6">
-                                                    <div class="form-check ps-0">
+                                                    <div class="form-check ps-0 custom-checkbox">
                                                         <input class="form-check-input" type="checkbox" id="role{{$role->id}}" wire:model="roles" class="form-check-input" value="{{$role->id}}">
+                                                        <i></i>
                                                         <label class="form-check-label" for="role{{$role->id}}">
                                                            {{$role->name}}
                                                         </label>
@@ -105,7 +106,7 @@
                                                 </div>
                                             @endforeach
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     <div class="mb-2 text-end">
                                         <a href="" class="btn btn-cta btn-sm">
                                             <i class="material-icons text-white" style="font-size: 15px;">refresh</i> 

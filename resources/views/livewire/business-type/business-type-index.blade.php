@@ -16,7 +16,7 @@
     </section>
     <section>
         <div class="search__filter">
-            <div class="row align-items-center justify-content-end">
+            <div class="row align-items-center">
                 <div class="col-auto">
                     <div class="row g-3 align-items-center">
                         <div class="col-auto mt-0">

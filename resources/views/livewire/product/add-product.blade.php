@@ -76,7 +76,7 @@
                                 
                         
                                 <!-- Short Description -->
-                                <div class="mb-3 col-md-12">
+                                {{-- <div class="mb-3 col-md-12">
                                     <label class="form-label">Short Description</label>
                                     <textarea wire:model="short_description" id="short_description" class="form-control form-control-sm border border-1 p-2"></textarea>
                                     @error('short_description')
@@ -91,28 +91,12 @@
                                     @error('description')
                                         <p class='text-danger inputerror'>{{ $message }} </p>
                                     @enderror
-                                </div>
+                                </div> --}}
                         
                                 <!-- GST Details -->
-                                <div class="mb-3 col-md-4">
-                                    <label class="form-label">GST Details (%)</label>
-                                    <input wire:model="gst_details" type="text" class="form-control form-control-sm border border-1 p-2" placeholder="GST Percentage" >
-                                    @error('gst_details')
-                                        <p class='text-danger inputerror'>{{ $message }} </p>
-                                    @enderror
-                                </div>
-                        
-                                <!-- Product Image -->
-                                <div class="mb-3 col-md-4">
-                                    <label class="form-label">Product Image</label>
-                                    <input wire:model="product_image" type="file" class="form-control form-control-sm border border-1 p-2">
-                                    @error('product_image')
-                                        <p class='text-danger inputerror'>{{ $message }} </p>
-                                    @enderror
-                                </div>
-
+                               
                                 {{-- Fabrics --}}
-                                <div class="mb-3 col-md-4">
+                                {{-- <div class="mb-3 col-md-4">
                                     <label class="form-label">Fabrics <span class="text-danger">*</span></label>
                                     <select wire:model="selectedFabrics" id="multiple" class="form-control form-control-sm border border-1 p-2" multiple>
                                         <option value="" hidden>Select Fabrics</option>
@@ -123,16 +107,45 @@
                                     @error('selectedFabrics')
                                         <p class="text-danger inputerror">{{ $message }}</p>
                                     @enderror
+                                </div> --}}
+                            </div>
+                            @if($collection==1)
+                            <div class="row">
+                                <div class="mb-3">
+                                    <h6 class="badge bg-danger custom_danger_badge">Product Fabrics</h6>
+                                        <div class="row">
+                                            @foreach($fabrics as $fabric)
+                                                <div class="col-md-2">
+                                                    <div class="form-check ps-0 custom-checkbox">
+                                                        <input class="form-check-input" type="checkbox" id="role{{$fabric->id}}" wire:model="selectedFabrics" class="form-check-input" value="{{$fabric->id}}" style="position: absolute;">
+                                                        <i></i>
+                                                        <label class="form-check-label text-uppercase text-sm" for="role{{$fabric->id}}">
+                                                        {{$fabric->title}}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                            @error('selectedFabrics')
+                                            <p class="text-danger inputerror">{{ $message }}</p>
+                                        @enderror
+                                    </div>
                                 </div>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-4">
-                    <div class="card card-plain mb-3">
+                    <div class="card card-plain">
                         <div class="card-body p-3">
-                            
-                        <label class="form-label">Product Image</label>
+                            <label class="form-label">GST Details (%)</label>
+                            <input wire:model="gst_details" type="text" class="form-control form-control-sm border border-1 p-2" placeholder="GST Percentage" >
+                            @error('gst_details')
+                                <p class='text-danger inputerror'>{{ $message }} </p>
+                            @enderror
+                    
+                            <!-- Product Image -->
+                            <label class="form-label">Product Image</label>
                             <div class="mb-2 mt-2">
                                 @if ($product_image)
                                     <img src="{{ $product_image->temporaryUrl() }}" alt="Preview" width="100">
@@ -140,11 +153,7 @@
                                 <input wire:model="product_image" type="file" class="form-control form-control-sm border border-1 p-2">
                             </div>
                             @error('product_image')<p class="text-danger inputerror">{{ $message }}</p>@enderror
-                        </div>
-                    </div>
-                    @if ($showAdditionalImageField)
-                    <div class="card card-plain">
-                        <div class="card-body p-3">
+                            @if ($showAdditionalImageField)
                             <label class="form-label">Additional Product Images</label>
                             <div class="mb-2 mt-2">
                                 <input type="file" wire:model="multipleImages" id="multipleImages" accept="image/*" multiple
@@ -163,9 +172,10 @@
                             @error('multipleImages.*')
                                 <p class="text-danger inputerror">{{ $message }}</p>
                             @enderror
+                            @endif
                         </div>
                     </div>
-                    @endif
+                  
                 </div>
             </div>
             <div class="col-12 d-flex justify-content-start align-items-end" style="height: 100%;">

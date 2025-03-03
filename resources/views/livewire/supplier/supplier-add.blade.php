@@ -45,36 +45,37 @@
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="row">
-                            <div class="mb-3 col-md-6">
-                                <label for="mobile" class="form-label">Phone Number <span class="text-danger">*</span></label>
-                                <input type="text" id="mobile" wire:model="mobile" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Phone Number">
-                                @error('mobile')
-                                    <div class="text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
-                           
-                            <div class="mb-3 col-md-6">
-                                <label for="is_wa_same" class="form-label">WhatsApp Number <span class="text-danger">*</span></label>
-                                    <div class="d-flex align-items-center">
-                                    <input type="text" wire:model="whatsapp_no" id="whatsapp_no" class="form-control form-control-sm border border-1 p-2 me-2" placeholder="Enter WhatsApp Number" @if ($is_wa_same) disabled @endif>
-
+                        
+                        <div class="mb-3 col-md-6">
+                            <label for="mobile" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                            <input type="text" id="mobile" wire:model="mobile" class="form-control form-control-sm border border-1 p-2" placeholder="Enter Phone Number">
+                            @error('mobile')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="mb-3 col-md-6">
+                            <label for="is_wa_same" class="form-label">WhatsApp Number <span class="text-danger">*</span></label>
+                                <div class="align-items-center">
+                                <input type="text" wire:model="whatsapp_no" id="whatsapp_no" class="form-control form-control-sm border border-1 p-2 me-2" placeholder="Enter WhatsApp Number" @if ($is_wa_same) disabled @endif>
+                                
+                                <div class="custon-input-group">
                                     <input type="checkbox" id="is_wa_same" wire:change="SameAsMobile" value="0" @if ($is_wa_same) checked @endif>
                                     <label for="is_wa_same" class="form-check-label ms-2" >Same as Mobile</label>
-
-                                    <!-- <input type="checkbox" wire:model="is_wa_same" id="isWaSame" class="form-check-input">
-                                    <label for="isWaSame" class="form-check-label">WhatsApp number same as mobile</label> -->
                                 </div>
-                                @error('whatsapp_no')
-                                    <div class="text-danger">{{ $message }}</div>
-                                @enderror        
+                                <!-- <input type="checkbox" wire:model="is_wa_same" id="isWaSame" class="form-check-input">
+                                <label for="isWaSame" class="form-check-label">WhatsApp number same as mobile</label> -->
+                            </div>
+                            @error('whatsapp_no')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror        
                         </div>
-                    </div>
+                        
 
-                    <!-- Billing Address -->
-                    <div class="col-md-8 mb-2 d-flex align-items-center">
-                        <h6 class="badge bg-danger custom_danger_badge">Address Information</h6>
-                    </div>
+                        <!-- Billing Address -->
+                        <div class="col-md-8 mb-2 d-flex align-items-center">
+                            <h6 class="badge bg-danger custom_danger_badge">Address Information</h6>
+                        </div>
                     <div class="row mb-3">
                         <div class="mb-3 col-md-4">
                             <label for="billing_address" class="form-label">Address <span class="text-danger">*</span></label>
@@ -158,7 +159,7 @@
                         </div>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-sm btn-success"><i class="material-icons text-white" style="font-size: 15px;">add</i>Add</button>
+                <button type="submit" class="btn btn-outline-success select-md"><i class="material-icons me-1" >add</i>Add</button>
             </form>
         </div>
     </div>

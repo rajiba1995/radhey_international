@@ -7,10 +7,7 @@
             <li><a href="{{route('admin.accounting.payment_collection')}}">Payment Collection</a></li>
             <li>{{$payment_voucher_no?"Edit Payment Receipt":"Add Payment Receipt"}}</li>
             <li class="back-button">
-                <a class="btn btn-dark btn-sm text-decoration-none text-light font-weight-bold mb-0"
-                    href="{{route('admin.accounting.payment_collection')}}" role="button">
-                    <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
-                    <span class="ms-1">Back</span>
+                <a class="btn btn-outline-danger select-md" href="{{route('admin.accounting.payment_collection')}}" role="button">< Back
                 </a>
             </li>
         </ul>
@@ -163,8 +160,7 @@
 
                         <div class="row">
                             <div class="form-group text-end">
-                                <button type="submit" id="submit_btn" class="btn btn-sm btn-success"><i
-                                        class="material-icons text-white" style="font-size: 15px;">add</i>{{$payment_voucher_no?"Update":"Add"}}</button>
+                                <button type="submit" id="submit_btn" class="btn btn-sm btn-success select-md">{{$payment_voucher_no?"Update Receipt":"Add Receipt"}}</button>
                             </div>
                         </div>
                     </form>

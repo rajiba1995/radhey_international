@@ -66,9 +66,13 @@ class AddProduct extends Component
                     return $query->where('collection_id', $this->collection);
                 })
             ],
-            'selectedFabrics' => 'required|array',
+            // Conditional Validation: selectedFabrics is required only when collection == 1
+            'selectedFabrics' => [
+                Rule::requiredIf($this->collection == 1),  // Conditionally required
+                'array'
+            ],
             'selectedFabrics.*' => 'exists:fabrics,id',
-            'product_code' => 'required|string|max:10',
+            'product_code' => 'required|string|max:20',
             'short_description' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'gst_details' => 'nullable|numeric',
@@ -100,8 +104,9 @@ class AddProduct extends Component
             ]);
     
             // Attach selected fabrics
-            $product->fabrics()->attach($this->selectedFabrics);
-    
+            if($this->collection==1){
+                $product->fabrics()->attach($this->selectedFabrics);
+            }
             // Store multiple product images in the product_images table
             if (!empty($this->multipleImages)) {
                 foreach ($this->multipleImages as $image) {

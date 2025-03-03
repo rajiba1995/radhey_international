@@ -39,16 +39,18 @@
                                         <span class="text-success">{{ session('success') }}</span>
                                     @endif
 
-                                    <button type="submit" class="btn btn-sm btn-primary ms-2">Import</button>
+                                    <button type="submit" class="btn btn-outline-primary select-md">
+                                    <i class="fas fa-file-csv me-1"></i> Import
+                                    </button>
                                 </form>
 
 
                                 <!-- Export Button -->
-                                <button wire:click="export" class="btn btn-sm btn-success me-2">
-                                    <i class="fas fa-file-export"></i> Export
+                                <button wire:click="export" class="btn btn-outline-success select-md">
+                                    <i class="fas fa-file-export me-1"></i> Export
                                 </button>
-                                <button wire:click="sampleExport" class="btn btn-sm btn-success me-2">
-                                    <i class="fas fa-file-export"></i>Sample Export
+                                <button wire:click="sampleExport" class="btn btn-outline-success select-md">
+                                    <i class="fas fa-file-export me-1"></i>Sample Export
                                 </button>
                             </div>
                             <div class="table-responsive p-0">
@@ -151,9 +153,6 @@
                                         aria-describedby="imageHelp">
                                         @if(is_object($image))
                                             <img src="{{ $image->temporaryUrl() }}" alt="Preview" width="100">
-                                        @elseif ($fabricId)
-                                            <!-- Show existing image if no new image is uploaded -->
-                                            <img src="{{ asset($fabrics->where('id', $fabricId)->first()->image ?? '') }}" alt="Current Image" width="100">
                                         @endif
                                     @error('image') 
                                         <small id="imageHelp" class="text-danger">{{ $message }}</small> 

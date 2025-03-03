@@ -12,9 +12,8 @@
             <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
                 <div class="nav-wrapper position-relative end text-end">
                     <!-- Single Button -->
-                    <a class="btn btn-dark btn-sm" href="javascript:history.back();" role="button" >
-                        <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
-                        <span class="ms-1">Back</span>
+                    <a class="btn btn-outline-danger select-md" href="javascript:history.back();">
+                       < Back
                     </a>
                 </div>
             </div>

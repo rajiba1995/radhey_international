@@ -41,28 +41,28 @@
                         <div class="row align-items-center justify-content-end">
                             <div class="col-auto">
                                 <div class="row g-3 align-items-center">
-                                    <div class="col-auto" style="margin-top: -27px;">
+                                    <div class="col-auto">
                                         <label for="" class="date_lable">Start Date</label>
                                         <input type="date" wire:model="startDateProduct" wire:change="AddStartDate($event.target.value)"
                                             class="form-control select-md bg-white" placeholder="Start Date">
                                     </div>
-                                    <div class="col-auto" style="margin-top: -27px;">
+                                    <div class="col-auto">
                                         <label for="" class="date_lable">End date</label>
                                         <input type="date" wire:model="endDateProduct" wire:change="AddEndDate($event.target.value)"
                                             class="form-control select-md bg-white" placeholder="End Date">
                                     </div>
-                                    <div class="col-auto mt-0">
+                                    <div class="col-auto mt-0 align-self-end">
                                         <input type="text" wire:model="searchProduct" class="form-control select-md bg-white" id="customer"
                                             placeholder="Search by product name" value="" style="width: 100px;"
                                             wire:keyup="FindCustomer($event.target.value)">
                                     </div>
                                     
-                                    <div class="col-auto mt-3">
+                                    <div class="col-auto align-self-end">
                                         <button type="button" wire:click="resetForm"
-                                            class="btn btn-outline-danger select-md">Clear</button>
+                                            class="btn btn-outline-danger select-md mb-0">Clear</button>
                                     </div>
-                                    <div class="col-auto">
-                                        <a href="javscript:void(0)" wire:click="exportStockProduct" class="btn btn-outline-success select-md"><i
+                                    <div class="col-auto align-self-end">
+                                        <a href="javscript:void(0)" wire:click="exportStockProduct" class="btn btn-outline-success select-md mb-0"><i
                                                 class="fas fa-file-csv me-1"></i>Export Product CSV</a>
                                     </div>
                                 </div>

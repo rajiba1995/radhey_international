@@ -123,6 +123,9 @@
             </div>
         </div>
     </div>
+    <div class="loader-container" wire:loading>
+        <div class="loader"></div>
+    </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 <script>

@@ -17,7 +17,7 @@
             </ul>
         </section>
         <!-- Content -->
-        <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="flex-grow-1 container-p-y">
             <div class="row">
                 <div class="col-12 col-lg-8">
                     <div class="card mb-4" style="height: 400px;">

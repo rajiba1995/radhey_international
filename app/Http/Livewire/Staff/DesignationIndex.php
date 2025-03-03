@@ -107,7 +107,7 @@ class DesignationIndex extends Component
             $query->select('roles.id', 'roles.name');
         }])
         ->latest()
-        ->paginate(10);
+        ->get();
 
         // Manually add a comma-separated list of role names
         $this->designations = $this->designations->map(function ($designation) {

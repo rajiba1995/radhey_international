@@ -17,36 +17,35 @@
         </section>
         <!-- Content -->
 
-
-
         <div class="card shadow-sm mb-2">
         <div class="card-body">
             <div class="row">
+                <div class="col">
+                <a href="{{ route('admin.customers.edit', ['id' => $customer->id]) }}" class="btn btn-outline-info custom-btn-sm">Edit</a>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group mb-3">
-                        <div class="row">
-                            <div class="col-sm-4">
-                                <p class="small m-0">
-                                <h6 class="mb-1">
-                                  <a href="{{ route('admin.customers.edit', ['id' => $customer->id]) }}" class="btn btn-outline-info custom-btn-sm">Edit</a>
-                                </h6>
-                                </p>
+                        <div class="customer-details-wrap mb-4">
+                            <h6>Customer Details</h6>
+                            <div class="customer-details">
+                                <div class="avatar me-3">
+                                    {{--@dump($customer)--}}
+                                    @if ($customer && $customer->profile_image)
+                                        <img src="{{asset($customer->profile_image)}}" alt="Avatar"class="rounded-circle">
+                                    @endif
+                                    <img src="{{asset("assets/img/profile_image.png")}}" alt="profile-image">
+                                </div>
+
+                                <div class="pofile-details">
+                                    <h6 class="text-nowrap mb-0 meduim-heading">{{$customer->name}}</h6>
+                                    <h6 class="text-nowrap mb-0 meduim-heading">{{$customer->ordersAsCustomer->count()}} Orders</h6>
+                                </div>
                             </div>
                         </div>
-                        <h6>Customer Details</h6>
-                        <div class="avatar me-3">
-                            @if ($customer && $customer->profile_image)
-                            <img src="{{asset($customer->profile_image)}}" alt="Avatar"
-                                class="rounded-circle">
-                            @endif
-                        </div>
+
                         <div class="row">
-                            <div class="col-sm-4">
-                                <!-- <p class="small m-0"><strong>{{$customer->name}}</strong></p> -->
-                            
-                            <h6 class="text-nowrap mb-0">{{$customer->name}}</h6>
-                            <h6 class="text-nowrap mb-0">{{$customer->ordersAsCustomer->count()}} Orders</h6>
-                            </div>
                             <div class="d-flex justify-content-between">
                                 <h6 class="mb-1">Contact info</h6>
                             </div>
