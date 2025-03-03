@@ -19,13 +19,6 @@
             <div class="row">
                 <div class="col-lg-8">
                     <div class="card card-plain h-100">
-                        {{-- <div class="card-header pb-0 p-3">
-                            <div class="row">
-                                <div class="col-md-8 d-flex align-items-center">
-                                    <h6 class="mb-3">Profile Information</h6>
-                                </div>
-                            </div>
-                        </div> --}}
                         <div class="card-body p-3">
                             <div class="row">               
                                 <div class="mb-3 col-md-3">

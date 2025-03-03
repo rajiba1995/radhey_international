@@ -17,8 +17,8 @@ class UserBank extends Model
         'bank_account_no', // Adjust the column name based on your table structure
         'ifsc',
         'monthly_salary',
-        'daily_salary',
-        'travelling_allowance',
+        'bonus',
+        'past_salaries',
     ];
 
     public function user()

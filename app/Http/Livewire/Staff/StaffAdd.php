@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\UserAddress;
 use App\Models\Country;
 use App\Models\Branch;
+use App\Models\BusinessType;
 use App\Helpers\Helper;
 use Livewire\WithFileUploads;
 use Illuminate\Validation\Rule;
@@ -19,36 +20,48 @@ use Illuminate\Support\Facades\Hash;
 class StaffAdd extends Component
 {
     use WithFileUploads;
-    public $employee_id,$branch_id,$designation, $person_name, $email, $mobile, $aadhaar_number, $whatsapp_no,$is_wa_same,$user_id;
+    public $employee_id,$emp_code,$dob,$branch_id,$passport_issued_date,$designation, $person_name, $prof_name, $surname, $email, $mobile, $aadhaar_number, $whatsapp_no,$is_wa_same,$user_id,$passport_no,$visa_no;
     public $image, $passport_id_front, $passport_id_back, $passport_expiry_date;
     public $account_holder_name, $bank_name, $branch_name, $account_no, $ifsc, $monthly_salary, $daily_salary, $travel_allowance;
     public $address, $landmark, $state, $city, $pincode, $country;
     public $designations = [];
     public $branchNames = [];
     public $Selectcountry;
+    public $Business_type;
+    public $selectedBusinessType ;
     public $selectedCountryId;
-    public $showAadhaarStar = false;
+    public $showRequiredFields  = false;
     public $emergency_contact_person,$emergency_mobile,$emergency_whatsapp,$emergency_address,$same_as_contact;
     public function mount(){
         $this->designations = Designation::where('status',1)->orderBy('name', 'ASC')->where('id', '!=', 1)->get();
         $this->branchNames  = Branch::all();
         $this->Selectcountry = Country::all();
+        $this->Business_type = BusinessType::all();
         $this->selectedCountryId = null;
+        $this->selectedBusinessType  = null;
     }
 
     public function SelectedCountry()
     {
-        $this->showAadhaarStar = $this->selectedCountryId == 1;
+        $this->showRequiredFields  = $this->selectedCountryId == 1;
     }
 
     public function save(){
-        // dd($this->all());
-        $aadhaarValidationRule = $this->selectedCountryId == 1 ? 'required|numeric' : 'nullable|numeric';
+        
+        $isIndia = $this->selectedCountryId == 1;
+
        $this->validate([
             'branch_id'   => 'required',
             'designation' => 'required',
+            'emp_code' => 'required',
             'person_name' => 'required|string|max:255',
+            'surname' => 'required|string|max:255',
+            'dob' => 'required',
+            'prof_name' => 'required|string|max:255',
+            'selectedBusinessType' => 'required|integer',
+            'selectedCountryId' => 'required|integer',
             'email' => 'nullable|email|unique:users,email',
+            
           'mobile' => [
                 'required',
                 'regex:/^\+?\d{' . env('VALIDATE_MOBILE', 8) . ',}$/', // At least VALIDATE_MOBILE digits
@@ -58,11 +71,14 @@ class StaffAdd extends Component
                 'required',
                 'regex:/^\+?\d{' . env('VALIDATE_WHATSAPP', 8) . ',}$/', // At least VALIDATE_WHATSAPP digits
             ],
-            'aadhaar_number' => $aadhaarValidationRule,
+            'passport_no'=> $isIndia ?  'required|numeric' : 'nullable|numeric',
+            'visa_no'=> $isIndia ?  'required|numeric' : 'nullable|numeric',
+            'aadhaar_number' => $isIndia ? 'required|numeric' : 'nullable|numeric',
             'image' => 'nullable|image|max:2048',
             'passport_id_front' => 'nullable|image|max:2048',
             'passport_id_back' => 'nullable|image|max:2048',
             'passport_expiry_date' => 'nullable',
+            'passport_issued_date' => 'nullable',
             'account_holder_name' => 'nullable|string|max:255',
             'bank_name' => 'nullable|string|max:255',
             'branch_name' => 'nullable|string|max:255',
@@ -73,7 +89,7 @@ class StaffAdd extends Component
             'travel_allowance' => 'nullable|numeric',
             'address' => 'nullable|string|max:255',
             'landmark' => 'nullable|string|max:255',
-            'state' => 'nullable|string|max:255',
+            'state' => $isIndia ? 'required|string' : 'nullable|string',
             'city' => 'nullable|string|max:255',
             'pincode' => 'nullable|string|max:10',
             'country' => 'nullable|string|max:255',
@@ -108,6 +124,11 @@ class StaffAdd extends Component
             // 1. Save the data into the users table
             $user = User::create([
                 'employee_id' => $formattedEmployeeId,
+                'emp_code' => $this->emp_code,
+                'business_type' => $this->selectedBusinessType,
+                'surname' => $this->surname,
+                'prof_name'=> $this->prof_name,
+                'dob'=> $this->dob,
                 'branch_id' => $this->branch_id,
                 'country_id'=> $this->selectedCountryId,
                 'user_type' => 0, //for Staff
@@ -121,6 +142,9 @@ class StaffAdd extends Component
                 'passport_id_front' =>  $passportIdFrontPath ?? "",
                 'passport_id_back' => $passportIdBackPath ?? "",
                 'passport_expiry_date' => !empty($this->passport_expiry_date) ? $this->passport_expiry_date : null,
+                'passport_issued_date' => !empty($this->passport_issued_date) ? $this->passport_issued_date : null,
+                'passport_no' => $this->passport_no,
+                'visa_no' => $this->visa_no,
                 'password'=>'secret',
                 'emergency_contact_person' => $this->emergency_contact_person ?? "",
                 'emergency_mobile' => $this->emergency_mobile ?? "",
@@ -138,8 +162,8 @@ class StaffAdd extends Component
                 'bank_account_no' => $this->account_no ?? "",
                 'ifsc' => $this->ifsc ?? "",
                 'monthly_salary' => is_numeric($this->monthly_salary) ? $this->monthly_salary : null,
-                'daily_salary' => is_numeric($this->daily_salary) ?  $this->daily_salary : null,
-                'travelling_allowance' => is_numeric($this->travel_allowance) ? $this->travel_allowance : null,
+                'bonus' => is_numeric($this->daily_salary) ?  $this->daily_salary : null,
+                'past_salaries' => is_numeric($this->travel_allowance) ? $this->travel_allowance : null,
             ]);
 
             // 3. Save the data into the user_address table

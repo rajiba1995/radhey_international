@@ -76,17 +76,32 @@ public function mount($product_id)
 }
 
 // Modified GetCollection function
-public function GetCollection($id)
-{
-    $this->categories = Category::where('collection_id', $id)
-        ->where('status', 1)
-        ->orderBy('title', 'ASC')
-        ->get() ?? collect();
+// public function GetCollection($id)
+// {
+//     $this->categories = Category::where('collection_id', $id)
+//         ->where('status', 1)
+//         ->orderBy('title', 'ASC')
+//         ->get() ?? collect();
 
-    // Check if the selected collection is "garment" to show additional image field
-    $collection = Collection::find($id);
-    $this->showAdditionalImageField = $collection && strtolower($collection->title) === 'garment';
-}
+//     // Check if the selected collection is "garment" to show additional image field
+//     $collection = Collection::find($id);
+//     $this->showAdditionalImageField = $collection && strtolower($collection->title) === 'garment';
+// }
+  
+    public function GetCollection($id){
+        $selectedCollection = Collection::find($id);
+        if ($selectedCollection && strtolower($selectedCollection->title) === 'garment') {
+            $this->showAdditionalImageField = true;
+        } else {
+            $this->showAdditionalImageField = false;
+        }
+
+        $this->categories = Category::where('collection_id', $id)
+            ->where('status', 1)
+            ->orderBy('title', 'ASC')
+            ->get() ?? collect();
+
+    }
 
     
     // public function GetSubcat($categoryId)
