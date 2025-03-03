@@ -7,7 +7,7 @@
             <li><a href="{{route('admin.accounting.payment_collection')}}">Payment Collection</a></li>
             <li>{{$payment_voucher_no?"Edit Payment Receipt":"Add Payment Receipt"}}</li>
             <li class="back-button">
-                <a class="btn btn-outline-danger select-md" href="{{route('admin.accounting.payment_collection')}}" role="button">< Back
+                <a class="btn btn-sm btn-danger select-md text-light font-weight-bold mb-0" href="{{route('admin.accounting.payment_collection')}}" role="button">< Back
                 </a>
             </li>
         </ul>

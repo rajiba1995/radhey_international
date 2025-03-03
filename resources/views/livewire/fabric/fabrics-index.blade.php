@@ -7,7 +7,8 @@
             <li><a href="{{route('product.view')}}">Product</a></li>
             <li>Fabrics</li>
             <li class="back-button">
-                <a href="{{route('product.view')}}" class="btn btn-sm btn-danger select-md text-light font-weight-bold mb-0">Back </a>
+                <a href="{{route('product.view')}}" class="btn btn-sm btn-danger select-md text-light font-weight-bold mb-0"><i class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
+                <span class="ms-1">Back</span> </a>
             </li>
           </ul>
     </section>

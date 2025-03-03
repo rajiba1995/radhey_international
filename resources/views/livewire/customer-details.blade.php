@@ -8,7 +8,7 @@
                 <li><a href="{{ route('customers.index') }}">Customers</a></li>
                 <li>Customer Details</li>
                 <li class="back-button">
-                <a class="btn btn-dark btn-sm text-decoration-none text-light font-weight-bold mb-0" href="{{ route('customers.index') }}" role="button">
+                <a class="btn btn-sm btn-danger select-md text-light font-weight-bold mb-0" href="{{ route('customers.index') }}" role="button">
                     <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
                     <span class="ms-1">Back</span>
                 </a>
