@@ -30,27 +30,25 @@ class AdminLogin extends Component
     public function login()
     {
         $attributes = $this->validate();
-
-        // Attempt to authenticate user
-        if (!Auth::attempt(['email' => $this->email, 'password' => $this->password])) {
+      
+        if (!Auth::guard('admin')->attempt(['email' => $this->email, 'password' => $this->password])) {
             throw ValidationException::withMessages([
                 'email' => 'Invalid credentials.',
             ]);
         }
-
-        // Check if logged-in user has user_type = 0
-        $user = Auth::user();
-        if ($user->user_type !== 0) {
-            Auth::logout(); // Logout immediately
+        // dd($attributes);
+        // Set authenticated admin user
+        $user = Auth::guard('admin')->user();
+        if (!$user) {
             throw ValidationException::withMessages([
-                'email' => 'You are not authorized to access this panel.',
+                'email' => 'Authentication failed.',
             ]);
         }
-
-        // Regenerate session to prevent session fixation
+        
+        // Regenerate session
         session()->regenerate();
-
-        // Redirect to dashboard
-        return redirect()->route('dashboard');
+    
+        return redirect()->route('admin.dashboard'); // Middleware will now check authentication
     }
+    
 }

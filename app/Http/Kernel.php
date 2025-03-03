@@ -66,6 +66,7 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'token.expiry' => \App\Http\Middleware\CheckTokenExpiry::class,
         'token.session' => \App\Http\Middleware\TokenSession::class,
+        'check.permission' => \App\Http\Middleware\CheckPermission::class,
 
     ];
 }

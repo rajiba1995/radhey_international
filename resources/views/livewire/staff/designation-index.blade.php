@@ -39,7 +39,7 @@
                                             {{-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Roles</th> --}}
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">No. of Staff</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Status</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Action</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10 text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -59,9 +59,9 @@
                                                         >
                                                     </div>
                                                 </td>
-                                                <td class="align-middle text-end px-4"> 
+                                                <td class="align-middle text-center px-4"> 
                                                     <button wire:click="edit({{$designation->id}})" class="btn btn-outline-primary select-md btn_action btn_outline" title="Edit">Edit</button>
-                                                    <a href="#" class="btn btn-outline-danger select-md btn_outline">Permissions</a>
+                                                    <a href="{{route('admin.staff.designation_wise_permission', $designation->id)}}" class="btn btn-outline-danger select-md btn_outline">Permissions</a>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -83,9 +83,10 @@
                             <form wire:submit.prevent="storeOrUpdate">
                                 <div class="row">
                                     <h5>{{ $designationId ? 'Update Designation' : 'Add New Designation' }}</h5>
+                                    
                                     <label class="form-label">Name<span class="text-danger">*</span></label>
                                     <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
-                                        <input type="text" wire:model="name" class="form-control border border-2 p-2" placeholder="Enter Name" value="{{ucwords($name)}}">
+                                        <input type="text" wire:model="name" class="form-control form-control-sm border border-2 p-2" placeholder="Enter Name" value="{{ucwords($name)}}">
                                     </div>
                                     @error('name')
                                         <p class='text-danger inputerror'>{{ $message }} </p>
@@ -108,11 +109,11 @@
                                         </div>
                                     </div> --}}
                                     <div class="mb-2 text-end">
-                                        <a href="" class="btn btn-cta btn-sm">
-                                            <i class="material-icons text-white" style="font-size: 15px;">refresh</i> 
-                                            Refresh
+                                        @if($designationId)
+                                        <a href="javascript:void(0)" class="btn btn-sm btn-danger select-md" wire:click="clear">Clear
                                         </a>
-                                        <button type="submit" class="btn btn-cta btn-sm" 
+                                        @endif
+                                        <button type="submit" class="btn btn-sm btn-success select-md" 
                                                 wire:loading.attr="disabled">
                                             <span> 
                                                 {{ $designationId ? 'Update Designation' : 'Create Designation' }}
@@ -126,5 +127,8 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="loader-container" wire:loading>
+        <div class="loader"></div>
     </div>
 </div>

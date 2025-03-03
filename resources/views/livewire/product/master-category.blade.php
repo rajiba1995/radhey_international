@@ -141,7 +141,9 @@
                                         <p class='text-danger inputerror'>{{ $message }}</p>
                                     @enderror --}}
                                     <div class="mb-2 text-end mt-4">
-                                        <a href="" class="btn btn-sm btn-danger select-md">Clear</a>
+                                        @if($categoryId)
+                                        <a href="javascript:void(0)" wire:click="resetFields" class="btn btn-sm btn-danger select-md">Clear</a>
+                                        @endif
                                         <button type="submit" class="btn btn-sm btn-success select-md" wire:loading.attr="disabled">
                                            <span>{{ $categoryId ? 'Update Category' : 'Create Category' }}</span>
                                         </button>
@@ -154,5 +156,8 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="loader-container" wire:loading>
+        <div class="loader"></div>
     </div>
 </div>

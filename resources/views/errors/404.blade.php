@@ -29,6 +29,7 @@
         h2 {
             font-size: 30px;
             margin-bottom: 10px;
+            color: #333;
         }
         p {
             font-size: 18px;
@@ -46,7 +47,7 @@
             transition: 0.3s;
         }
         a:hover {
-            background: #344767;
+            background: #2c3e50;
         }
     </style>
 </head>
@@ -55,7 +56,7 @@
         <h1>404</h1>
         <h2>Oops! Page Not Found</h2>
         <p>The page you're looking for doesn't exist or has been moved.</p>
-        <a href="javascript:void(0)">Go Back Home</a>
+        <a href="{{route('admin.dashboard')}}">Go Back Home</a>
     </div>
 </body>
 </html>

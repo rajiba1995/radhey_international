@@ -3,16 +3,21 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
+use App\Models\Permission;
+use App\Models\DesignationPermission;
+use Illuminate\Support\Facades\Auth;
 
 class NavigationMenu extends Component
 {
     public $modules = [];
+    public $user;
     public function mount(){
+        $this->user = Auth::guard('admin')->user();
          // Define the modules dynamically
          $this->modules = [
             [
                 'name'=>'Dashboard',
-                'route'=>['dashboard'],
+                'route'=>['admin.dashboard'],
                 'icon'=>'dashboard'
             ],
             [
@@ -31,6 +36,19 @@ class NavigationMenu extends Component
                 'icon'=>'store'
             ]
          ];
+    }
+    public function hasPermissionByParent($parentName)
+    {
+        // Ensure designation is loaded
+        if (!$this->user || !$this->user->designation) {
+            return false;
+        }
+        $permission_id = Permission::where('parent_name', $parentName)->value('id');
+        if($permission_id){
+            return DesignationPermission::where('permission_id', $permission_id)->where('designation_id', $this->user->designation)->exists();
+        }else{
+            return false;
+        }
     }
     public function render()
     {

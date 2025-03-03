@@ -4,7 +4,7 @@
     <div class="sidenav-header">
         <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
             aria-hidden="true" id="iconSidenav"></i>
-        <a class="navbar-brand m-0 d-flex text-wrap align-items-center company-logo" href=" {{ route('dashboard') }} ">
+        <a class="navbar-brand m-0 d-flex text-wrap align-items-center company-logo" href=" {{ route('admin.dashboard') }} ">
             <img src="{{ asset('assets') }}/img/logo.png" class="h-100" alt="main_logo">
             {{-- <span class="ms-2 font-weight-bold text-white">Radhey International</span> --}}
         </a>
@@ -12,7 +12,8 @@
     <hr class="horizontal light mt-0 mb-2">
     <div class="collapse navbar-collapse  w-auto  max-height-vh-100" id="sidenav-collapse-main">
         <ul class="navbar-nav">
-            @foreach($modules as $module)
+            {{-- {{dd($modules)}} --}}
+            {{-- @foreach($modules as $module)
             <li class="nav-item">
                 <a class="nav-link text-white {{ in_array(Route::currentRouteName(), $module['route']) ? 'active ' : '' }}"
                     href="{{ isset($module['route'][0]) ? route($module['route'][0]) : '#' }}">
@@ -23,7 +24,39 @@
                     <span class="nav-link-text ms-1">{{ $module['name'] }}</span>
                 </a>
             </li>
-            @endforeach
+            @endforeach --}}
+            <li class="nav-item">
+                <a class="nav-link text-white {{ Route::currentRouteName() == 'admin.dashboard' ? 'active ' : '' }}" href="{{route('admin.dashboard')}}">
+                    <!-- Default to the first route -->
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">dashboard</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Dashboard</span>
+                </a>
+            </li>
+            @if ($this->hasPermissionByParent('customer_management'))
+            <li class="nav-item">
+                <a class="nav-link text-white {{ Request::is('admin/customers*') ? 'active ' : '' }}" href="{{route('customers.index')}}">
+                    <!-- Default to the first route -->
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">group</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Customer Management</span>
+                </a>
+            </li>
+            @endif
+            @if ($this->hasPermissionByParent('supplier_management'))
+            <li class="nav-item">
+                <a class="nav-link text-white {{ Request::is('admin/suppliers*') ? 'active ' : '' }}" href="{{route('suppliers.index')}}">
+                    <!-- Default to the first route -->
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">store</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Supplier Management</span>
+                </a>
+            </li>
+            @endif
+            {{-- @if ($this->hasPermissionByParent('customer_management')) --}}
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Master Modules</h6>
             </li>
@@ -47,6 +80,8 @@
                     </a>
                 </li>
             </ul>
+            {{-- @endif --}}
+            @if ($this->hasPermissionByParent('purchase_order_management'))
             {{-- Purchase Order --}}
             <li class="nav-item">
                 <a class="nav-link text-white {{ Request::is('admin/purchase-order*') || in_array(Route::currentRouteName(), ['purchase_order.index','purchase_order.create']) ? 'active ' : '' }}"
@@ -68,6 +103,8 @@
                 </li>
 
             </ul>
+            @endif
+            @if ($this->hasPermissionByParent('stock_management'))
             {{-- Stock Management --}}
             <li class="nav-item">
                 <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['stock.index']) ? 'active ' : '' }}"
@@ -90,26 +127,8 @@
                     </a>
                 </li>
             </ul>
-            {{-- Report --}}
-            {{-- <li class="nav-item">
-                <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['user.ledger']) ? 'active ' : '' }}"
-                    href="#ReportSubmenu" data-bs-toggle="collapse"
-                    aria-expanded="{{ in_array(Route::currentRouteName(), ['user.ledger']) ? 'true' : 'false' }}">
-                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">inventory</i>
-                    </div>
-                    <span class="nav-link-text ms-1">Report</span>
-                </a>
-            </li>
-            <ul id="ReportSubmenu"
-                class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['user.ledger']) ? 'show' : '' }}">
-                <li class="nav-item">
-                    <a class="nav-link text-white {{ Route::currentRouteName() == 'user.ledger' ? 'active ' : '' }}"
-                        href="{{ route('user.ledger') }}">
-                        User Ledger
-                    </a>
-                </li>
-            </ul> --}}
+            @endif
+            @if ($this->hasPermissionByParent('product_management'))
             {{-- Product Management --}}
             <li class="nav-item">
                 <a class="nav-link text-white {{ Request::is('admin/products*') || in_array(Route::currentRouteName(), ['product.view', 'product.gallery', 'product.add', 'product.update', 'admin.categories', 'admin.subcategories', 'measurements.index', 'product.fabrics','admin.collections.index']) ? 'active ' : '' }}"
@@ -121,7 +140,7 @@
                     <span class="nav-link-text ms-1">Product Management</span>
                 </a>
             </li>
-
+           
             <!-- Submenu -->
             <ul id="productManagementSubmenu"
                 class="collapse list-unstyled ms-4 {{ in_array(Route::currentRouteName(), ['product.view', 'product.gallery', 'product.add', 'product.update', 'admin.categories', 'admin.subcategories', 'measurements.index', 'product.fabrics','admin.collections.index','admin.fabrics.index','product.catalogue']) ? 'show' : '' }}">
@@ -155,8 +174,9 @@
                         Products
                     </a>
                 </li>
-
             </ul>
+            @endif
+            @if ($this->hasPermissionByParent('branch_management'))
             <li class="nav-item">
                 <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['staff.designation','staff.index','staff.add','branch.index','salesman.index']) ? 'active ' : '' }}"
                     href="#StaffManagementSubmenu" data-bs-toggle="collapse"
@@ -195,8 +215,9 @@
                         Staff Bill Book
                     </a>
                 </li>
-
             </ul>
+            @endif
+            @if ($this->hasPermissionByParent('expense_management'))
             {{-- Expense management --}}
             <li class="nav-item">
                 <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['expense.index']) ? 'active ' : '' }}"
@@ -222,10 +243,9 @@
                         Non Recurring
                     </a>
                 </li>
-
-
             </ul>
-
+            @endif
+            @if ($this->hasPermissionByParent('accounting_management'))
             {{-- Expense management --}}
             <li class="nav-item">
                 <a class="nav-link text-white {{ request()->is('admin/accounting*') ? 'active bg-gradient-primary' : '' }}"
@@ -253,19 +273,20 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link text-white {{ request()->is('admin/accounting/depot-expense/list') ? 'active' : '' }}"
+                    href="{{ route('admin.accounting.list.depot_expense') }}">
+                    Depot Expense
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link text-white {{ request()->is('admin/accounting/list-opening-balance') ? 'active' : '' }}"
                         href="{{ route('admin.accounting.list_opening_balance') }}">
                         Customer Opening Balance
                     </a>
                 </li>
-                {{-- <li class="nav-item">
-                    <a class="nav-link text-white {{ request()->is('admin/accounting/add-opening-balance') ? 'active' : '' }}"
-                        href="{{ route('admin.accounting.add_opening_balance') }}">
-                        Add Opening Balance
-                    </a>
-                </li> --}}
             </ul>
-
+            @endif
+            @if ($this->hasPermissionByParent('report_management'))
             {{-- Report management --}}
             <li class="nav-item">
                 <a class="nav-link text-white {{ request()->is('admin/report*') ? 'active bg-gradient-primary' : '' }}"
@@ -284,6 +305,8 @@
                     </a>
                 </li>
             </ul>
+            @endif
+            @if ($this->hasPermissionByParent('sales_management'))
             {{-- Order Management --}}
             <li class="nav-item">
                 <a class="nav-link text-white {{ Request::is('admin/orders*') ? 'active ' : '' }}"
@@ -318,7 +341,7 @@
                     Cancel Order
                 </a>
             </ul>
-
+            @endif
         </ul>
     </div>
     <div class="sidenav-footer position-absolute w-100 bottom-0 ">

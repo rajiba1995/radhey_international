@@ -17,6 +17,7 @@ class User extends Authenticatable
      *
      * @var string[]
      */
+    protected $guard = 'admin';
     protected $table = 'users';
     protected $fillable = [
         'emergency_contact_person',
@@ -158,5 +159,13 @@ class User extends Authenticatable
     public function payments()
     {
         return $this->hasMany(Payment::class, 'supplier_id');
+    }
+    public function hasPermissionByRoute($route)
+    {
+        if (!$this->designationDetails) {
+            return false; // Ensure user has a designation
+        }
+
+        return $this->designationDetails->permissions()->where('route', $route)->exists();
     }
 }

@@ -7,21 +7,21 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 
-class AdminMiddleware
+class CheckPermission
 {
     /**
      * Handle an incoming request.
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
-       
         $user = Auth::guard('admin')->user();
-        if ($user) {
-            return $next($request);
+        $routeName = $request->route()->getName(); // Get current route name
+
+        if (!$user || !$user->hasPermissionByRoute($routeName)) {
+            abort(403, 'Unauthorized action.');
         }
-       
-        return redirect()->route('admin.login')->with('error', 'Access denied.');
+        return $next($request);
     }
 }

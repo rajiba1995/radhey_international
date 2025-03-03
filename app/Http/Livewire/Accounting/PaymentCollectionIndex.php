@@ -32,7 +32,7 @@ class PaymentCollectionIndex extends Component
     }
 
     public function CollectionData(){
-        $desg = Auth::user()->designation;
+        $desg = Auth::guard('admin')->user()->designation;
         $paginate = 20;
         $customer_id = $this->selected_customer_id;
         $staff_id = $this->staff_id;
@@ -85,7 +85,7 @@ class PaymentCollectionIndex extends Component
 
         $paymentRevoke = array(
             'customer_id' => $customer_id,
-            'done_by'     => Auth::user()->id,
+            'done_by'     => Auth::guard('admin')->user()->id,
             'voucher_no'  => $voucher_no,
             'collection_amount' => $collection_amount,
             'paymentcollection_data_json' => json_encode($payment_collections),

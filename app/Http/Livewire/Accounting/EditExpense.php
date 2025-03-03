@@ -73,7 +73,7 @@ class EditExpense extends Component
                 'bank_name' => $this->bank_name,
                 'chq_utr_no' => $this->chq_utr_no,
                 'narration' => $this->narration,
-                'updated_by' => Auth::user()->id,
+                'updated_by' => Auth::guard('admin')->user()->id,
                 'updated_at' => now()
             ]);
 // dd()

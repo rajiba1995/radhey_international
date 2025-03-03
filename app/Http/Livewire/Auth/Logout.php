@@ -3,15 +3,24 @@
 namespace App\Http\Livewire\Auth;
 
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 
 class Logout extends Component
 {
 
     public function destroy()
     {
-        auth()->logout();
+        // Ensure logout for the correct guard
+        Auth::guard('admin')->logout();
 
-        return redirect('/sign-in');
+        // Invalidate the session
+        request()->session()->invalidate();
+
+        // Regenerate CSRF token to prevent session fixation
+        request()->session()->regenerateToken();
+
+        // Redirect to the admin login page
+        return redirect()->route('admin.login');
     }
 
     

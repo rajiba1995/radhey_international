@@ -3,7 +3,7 @@
       <!-- End Navbar -->
       <div class="container-fluid py-4">
           <div class="row">
-              <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+              {{-- <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
                   <div class="card data-card">
                       <div class="card-header p-3 pt-2">
                           <div
@@ -21,49 +21,93 @@
                               lask week</p>
                       </div>
                   </div>
-              </div>
+              </div> --}}
               <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
                   <div class="card data-card">
-                      <div class="card-header p-3 pt-2">
-                          <div
-                              class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
-                              <i class="material-icons opacity-10">group</i>
-                          </div>
-                          <div class="text-end pt-1">
-                              <p class="text-sm mb-0 text-capitalize">Total Client</p>
-                              <h4 class="mb-0">2,300</h4>
-                          </div>
-                      </div>
-                      <hr class="dark horizontal my-0">
-                      <div class="card-footer p-3">
-                          <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+3% </span>than
-                              lask month</p>
-                      </div>
-                  </div>
-              </div>
-              <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                  <div class="card data-card">
-                      <div class="card-header p-3 pt-2">
-                          <div
-                              class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
-                              <i class="material-icons opacity-10">group</i>
-                          </div>
-                          <div class="text-end pt-1">
-                              <p class="text-sm mb-0 text-capitalize">Today's New Users</p>
-                              <h4 class="mb-0">3,462</h4>
-                          </div>
-                      </div>
-                      <hr class="dark horizontal my-0">
-                        <div class="card-footer p-3 d-flex justify-content-between align-items-center">
-                          <p class="mb-0"><span class="text-danger text-sm font-weight-bolder">-2%</span> than
-                              yesterday</p>
-                              <a href="{{route('admin.user-address-form')}}" class="btn btn-cta mt-2">
-                              Add Customer
-                            </a>
+                      <a href="{{route('suppliers.index')}}">
+                        <div class="card-header p-3 pt-2">
+                            <div
+                                class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                                <i class="material-icons opacity-10">group</i>
+                            </div>
+                            <div class="text-end pt-1">
+                                <p class="text-sm mb-0 text-capitalize">Total Supplier</p>
+                                <h4 class="mb-0">{{$total_suppliers}}</h4>
+                            </div>
                         </div>
+                        <hr class="dark horizontal my-0">
+                        <div class="card-footer p-3">
+                            {{-- <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+3% </span>than
+                                lask month</p> --}}
+                        </div>
+                      </a>
                   </div>
               </div>
-              <div class="col-xl-3 col-sm-6">
+              <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                  <div class="card data-card">
+                    <a href="{{route('customers.index')}}">
+                        <div class="card-header p-3 pt-2">
+                            <div
+                                class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                                <i class="material-icons opacity-10">group</i>
+                            </div>
+                            <div class="text-end pt-1">
+                                <p class="text-sm mb-0 text-capitalize">Total Customer</p>
+                                <h4 class="mb-0">{{$total_customers}}</h4>
+                            </div>
+                        </div>
+                        <hr class="dark horizontal my-0">
+                        <div class="card-footer p-3 d-flex justify-content-between align-items-center">
+                            {{-- <p class="mb-0"><span class="text-danger text-sm font-weight-bolder">-2%</span> than
+                                yesterday</p> --}}
+                        </div>
+                    </a>
+                  </div>
+                
+              </div>
+              <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card data-card">
+                    <a href="route('admin.order.index')">
+                        <div class="card-header p-3 pt-2">
+                            <div
+                                class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                                <i class="material-icons opacity-10">shopping_cart</i>
+                            </div>
+                            <div class="text-end pt-1">
+                                <p class="text-sm mb-0 text-capitalize">Total Order</p>
+                                <h4 class="mb-0">{{$total_orders}}</h4>
+                            </div>
+                        </div>
+                        <hr class="dark horizontal my-0">
+                        <div class="card-footer p-3">
+                            {{-- <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+3% </span>than
+                                lask month</p> --}}
+                        </div>
+                    </a>
+                </div>
+            </div>
+              <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                  <div class="card data-card">
+                        <a href="{{route('admin.order.invoice.index')}}">
+                        <div class="card-header p-3 pt-2">
+                            <div
+                                class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                                <i class="material-icons opacity-10">receipt_long</i>
+                            </div>
+                            <div class="text-end pt-1">
+                                <p class="text-sm mb-0 text-capitalize">Total Invoice</p>
+                                <h4 class="mb-0">{{$total_invoice}}</h4>
+                            </div>
+                        </div>
+                        <hr class="dark horizontal my-0">
+                            <div class="card-footer p-3 d-flex justify-content-between align-items-center">
+                            {{-- <p class="mb-0"><span class="text-danger text-sm font-weight-bolder">-2%</span> than
+                                yesterday</p> --}}
+                            </div>
+                        </a>
+                  </div>
+              </div>
+              {{-- <div class="col-xl-3 col-sm-6">
                   <div class="card data-card">
                       <div class="card-header p-3 pt-2">
                           <div
@@ -81,9 +125,9 @@
                               yesterday</p>
                       </div>
                   </div>
-              </div>
+              </div> --}}
           </div>
-          <div class="row mt-4">
+          {{-- <div class="row mt-4">
               <div class="col-lg-4 col-md-6 mt-4 mb-4">
                   <div class="card z-index-2 ">
                       <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
@@ -145,7 +189,7 @@
                       </div>
                   </div>
               </div>
-          </div>
+          </div> --}}
           <!--<div class="row mb-4">-->
           <!--    <div class="col-lg-8 col-md-6 mb-md-0 mb-4">-->
           <!--        <div class="card">-->

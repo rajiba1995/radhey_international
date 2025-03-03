@@ -200,7 +200,7 @@ class AddExpense extends Component
                 'bank_name' => $this->bank_name,
                 'chq_utr_no' => $this->chq_utr_no,
                 'narration' => $this->narration,
-                'created_by' => Auth::user()->id,
+                'created_by' => Auth::guard('admin')->user()->id,
                 'created_at' => now()
             ];
 

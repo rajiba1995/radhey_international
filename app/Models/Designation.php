@@ -23,4 +23,13 @@ class Designation extends Model
       {
           return $this->belongsToMany(Role::class, 'user_roles', 'designation_id', 'role_id');
       }
+      public function permissions()
+      {
+          return $this->belongsToMany(Permission::class, 'designation_permissions');
+      }
+      public function hasPermissionByParent($parentName)
+    {
+        return $this->designation->permissions()->where('parent_name', $parentName)->exists();
+    }
+
 }

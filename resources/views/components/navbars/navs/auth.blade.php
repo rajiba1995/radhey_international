@@ -24,19 +24,19 @@
                     <a href="javascript:;" class="nav-link text-body font-weight-bold px-0 dropdown-toggle custom-profile-box" data-bs-toggle="dropdown">
                         <figure><i class="fa fa-user"></i></figure>
                         <div class="name-details">
-                            <p>{{Auth::user()->name}} </p>
-                            @if(Auth::user()->designationDetails)
-                                <span>{{ Auth::user()->designationDetails['name'] }}</span> 
+                            <p>{{Auth::guard('admin')->user()->name}} </p>
+                            @if(Auth::guard('admin')->user()->designationDetails)
+                                <span>{{ Auth::guard('admin')->user()->designationDetails['name'] }}</span> 
                             @endif
                         </div>
                     </a>
 
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Logout</a></li>
+                        <li> <a class="dropdown-item" href="javascript:;"><livewire:auth.logout /></a></li>
                     </ul>
 
                 </li>
-                <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+                {{-- <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
                     <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
                         <div class="sidenav-toggler-inner">
                             <i class="sidenav-toggler-line"></i>
@@ -132,7 +132,7 @@
                             </a>
                         </li>
                     </ul>
-                </li>
+                </li> --}}
             </ul>
         </div>
     </div>

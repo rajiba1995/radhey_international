@@ -82,6 +82,7 @@ class DesignationIndex extends Component
         ->with(['roles' => function ($query) {
             $query->select('roles.id', 'roles.name');
         }])
+        // ->where('id','!=',1)
         ->latest()
         ->paginate(10);
 
@@ -99,13 +100,16 @@ class DesignationIndex extends Component
     }
 
 
-
+    public function clear(){
+        $this->resetForm();
+    }
     public function render()
     {
         $this->designations = Designation::withCount('users')
         ->with(['roles' => function ($query) {
             $query->select('roles.id', 'roles.name');
         }])
+        // ->where('id','!=',1)
         ->latest()
         ->get();
 
