@@ -63,7 +63,7 @@ class AddProduct extends Component
                 'string',
                 'max:255',
                 Rule::unique('products')->where(function ($query) {
-                    return $query->where('collection_id', $this->collection);
+                    return $query->where('collection_id', $this->collection)->whereNull('deleted_at');
                 })
             ],
             // Conditional Validation: selectedFabrics is required only when collection == 1

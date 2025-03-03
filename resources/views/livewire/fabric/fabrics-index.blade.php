@@ -1,4 +1,16 @@
-<div class="container-fluid py-4">
+<div class="container">
+    <section class="admin__title">                
+        <h5>Fabrics</h5>
+    </section>
+    <section>
+        <ul class="breadcrumb_menu">
+            <li><a href="{{route('product.view')}}">Product</a></li>
+            <li>Fabrics</li>
+            <li class="back-button">
+                <a href="{{route('product.view')}}" class="btn btn-sm btn-danger select-md text-light font-weight-bold mb-0">Back </a>
+            </li>
+          </ul>
+    </section>
     <div class="row mb-4">
         <div class="col-lg-12 col-md-6 mb-md-0 mb-4">
             <div class="row">
@@ -13,9 +25,7 @@
                                 @endif
                             </div>
                             <div class="row">
-                                <div class="col-lg-6 col-7">
-                                    <h6>Fabrics</h6>
-                                </div>
+                                
                                 <div class="col-lg-6 col-5 my-auto text-end">
                                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
                                         

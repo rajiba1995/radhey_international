@@ -12,6 +12,7 @@ use App\Models\CollectionType;
 use App\Models\ProductImage;
 use Illuminate\Support\Facades\Log;
 use App\Models\Fabric;
+use Illuminate\Validation\Rule;
 
 
 class UpdateProduct extends Component
@@ -38,8 +39,8 @@ class UpdateProduct extends Component
     public $existingImages = [];
     public $multipleImages = [];
     public $showAdditionalImageField = false; // To control visibility of the additional image field
-public $additionalImage; // For storing the uploaded additional image
-public $existingAdditionalImage; // For displaying the current additional image (if any)
+    public $additionalImage; // For storing the uploaded additional image
+    public $existingAdditionalImage; // For displaying the current additional image (if any)
 
 // Modified mount function
 public function mount($product_id)
@@ -104,6 +105,17 @@ public function GetCollection($id)
                 'category_id' => 'required',
                 'selectedFabrics' => 'nullable|array',
                 'name' => 'required|string|max:255',
+
+                // 'name' => [
+                //     'required',
+                //     'string',
+                //     'max:255',
+                //     Rule::unique('products')->where(function ($query) {
+                //         return $query->where('collection_id', $this->collection)
+                //                     ->whereNull('deleted_at'); // Exclude soft-deleted records
+                //     })->ignore($this->product->id) // Ignore the current record during update
+                // ],
+
                 'product_code' => 'required|string|max:50',
                 'short_description' => 'nullable|string|max:500',
                 'description' => 'nullable|string',

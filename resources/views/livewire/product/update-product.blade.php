@@ -70,6 +70,7 @@
                                     <div class="mb-3 col-md-5">
                                         <label class="form-label">Product Name <span class="text-danger">*</span></label>
                                         <input wire:model="name" type="text" class="form-control form-control-sm border border-1 p-2" placeholder="Product Name" >
+                                       
                                         @error('name')
                                             <p class='text-danger inputerror'>{{ $message }} </p>
                                         @enderror
