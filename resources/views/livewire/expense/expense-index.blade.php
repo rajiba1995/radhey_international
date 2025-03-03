@@ -36,9 +36,9 @@
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Name</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Debit Purpose</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Credit Purpose</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">For Store</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">For Customer</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">For Staff</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">For Partner</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">For Supplier</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Status</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-10">Action</th>
                                     </tr>
@@ -58,8 +58,8 @@
                                                 </span>
                                             </td>
                                             <td class="align-middle"> 
-                                                <span class="badge {{$expense->for_store  == 1? "bg-success" : "bg-danger" }}">
-                                                    {{$expense->for_store  == 1? "Yes" : "No" }}
+                                                <span class="badge {{$expense->for_customer  == 1? "bg-success" : "bg-danger" }}">
+                                                    {{$expense->for_customer  == 1? "Yes" : "No" }}
                                                 </span>
                                             </td>
                                             <td class="align-middle"> 
@@ -68,8 +68,8 @@
                                                 </span>
                                             </td>
                                             <td class="align-middle"> 
-                                                <span class="badge {{$expense->for_partner  == 1? "bg-success" : "bg-danger" }}">
-                                                    {{$expense->for_partner  == 1? "Yes" : "No" }}
+                                                <span class="badge {{$expense->for_supplier  == 1? "bg-success" : "bg-danger" }}">
+                                                    {{$expense->for_supplier  == 1? "Yes" : "No" }}
                                                 </span>
                                             </td>
                                             <td class="align-middle text-sm" style="text-align: center;">
@@ -158,23 +158,23 @@
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <div class="form-check ps-0 custom-checkbox">
-                                                <input wire:model="for_store" class="form-check-input" type="checkbox" value="1"  id="for_store">
+                                                <input wire:model="for_customer" class="form-check-input" type="checkbox" value="1"  id="for_customer">
                                                 <i></i>
-                                                <label class="form-check-label" for="for_store">
-                                                  For Store
+                                                <label class="form-check-label" for="for_customer">
+                                                  For Customer
                                                 </label>
                                             </div>
-                                            @error('for_store') <p class="small text-danger">{{ $message }}</p> @enderror
+                                            @error('for_customer') <p class="small text-danger">{{ $message }}</p> @enderror
                                         </div>  
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <div class="form-check ps-0 custom-checkbox">
-                                                <input wire:model="for_partner" class="form-check-input" type="checkbox" value="1"  id="for_partner">
+                                                <input wire:model="for_supplier" class="form-check-input" type="checkbox" value="1"  id="for_supplier">
                                                 <i></i>
-                                                <label class="form-check-label" for="for_partner">For Partner</label>
+                                                <label class="form-check-label" for="for_supplier">For Supplier</label>
                                             </div>
-                                            @error('for_partner') <p class="small text-danger">{{ $message }}</p> @enderror
+                                            @error('for_supplier') <p class="small text-danger">{{ $message }}</p> @enderror
                                         </div>  
                                     </div>
                                 </div>                       

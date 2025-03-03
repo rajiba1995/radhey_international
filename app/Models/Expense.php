@@ -15,7 +15,7 @@ class Expense extends Model
         'for_debit',
         'for_credit',
         'for_staff',
-        'for_store',
-        'for_partner',
+        'for_customer',
+        'for_supplier',
     ];
 }

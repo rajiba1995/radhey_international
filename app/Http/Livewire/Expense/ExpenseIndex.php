@@ -15,8 +15,8 @@ class ExpenseIndex extends Component
     public $for_debit = false;
     public $for_credit = false;
     public $for_staff = false;
-    public $for_store = false;
-    public $for_partner = false;
+    public $for_customer = false;
+    public $for_supplier = false;
     public $search;
     protected $updatesQueryString = ['search'];
 
@@ -28,8 +28,8 @@ class ExpenseIndex extends Component
             $this->for_debit = $expense->for_debit;
             $this->for_credit = $expense->for_credit;
             $this->for_staff = $expense->for_staff;
-            $this->for_store = $expense->for_store;
-            $this->for_partner = $expense->for_partner;
+            $this->for_customer = $expense->for_customer;
+            $this->for_supplier = $expense->for_supplier;
         }
     }
 
@@ -39,8 +39,8 @@ class ExpenseIndex extends Component
         'for_debit' => 'boolean',
         'for_credit' => 'boolean',
         'for_staff' => 'boolean',
-        'for_store' => 'boolean',
-        'for_partner' => 'boolean',
+        'for_customer' => 'boolean',
+        'for_supplier' => 'boolean',
     ];
 
     public function saveExpense(){
@@ -73,8 +73,8 @@ class ExpenseIndex extends Component
         $this->for_debit = false;
         $this->for_credit = false;
         $this->for_staff = false;
-        $this->for_store = false;
-        $this->for_partner = false;
+        $this->for_customer = false;
+        $this->for_supplier = false;
     }
     
 
@@ -88,8 +88,8 @@ class ExpenseIndex extends Component
             $this->for_debit = (bool)$expense->for_debit;
             $this->for_credit = (bool)$expense->for_credit;
             $this->for_staff = (bool)$expense->for_staff;
-            $this->for_store = (bool)$expense->for_store;
-            $this->for_partner = (bool)$expense->for_partner;
+            $this->for_customer = (bool)$expense->for_customer;
+            $this->for_supplier = (bool)$expense->for_supplier;
         }
     }
 
