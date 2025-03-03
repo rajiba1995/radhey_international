@@ -1,4 +1,19 @@
-<div class="container-fluid py-4"> 
+<div class="container">
+<section class="admin__title">
+        <h5>Designation</h5>
+    </section>
+    <section>
+        <ul class="breadcrumb_menu">
+            <li>Designation</li>
+            <li></li>
+            <!-- <li>Create Customer</li> -->
+        </ul>
+        <div class="row align-items-center justify-content-between">
+                <div class="col-auto">
+                    <!-- <p class="text-sm font-weight-bold">Items</p> -->
+                </div>
+            </div>
+    </section>
     <div class="row mb-4">
         <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
             <div class="row">
@@ -13,9 +28,6 @@
                                 @endif
                             </div>
                             <div class="row">
-                                <div class="col-lg-6 col-7">
-                                    <h5>Designation</h5>
-                                </div>
                                 {{-- <div class="col-lg-6 col-5 my-auto text-end">
                                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
                                         <div class="ms-md-auto pe-md-3 d-flex align-items-center mb-2">
@@ -108,11 +120,14 @@
                                         </div>
                                     </div> --}}
                                     <div class="mb-2 text-end">
-                                        <a href="" class="btn btn-cta btn-sm">
-                                            <i class="material-icons text-white" style="font-size: 15px;">refresh</i> 
-                                            Refresh
+                                        @if($designationId)
+                                            <a href="javascript:void(0);" 
+                                            class="btn btn-sm btn-danger select-md" 
+                                            wire:click.prevent="resetForm">
+                                            Clear
                                         </a>
-                                        <button type="submit" class="btn btn-cta btn-sm" 
+                                        @endif
+                                        <button type="submit" class="btn btn-sm btn-success select-md" 
                                                 wire:loading.attr="disabled">
                                             <span> 
                                                 {{ $designationId ? 'Update Designation' : 'Create Designation' }}

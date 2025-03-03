@@ -1,4 +1,19 @@
-<div class="container-fluid px-2 px-md-4">
+<div class="container">
+    <section class="admin__title">
+        <h5>Collections</h5>
+    </section>
+    <section>
+        <ul class="breadcrumb_menu">
+            <li>Collections</li>
+            <li></li>
+            <!-- <li>Create Customer</li> -->
+        </ul>
+        <div class="row align-items-center justify-content-between">
+                <div class="col-auto">
+                    <!-- <p class="text-sm font-weight-bold">Items</p> -->
+                </div>
+            </div>
+    </section>
     <div class="row mb-4">
         <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
             <div class="row">
@@ -13,9 +28,6 @@
                                 @endif
                             </div>
                             <div class="row">
-                                <div class="col-lg-6 col-7">
-                                    <h5>Collections</h5>
-                                </div>
                                 <div class="col-lg-6 col-5 my-auto text-end">
                                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
                                         <!-- Optionally, add a search icon button -->
@@ -39,8 +51,8 @@
                                                 <td><h6 class="text-sm mb-0">{{ $k + 1 }}</h6></td>
                                                 <td><p class="text-xs font-weight-bold mb-0">{{ $collection->title }}</p></td>
                                                 <td class="align-middle">
-                                                    <button wire:click="edit({{ $collection->id }})" class="btn btn-outline-info custom-btn-sm mb-0">
-                                                        <i class="fas fa-edit"></i>
+                                                    <button wire:click="edit({{ $collection->id }})" class="btn btn-outline-primary select-md btn_action btn_outline">
+                                                        Edit
                                                     </button>
                                                 </td>
                                             </tr>
@@ -80,7 +92,14 @@
                                     @enderror
                                 </div>
                                 <div class="text-end">
-                                    <button type="submit" class="btn btn-sm btn-cta mt-2">
+                                    @if($collectionId)
+                                        <a href="javascript:void(0);" 
+                                        class="btn btn-sm btn-danger select-md" 
+                                        wire:click.prevent="resetForm">
+                                        Clear
+                                        </a>
+                                    @endif
+                                    <button type="submit" class="btn btn-sm btn-success select-md">
                                         {{ $collectionId ? 'Update Collection' : 'Create Collection' }}
                                     </button>
                                 </div>

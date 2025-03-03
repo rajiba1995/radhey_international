@@ -1,4 +1,19 @@
-<div class="container-fluid px-2 px-md-4">
+<div class="container">
+    <section class="admin__title">
+        <h5>{{$parent_id == 1 ?'Recurring Expense' : 'Non Recurring Expense'}}</h5>
+    </section>
+    <section>
+        <ul class="breadcrumb_menu">
+            <li>{{$parent_id == 1 ?'Recurring Expense' : 'Non Recurring Expense'}}</li>
+            <li></li>
+            <!-- <li>Create Customer</li> -->
+        </ul>
+        <div class="row align-items-center justify-content-between">
+                <div class="col-auto">
+                    <!-- <p class="text-sm font-weight-bold">Items</p> -->
+                </div>
+            </div>
+    </section>
     <div class="row mb-4">
     <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
         <div class="row">
@@ -11,19 +26,6 @@
                                     {{ session('message') }}
                                 </div>
                             @endif
-                        </div>
-                        <div class="row align-items-center">
-                            <div class="col-lg-6 col-7">
-                                <h5>{{$parent_id == 1 ?'Recurring Expense' : 'Non Recurring Expense'}}</h5>
-                            </div>
-                            <div class="col-lg-6 col-5 my-auto text-end">
-                                <div class="input-group w-100 search-input-group">
-                                    <input type="text" wire:model.debounce.500ms="search" class="form-control border" placeholder="Enter Title">
-                                    <button type="button" wire:click="$refresh" class="btn btn-outline-primary mb-0">
-                                        <span class="material-icons">search</span>
-                                    </button>
-                                </div>
-                            </div>
                         </div>
                     </div>
                     <div class="card-body pb-2">
@@ -82,7 +84,8 @@
                                                 </div>
                                             </td>
                                             <td class="align-middle text-end px-4">
-                                                <button wire:click="edit({{$expense->id}})" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" title="Edit"><span class="material-icons">edit</span></button>
+                                               
+                                                <button wire:click="edit({{$expense->id}})" class="btn btn-outline-primary select-md btn_action btn_outline" title="Edit">Edit</button>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -177,11 +180,14 @@
                                 </div>                       
                                                         
                                 <div class="mb-2 text-end">
-                                    <a href="" class="btn btn-cta btn-sm mt-1">
-                                        <i class="material-icons text-white" style="font-size: 15px;">refresh</i>
-                                        Refresh
+                                    @if($expenseId)
+                                        <a href="javascript:void(0);" 
+                                        class="btn btn-sm btn-danger select-md" 
+                                        wire:click.prevent="resetForm">
+                                        Clear
                                     </a>
-                                    <button type="submit" class="btn btn-cta btn-sm mt-1" 
+                                    @endif
+                                    <button type="submit" class="btn btn-sm btn-success select-md" 
                                             wire:loading.attr="disabled">
                                         <span> 
                                          {{$expenseId ? 'Update Expense' : 'Create Expense'}}

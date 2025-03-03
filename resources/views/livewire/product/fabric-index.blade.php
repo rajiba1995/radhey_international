@@ -130,10 +130,9 @@
                                                     </div>
                                                 </td>
                                                 <td class="align-middle">
-                                                    <button wire:click="edit({{ $fabric->id }})" class="btn btn-outline-info custom-btn-sm mb-0">
-                                                        <i class="fas fa-edit"></i>
+                                                    <button wire:click="edit({{ $fabric->id }})" class="btn btn-outline-primary select-md btn_action btn_outline">Edit
                                                     </button>
-                                                    <button wire:click="destroy({{ $fabric->id }})"  class="btn btn-outline-danger custom-btn-sm mb-0"><i class="fas fa-trash"></i></button>
+                                                    <button wire:click="destroy({{ $fabric->id }})"  class="btn btn-outline-danger select-md btn_outline">Delete</button>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -207,11 +206,14 @@
     
                                 <!-- Submit Button -->
                                 <div class="text-end">
-                                    <a href="{{route('product.view')}}" class="btn btn-cta btn-sm mt-2">
-                                        <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i> 
-                                        Back
-                                    </a>
-                                    <button type="submit" class="btn btn-sm btn-cta mt-2">
+                                @if($fabricId)
+                                        <a href="javascript:void(0);" 
+                                        class="btn btn-sm btn-danger select-md" 
+                                        wire:click.prevent="resetFields">
+                                        Clear
+                                        </a>
+                                        @endif
+                                    <button type="submit" class="btn btn-sm btn-success select-md">
                                         {{ $fabricId ? 'Update Fabric' : 'Create Fabric' }}
                                     </button>
                                 </div>

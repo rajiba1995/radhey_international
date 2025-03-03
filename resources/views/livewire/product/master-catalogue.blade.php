@@ -1,4 +1,19 @@
-<div class="container-fluid px-2 px-md-4">
+<div class="container">
+    <section class="admin__title">
+        <h5>Catalogue</h5>
+    </section>
+    <section>
+        <ul class="breadcrumb_menu">
+            <li>Catalogue</li>
+            <li></li>
+            <!-- <li>Create Customer</li> -->
+        </ul>
+        <div class="row align-items-center justify-content-between">
+                <div class="col-auto">
+                    <!-- <p class="text-sm font-weight-bold">Items</p> -->
+                </div>
+            </div>
+    </section>
     <div class="row mb-4">
         <!-- Catalog Table -->
         <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
@@ -18,17 +33,15 @@
                                 @endif
                             </div>
                             <div class="row">
-                                <div class="col-lg-6 col-7">
-                                    <h5>Catalogue</h5>
-                                </div>
-                                <div class="col-lg-6 col-5 my-auto text-end">
+                                
+                                <!-- <div class="col-lg-6 col-5 my-auto text-end">
                                     <div class="input-group w-100 search-input-group">
                                         <input type="text" wire:model.debounce.500ms="search" class="form-control border" placeholder="Search Title">
                                         <button type="button" wire:target="search" class="btn btn-outline-primary mb-0">
                                             <span class="material-icons">search</span>
                                         </button>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                         <div class="card-body pb-2">
@@ -50,11 +63,11 @@
                                                 <td><p class="text-xs font-weight-bold mb-0">{{ $catalogue->catalogueTitle ? $catalogue->catalogueTitle->title : "" }}</p></td>
                                                 <td><p class="text-xs font-weight-bold mb-0">{{ $catalogue->page_number }}</p></td>
                                                 <td class="align-middle">
-                                                    <button wire:click="edit({{ $catalogue->id }})" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" title="Edit">
-                                                        <span class="material-icons">edit</span>
+                                                    <button wire:click="edit({{ $catalogue->id }})" class="btn btn-outline-primary select-md btn_action btn_outline" title="Edit">
+                                                        Edit
                                                     </button>
-                                                    <button wire:click="destroy({{ $catalogue->id }})" class="btn btn-outline-danger btn-sm custom-btn-sm mb-0" title="Delete">
-                                                        <span class="material-icons">delete</span>
+                                                    <button wire:click="destroy({{ $catalogue->id }})" class="btn btn-outline-danger select-md btn_outline" title="Delete">
+                                                        Delete
                                                     </button>
                                                 </td>
                                             </tr>
@@ -118,8 +131,14 @@
 
                                     <!-- Submit Button -->
                                     <div class="mb-2 text-end mt-4">
-                                        <a href="" class="btn btn-cta btn-sm mt-1"><i class="material-icons text-white" style="font-size: 15px;">refresh</i>Refresh</a>
-                                        <button type="submit" class="btn btn-cta btn-sm mt-1" wire:loading.attr="disabled">
+                                        @if($catalogueId)
+                                        <a href="javascript:void(0);" 
+                                        class="btn btn-sm btn-danger select-md" 
+                                        wire:click.prevent="resetFields">
+                                        Clear
+                                        </a>
+                                        @endif
+                                        <button type="submit" class="btn btn-sm btn-success select-md" wire:loading.attr="disabled">
                                             <span>{{ $catalogueId ? 'Update Catalogue' : 'Create Catalogue' }}</span>
                                         </button>
                                     </div>

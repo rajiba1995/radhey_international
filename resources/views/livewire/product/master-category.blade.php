@@ -1,4 +1,37 @@
-<div class="container-fluid px-2 px-md-4">
+<div class="container">
+    <section class="admin__title">
+        <h5>Categories</h5>
+    </section>
+    <section>
+        <ul class="breadcrumb_menu">
+            <li>Categories</li>
+            <li></li>
+            <!-- <li>Create Customer</li> -->
+        </ul>
+        <div class="row align-items-center justify-content-between">
+                <div class="col-auto">
+                    <!-- <p class="text-sm font-weight-bold">Items</p> -->
+                </div>
+            </div>
+    </section>
+    <section>
+        <div class="search__filter">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto mt-0">
+                            <input type="text" wire:model="search" class="form-control select-md bg-white" id="customer"
+                                placeholder="Search here" value=""
+                                style="width: 350px;"  wire:keyup="FindCategory($event.target.value)">
+                        </div>
+                        <div class="col-auto mt-3">
+                            <button type="button" wire:click="resetSearch" class="btn btn-outline-danger select-md">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     <div class="row mb-4">
         <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
             <div class="row">
@@ -13,17 +46,15 @@
                                 @endif
                             </div>
                             <div class="row">
-                                <div class="col-lg-6 col-7">
-                                    <h5>Categories</h5>
-                                </div>
-                                <div class="col-lg-6 col-5 my-auto text-end">
+                                
+                                <!-- <div class="col-lg-6 col-5 my-auto text-end">
                                     <div class="input-group w-100 search-input-group">
                                         <input type="text" wire:model.debounce.500ms="search" class="form-control border" placeholder="Enter Title">
                                         <button type="button" wire:target="search" class="btn btn-outline-primary mb-0">
                                             <span class="material-icons">search</span>
                                         </button>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                         <div class="card-body pb-2">

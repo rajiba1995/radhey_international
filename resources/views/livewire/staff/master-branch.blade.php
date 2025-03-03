@@ -1,4 +1,37 @@
-<div class="container-fluid px-2 px-md-4">
+<div class="container">
+    <section class="admin__title">
+        <h5>Branch</h5>
+    </section>
+    <section>
+        <ul class="breadcrumb_menu">
+            <li>Branch</li>
+            <li></li>
+            <!-- <li>Create Customer</li> -->
+        </ul>
+        <div class="row align-items-center justify-content-between">
+                <div class="col-auto">
+                    <!-- <p class="text-sm font-weight-bold">Items</p> -->
+                </div>
+            </div>
+    </section>
+    <section>
+        <div class="search__filter">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto mt-0">
+                            <input type="text" wire:model="search" class="form-control select-md bg-white" id="customer"
+                                placeholder="Search here" value=""
+                                style="width: 350px;"  wire:keyup="FindBranch($event.target.value)">
+                        </div>
+                        <div class="col-auto mt-3">
+                            <button type="button" wire:click="resetFields" class="btn btn-outline-danger select-md">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     <div class="row mb-4">
         <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
             <div class="row">
@@ -12,19 +45,7 @@
                                     </div>
                                 @endif
                             </div>
-                            <div class="row">
-                                <div class="col-lg-6 col-7">
-                                    <h5>Branch</h5>
-                                </div>
-                                <div class="col-lg-6 col-5 my-auto text-end">
-                                    <div class="input-group w-100 search-input-group">
-                                        <input type="text" wire:model.debounce.500ms="search" class="form-control border" placeholder="Enter Title">
-                                        <button type="button" wire:target="search" class="btn btn-outline-primary mb-0">
-                                            <span class="material-icons">search</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                           
                         </div>
                         <div class="card-body pb-2">
                             <div class="table-responsive p-0">
@@ -39,6 +60,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                    @if($branchNames && $branchNames->count())
                                         @foreach($branchNames as $k => $branchName)
                                             <tr>
                                                 <td><h6 class="mb-0 text-sm">{{ $k + 1 }}</h6></td>
@@ -51,6 +73,11 @@
                                                 </td>
                                             </tr>
                                         @endforeach
+                                    @else
+                                        <tr>
+                                            <td colspan="2">No branches found</td>
+                                        </tr>
+                                    @endif
                                     </tbody>
                                 </table>
                             </div>
@@ -122,8 +149,14 @@
                                         <p class='text-danger inputerror'>{{ $message }}</p>
                                     @enderror
                                     <div class="mb-2 text-end mt-4">
-                                        <a href="" class="btn btn-cta btn-sm mt-1"><i class="material-icons text-white" style="font-size: 15px;">refresh</i>Refresh</a>
-                                        <button type="submit" class="btn btn-cta btn-sm mt-1" wire:loading.attr="disabled">
+                                        @if($branchId)
+                                            <a href="javascript:void(0);" 
+                                            class="btn btn-sm btn-danger select-md" 
+                                            wire:click.prevent="resetFields">
+                                            Clear
+                                        </a>
+                                        @endif
+                                        <button type="submit" class="btn btn-sm btn-success select-md" wire:loading.attr="disabled">
                                             <span>{{ $branchId ? 'Update' : 'Create' }}</span>
                                         </button>
                                     </div>

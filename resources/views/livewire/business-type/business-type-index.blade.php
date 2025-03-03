@@ -65,8 +65,8 @@
                                                 <td><h6 class="mb-0 text-sm">{{ $k + 1 }}</h6></td>
                                                 <td><p class="text-xs font-weight-bold mb-0">{{ $businessType->title }}</p></td>
                                                 <td class="align-middle">
-                                                    <button wire:click="edit({{ $businessType->id }})" class="btn btn-outline-info btn-sm custom-btn-sm mb-0" title="Edit">
-                                                        <span class="material-icons">edit</span>
+                                                    <button wire:click="edit({{ $businessType->id }})" class="btn btn-outline-primary select-md btn_action btn_outline" title="Edit">
+                                                        Edit
                                                     </button>
                                                 </td>
                                             </tr>
@@ -99,8 +99,14 @@
                                     @enderror
 
                                     <div class="mb-2 text-end mt-4">
-                                        <a href="" class="btn btn-cta btn-sm mt-1"><i class="material-icons text-white" style="font-size: 15px;">refresh</i>Refresh</a>
-                                        <button type="submit" class="btn btn-cta btn-sm mt-1" wire:loading.attr="disabled">
+                                        @if($businessTypeId)
+                                            <a href="javascript:void(0);" 
+                                            class="btn btn-sm btn-danger select-md" 
+                                            wire:click.prevent="resetForm">
+                                            Clear
+                                        </a>
+                                        @endif
+                                        <button type="submit" class="btn btn-sm btn-success select-md" wire:loading.attr="disabled">
                                             <span>{{ $businessTypeId ? 'Update' : 'Create' }}</span>
                                         </button>
                                     </div>

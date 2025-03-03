@@ -1,4 +1,22 @@
-<div class="container-fluid py-4"> 
+<div class="container">
+    <section class="admin__title">
+        <h5>Measurements</h5>
+    </section>
+    <section>
+        <ul class="breadcrumb_menu">
+            <li>{{$products}}->>Measurements</li>
+            <li></li>
+            <li class="back-button">
+                <a href="{{route('product.view')}}" class="btn btn-sm btn-danger select-md text-light font-weight-bold mb-0">Back </a>
+            </li>
+            <!-- <li>Create Customer</li> -->
+        </ul>
+        <div class="row align-items-center justify-content-between">
+                <div class="col-auto">
+                    <!-- <p class="text-sm font-weight-bold">Items</p> -->
+                </div>
+            </div>
+    </section> 
     <div class="row mb-4">
         <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
             <div class="row">
@@ -13,9 +31,7 @@
                                 @endif
                             </div>
                             <div class="row">
-                                <div class="col-12">
-                                    <h5>{{$products}}->>Measurements</h5>
-                                </div>
+                                
                                 {{-- <div class="col-lg-6 col-5 my-auto text-end">
                                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
                                         
@@ -52,10 +68,10 @@
                                                     </div>
                                                 </td>
                                                 <td class="align-middle text-center">
-                                                    <button wire:click="edit({{ $measurement->id }})" class="btn btn-outline-info custom-btn-sm mb-0">
-                                                        <i class="fas fa-edit"></i>
+                                                    <button wire:click="edit({{ $measurement->id }})" class="btn btn-outline-primary select-md btn_action btn_outline">
+                                                        Edit
                                                     </button>
-                                                    <button wire:click="destroy({{ $measurement->id }})"  class="btn btn-outline-danger custom-btn-sm mb-0"><i class="fas fa-trash"></i></button>
+                                                    <button wire:click="destroy({{ $measurement->id }})"  class="btn btn-outline-danger select-md btn_outline">Delete</button>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -108,11 +124,14 @@
     
                                 <!-- Submit Button -->
                                 <div class="text-end">
-                                    <a href="{{route('product.view')}}"class="btn btn-sm btn-cta mt-3">
-                                        <i class="material-icons text-white" style="font-size: 15px;">chevron_left</i>
-                                        Back
-                                    </a>
-                                    <button type="submit" class="btn btn-sm btn-cta mt-3">
+                                    @if($measurementId)
+                                        <a href="javascript:void(0);" 
+                                        class="btn btn-sm btn-danger select-md" 
+                                        wire:click.prevent="resetFields">
+                                        Clear
+                                        </a>
+                                    @endif
+                                    <button type="submit" class="btn btn-sm btn-success select-md">
                                         {{ $measurementId ? 'Update Measurement' : 'Create Measurement' }}
                                     </button>
                                 </div>

@@ -10,6 +10,7 @@ class BusinessTypeIndex extends Component
     public $businessTypeId;
     public $title;
     public $search = '';
+    
     public function FindBusiness($keywords){
         $this->search = $keywords;
     }

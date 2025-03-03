@@ -3,13 +3,16 @@
 namespace App\Http\Livewire\Staff;
 
 use Livewire\Component;
+use Livewire\WithPagination;
 use App\Models\Branch;
 
 class MasterBranch extends Component
 {
+    use WithPagination;
+
     public $branchId;
-    public $name,$email,$mobile,$whatsapp,$city,$address;
-    public $branchNames;
+    public $name, $email, $mobile, $whatsapp, $city, $address;
+    public $search = '';
 
     protected $rules = [
         'name' => 'required|unique:branches,name',
@@ -19,16 +22,17 @@ class MasterBranch extends Component
         'city' => 'required',
         'address' => 'required',
     ];
-
-    public function mount(){
-        $this->reloadBranch();
+    public function FindBranch($keywords){
+        $this->search = $keywords;
+    }
+    public function updatingSearch()
+    {
+        $this->resetPage(); // Reset pagination on search
     }
 
-    public function reloadBranch(){
-        $this->branchNames = Branch::all();
-    }
-
-    public function resetFields(){
+    public function resetFields()
+    {
+        $this->search = '';
         $this->branchId = null;
         $this->name = '';
         $this->email = '';
@@ -38,24 +42,25 @@ class MasterBranch extends Component
         $this->address = '';
     }
 
-    public function storeBranch(){
-       $this->validate();     
-       Branch::create([
-           'name'=> $this->name,
-           'email'=> $this->email,
-           'mobile'=> $this->mobile,
-           'whatsapp'=> $this->whatsapp,
-           'city'=> $this->city,
-           'address'=> $this->address,
-       ]);
+    public function storeBranch()
+    {
+        $this->validate();     
+        Branch::create([
+            'name' => $this->name,
+            'email' => $this->email,
+            'mobile' => $this->mobile,
+            'whatsapp' => $this->whatsapp,
+            'city' => $this->city,
+            'address' => $this->address,
+        ]);
 
-       session()->flash('message','Branch Created Successfully');
-       $this->resetFields();
-       $this->reloadBranch();
+        session()->flash('message', 'Branch Created Successfully');
+        $this->resetFields();
     }
 
-    public function edit($id){
-        $branch = Branch::find($id);
+    public function edit($id)
+    {
+        $branch = Branch::findOrFail($id);
         $this->branchId = $id;
         $this->name = $branch->name;
         $this->email = $branch->email;
@@ -64,7 +69,9 @@ class MasterBranch extends Component
         $this->city = $branch->city;
         $this->address = $branch->address;
     }
-    public function updateBranch(){
+
+    public function updateBranch()
+    {
         $this->validate([
             'name' => 'required|unique:branches,name,' . $this->branchId,
             'email'=> 'required|email|unique:branches,email,' . $this->branchId,
@@ -73,23 +80,29 @@ class MasterBranch extends Component
             'city' => 'required',
             'address' => 'required',
         ]);
-        Branch::find($this->branchId)->update([
-            'name'=> $this->name,
-            'email'=> $this->email,
-            'mobile'=> $this->mobile,
-            'whatsapp'=> $this->whatsapp,
-            'city'=> $this->city,
-            'address'=> $this->address,
+
+        Branch::findOrFail($this->branchId)->update([
+            'name' => $this->name,
+            'email' => $this->email,
+            'mobile' => $this->mobile,
+            'whatsapp' => $this->whatsapp,
+            'city' => $this->city,
+            'address' => $this->address,
         ]);
 
-        session()->flash('message','Branch Updated Successfully');
+        session()->flash('message', 'Branch Updated Successfully');
         $this->resetFields();
-        $this->reloadBranch();
     }
-
 
     public function render()
     {
-        return view('livewire.staff.master-branch');
+        $branchNames = Branch::query()
+            ->when($this->search, function ($query) {
+                $query->where('name', 'like', '%' . $this->search . '%');
+            })
+            ->orderBy('name', 'desc')
+            ->paginate(5);
+
+        return view('livewire.staff.master-branch', compact('branchNames'));
     }
 }

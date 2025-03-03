@@ -135,7 +135,9 @@ class MasterCategory extends Component
 
         session()->flash('message', 'Category status updated successfully!');
     }
-
+    public function FindCategory($keywords){
+        $this->search = $keywords;
+    }
     public function resetFields()
     {
         $this->title = '';
@@ -145,7 +147,11 @@ class MasterCategory extends Component
         $this->collection_id = null;
         $this->short_code = null;
     }
-
+    public function resetSearch()
+    {
+        $this->search = '';
+        $this->title = '';
+    }
     public function render()
     {
         $collections = Collection::pluck('title', 'id');

@@ -16,6 +16,9 @@ class SalesmanBillingIndex extends Component
     public $assign_new_salesman = false;
     public $staff_id;
 
+    public $search = '';
+    
+  
     public function mount(){
         $staff_id = request()->query('staff_id');
         if($staff_id){
@@ -23,6 +26,23 @@ class SalesmanBillingIndex extends Component
             $this->salesman_id = $staff_id;
         }
     }
+
+    public function FindBillBook($keywords){
+        $this->search = $keywords;
+    }
+
+    public function resetForm()
+    {
+        $this->search = '';
+        $this->staff_id = null;
+        $this->salesman_id = null;
+        $this->start_no = null;
+        $this->end_no = null;
+        $this->billing_id = null;
+        $this->numberLength = null;
+        $this->assign_new_salesman = false;
+    }
+
 
     public function assignToNewSalesman($billingId){
        $this->assign_new_salesman = true;
@@ -205,6 +225,8 @@ class SalesmanBillingIndex extends Component
     
         $this->reset(['salesman_id', 'start_no', 'end_no']);
         session()->flash('message', 'Salesman billing number added successfully!');
+        $this->resetForm();
+
     }
 
     public function edit($id){
@@ -286,7 +308,10 @@ class SalesmanBillingIndex extends Component
         ]);
 
         $this->reset(['salesman_id', 'start_no', 'end_no']);
+        
         session()->flash('message', 'Salesman billing number updated successfully!');
+        $this->resetForm(); // Reset all fields
+
     }
 
     public function destroy($id)
@@ -299,11 +324,18 @@ class SalesmanBillingIndex extends Component
     public function render()
     {
         $salesman = User::whereIn('designation',[1,2])->get();
+        
         $billings = SalesmanBilling::with('salesman')
-                    ->when($this->staff_id, function($query){
-                        $query->where('salesman_id',$this->staff_id);
-                    })->orderBy('id','DESC')
-                    ->get();
+        ->when($this->staff_id, function ($query) {
+            $query->where('salesman_id', $this->staff_id);
+        })
+        ->when($this->search, function ($query) {
+            $query->whereHas('salesman', function ($subQuery) {
+                $subQuery->where('name', 'like', '%' . $this->search . '%');
+            });
+        })
+        ->orderBy('id', 'DESC')
+        ->get();
 
         return view('livewire.staff.salesman-billing-index',['salesmans'=>$salesman, 'billings' => $billings,]);
     }
