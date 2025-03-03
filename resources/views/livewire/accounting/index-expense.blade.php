@@ -2,6 +2,12 @@
     <!-- Navbar -->
     <!-- End Navbar -->
     <!-- <div class="container-fluid py-4"> -->
+    <style>
+        /* Hide details by default */
+        .store_details_column {
+            display: none;
+        }
+    </style>
     <div class="container">
         <section class="admin__title">
             <h5>Expenses List</h5>
@@ -86,11 +92,105 @@
                                         <a href="{{ route('admin.accounting.edit_depot_expense', $item->id) }}" class="btn btn-outline-success select-md">Edit</a>
                                     </td>                                   
                                 </tr>
+                                <tr>                        
+
+                                    <td colspan="5" class="store_details_column">
+
+                                        <div class="store_details">
+
+                                            <table class="table">                                   
+
+                                                <tr>   
+
+                                                    <td><span>Amount: <strong>Rs. {{number_format((float)$item->amount, 2, '.', '')}}</strong></span></td>                        
+
+                                                    @php
+                                                        $expenseAt = '';
+
+                                                        if ($item->stuff_id && $item->staff) {
+                                                            $expenseAt = 'Staff Name: ' . $item->staff->name;
+                                                        } elseif ($item->customer_id && $item->customer) {
+                                                            $expenseAt = 'Customer Name: ' . $item->customer->name;
+                                                        } elseif ($item->supplier_id && $item->supplier) {
+                                                            $expenseAt = 'Supplier Name: ' . $item->supplier->name;
+                                                        }
+                                                    @endphp
+
+                                                    <td>{{ $expenseAt }}</strong></span></td>
+  
+
+                                                    @if (!empty($item->payment_mode))
+
+                                                        <td><span>Payment Mode: <strong>{{ ucwords($item->payment_mode)}}</strong></span></td>    
+
+                                                    @endif
+
+                                                    @if (!empty($item->bank_name))
+
+                                                        <td><span>Bank: <strong>{{ ucwords($item->bank_name)}}</strong></span></td>    
+
+                                                    @endif
+
+                                                    @if (!empty($item->chq_utr_no))
+
+                                                        <td><span>Cheque / UTR No: <strong>{{ ucwords($item->chq_utr_no)}}</strong></span></td>    
+
+                                                    @endif
+
+                                                    @if (!empty($item->narration))
+
+                                                        <td><span>Narration: <strong>{{ ucwords($item->narration)}}</strong></span></td>    
+
+                                                    @endif
+
+                                                </tr>
+
+                                                <tr>
+
+                                                    @if (!empty($item->created_by))
+
+                                                        <td><span>Created By: <strong>{{ ucwords($item->creator?$item->creator->name:" ")}}</strong></span></td>  
+
+                                                        <td><span>Created At: <strong>{{ date('d/m/Y h:i A', strtotime($item->created_at)) }}</strong></span></td>   
+                                                    @endif
+                                                    @if($ExpenseAt)
+                                                    <td><span>Expense At: <strong>{{ $ExpenseAt }}</strong></span></td> 
+                                                    @endif
+                                                    @if($ExpenseType)
+                                                    <td><span>Expense: <strong>{{ $ExpenseType }}</strong></span></td> 
+                                                    @endif
+                                                </tr>
+
+                                                <tr>
+
+                                                    @if (!empty($item->updater))
+
+                                                        <td><span>Updated By: <strong>{{ ucwords($item->updater->name)}}</strong></span></td>  
+
+                                                        <td><span>Updated At: <strong>{{ date('d/m/Y h:i A', strtotime($item->updated_at)) }}</strong></span></td>    
+
+                                                    @endif
+
+                                                </tr>
+
+                                            </table>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
                                 @php $i++; @endphp
                                 @empty
                                 <tr>
-                                    <td colspan="5">No records found</td>
-                                </tr>    
+
+                        <td colspan="100%">
+
+                            <span></span>
+
+                        </td>
+
+                    </tr>   
                                 @endforelse
                             </tbody>
                         </table>   
@@ -100,11 +200,18 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         window.addEventListener('close-import-modal', event => {
             var importModal = document.getElementById('importModal');
             var modal = bootstrap.Modal.getInstance(importModal);
             modal.hide();
+        });
+        $(document).ready(function () {
+            $(".store_details_row").click(function () {
+                // Toggle visibility of the next .store_details_column row
+                $(this).next("tr").find(".store_details_column").toggle();
+            });
         });
     </script>
     

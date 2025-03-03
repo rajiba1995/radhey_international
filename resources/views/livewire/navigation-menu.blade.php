@@ -258,6 +258,12 @@
                         Customer Opening Balance
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ request()->is('admin/accounting/list/depot-expense') ? 'active' : '' }}"
+                        href="{{ route('admin.accounting.list.depot_expense') }}">
+                         Depot Expense
+                    </a>
+                </li>
                 {{-- <li class="nav-item">
                     <a class="nav-link text-white {{ request()->is('admin/accounting/add-opening-balance') ? 'active' : '' }}"
                         href="{{ route('admin.accounting.add_opening_balance') }}">

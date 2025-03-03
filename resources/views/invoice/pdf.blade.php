@@ -157,7 +157,7 @@
                     <td></td>
                     <td class="bold" style="text-align: center;">BALANCE DUE</td>
                     <td class="text-center bold">{{ number_format($invoice->required_payment_amount) }}</td>
-                </tr>
+                </tr>\
             </tbody>
         </table>
         <div class="dotted-line"></div>

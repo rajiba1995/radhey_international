@@ -29,7 +29,10 @@ class Payment extends Model
     {
         return $this->belongsTo(User::class, 'admin_id', 'id');
     }
-
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
     // Relationship with the user (if needed for customers or different role users)
     public function customer()
     {
