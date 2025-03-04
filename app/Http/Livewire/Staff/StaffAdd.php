@@ -53,7 +53,7 @@ class StaffAdd extends Component
        $this->validate([
             'branch_id'   => 'required',
             'designation' => 'required',
-            'emp_code' => 'required',
+            'emp_code' => 'required|unique:users,emp_code',
             'person_name' => 'required|string|max:255',
             'surname' => 'required|string|max:255',
             'dob' => 'required',

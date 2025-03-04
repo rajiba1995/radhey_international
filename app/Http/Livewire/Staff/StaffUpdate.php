@@ -91,6 +91,7 @@ class StaffUpdate extends Component
             'designation' => 'required',
             'person_name' => 'required|string|max:255',
             'email' => 'nullable|email',
+            'emp_code' => 'required|unique:users,emp_code,'. $this->staff->id,
             'mobile' => [
                 'required',
                 'regex:/^\+?\d{' . env('VALIDATE_MOBILE', 8) . ',}$/',
